@@ -1,0 +1,2 @@
+[[proxy]]
+path = "../../examples/multisig/interact/src/wmoa_proxy.rs"

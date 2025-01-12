@@ -1,0 +1,70 @@
+{
+    "name": "unwrap moa",
+    "gasSchedule": "v4",
+    "steps": [
+        {
+            "step": "externalSteps",
+            "path": "wrap_moa.scen.json"
+        },
+        {
+            "step": "scCall",
+            "id": "unwrap-moa",
+            "tx": {
+                "from": "address:user",
+                "to": "sc:moa_dcdt_swap",
+                "dcdtValue": [
+                    {
+                        "tokenIdentifier": "str:MOA-abcdef",
+                        "value": "300"
+                    }
+                ],
+                "function": "unwrapMoa",
+                "arguments": [],
+                "gasLimit": "5,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "0",
+                "message": "",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "checkState",
+            "accounts": {
+                "address:user": {
+                    "nonce": "2",
+                    "balance": "800",
+                    "dcdt": {
+                        "str:MOA-abcdef": "200"
+                    },
+                    "storage": {}
+                },
+                "sc:moa_dcdt_swap": {
+                    "nonce": "0",
+                    "balance": "200",
+                    "dcdt": {
+                        "str:MOA-abcdef": {
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
+                            "roles": [
+                                "DCDTRoleLocalMint",
+                                "DCDTRoleLocalBurn"
+                            ]
+                        }
+                    },
+                    "storage": {
+                        "str:wrappedMoaTokenId": "str:MOA-abcdef"
+                    },
+                    "code": "drtsc:../output/dharitri-sc-wmoa-swap.drtsc.json"
+                }
+            }
+        }
+    ]
+}
