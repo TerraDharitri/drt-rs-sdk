@@ -14,7 +14,7 @@ use system_sc_unimplemented::*;
 /// Address of the system smart contract that manages DCDT.
 /// Bech32: drt1yvesqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqqqqqzlllsahl0pc
 pub const DCDT_SYSTEM_SC_ADDRESS_ARRAY: [u8; 32] =
-    hex!("000000000000000000010000000000000000000000000000000000000002ffff");
+    hex!("233300000000000000000000000000233300000000000000000000000002ffff");
 
 pub fn is_system_sc_address(address: &VMAddress) -> bool {
     address.as_array() == &DCDT_SYSTEM_SC_ADDRESS_ARRAY

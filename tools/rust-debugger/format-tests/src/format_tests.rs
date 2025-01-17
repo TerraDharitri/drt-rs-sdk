@@ -66,7 +66,7 @@ fn main() {
     push!(
         to_check,
         managed_address,
-        "(32) 0x000000000000000000010000000000000000000000000000000000000002ffff"
+        "(32) 0x233300000000000000000000000000233300000000000000000000000002ffff"
     );
 
     let managed_byte_array: ManagedByteArray<DebugApi, 4> =
@@ -138,21 +138,21 @@ fn main() {
     push!(
         to_check,
         managed_vec_of_addresses,
-        "(1) { [0] = (32) 0x000000000000000000010000000000000000000000000000000000000002ffff }"
+        "(1) { [0] = (32) 0x233300000000000000000000000000233300000000000000000000000002ffff }"
     );
 
     let managed_option_of_vec_of_addresses: ManagedOption<
         DebugApi,
         ManagedVec<DebugApi, ManagedAddress<DebugApi>>,
     > = ManagedOption::some(managed_vec_of_addresses.clone());
-    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x000000000000000000010000000000000000000000000000000000000002ffff })");
+    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x233300000000000000000000000000233300000000000000000000000002ffff })");
 
     // 5. SC wasm - heap
     let heap_address: Address = managed_address.to_address();
     push!(
         to_check,
         heap_address,
-        "(32) 0x000000000000000000010000000000000000000000000000000000000002ffff"
+        "(32) 0x233300000000000000000000000000233300000000000000000000000002ffff"
     );
 
     let boxed_bytes: BoxedBytes = b"test"[..].into();
