@@ -12,11 +12,11 @@ pub trait NftSubscription:
     fn init(&self) {}
 
     #[endpoint]
-    #[payable("MOA")]
+    #[payable("REWA")]
     fn issue(&self) {
         self.token_id().issue_and_set_all_roles(
             DcdtTokenType::NonFungible,
-            self.call_value().moa().clone(),
+            self.call_value().rewa().clone(),
             ManagedBuffer::from(b"Subscription"),
             ManagedBuffer::from(b"SUB"),
             0,

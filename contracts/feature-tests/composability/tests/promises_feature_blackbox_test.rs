@@ -147,7 +147,7 @@ fn test_multi_call_back_transfers_logs() {
 #[test]
 fn test_back_transfers_handlers() {
     let mut state = PromisesFeaturesTestState::new();
-    let moa_amount = BigUint::from(2u64);
+    let rewa_amount = BigUint::from(2u64);
     let token_amount = BigUint::from(500u64);
 
     let result = state
@@ -156,12 +156,12 @@ fn test_back_transfers_handlers() {
         .from(USER_ADDRESS)
         .to(FORWARDER_ADDRESS)
         .typed(forwarder_proxy::ForwarderProxy)
-        .forward_sync_accept_funds_rh_moa(VAULT_ADDRESS)
-        .moa(&moa_amount)
+        .forward_sync_accept_funds_rh_rewa(VAULT_ADDRESS)
+        .rewa(&rewa_amount)
         .returns(ReturnsResult)
         .run();
 
-    assert_eq!(result, moa_amount);
+    assert_eq!(result, rewa_amount);
 
     let result = state
         .world

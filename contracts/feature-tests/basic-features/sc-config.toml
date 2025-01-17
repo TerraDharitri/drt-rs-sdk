@@ -25,7 +25,7 @@ add-endpoints = [
     "init",
     "store_bytes",
     "load_bytes",
-    "returns_moa_decimal",
+    "returns_rewa_decimal",
     "echo_managed_option",
 ]
 add-labels = ["crypto-ei-1.4"]

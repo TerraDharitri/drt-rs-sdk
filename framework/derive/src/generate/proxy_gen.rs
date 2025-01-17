@@ -72,7 +72,7 @@ fn original_type_tokens(m: &Method) -> proc_macro2::TokenStream {
 pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2::TokenStream {
     let mut token_count = 0;
     let mut token_expr =
-        quote! { dharitri_sc::types::MoaOrDcdtTokenIdentifier::<Self::Api>::moa() };
+        quote! { dharitri_sc::types::RewaOrDcdtTokenIdentifier::<Self::Api>::rewa() };
     let mut nonce_count = 0;
     let mut nonce_expr = quote! { 0u64 };
     let mut payment_count = 0;
@@ -136,12 +136,12 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
         assert!(multi_count == 0, "#[payment_multi] cannot coexist with any other payment annotation in the same endpoint");
 
         if token_count == 0 && nonce_count == 0 {
-            payment_type = quote! { dharitri_sc::types::MoaPayment<Self::Api> };
-            payment_init = quote! { .moa(#payment_expr) };
+            payment_type = quote! { dharitri_sc::types::RewaPayment<Self::Api> };
+            payment_init = quote! { .rewa(#payment_expr) };
         } else {
-            payment_type = quote! { dharitri_sc::types::MoaOrDcdtTokenPayment<Self::Api> };
+            payment_type = quote! { dharitri_sc::types::RewaOrDcdtTokenPayment<Self::Api> };
             payment_init = quote! { .payment(
-                dharitri_sc::types::MoaOrDcdtTokenPayment::new(
+                dharitri_sc::types::RewaOrDcdtTokenPayment::new(
                     #token_expr,
                     #nonce_expr,
                     #payment_expr,
@@ -216,8 +216,8 @@ pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
             ArgPaymentMetadata::PaymentAmount => {
                 payment_count += 1;
                 let payment_expr = &arg.pat;
-                payment_type = quote! { dharitri_sc::types::MoaPayment<Self::Api> };
-                payment_init = quote! { .moa(#payment_expr) };
+                payment_type = quote! { dharitri_sc::types::RewaPayment<Self::Api> };
+                payment_init = quote! { .rewa(#payment_expr) };
             },
             ArgPaymentMetadata::PaymentMulti => {
                 multi_count += 1;

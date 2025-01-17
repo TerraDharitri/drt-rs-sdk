@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use super::private_key::PrivateKey;
 use anyhow::Result;
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 use serde::{
     de::{Deserialize, Deserializer},
     ser::{Serialize, Serializer},

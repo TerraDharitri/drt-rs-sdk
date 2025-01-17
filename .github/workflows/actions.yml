@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
   workflow_dispatch:
 
@@ -14,7 +14,7 @@ permissions:
 jobs:
   contracts:
     name: Contracts
-    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@eb65c5cae88d1d540f1603c0cabc428fbe9e0975
+    uses: TerraTerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@eb65c5cae88d1d540f1603c0cabc428fbe9e0975
     with:
       rust-toolchain: 1.82
       path-to-sc-meta: framework/meta

@@ -1075,7 +1075,7 @@ impl VMHooks for VMHooksDispatcher {
     }
 
     fn big_int_get_call_value(&self, destination_handle: i32) {
-        self.handler.load_moa_value(destination_handle);
+        self.handler.load_rewa_value(destination_handle);
     }
 
     fn big_int_get_dcdt_call_value(&self, destination: i32) {

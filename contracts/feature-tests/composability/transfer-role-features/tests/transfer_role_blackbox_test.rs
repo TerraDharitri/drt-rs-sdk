@@ -74,8 +74,8 @@ impl TransferRoleTestState {
             .to(TRANSFER_ROLE_FEATURES_ADDRESS)
             .typed(transfer_role_proxy::TransferRoleFeaturesProxy)
             .forward_payments(dest, endpoint_name, MultiValueVec::<Vec<u8>>::new())
-            .moa_or_single_dcdt(
-                &MoaOrDcdtTokenIdentifier::dcdt(TRANSFER_TOKEN),
+            .rewa_or_single_dcdt(
+                &RewaOrDcdtTokenIdentifier::dcdt(TRANSFER_TOKEN),
                 0u64,
                 &dharitri_sc::proxy_imports::BigUint::from(100u64),
             )
@@ -117,8 +117,8 @@ fn test_transfer_role() {
         .to(TRANSFER_ROLE_FEATURES_ADDRESS)
         .typed(transfer_role_proxy::TransferRoleFeaturesProxy)
         .forward_payments(Address::zero(), "", MultiValueVec::<Vec<u8>>::new())
-        .moa_or_single_dcdt(
-            &MoaOrDcdtTokenIdentifier::dcdt(TRANSFER_TOKEN),
+        .rewa_or_single_dcdt(
+            &RewaOrDcdtTokenIdentifier::dcdt(TRANSFER_TOKEN),
             0u64,
             &dharitri_sc::proxy_imports::BigUint::from(100u64),
         )

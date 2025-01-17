@@ -5,7 +5,7 @@ dharitri_sc::derive_imports!();
 #[derive(TopEncode, TopDecode)]
 pub struct CallbackData<M: ManagedTypeApi> {
     callback_name: ManagedBuffer<M>,
-    token_identifier: MoaOrDcdtTokenIdentifier<M>,
+    token_identifier: RewaOrDcdtTokenIdentifier<M>,
     token_nonce: u64,
     token_amount: BigUint<M>,
     args: ManagedVec<M, ManagedBuffer<M>>,
@@ -57,11 +57,11 @@ pub trait ForwarderAsyncCallModule {
     #[endpoint]
     #[payable("*")]
     fn forward_async_accept_funds(&self, to: ManagedAddress) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         self.vault_proxy()
             .contract(to)
             .accept_funds()
-            .with_moa_or_single_dcdt_transfer(payment)
+            .with_rewa_or_single_dcdt_transfer(payment)
             .async_call()
             .call_and_exit()
     }
@@ -69,12 +69,12 @@ pub trait ForwarderAsyncCallModule {
     #[endpoint]
     #[payable("*")]
     fn forward_async_accept_funds_half_payment(&self, to: ManagedAddress) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         let half_payment = payment.amount / 2u32;
         self.vault_proxy()
             .contract(to)
             .accept_funds()
-            .with_moa_or_single_dcdt_transfer((
+            .with_rewa_or_single_dcdt_transfer((
                 payment.token_identifier,
                 payment.token_nonce,
                 half_payment,
@@ -86,14 +86,14 @@ pub trait ForwarderAsyncCallModule {
     #[payable("*")]
     #[endpoint]
     fn forward_async_accept_funds_with_fees(&self, to: ManagedAddress, percentage_fees: BigUint) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         let fees = &payment.amount * &percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = &payment.amount - &fees;
 
         self.vault_proxy()
             .contract(to)
             .accept_funds()
-            .with_moa_or_single_dcdt_transfer((
+            .with_rewa_or_single_dcdt_transfer((
                 payment.token_identifier,
                 payment.token_nonce,
                 amount_to_send,
@@ -106,7 +106,7 @@ pub trait ForwarderAsyncCallModule {
     fn forward_async_retrieve_funds(
         &self,
         to: ManagedAddress,
-        token: MoaOrDcdtTokenIdentifier,
+        token: RewaOrDcdtTokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {
@@ -120,7 +120,7 @@ pub trait ForwarderAsyncCallModule {
 
     #[callback]
     fn retrieve_funds_callback(&self) {
-        let (token, nonce, payment) = self.call_value().moa_or_single_dcdt().into_tuple();
+        let (token, nonce, payment) = self.call_value().rewa_or_single_dcdt().into_tuple();
         self.retrieve_funds_callback_event(&token, nonce, &payment);
 
         let _ = self.callback_data().push(&CallbackData {
@@ -135,7 +135,7 @@ pub trait ForwarderAsyncCallModule {
     #[event("retrieve_funds_callback")]
     fn retrieve_funds_callback_event(
         &self,
-        #[indexed] token: &MoaOrDcdtTokenIdentifier,
+        #[indexed] token: &RewaOrDcdtTokenIdentifier,
         #[indexed] nonce: u64,
         #[indexed] payment: &BigUint,
     );
@@ -144,13 +144,13 @@ pub trait ForwarderAsyncCallModule {
     fn send_funds_twice(
         &self,
         to: &ManagedAddress,
-        token_identifier: &MoaOrDcdtTokenIdentifier,
+        token_identifier: &RewaOrDcdtTokenIdentifier,
         amount: &BigUint,
     ) {
         self.vault_proxy()
             .contract(to.clone())
             .accept_funds()
-            .with_moa_or_single_dcdt_transfer((token_identifier.clone(), 0, amount.clone()))
+            .with_rewa_or_single_dcdt_transfer((token_identifier.clone(), 0, amount.clone()))
             .async_call()
             .with_callback(
                 self.callbacks()
@@ -163,13 +163,13 @@ pub trait ForwarderAsyncCallModule {
     fn send_funds_twice_callback(
         &self,
         to: &ManagedAddress,
-        token_identifier: &MoaOrDcdtTokenIdentifier,
+        token_identifier: &RewaOrDcdtTokenIdentifier,
         cb_amount: &BigUint,
     ) {
         self.vault_proxy()
             .contract(to.clone())
             .accept_funds()
-            .with_moa_or_single_dcdt_transfer((token_identifier.clone(), 0, cb_amount.clone()))
+            .with_rewa_or_single_dcdt_transfer((token_identifier.clone(), 0, cb_amount.clone()))
             .async_call()
             .call_and_exit()
     }
@@ -207,7 +207,7 @@ pub trait ForwarderAsyncCallModule {
         index: usize,
     ) -> MultiValue5<
         ManagedBuffer,
-        MoaOrDcdtTokenIdentifier,
+        RewaOrDcdtTokenIdentifier,
         u64,
         BigUint,
         MultiValueManagedVec<Self::Api, ManagedBuffer>,

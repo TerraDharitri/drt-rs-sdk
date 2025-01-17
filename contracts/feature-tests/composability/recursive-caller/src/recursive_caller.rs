@@ -15,7 +15,7 @@ pub trait RecursiveCaller {
     fn recursive_send_funds(
         &self,
         to: &ManagedAddress,
-        token_identifier: &MoaOrDcdtTokenIdentifier,
+        token_identifier: &RewaOrDcdtTokenIdentifier,
         amount: &BigUint,
         counter: u32,
     ) {
@@ -25,7 +25,7 @@ pub trait RecursiveCaller {
             .to(to)
             .typed(vault_proxy::VaultProxy)
             .accept_funds()
-            .moa_or_single_dcdt(token_identifier, 0, amount)
+            .rewa_or_single_dcdt(token_identifier, 0, amount)
             .callback(self.callbacks().recursive_send_funds_callback(
                 to,
                 token_identifier,
@@ -39,7 +39,7 @@ pub trait RecursiveCaller {
     fn recursive_send_funds_callback(
         &self,
         to: &ManagedAddress,
-        token_identifier: &MoaOrDcdtTokenIdentifier,
+        token_identifier: &RewaOrDcdtTokenIdentifier,
         amount: &BigUint,
         counter: u32,
     ) {
@@ -59,7 +59,7 @@ pub trait RecursiveCaller {
     fn recursive_send_funds_event(
         &self,
         #[indexed] to: &ManagedAddress,
-        #[indexed] token_identifier: &MoaOrDcdtTokenIdentifier,
+        #[indexed] token_identifier: &RewaOrDcdtTokenIdentifier,
         #[indexed] amount: &BigUint,
         counter: u32,
     );
@@ -68,7 +68,7 @@ pub trait RecursiveCaller {
     fn recursive_send_funds_callback_event(
         &self,
         #[indexed] to: &ManagedAddress,
-        #[indexed] token_identifier: &MoaOrDcdtTokenIdentifier,
+        #[indexed] token_identifier: &RewaOrDcdtTokenIdentifier,
         #[indexed] amount: &BigUint,
         counter: u32,
     );

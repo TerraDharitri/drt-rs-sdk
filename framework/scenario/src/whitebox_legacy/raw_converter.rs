@@ -11,7 +11,7 @@ use crate::{
     },
     scenario_model::U64Value,
 };
-use dharitri_vm::{
+use dharitri_chain_vm::{
     types::VMAddress,
     world_mock::{AccountData, DcdtData},
 };
@@ -22,7 +22,7 @@ use super::{ScCallDenali, ScQueryDenali, TxExpectDenali};
 pub(crate) const STAR_STR: &str = "*";
 
 pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
-    let balance_raw = Some(rust_biguint_as_raw(&acc.moa_balance));
+    let balance_raw = Some(rust_biguint_as_raw(&acc.rewa_balance));
     let developer_rewards_raw = Some(rust_biguint_as_raw(&acc.developer_rewards));
     let code_raw = acc
         .contract_path
@@ -119,8 +119,8 @@ pub(crate) fn tx_call_as_raw(tx_call: &ScCallDenali) -> TxCallRaw {
     TxCallRaw {
         from: address_as_raw(&tx_call.from),
         to: address_as_raw(&tx_call.to),
-        value: None, // this is the old "value" field, which is now "moa_value". Only kept for backwards compatibility
-        moa_value: rust_biguint_as_opt_raw(&tx_call.moa_value),
+        value: None, // this is the old "value" field, which is now "rewa_value". Only kept for backwards compatibility
+        rewa_value: rust_biguint_as_opt_raw(&tx_call.rewa_value),
         dcdt_value: all_dcdt_raw,
         function: tx_call.function.clone(),
         arguments: arguments_raw,
@@ -236,7 +236,7 @@ pub(crate) fn account_as_check_state_raw(acc: &AccountData) -> CheckAccountsRaw 
     };
     let check_acc_raw = CheckAccountRaw {
         nonce: CheckBytesValueRaw::Star,
-        balance: CheckBytesValueRaw::Equal(rust_biguint_as_raw(&acc.moa_balance)),
+        balance: CheckBytesValueRaw::Equal(rust_biguint_as_raw(&acc.rewa_balance)),
         dcdt: CheckDcdtMapRaw::Equal(CheckDcdtMapContentsRaw {
             other_dcdts_allowed: false,
             contents: all_check_dcdt_raw,

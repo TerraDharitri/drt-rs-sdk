@@ -13,7 +13,7 @@ use super::{CallType, TxFunctionName};
 pub struct TxInput {
     pub from: VMAddress,
     pub to: VMAddress,
-    pub moa_value: BigUint,
+    pub rewa_value: BigUint,
     pub dcdt_values: Vec<TxTokenTransfer>,
     pub func_name: TxFunctionName,
     pub args: Vec<Vec<u8>>,
@@ -30,7 +30,7 @@ impl Default for TxInput {
         TxInput {
             from: VMAddress::zero(),
             to: VMAddress::zero(),
-            moa_value: BigUint::zero(),
+            rewa_value: BigUint::zero(),
             dcdt_values: Vec::new(),
             func_name: TxFunctionName::EMPTY,
             args: Vec::new(),
@@ -49,7 +49,7 @@ impl fmt::Display for TxInput {
         write!(f, "TxInput {{ func: {}, args: {:?}, call_value: {}, dcdt_value: {:?}, from: 0x{}, to: 0x{}\n}}", 
             self.func_name.as_str(),
             self.args,
-            self.moa_value,
+            self.rewa_value,
             self.dcdt_values,
             address_hex(&self.from),
             address_hex(&self.to))
@@ -81,17 +81,17 @@ pub struct TxTokenTransfer {
 /// Signals to the callback that funds have been returned to it, without performing any transfer.
 #[derive(Default, Clone, Debug)]
 pub struct CallbackPayments {
-    pub moa_value: BigUint,
+    pub rewa_value: BigUint,
     pub dcdt_values: Vec<TxTokenTransfer>,
 }
 
 impl TxInput {
-    /// The received MOA can come either from the original caller, or from an async call, during callback.
-    pub fn received_moa(&self) -> &BigUint {
-        if !self.callback_payments.moa_value.is_zero() {
-            &self.callback_payments.moa_value
+    /// The received REWA can come either from the original caller, or from an async call, during callback.
+    pub fn received_rewa(&self) -> &BigUint {
+        if !self.callback_payments.rewa_value.is_zero() {
+            &self.callback_payments.rewa_value
         } else {
-            &self.moa_value
+            &self.rewa_value
         }
     }
 

@@ -13,10 +13,10 @@ pub struct RgbColor {
 pub trait NonFungibleTokenMapperFeatures:
     dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn issue_and_set_all_roles_meta(&self, token_ticker: ManagedBuffer) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         self.non_fungible_token_mapper().issue_and_set_all_roles(
             DcdtTokenType::Meta,
             payment.clone(),

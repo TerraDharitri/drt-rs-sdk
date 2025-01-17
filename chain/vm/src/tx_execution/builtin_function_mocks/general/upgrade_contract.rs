@@ -50,7 +50,7 @@ impl BuiltinFunction for UpgradeContract {
         let exec_input = TxInput {
             from: tx_input.from,
             to: tx_input.to,
-            moa_value: tx_input.moa_value,
+            rewa_value: tx_input.rewa_value,
             dcdt_values: Vec::new(),
             func_name: TxFunctionName::UPGRADE,
             args,

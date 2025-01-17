@@ -6,7 +6,7 @@ dharitri_sc::imports!();
 pub trait ForwarderDynamicModule:
     crate::fwd_nft::ForwarderNftModule + crate::fwd_storage::ForwarderStorageModule
 {
-    #[payable["MOA"]]
+    #[payable["REWA"]]
     #[endpoint]
     fn issue_dynamic_token(
         &self,
@@ -15,7 +15,7 @@ pub trait ForwarderDynamicModule:
         token_type: DcdtTokenType,
         num_decimals: usize,
     ) {
-        let issue_cost = self.call_value().moa().clone();
+        let issue_cost = self.call_value().rewa().clone();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -31,7 +31,7 @@ pub trait ForwarderDynamicModule:
             .async_call_and_exit();
     }
 
-    #[payable["MOA"]]
+    #[payable["REWA"]]
     #[endpoint]
     fn issue_token_all_roles(
         &self,
@@ -40,7 +40,7 @@ pub trait ForwarderDynamicModule:
         token_type: DcdtTokenType,
         num_decimals: usize,
     ) {
-        let issue_cost = self.call_value().moa().clone();
+        let issue_cost = self.call_value().rewa().clone();
         let caller = self.blockchain().get_caller();
 
         self.send()

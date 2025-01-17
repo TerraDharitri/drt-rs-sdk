@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use dharitri_vm::{
+use dharitri_chain_vm::{
     executor::{BreakpointValue, VMHooks},
     tx_mock::{TxContext, TxContextRef, TxContextStack, TxPanic},
     vm_hooks::{DebugApiVMHooksHandler, VMHooksDispatcher},

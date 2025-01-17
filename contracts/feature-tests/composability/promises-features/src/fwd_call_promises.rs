@@ -10,7 +10,7 @@ pub trait CallPromisesModule: common::CommonModule {
     #[endpoint]
     #[payable("*")]
     fn forward_promise_accept_funds(&self, to: ManagedAddress) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         let gas_limit = self.blockchain().get_gas_left() / 2;
 
         self.tx()
@@ -26,7 +26,7 @@ pub trait CallPromisesModule: common::CommonModule {
     fn forward_promise_retrieve_funds(
         &self,
         to: ManagedAddress,
-        token: MoaOrDcdtTokenIdentifier,
+        token: RewaOrDcdtTokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {
@@ -44,7 +44,7 @@ pub trait CallPromisesModule: common::CommonModule {
 
     #[promises_callback]
     fn retrieve_funds_callback(&self) {
-        let (token, nonce, payment) = self.call_value().moa_or_single_dcdt().into_tuple();
+        let (token, nonce, payment) = self.call_value().rewa_or_single_dcdt().into_tuple();
         self.retrieve_funds_callback_event(&token, nonce, &payment);
 
         let _ = self.callback_data().push(&CallbackData {
@@ -76,19 +76,19 @@ pub trait CallPromisesModule: common::CommonModule {
 
         let call_value = self.call_value().any_payment();
         match call_value {
-            MoaOrMultiDcdtPayment::Moa(moa) => {
-                self.retrieve_funds_callback_event(&MoaOrDcdtTokenIdentifier::moa(), 0, &moa);
+            RewaOrMultiDcdtPayment::Rewa(rewa) => {
+                self.retrieve_funds_callback_event(&RewaOrDcdtTokenIdentifier::rewa(), 0, &rewa);
                 let _ = self.callback_data().push(&CallbackData {
                     callback_name: ManagedBuffer::from(b"transfer_callback"),
-                    token_identifier: MoaOrDcdtTokenIdentifier::moa(),
+                    token_identifier: RewaOrDcdtTokenIdentifier::rewa(),
                     token_nonce: 0,
-                    token_amount: moa,
+                    token_amount: rewa,
                     args: ManagedVec::new(),
                 });
             },
-            MoaOrMultiDcdtPayment::MultiDcdt(multi_dcdt) => {
+            RewaOrMultiDcdtPayment::MultiDcdt(multi_dcdt) => {
                 for dcdt in multi_dcdt.into_iter() {
-                    let token_identifier = MoaOrDcdtTokenIdentifier::dcdt(dcdt.token_identifier);
+                    let token_identifier = RewaOrDcdtTokenIdentifier::dcdt(dcdt.token_identifier);
                     self.retrieve_funds_callback_event(&token_identifier, 0, &dcdt.amount);
                     let _ = self.callback_data().push(&CallbackData {
                         callback_name: ManagedBuffer::from(b"transfer_callback"),

@@ -15,7 +15,7 @@ pub use world_mock::BlockchainMock;
 pub use dharitri_vm_executor as executor;
 
 // Re-exporting the VM-core, for convenience.
-pub use dharitri_core as chain_core;
+pub use dharitri_chain_core as chain_core;
 
 #[macro_use]
 extern crate alloc;

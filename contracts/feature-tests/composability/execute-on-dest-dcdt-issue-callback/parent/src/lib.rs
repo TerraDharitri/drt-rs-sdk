@@ -12,7 +12,7 @@ pub trait Parent {
     #[init]
     fn init(&self) {}
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn deposit(&self) {}
 
@@ -30,7 +30,7 @@ pub trait Parent {
         self.child_contract_address().set(&child_contract_address);
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(executeOnDestIssueToken)]
     fn execute_on_dest_issue_token(
         &self,
@@ -38,14 +38,14 @@ pub trait Parent {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         let child_contract_adress = self.child_contract_address().get();
 
         self.tx()
             .to(&child_contract_adress)
             .typed(child_proxy::ChildProxy)
-            .issue_wrapped_moa(token_display_name, token_ticker, initial_supply)
-            .moa(issue_cost)
+            .issue_wrapped_rewa(token_display_name, token_ticker, initial_supply)
+            .rewa(issue_cost)
             .gas(ISSUE_EXPECTED_GAS_COST)
             .sync_call();
     }

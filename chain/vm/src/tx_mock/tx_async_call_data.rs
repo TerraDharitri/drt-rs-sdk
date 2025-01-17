@@ -22,7 +22,7 @@ pub fn async_call_tx_input(async_call: &AsyncCallTxData, call_type: CallType) ->
     TxInput {
         from: async_call.from.clone(),
         to: async_call.to.clone(),
-        moa_value: async_call.call_value.clone(),
+        rewa_value: async_call.call_value.clone(),
         dcdt_values: Vec::new(),
         func_name: async_call.endpoint_name.clone(),
         args: async_call.arguments.clone(),
@@ -67,7 +67,7 @@ pub fn async_callback_tx_input(
     TxInput {
         from: real_recipient(async_data, builtin_functions),
         to: async_data.from.clone(),
-        moa_value: 0u32.into(),
+        rewa_value: 0u32.into(),
         dcdt_values: Vec::new(),
         func_name: TxFunctionName::CALLBACK,
         args,
@@ -94,7 +94,7 @@ fn extract_callback_payments(
                 callback_payments.dcdt_values = token_transfers.transfers;
             } else {
                 callback_payments
-                    .moa_value
+                    .rewa_value
                     .clone_from(&async_call.call_value);
             }
             break;

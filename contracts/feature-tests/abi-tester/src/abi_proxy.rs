@@ -400,11 +400,11 @@ where
             .original_result()
     }
 
-    pub fn payable_moa(
+    pub fn payable_rewa(
         self,
     ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
         self.wrapped_tx
-            .raw_call("payable_moa")
+            .raw_call("payable_rewa")
             .original_result()
     }
 

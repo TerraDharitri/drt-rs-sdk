@@ -24,7 +24,7 @@ fn test_template_list() {
             "adder".to_string(),
             "crypto-zombies".to_string(),
             "empty".to_string(),
-            "ping-pong-moa".to_string(),
+            "ping-pong-rewa".to_string(),
         ]
     );
 }
@@ -36,7 +36,7 @@ fn template_current_adder() {
         "adder",
         "examples",
         "new-adder",
-        "Dharitri <contact@dharitri.org>",
+        "Alin Cruceat <alin.cruceat@dharitri.org>",
     );
 
     cargo_check_interactor("examples", "new-adder");
@@ -56,8 +56,8 @@ fn template_current_empty() {
 
 #[test]
 #[cfg_attr(not(feature = "template-test-current"), ignore)]
-fn template_current_ping_pong_moa() {
-    template_test_current("ping-pong-moa", "examples", "new-ping-pong-moa", "");
+fn template_current_ping_pong_rewa() {
+    template_test_current("ping-pong-rewa", "examples", "new-ping-pong-rewa", "");
 }
 
 #[test]
@@ -112,7 +112,7 @@ async fn template_released_adder() {
     template_test_released(
         "adder",
         "released-adder",
-        "Dharitri <contact@dharitri.org>",
+        "Alin Cruceat <alin.cruceat@dharitri.org>",
     )
     .await;
 

@@ -2,7 +2,7 @@ use dharitri_sc::{
     codec::multi_types::OptionalValue,
     types::{
         heap::{Address, BoxedBytes},
-        BigFloat, BigInt, BigUint, DCDTSystemSCAddress, MoaOrDcdtTokenIdentifier,
+        BigFloat, BigInt, BigUint, DCDTSystemSCAddress, RewaOrDcdtTokenIdentifier,
         DcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedOption,
         ManagedType, ManagedVec, TokenIdentifier,
     },
@@ -115,20 +115,20 @@ fn main() {
     ));
     push!(to_check, managed_vec_of_payments, "(2) { [0] = { token_identifier: \"MYTOK-123456\", nonce: 42, amount: 1000 }, [1] = { token_identifier: \"MYTOK-abcdef\", nonce: 100, amount: 5000 } }");
 
-    let moa_or_dcdt_token_identifier_moa: MoaOrDcdtTokenIdentifier<DebugApi> =
-        MoaOrDcdtTokenIdentifier::moa();
+    let rewa_or_dcdt_token_identifier_rewa: RewaOrDcdtTokenIdentifier<DebugApi> =
+        RewaOrDcdtTokenIdentifier::rewa();
     push!(
         to_check,
-        moa_or_dcdt_token_identifier_moa,
-        "MoaOrDcdtTokenIdentifier::moa()"
+        rewa_or_dcdt_token_identifier_rewa,
+        "RewaOrDcdtTokenIdentifier::rewa()"
     );
 
-    let moa_or_dcdt_token_identifier_dcdt: MoaOrDcdtTokenIdentifier<DebugApi> =
-        MoaOrDcdtTokenIdentifier::dcdt("MYTOK-123456");
+    let rewa_or_dcdt_token_identifier_dcdt: RewaOrDcdtTokenIdentifier<DebugApi> =
+        RewaOrDcdtTokenIdentifier::dcdt("MYTOK-123456");
     push!(
         to_check,
-        moa_or_dcdt_token_identifier_dcdt,
-        "MoaOrDcdtTokenIdentifier::dcdt(\"MYTOK-123456\")"
+        rewa_or_dcdt_token_identifier_dcdt,
+        "RewaOrDcdtTokenIdentifier::dcdt(\"MYTOK-123456\")"
     );
 
     // Nested type tests

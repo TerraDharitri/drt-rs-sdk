@@ -268,7 +268,7 @@ where
     }
 
     /// Propose a transaction in which the contract will perform a transfer-execute call. 
-    /// Can send MOA without calling anything. 
+    /// Can send REWA without calling anything. 
     /// Can call smart contract endpoints directly. 
     /// Doesn't really work with builtin functions. 
     pub fn propose_transfer_execute<
@@ -278,14 +278,14 @@ where
     >(
         self,
         to: Arg0,
-        moa_amount: Arg1,
+        rewa_amount: Arg1,
         function_call: Arg2,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, usize> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("proposeTransferExecute")
             .argument(&to)
-            .argument(&moa_amount)
+            .argument(&rewa_amount)
             .argument(&function_call)
             .original_result()
     }
@@ -294,7 +294,7 @@ where
     /// Can call smart contract endpoints directly. 
     /// Can use DCDTTransfer/DCDTNFTTransfer/MultiDCDTTransfer to send tokens, while also optionally calling endpoints. 
     /// Works well with builtin functions. 
-    /// Cannot simply send MOA directly without calling anything. 
+    /// Cannot simply send REWA directly without calling anything. 
     pub fn propose_async_call<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
         Arg1: ProxyArg<BigUint<Env::Api>>,
@@ -302,14 +302,14 @@ where
     >(
         self,
         to: Arg0,
-        moa_amount: Arg1,
+        rewa_amount: Arg1,
         function_call: Arg2,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, usize> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("proposeAsyncCall")
             .argument(&to)
-            .argument(&moa_amount)
+            .argument(&rewa_amount)
             .argument(&function_call)
             .original_result()
     }
@@ -452,7 +452,7 @@ where
     Api: ManagedTypeApi,
 {
     pub to: ManagedAddress<Api>,
-    pub moa_amount: BigUint<Api>,
+    pub rewa_amount: BigUint<Api>,
     pub endpoint_name: ManagedBuffer<Api>,
     pub arguments: ManagedVec<Api, ManagedBuffer<Api>>,
 }

@@ -9,7 +9,7 @@ pub trait ForwarderTransferExecuteModule {
     #[endpoint]
     #[payable("*")]
     fn forward_transf_exec_accept_funds(&self, to: ManagedAddress) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         self.tx()
             .to(&to)
             .typed(vault_proxy::VaultProxy)
@@ -25,7 +25,7 @@ pub trait ForwarderTransferExecuteModule {
         to: ManagedAddress,
         percentage_fees: BigUint,
     ) {
-        let (token_id, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token_id, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = payment - fees;
 
@@ -33,14 +33,14 @@ pub trait ForwarderTransferExecuteModule {
             .to(&to)
             .typed(vault_proxy::VaultProxy)
             .accept_funds()
-            .moa_or_single_dcdt(&token_id, 0u64, &amount_to_send)
+            .rewa_or_single_dcdt(&token_id, 0u64, &amount_to_send)
             .transfer_execute();
     }
 
     #[endpoint]
     #[payable("*")]
     fn forward_transf_exec_accept_funds_twice(&self, to: ManagedAddress) {
-        let (token, token_nonce, payment) = self.call_value().moa_or_single_dcdt().into_tuple();
+        let (token, token_nonce, payment) = self.call_value().rewa_or_single_dcdt().into_tuple();
         let half_payment = payment / 2u32;
         let half_gas = self.blockchain().get_gas_left() / 2;
 
@@ -48,7 +48,7 @@ pub trait ForwarderTransferExecuteModule {
             .to(&to)
             .typed(vault_proxy::VaultProxy)
             .accept_funds()
-            .moa_or_single_dcdt(&token, token_nonce, &half_payment)
+            .rewa_or_single_dcdt(&token, token_nonce, &half_payment)
             .gas(half_gas)
             .transfer_execute();
 
@@ -56,7 +56,7 @@ pub trait ForwarderTransferExecuteModule {
             .to(&to)
             .typed(vault_proxy::VaultProxy)
             .accept_funds()
-            .moa_or_single_dcdt(&token, token_nonce, &half_payment)
+            .rewa_or_single_dcdt(&token, token_nonce, &half_payment)
             .gas(half_gas)
             .transfer_execute();
     }
@@ -68,8 +68,8 @@ pub trait ForwarderTransferExecuteModule {
     fn forward_transf_exec_accept_funds_return_values(
         &self,
         to: ManagedAddress,
-    ) -> MultiValue4<u64, u64, BigUint, MoaOrDcdtTokenIdentifier> {
-        let payment = self.call_value().moa_or_single_dcdt();
+    ) -> MultiValue4<u64, u64, BigUint, RewaOrDcdtTokenIdentifier> {
+        let payment = self.call_value().rewa_or_single_dcdt();
         let payment_token = payment.token_identifier.clone();
         let gas_left_before = self.blockchain().get_gas_left();
 
@@ -95,13 +95,13 @@ pub trait ForwarderTransferExecuteModule {
     fn transf_exec_multi_accept_funds(
         &self,
         to: ManagedAddress,
-        token_payments: MultiValueEncoded<MultiValue3<MoaOrDcdtTokenIdentifier, u64, BigUint>>,
+        token_payments: MultiValueEncoded<MultiValue3<RewaOrDcdtTokenIdentifier, u64, BigUint>>,
     ) {
         let mut all_token_payments = ManagedVec::new();
 
         for multi_arg in token_payments.into_iter() {
             let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
-            let payment = MoaOrDcdtTokenPayment::new(token_identifier, token_nonce, amount);
+            let payment = RewaOrDcdtTokenPayment::new(token_identifier, token_nonce, amount);
 
             all_token_payments.push(payment);
         }

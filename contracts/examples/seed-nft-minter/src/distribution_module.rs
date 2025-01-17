@@ -20,7 +20,7 @@ pub trait DistributionModule {
 
     fn distribute_funds(
         &self,
-        token_id: &MoaOrDcdtTokenIdentifier,
+        token_id: &RewaOrDcdtTokenIdentifier,
         token_nonce: u64,
         total_amount: BigUint,
     ) {
@@ -36,7 +36,7 @@ pub trait DistributionModule {
             self.tx()
                 .to(&distribution.address)
                 .raw_call(distribution.endpoint.clone())
-                .moa_or_single_dcdt(token_id, token_nonce, &payment_amount)
+                .rewa_or_single_dcdt(token_id, token_nonce, &payment_amount)
                 .gas(distribution.gas_limit)
                 .transfer_execute();
         }

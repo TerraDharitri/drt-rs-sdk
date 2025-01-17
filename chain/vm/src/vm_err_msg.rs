@@ -1,4 +1,4 @@
-pub const NON_PAYABLE_FUNC_MOA: &str = "function does not accept MOA payment";
+pub const NON_PAYABLE_FUNC_REWA: &str = "function does not accept REWA payment";
 pub const NON_PAYABLE_FUNC_DCDT: &str = "function does not accept DCDT payment";
 
 pub const BIG_INT_BITWISE_OPERATION_NEGATIVE: &str =

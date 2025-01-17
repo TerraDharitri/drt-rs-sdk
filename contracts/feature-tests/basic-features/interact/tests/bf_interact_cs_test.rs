@@ -17,12 +17,12 @@ async fn simulator_basic_features_test() {
 
     bf_interact.deploy().await;
 
-    let expected_return_moa_decimal =
+    let expected_return_rewa_decimal =
         ManagedDecimal::<StaticApi, ConstDecimals<18>>::const_decimals_from_raw(BigUint::from(
             5u64,
         ));
-    let return_moa_decimal = bf_interact.returns_moa_decimal(5).await;
-    assert_eq!(expected_return_moa_decimal, return_moa_decimal);
+    let return_rewa_decimal = bf_interact.returns_rewa_decimal(5).await;
+    assert_eq!(expected_return_rewa_decimal, return_rewa_decimal);
 
     let expected_type_managed_option = ManagedOption::some(BigUint::from(8u16));
     let type_managed_option = bf_interact

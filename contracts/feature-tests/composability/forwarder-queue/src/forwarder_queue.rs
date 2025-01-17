@@ -21,7 +21,7 @@ pub struct QueuedCall<M: ManagedTypeApi> {
     pub gas_limit: u64,
     pub endpoint_name: ManagedBuffer<M>,
     pub args: ManagedArgBuffer<M>,
-    pub payments: MoaOrMultiDcdtPayment<M>,
+    pub payments: RewaOrMultiDcdtPayment<M>,
 }
 
 /// Testing multiple calls per transaction.
@@ -88,7 +88,7 @@ pub trait ForwarderQueue {
         let mut payment = ManagedVec::new();
         payment.push(DcdtTokenPayment::new(token, 0, amount));
 
-        let payments = MoaOrMultiDcdtPayment::MultiDcdt(payment);
+        let payments = RewaOrMultiDcdtPayment::MultiDcdt(payment);
 
         let call_type = QueuedCallType::Promise;
         self.queued_calls().push_back(QueuedCall {
@@ -126,10 +126,10 @@ pub trait ForwarderQueue {
         let payments = self.call_value().any_payment();
 
         match &payments {
-            MoaOrMultiDcdtPayment::Moa(moa_value) => {
-                self.add_queued_call_moa_event(&call_type, &to, &endpoint_name, moa_value);
+            RewaOrMultiDcdtPayment::Rewa(rewa_value) => {
+                self.add_queued_call_rewa_event(&call_type, &to, &endpoint_name, rewa_value);
             },
-            MoaOrMultiDcdtPayment::MultiDcdt(dcdt_payments) => {
+            RewaOrMultiDcdtPayment::MultiDcdt(dcdt_payments) => {
                 self.add_queued_call_dcdt_event(
                     &call_type,
                     &to,
@@ -156,15 +156,15 @@ pub trait ForwarderQueue {
             let call = node.clone().into_value();
 
             match &call.payments {
-                MoaOrMultiDcdtPayment::Moa(moa_value) => {
-                    self.forward_queued_call_moa_event(
+                RewaOrMultiDcdtPayment::Rewa(rewa_value) => {
+                    self.forward_queued_call_rewa_event(
                         &call.call_type,
                         &call.to,
                         &call.endpoint_name,
-                        moa_value,
+                        rewa_value,
                     );
                 },
-                MoaOrMultiDcdtPayment::MultiDcdt(dcdt_payments) => {
+                RewaOrMultiDcdtPayment::MultiDcdt(dcdt_payments) => {
                     self.forward_queued_call_dcdt_event(
                         &call.call_type,
                         &call.to,
@@ -228,13 +228,13 @@ pub trait ForwarderQueue {
     #[event("forward_queued_callback")]
     fn forward_queued_callback_event(&self);
 
-    #[event("forward_queued_call_moa")]
-    fn forward_queued_call_moa_event(
+    #[event("forward_queued_call_rewa")]
+    fn forward_queued_call_rewa_event(
         &self,
         #[indexed] call_type: &QueuedCallType,
         #[indexed] to: &ManagedAddress,
         #[indexed] endpoint_name: &ManagedBuffer,
-        #[indexed] moa_value: &BigUint,
+        #[indexed] rewa_value: &BigUint,
     );
 
     #[event("forward_queued_call_dcdt")]
@@ -246,13 +246,13 @@ pub trait ForwarderQueue {
         #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
     );
 
-    #[event("add_queued_call_moa")]
-    fn add_queued_call_moa_event(
+    #[event("add_queued_call_rewa")]
+    fn add_queued_call_rewa_event(
         &self,
         #[indexed] call_type: &QueuedCallType,
         #[indexed] to: &ManagedAddress,
         #[indexed] endpoint_name: &ManagedBuffer,
-        #[indexed] moa_value: &BigUint,
+        #[indexed] rewa_value: &BigUint,
     );
 
     #[event("add_queued_call_dcdt")]

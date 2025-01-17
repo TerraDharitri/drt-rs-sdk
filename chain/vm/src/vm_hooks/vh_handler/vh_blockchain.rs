@@ -68,7 +68,7 @@ pub trait VMHooksBlockchain: VMHooksHandlerSource {
             "get balance not yet implemented for accounts other than the contract itself"
         );
         self.m_types_lock()
-            .bi_overwrite(dest, self.current_account_data().moa_balance.into());
+            .bi_overwrite(dest, self.current_account_data().rewa_balance.into());
     }
 
     fn get_tx_hash(&self, dest: RawHandle) {

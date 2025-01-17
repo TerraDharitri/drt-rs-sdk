@@ -7,5 +7,5 @@ pub mod test_wallets;
 pub mod utils;
 pub mod wallet;
 
-pub use dharitri_core as chain_core;
+pub use dharitri_chain_core as chain_core;
 pub use retrieve_tx_on_network::retrieve_tx_on_network;

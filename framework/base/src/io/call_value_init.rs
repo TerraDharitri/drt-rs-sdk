@@ -6,7 +6,7 @@ use crate::{
     contract_base::CallValueWrapper,
     err_msg,
     types::{
-        BigUint, MoaOrDcdtTokenIdentifier, DcdtTokenPayment, ManagedRef, ManagedType, ManagedVec,
+        BigUint, RewaOrDcdtTokenIdentifier, DcdtTokenPayment, ManagedRef, ManagedType, ManagedVec,
     },
 };
 
@@ -25,13 +25,13 @@ where
 {
 }
 
-/// Called initially in the generated code whenever `#[payable("MOA")]` annotation is provided.
-pub fn payable_moa<A>()
+/// Called initially in the generated code whenever `#[payable("REWA")]` annotation is provided.
+pub fn payable_rewa<A>()
 where
     A: CallValueApi + ErrorApi + ManagedTypeApi,
 {
-    // will crash if anything other than (single) MOA was transferred
-    let _ = CallValueWrapper::<A>::new().moa();
+    // will crash if anything other than (single) REWA was transferred
+    let _ = CallValueWrapper::<A>::new().rewa();
 }
 
 /// Called initially in the generated code whenever `#[payable("<token identifier>")]` annotation is provided.
@@ -65,16 +65,16 @@ pub fn arg_payment_amount<A>() -> BigUint<A>
 where
     A: CallValueApi + ManagedTypeApi,
 {
-    CallValueWrapper::<A>::new().moa_or_single_dcdt().amount
+    CallValueWrapper::<A>::new().rewa_or_single_dcdt().amount
 }
 
 /// Initializes an argument annotated with `#[payment_token]`.
-pub fn arg_payment_token<A>() -> MoaOrDcdtTokenIdentifier<A>
+pub fn arg_payment_token<A>() -> RewaOrDcdtTokenIdentifier<A>
 where
     A: CallValueApi + ManagedTypeApi,
 {
     CallValueWrapper::<A>::new()
-        .moa_or_single_dcdt()
+        .rewa_or_single_dcdt()
         .token_identifier
 }
 
@@ -84,7 +84,7 @@ where
     A: CallValueApi + ManagedTypeApi,
 {
     CallValueWrapper::<A>::new()
-        .moa_or_single_dcdt()
+        .rewa_or_single_dcdt()
         .token_nonce
 }
 

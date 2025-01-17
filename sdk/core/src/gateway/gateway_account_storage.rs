@@ -1,6 +1,6 @@
 use crate::data::account_storage::AccountStorageResponse;
 use anyhow::anyhow;
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 use std::collections::HashMap;
 
 use super::{GatewayRequest, GatewayRequestType, ACCOUNT_ENDPOINT, KEYS_ENDPOINT};

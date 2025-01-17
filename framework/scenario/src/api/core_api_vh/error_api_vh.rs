@@ -1,4 +1,4 @@
-use dharitri_vm::mem_conv;
+use dharitri_chain_vm::mem_conv;
 use dharitri_sc::api::{ErrorApi, ErrorApiImpl, HandleConstraints};
 
 use crate::api::{VMHooksApi, VMHooksApiBackend};

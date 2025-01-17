@@ -23,7 +23,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         claimFees => claim_fees
         getAmount => get_amount
         payFeeAndFundDCDT => pay_fee_and_fund_dcdt
-        payFeeAndFundMOA => pay_fee_and_fund_moa
+        payFeeAndFundREWA => pay_fee_and_fund_rewa
         fund => fund
         depositFees => deposit_fees
         withdraw => withdraw

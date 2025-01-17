@@ -68,7 +68,7 @@ where
 
         Transaction {
             nonce: 0,
-            value: normalized.moa_value.value.to_string(),
+            value: normalized.rewa_value.value.to_string(),
             sender: normalized.from.to_address().into(),
             receiver: normalized.to.to_address().into(),
             gas_price: self.network_config.min_gas_price,

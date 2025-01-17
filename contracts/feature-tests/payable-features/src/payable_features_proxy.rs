@@ -72,7 +72,7 @@ where
 
     pub fn echo_call_value(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, ManagedVec<Env::Api, MoaOrDcdtTokenPayment<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, ManagedVec<Env::Api, RewaOrDcdtTokenPayment<Env::Api>>> {
         self.wrapped_tx
             .raw_call("echo_call_value")
             .original_result()
@@ -88,7 +88,7 @@ where
 
     pub fn payable_all_transfers(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, ManagedVec<Env::Api, MoaOrDcdtTokenPayment<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, ManagedVec<Env::Api, RewaOrDcdtTokenPayment<Env::Api>>> {
         self.wrapped_tx
             .raw_call("payable_all_transfers")
             .original_result()
@@ -102,17 +102,17 @@ where
             .original_result()
     }
 
-    pub fn payment_array_moa_dcdt_3(
+    pub fn payment_array_rewa_dcdt_3(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue3<MoaOrDcdtTokenPayment<Env::Api>, MoaOrDcdtTokenPayment<Env::Api>, MoaOrDcdtTokenPayment<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue3<RewaOrDcdtTokenPayment<Env::Api>, RewaOrDcdtTokenPayment<Env::Api>, RewaOrDcdtTokenPayment<Env::Api>>> {
         self.wrapped_tx
-            .raw_call("payment_array_moa_dcdt_3")
+            .raw_call("payment_array_rewa_dcdt_3")
             .original_result()
     }
 
     pub fn payable_any_1(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
             .raw_call("payable_any_1")
             .original_result()
@@ -120,7 +120,7 @@ where
 
     pub fn payable_any_2(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
             .raw_call("payable_any_2")
             .original_result()
@@ -128,7 +128,7 @@ where
 
     pub fn payable_any_3(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
             .raw_call("payable_any_3")
             .original_result()
@@ -136,47 +136,47 @@ where
 
     pub fn payable_any_4(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
             .raw_call("payable_any_4")
             .original_result()
     }
 
-    pub fn payable_moa_1(
+    pub fn payable_rewa_1(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
-            .raw_call("payable_moa_1")
+            .raw_call("payable_rewa_1")
             .original_result()
     }
 
-    pub fn payable_moa_2(
+    pub fn payable_rewa_2(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
-            .raw_call("payable_moa_2")
+            .raw_call("payable_rewa_2")
             .original_result()
     }
 
-    pub fn payable_moa_3(
+    pub fn payable_rewa_3(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
-            .raw_call("payable_moa_3")
+            .raw_call("payable_rewa_3")
             .original_result()
     }
 
-    pub fn payable_moa_4(
+    pub fn payable_rewa_4(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
-            .raw_call("payable_moa_4")
+            .raw_call("payable_rewa_4")
             .original_result()
     }
 
     pub fn payable_token_1(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
             .raw_call("payable_token_1")
             .original_result()
@@ -192,7 +192,7 @@ where
 
     pub fn payable_token_3(
         self,
-    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, MoaOrDcdtTokenIdentifier<Env::Api>>> {
+    ) -> TxTypedCall<Env, From, To, (), Gas, MultiValue2<BigUint<Env::Api>, RewaOrDcdtTokenIdentifier<Env::Api>>> {
         self.wrapped_tx
             .raw_call("payable_token_3")
             .original_result()

@@ -17,7 +17,7 @@ where
     SA: CallTypeApi + 'static,
 {
     pub(crate) to: ManagedAddress<SA>,
-    pub(crate) moa_payment: BigUint<SA>,
+    pub(crate) rewa_payment: BigUint<SA>,
     pub(crate) function_call: FunctionCall<SA>,
     pub(crate) explicit_gas_limit: u64,
     pub(crate) extra_gas_for_callback: u64,
@@ -58,7 +58,7 @@ where
 
         SendRawWrapper::<SA>::new().create_async_call_raw(
             &self.to,
-            &self.moa_payment,
+            &self.rewa_payment,
             &self.function_call.function_name,
             &self.function_call.arg_buffer,
             callback_name,

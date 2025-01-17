@@ -42,7 +42,7 @@
             "tx": {
                 "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
                 "to": "bech32:drt1qqqqqqqqqqqqqpgqkwwmszeln3cjlxewv0a3uwgxf2ver22rd8sss5wplw",
-                "moaValue": "50000000000000000",
+                "rewaValue": "50000000000000000",
                 "function": "issue_token_all_roles",
                 "arguments": [
                     "0x544553544e4654",
@@ -69,7 +69,7 @@
             "tx": {
                 "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
                 "to": "bech32:drt1qqqqqqqqqqqqqpgqkwwmszeln3cjlxewv0a3uwgxf2ver22rd8sss5wplw",
-                "moaValue": "50000000000000000",
+                "rewaValue": "50000000000000000",
                 "function": "issue_token_all_roles",
                 "arguments": [
                     "0x544553544e4654",
@@ -128,7 +128,7 @@
             "tx": {
                 "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
                 "to": "bech32:drt1qqqqqqqqqqqqqpgqkwwmszeln3cjlxewv0a3uwgxf2ver22rd8sss5wplw",
-                "moaValue": "50000000000000000",
+                "rewaValue": "50000000000000000",
                 "function": "issue_token_all_roles",
                 "arguments": [
                     "0x544553544e4654",

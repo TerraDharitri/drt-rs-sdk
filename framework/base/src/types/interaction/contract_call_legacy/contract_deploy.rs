@@ -29,7 +29,7 @@ where
 {
     pub(crate) _phantom: PhantomData<SA>,
     pub to: ManagedOption<SA, ManagedAddress<SA>>, // only used for Upgrade, ignored for Deploy
-    pub moa_payment: BigUint<SA>,
+    pub rewa_payment: BigUint<SA>,
     pub explicit_gas_limit: u64,
     pub arg_buffer: ManagedArgBuffer<SA>,
     pub(crate) _return_type: PhantomData<OriginalResult>,
@@ -58,7 +58,7 @@ where
         ContractDeploy {
             _phantom: PhantomData,
             to: ManagedOption::none(),
-            moa_payment: zero,
+            rewa_payment: zero,
             explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
             arg_buffer,
             _return_type: PhantomData,
@@ -75,8 +75,8 @@ where
         Self::default()
     }
 
-    pub fn with_moa_transfer(mut self, payment_amount: BigUint<SA>) -> Self {
-        self.moa_payment = payment_amount;
+    pub fn with_rewa_transfer(mut self, payment_amount: BigUint<SA>) -> Self {
+        self.rewa_payment = payment_amount;
         self
     }
 
@@ -130,7 +130,7 @@ where
     {
         let (address, raw_result) = SendRawWrapper::<SA>::new().deploy_contract(
             self.resolve_gas_limit(),
-            &self.moa_payment,
+            &self.rewa_payment,
             code,
             code_metadata,
             &self.arg_buffer,
@@ -151,7 +151,7 @@ where
     {
         let (address, raw_result) = SendRawWrapper::<SA>::new().deploy_from_source_contract(
             self.resolve_gas_limit(),
-            &self.moa_payment,
+            &self.rewa_payment,
             source_address,
             code_metadata,
             &self.arg_buffer,
@@ -174,7 +174,7 @@ where
         SendRawWrapper::<SA>::new().upgrade_from_source_contract(
             sc_address,
             gas,
-            &self.moa_payment,
+            &self.rewa_payment,
             source_address,
             code_metadata,
             &self.arg_buffer,
@@ -189,7 +189,7 @@ where
         SendRawWrapper::<SA>::new().upgrade_contract(
             sc_address,
             gas,
-            &self.moa_payment,
+            &self.rewa_payment,
             code,
             code_metadata,
             &self.arg_buffer,

@@ -19,7 +19,7 @@ pub trait LocalDcdtAndDcdtNft {
 
     // Fungible Tokens
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(issueFungibleToken)]
     fn issue_fungible_token(
         &self,
@@ -27,7 +27,7 @@ pub trait LocalDcdtAndDcdtNft {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -65,10 +65,10 @@ pub trait LocalDcdtAndDcdtNft {
 
     // Non-Fungible Tokens
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(nftIssue)]
     fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -171,10 +171,10 @@ pub trait LocalDcdtAndDcdtNft {
 
     // Semi-Fungible
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(sftIssue)]
     fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -272,7 +272,7 @@ pub trait LocalDcdtAndDcdtNft {
         caller: &ManagedAddress,
         #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
-        let (token_identifier, returned_tokens) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token_identifier, returned_tokens) = self.call_value().rewa_or_single_fungible_dcdt();
         // callback is called with DCDTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
@@ -282,8 +282,8 @@ pub trait LocalDcdtAndDcdtNft {
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
-                if token_identifier.is_moa() && returned_tokens > 0 {
-                    self.tx().to(caller).moa(&returned_tokens).transfer();
+                if token_identifier.is_rewa() && returned_tokens > 0 {
+                    self.tx().to(caller).rewa(&returned_tokens).transfer();
                 }
 
                 self.last_error_message().set(&message.err_msg);
@@ -305,9 +305,9 @@ pub trait LocalDcdtAndDcdtNft {
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 let (token_identifier, returned_tokens) =
-                    self.call_value().moa_or_single_fungible_dcdt();
-                if token_identifier.is_moa() && returned_tokens > 0 {
-                    self.tx().to(caller).moa(&returned_tokens).transfer();
+                    self.call_value().rewa_or_single_fungible_dcdt();
+                if token_identifier.is_rewa() && returned_tokens > 0 {
+                    self.tx().to(caller).rewa(&returned_tokens).transfer();
                 }
 
                 self.last_error_message().set(&message.err_msg);

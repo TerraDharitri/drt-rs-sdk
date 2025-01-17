@@ -13,7 +13,7 @@ pub trait CallPromisesDirectModule {
         extra_gas_for_callback: u64,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         self.tx()
             .to(&to)
             .raw_call(endpoint_name)
@@ -43,7 +43,7 @@ pub trait CallPromisesDirectModule {
         self.tx()
             .to(&to)
             .raw_call(endpoint_name)
-            .payment(MoaOrMultiDcdtPayment::MultiDcdt(token_payments_vec))
+            .payment(RewaOrMultiDcdtPayment::MultiDcdt(token_payments_vec))
             .gas(gas_limit)
             .callback(self.callbacks().the_one_callback(2001, 2002u32.into()))
             .gas_for_callback(extra_gas_for_callback)

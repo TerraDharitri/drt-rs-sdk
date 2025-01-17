@@ -1,4 +1,4 @@
-use dharitri_scenario_format::{
+use dharitri_chain_scenario_format::{
     interpret_trait::InterpreterContext, value_interpreter::interpret_string,
 };
 
@@ -304,9 +304,9 @@ fn test_bech32() {
 
     // system SC
     assert_eq!(
-        hex::decode("000000000000000000010000000000000000000000000000000000000002ffff").unwrap(),
+        hex::decode("233300000000000000002333000000000000000000000000000000000002ffff").unwrap(),
         interpret_string(
-            "bech32:drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez",
+            "bech32:drt1yvesqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqqqqqqqqqqqqqzlllsu54pgp",
             &context
         )
     );

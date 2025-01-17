@@ -44,7 +44,7 @@ pub enum ActionRaw {
 
 pub struct CallActionDataRaw {
     pub to: Address,
-    pub moa_amount: RustBigUint,
+    pub rewa_amount: RustBigUint,
     pub endpoint_name: BoxedBytes,
     pub arguments: Vec<BoxedBytes>,
 }
@@ -96,14 +96,14 @@ fn call_propose(
     action: ActionRaw,
     expected_message: Option<&str>,
 ) -> usize {
-    let moa_amount = match &action {
-        ActionRaw::SendTransferExecute(call_data) => call_data.moa_amount.clone(),
-        ActionRaw::SendAsyncCall(call_data) => call_data.moa_amount.clone(),
+    let rewa_amount = match &action {
+        ActionRaw::SendTransferExecute(call_data) => call_data.rewa_amount.clone(),
+        ActionRaw::SendAsyncCall(call_data) => call_data.rewa_amount.clone(),
         ActionRaw::SCDeployFromSource { amount, .. } => amount.clone(),
         ActionRaw::SCUpgradeFromSource { amount, .. } => amount.clone(),
         _ => rust_biguint!(0),
     };
-    let amount_bytes = moa_amount.to_bytes_be();
+    let amount_bytes = rewa_amount.to_bytes_be();
     let amount_rust_biguint = num_bigint::BigUint::from_bytes_be(amount_bytes.as_slice());
 
     let mut action_id = 0;
@@ -112,7 +112,7 @@ fn call_propose(
         .tx()
         .from(PROPOSER_ADDRESS)
         .to(MULTISIG_ADDRESS)
-        .moa(BigUint::from(moa_amount));
+        .rewa(BigUint::from(rewa_amount));
 
     let mut transaction_with_err = match expected_message {
         Some(message) => transaction.returns(ExpectError(4u64, message)),
@@ -128,7 +128,7 @@ fn call_propose(
             ActionRaw::ChangeQuorum(new_size) => sc.propose_change_quorum(new_size),
             ActionRaw::SendTransferExecute(call_data) => sc.propose_transfer_execute(
                 managed_address!(&call_data.to),
-                call_data.moa_amount.into(),
+                call_data.rewa_amount.into(),
                 FunctionCall {
                     function_name: call_data.endpoint_name.into(),
                     arg_buffer: call_data.arguments.into(),
@@ -136,7 +136,7 @@ fn call_propose(
             ),
             ActionRaw::SendAsyncCall(call_data) => sc.propose_async_call(
                 managed_address!(&call_data.to),
-                call_data.moa_amount.into(),
+                call_data.rewa_amount.into(),
                 FunctionCall {
                     function_name: call_data.endpoint_name.into(),
                     arg_buffer: call_data.arguments.into(),
@@ -451,25 +451,25 @@ fn test_transfer_execute_to_user() {
     const NEW_USER_ADDRESS: TestAddress = TestAddress::new("new-user");
     world.account(NEW_USER_ADDRESS).nonce(1);
 
-    const MOA_AMOUNT: u64 = 100;
+    const REWA_AMOUNT: u64 = 100;
 
     world
         .tx()
         .from(PROPOSER_ADDRESS)
         .to(MULTISIG_ADDRESS)
-        .moa(MOA_AMOUNT)
+        .rewa(REWA_AMOUNT)
         .whitebox(multisig::contract_obj, |sc| {
             sc.deposit();
         });
 
-    world.check_account(MULTISIG_ADDRESS).balance(MOA_AMOUNT);
+    world.check_account(MULTISIG_ADDRESS).balance(REWA_AMOUNT);
 
     // failed attempt
     let action_id = call_propose(
         &mut world,
         ActionRaw::SendTransferExecute(CallActionDataRaw {
             to: NEW_USER_ADDRESS.to_address(),
-            moa_amount: rust_biguint!(0),
+            rewa_amount: rust_biguint!(0),
             endpoint_name: BoxedBytes::empty(),
             arguments: Vec::new(),
         }),
@@ -481,7 +481,7 @@ fn test_transfer_execute_to_user() {
         &mut world,
         ActionRaw::SendTransferExecute(CallActionDataRaw {
             to: NEW_USER_ADDRESS.to_address(),
-            moa_amount: rust_biguint!(MOA_AMOUNT),
+            rewa_amount: rust_biguint!(REWA_AMOUNT),
             endpoint_name: BoxedBytes::empty(),
             arguments: Vec::new(),
         }),
@@ -502,7 +502,7 @@ fn test_transfer_execute_to_user() {
             let _ = sc.perform_action_endpoint(action_id);
         });
 
-    world.check_account(NEW_USER_ADDRESS).balance(MOA_AMOUNT);
+    world.check_account(NEW_USER_ADDRESS).balance(REWA_AMOUNT);
 }
 
 #[test]
@@ -530,7 +530,7 @@ fn test_transfer_execute_sc_all() {
         &mut world,
         ActionRaw::SendTransferExecute(CallActionDataRaw {
             to: ADDER_ADDRESS.to_address(),
-            moa_amount: 0u64.into(),
+            rewa_amount: 0u64.into(),
             endpoint_name: BoxedBytes::from(&b"add"[..]),
             arguments: vec![BoxedBytes::from(&[5u8][..])],
         }),
@@ -586,7 +586,7 @@ fn test_async_call_to_sc() {
         &mut world,
         ActionRaw::SendAsyncCall(CallActionDataRaw {
             to: ADDER_ADDRESS.to_address(),
-            moa_amount: 0u64.into(),
+            rewa_amount: 0u64.into(),
             endpoint_name: BoxedBytes::from(&b"add"[..]),
             arguments: vec![BoxedBytes::from(&[5u8][..])],
         }),
@@ -677,7 +677,7 @@ fn test_deploy_and_upgrade_from_source() {
         &mut world,
         ActionRaw::SendTransferExecute(CallActionDataRaw {
             to: NEW_ADDER_ADDRESS.to_address(),
-            moa_amount: 0u64.into(),
+            rewa_amount: 0u64.into(),
             endpoint_name: BoxedBytes::from(&b"add"[..]),
             arguments: vec![BoxedBytes::from(&[5u8][..])],
         }),

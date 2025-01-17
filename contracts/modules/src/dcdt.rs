@@ -22,7 +22,7 @@ pub trait DcdtModule {
 
         Note: Only Fungible and Meta tokens have decimals
     */
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[only_owner]
     #[endpoint(issueToken)]
     fn issue_token(
@@ -34,7 +34,7 @@ pub trait DcdtModule {
     ) {
         require!(self.token_id().is_empty(), "Token already issued");
 
-        let issue_cost = self.call_value().moa().clone();
+        let issue_cost = self.call_value().rewa().clone();
         let num_decimals = match opt_num_decimals {
             OptionalValue::Some(d) => d,
             OptionalValue::None => 0,
@@ -62,10 +62,10 @@ pub trait DcdtModule {
             ManagedAsyncCallResult::Err(_) => {
                 // return payment to initial caller
                 let initial_caller = self.blockchain().get_owner_address();
-                let moa_returned = self.call_value().moa();
+                let rewa_returned = self.call_value().rewa();
                 self.tx()
                     .to(&initial_caller)
-                    .moa(moa_returned)
+                    .rewa(rewa_returned)
                     .transfer_if_not_empty();
             },
         }

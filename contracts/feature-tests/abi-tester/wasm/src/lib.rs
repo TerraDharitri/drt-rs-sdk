@@ -47,7 +47,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         item_for_option => item_for_option
         operation_completion_status => operation_completion_status
         takes_object_with_managed_buffer_read_to_end => takes_object_with_managed_buffer_read_to_end
-        payable_moa => payable_moa
+        payable_rewa => payable_rewa
         payable_some_token => payable_some_token
         payable_any_token => payable_any_token
     )

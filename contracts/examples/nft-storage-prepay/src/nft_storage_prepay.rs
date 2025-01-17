@@ -42,15 +42,15 @@ pub trait NftStoragePrepay {
         self.total_reserved().clear();
 
         let owner = self.blockchain().get_caller();
-        self.tx().to(&owner).moa(&total_reserved).transfer();
+        self.tx().to(&owner).rewa(&total_reserved).transfer();
     }
 
     // endpoints
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(depositPaymentForStorage)]
     fn deposit_payment_for_storage(&self) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
         self.deposit(&caller)
             .update(|deposit| *deposit += &*payment);
@@ -71,7 +71,7 @@ pub trait NftStoragePrepay {
         user_deposit -= &amount;
         self.deposit(&caller).set(&user_deposit);
 
-        self.tx().to(&caller).moa(&amount).transfer();
+        self.tx().to(&caller).rewa(&amount).transfer();
     }
 
     // views

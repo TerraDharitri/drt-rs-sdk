@@ -17,7 +17,7 @@ pub mod whitebox_legacy;
 pub use whitebox_legacy as testing_framework;
 
 pub use api::DebugApi;
-pub use dharitri_vm;
+pub use dharitri_chain_vm;
 
 /// Re-exporting for convenience.
 pub use num_bigint;
@@ -34,7 +34,7 @@ pub use crate::scenario::model as scenario_model;
 pub use crate::scenario as denali_system;
 
 // Re-exporting the whole denali crate for easier use in tests.
-pub use dharitri_scenario_format as scenario_format;
+pub use dharitri_chain_scenario_format as scenario_format;
 
 pub use facade::{result_handlers::*, world_tx::*, ContractInfo, ScenarioWorld, WhiteboxContract};
 

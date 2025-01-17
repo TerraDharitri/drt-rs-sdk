@@ -162,14 +162,14 @@ pub trait MultisigPerformModule:
                 self.perform_transfer_execute_event(
                     action_id,
                     &call_data.to,
-                    &call_data.moa_amount,
+                    &call_data.rewa_amount,
                     gas,
                     &call_data.endpoint_name,
                     call_data.arguments.as_multi(),
                 );
                 self.tx()
                     .to(call_data.to)
-                    .moa(call_data.moa_amount)
+                    .rewa(call_data.rewa_amount)
                     .gas(gas)
                     .raw_call(call_data.endpoint_name)
                     .arguments_raw(call_data.arguments.into())
@@ -181,7 +181,7 @@ pub trait MultisigPerformModule:
                 self.perform_async_call_event(
                     action_id,
                     &call_data.to,
-                    &call_data.moa_amount,
+                    &call_data.rewa_amount,
                     gas_left,
                     &call_data.endpoint_name,
                     call_data.arguments.as_multi(),
@@ -191,7 +191,7 @@ pub trait MultisigPerformModule:
                     .to(&call_data.to)
                     .raw_call(call_data.endpoint_name)
                     .arguments_raw(call_data.arguments.into())
-                    .moa(call_data.moa_amount)
+                    .rewa(call_data.rewa_amount)
                     .callback(self.callbacks().perform_async_call_callback())
                     .async_call_and_exit();
             },
@@ -212,7 +212,7 @@ pub trait MultisigPerformModule:
                 );
                 let new_address = self
                     .tx()
-                    .moa(amount)
+                    .rewa(amount)
                     .gas(gas_left)
                     .raw_deploy()
                     .from_source(source)
@@ -241,7 +241,7 @@ pub trait MultisigPerformModule:
                 );
                 self.tx()
                     .to(sc_address)
-                    .moa(amount)
+                    .rewa(amount)
                     .gas(gas_left)
                     .raw_upgrade()
                     .from_source(source)

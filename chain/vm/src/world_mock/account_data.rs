@@ -14,7 +14,7 @@ pub type AccountStorage = HashMap<Vec<u8>, Vec<u8>>;
 pub struct AccountData {
     pub address: VMAddress,
     pub nonce: u64,
-    pub moa_balance: BigUint,
+    pub rewa_balance: BigUint,
     pub dcdt: AccountDcdt,
     pub storage: AccountStorage,
     pub username: Vec<u8>,
@@ -29,7 +29,7 @@ impl AccountData {
         AccountData {
             address,
             nonce: 0,
-            moa_balance: BigUint::zero(),
+            rewa_balance: BigUint::zero(),
             dcdt: AccountDcdt::default(),
             storage: AccountStorage::default(),
             username: vec![],
@@ -69,7 +69,7 @@ impl fmt::Display for AccountData {
         developerRewards: {},
     }}",
             self.nonce,
-            self.moa_balance,
+            self.rewa_balance,
             self.dcdt,
             String::from_utf8(self.username.clone()).unwrap(),
             storage_buf,

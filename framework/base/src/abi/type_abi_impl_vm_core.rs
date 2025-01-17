@@ -1,7 +1,7 @@
 use super::*;
 
 use alloc::vec::Vec;
-use dharitri_core::types::{
+use dharitri_chain_core::types::{
     Address, BoxedBytes, CodeMetadata, DcdtLocalRole, DcdtTokenType, H256,
 };
 

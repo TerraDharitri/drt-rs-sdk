@@ -42,7 +42,7 @@
             "id": "validatorReward-1",
             "tx": {
                 "to": "sc:basic-features",
-                "moaValue": "100,000,000"
+                "rewaValue": "100,000,000"
             }
         },
         {
@@ -71,7 +71,7 @@
             "id": "validatorReward-1",
             "tx": {
                 "to": "sc:basic-features",
-                "moaValue": "300"
+                "rewaValue": "300"
             }
         },
         {

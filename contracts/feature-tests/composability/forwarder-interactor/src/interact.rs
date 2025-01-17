@@ -33,11 +33,11 @@ pub async fn forwarder_cli() {
     let mut interact = ContractInteract::new(Config::new(), None).await;
     match cmd.as_str() {
         "deploy" => interact.deploy().await,
-        "send_moa" => interact.send_moa().await,
+        "send_rewa" => interact.send_rewa().await,
         "echo_arguments_sync" => interact.echo_arguments_sync().await,
         "echo_arguments_sync_twice" => interact.echo_arguments_sync_twice().await,
         "forward_sync_accept_funds" => interact.forward_sync_accept_funds().await,
-        "forward_sync_accept_funds_rh_moa" => interact.forward_sync_accept_funds_rh_moa().await,
+        "forward_sync_accept_funds_rh_rewa" => interact.forward_sync_accept_funds_rh_rewa().await,
         "forward_sync_accept_funds_rh_single_dcdt" => {
             interact.forward_sync_accept_funds_rh_single_dcdt().await
         },
@@ -231,7 +231,7 @@ impl ContractInteract {
         println!("new address: {new_address_bech32}");
     }
 
-    pub async fn send_moa(&mut self) {
+    pub async fn send_rewa(&mut self) {
         let to = Address::zero();
         let amount = BigUint::<StaticApi>::from(0u128);
 
@@ -242,7 +242,7 @@ impl ContractInteract {
             .to(self.state.current_address())
             .gas(80_000_000u64)
             .typed(proxy::ForwarderProxy)
-            .send_moa(to, amount)
+            .send_rewa(to, amount)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -333,8 +333,8 @@ impl ContractInteract {
         println!("Result: {response:?}");
     }
 
-    pub async fn forward_sync_accept_funds_rh_moa(&mut self) {
-        let moa_amount = BigUint::<StaticApi>::from(0u128);
+    pub async fn forward_sync_accept_funds_rh_rewa(&mut self) {
+        let rewa_amount = BigUint::<StaticApi>::from(0u128);
 
         let to = Address::zero();
 
@@ -345,8 +345,8 @@ impl ContractInteract {
             .to(self.state.current_address())
             .gas(80_000_000u64)
             .typed(proxy::ForwarderProxy)
-            .forward_sync_accept_funds_rh_moa(to)
-            .moa(moa_amount)
+            .forward_sync_accept_funds_rh_rewa(to)
+            .rewa(rewa_amount)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -465,7 +465,7 @@ impl ContractInteract {
 
     pub async fn forward_sync_retrieve_funds(&mut self) {
         let to = Address::zero();
-        let token = MoaOrDcdtTokenIdentifier::dcdt(&b""[..]);
+        let token = RewaOrDcdtTokenIdentifier::dcdt(&b""[..]);
         let token_nonce = 0u64;
         let amount = BigUint::<StaticApi>::from(0u128);
 
@@ -668,7 +668,7 @@ impl ContractInteract {
 
     pub async fn forward_async_retrieve_funds(&mut self) {
         let to = Address::zero();
-        let token = MoaOrDcdtTokenIdentifier::dcdt(&b""[..]);
+        let token = RewaOrDcdtTokenIdentifier::dcdt(&b""[..]);
         let token_nonce = 0u64;
         let amount = BigUint::<StaticApi>::from(0u128);
 
@@ -689,7 +689,7 @@ impl ContractInteract {
 
     pub async fn send_funds_twice(&mut self) {
         let to = Address::zero();
-        let token_identifier = MoaOrDcdtTokenIdentifier::dcdt(&b""[..]);
+        let token_identifier = RewaOrDcdtTokenIdentifier::dcdt(&b""[..]);
         let amount = BigUint::<StaticApi>::from(0u128);
 
         let response = self
@@ -1214,7 +1214,7 @@ impl ContractInteract {
     }
 
     pub async fn issue_fungible_token(&mut self) {
-        let moa_amount = BigUint::<StaticApi>::from(0u128);
+        let rewa_amount = BigUint::<StaticApi>::from(0u128);
 
         let token_display_name = ManagedBuffer::new_from_bytes(&b""[..]);
         let token_ticker = ManagedBuffer::new_from_bytes(&b""[..]);
@@ -1228,7 +1228,7 @@ impl ContractInteract {
             .gas(80_000_000u64)
             .typed(proxy::ForwarderProxy)
             .issue_fungible_token(token_display_name, token_ticker, initial_supply)
-            .moa(moa_amount)
+            .rewa(rewa_amount)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -1375,7 +1375,7 @@ impl ContractInteract {
     }
 
     pub async fn sft_issue(&mut self) {
-        let moa_amount = BigUint::<StaticApi>::from(0u128);
+        let rewa_amount = BigUint::<StaticApi>::from(0u128);
 
         let token_display_name = ManagedBuffer::new_from_bytes(&b""[..]);
         let token_ticker = ManagedBuffer::new_from_bytes(&b""[..]);
@@ -1388,7 +1388,7 @@ impl ContractInteract {
             .gas(80_000_000u64)
             .typed(proxy::ForwarderProxy)
             .sft_issue(token_display_name, token_ticker)
-            .moa(moa_amount)
+            .rewa(rewa_amount)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -1443,7 +1443,7 @@ impl ContractInteract {
     }
 
     pub async fn nft_issue(&mut self) {
-        let moa_amount = BigUint::<StaticApi>::from(0u128);
+        let rewa_amount = BigUint::<StaticApi>::from(0u128);
 
         let token_display_name = ManagedBuffer::new_from_bytes(&b""[..]);
         let token_ticker = ManagedBuffer::new_from_bytes(&b""[..]);
@@ -1456,7 +1456,7 @@ impl ContractInteract {
             .gas(80_000_000u64)
             .typed(proxy::ForwarderProxy)
             .nft_issue(token_display_name, token_ticker)
-            .moa(moa_amount)
+            .rewa(rewa_amount)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -1780,7 +1780,7 @@ impl ContractInteract {
             .gas(80_000_000u64)
             .typed(proxy::ForwarderProxy)
             .issue_dynamic_token(token_display_name, token_ticker, token_type, num_decimals)
-            .moa(BigUint::from(issue_cost))
+            .rewa(BigUint::from(issue_cost))
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;
@@ -1806,7 +1806,7 @@ impl ContractInteract {
             .gas(80_000_000u64)
             .typed(proxy::ForwarderProxy)
             .issue_token_all_roles(token_display_name, token_ticker, token_type, num_decimals)
-            .moa(BigUint::from(issue_cost))
+            .rewa(BigUint::from(issue_cost))
             .returns(ReturnsResultUnmanaged)
             .run()
             .await;

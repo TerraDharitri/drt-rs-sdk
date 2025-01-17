@@ -24,9 +24,9 @@ fn call_value_init_snippet(mpm: MethodPayableMetadata) -> proc_macro2::TokenStre
                 dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             }
         },
-        MethodPayableMetadata::Moa => {
+        MethodPayableMetadata::Rewa => {
             quote! {
-                dharitri_sc::io::call_value_init::payable_moa::<Self::Api>();
+                dharitri_sc::io::call_value_init::payable_rewa::<Self::Api>();
             }
         },
         MethodPayableMetadata::SingleDcdtToken(token_identifier) => {

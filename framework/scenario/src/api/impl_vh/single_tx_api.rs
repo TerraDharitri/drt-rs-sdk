@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use dharitri_vm::{
+use dharitri_chain_vm::{
     executor::VMHooks,
     types::VMAddress,
     vm_hooks::{SingleTxApiData, SingleTxApiVMHooksHandler, VMHooksDispatcher},

@@ -1,6 +1,6 @@
 use std::sync::{Arc, MutexGuard};
 
-use dharitri_core::types::ReturnCode;
+use dharitri_chain_core::types::ReturnCode;
 use dharitri_vm_executor::BreakpointValue;
 
 use crate::{
@@ -99,11 +99,11 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
     fn perform_async_call(
         &self,
         to: VMAddress,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     ) -> ! {
-        let async_call_data = self.create_async_call_data(to, moa_value, func_name, arguments);
+        let async_call_data = self.create_async_call_data(to, rewa_value, func_name, arguments);
         // the cell is no longer needed, since we end in a panic
         let mut tx_result = self.result_lock();
         tx_result.all_calls.push(async_call_data.clone());
@@ -115,11 +115,11 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
     fn perform_execute_on_dest_context(
         &self,
         to: VMAddress,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>> {
-        let async_call_data = self.create_async_call_data(to, moa_value, func_name, arguments);
+        let async_call_data = self.create_async_call_data(to, rewa_value, func_name, arguments);
         let tx_input = async_call_tx_input(&async_call_data, CallType::ExecuteOnDestContext);
         let tx_cache = TxCache::new(self.0.blockchain_cache_arc());
         let (tx_result, blockchain_updates) = self.0.vm_ref.execute_builtin_function_or_default(
@@ -138,7 +138,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
 
     fn perform_deploy(
         &self,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         contract_code: Vec<u8>,
         code_metadata: VMCodeMetadata,
         args: Vec<Vec<u8>>,
@@ -148,7 +148,7 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
         let tx_input = TxInput {
             from: contract_address.clone(),
             to: VMAddress::zero(),
-            moa_value,
+            rewa_value,
             dcdt_values: Vec::new(),
             func_name: TxFunctionName::EMPTY,
             args,
@@ -181,11 +181,11 @@ impl VMHooksHandlerSource for DebugApiVMHooksHandler {
     fn perform_transfer_execute(
         &self,
         to: VMAddress,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     ) {
-        let async_call_data = self.create_async_call_data(to, moa_value, func_name, arguments);
+        let async_call_data = self.create_async_call_data(to, rewa_value, func_name, arguments);
         let mut tx_input = async_call_tx_input(&async_call_data, CallType::TransferExecute);
         if self.is_back_transfer(&tx_input) {
             tx_input.call_type = CallType::BackTransfer;
@@ -214,7 +214,7 @@ impl DebugApiVMHooksHandler {
     fn create_async_call_data(
         &self,
         to: VMAddress,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     ) -> AsyncCallTxData {
@@ -223,7 +223,7 @@ impl DebugApiVMHooksHandler {
         AsyncCallTxData {
             from: contract_address.clone(),
             to,
-            call_value: moa_value,
+            call_value: rewa_value,
             endpoint_name: func_name,
             arguments,
             tx_hash,

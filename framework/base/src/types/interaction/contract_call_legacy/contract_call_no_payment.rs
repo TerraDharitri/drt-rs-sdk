@@ -5,16 +5,16 @@ use crate::codec::TopEncodeMulti;
 use crate::{
     api::CallTypeApi,
     types::{
-        BigUint, MoaOrDcdtTokenIdentifier, MoaOrDcdtTokenPayment, MoaOrMultiDcdtPayment,
+        BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, RewaOrMultiDcdtPayment,
         DcdtTokenPayment, FunctionCall, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
         ManagedVec, TokenIdentifier, Tx, TxScEnv,
     },
 };
 
 use super::{
-    contract_call_trait::ContractCallBase, contract_call_with_moa::ContractCallWithMoa,
+    contract_call_trait::ContractCallBase, contract_call_with_rewa::ContractCallWithRewa,
     contract_call_with_multi_dcdt::ContractCallWithMultiDcdt, ContractCall,
-    ContractCallWithAnyPayment, ContractCallWithMoaOrSingleDcdt, UNSPECIFIED_GAS_LIMIT,
+    ContractCallWithAnyPayment, ContractCallWithRewaOrSingleDcdt, UNSPECIFIED_GAS_LIMIT,
 };
 
 /// Holds metadata for calling another contract, without payments.
@@ -47,10 +47,10 @@ where
     type OriginalResult = OriginalResult;
 
     #[inline]
-    fn into_normalized(self) -> ContractCallWithMoa<SA, Self::OriginalResult> {
-        ContractCallWithMoa {
+    fn into_normalized(self) -> ContractCallWithRewa<SA, Self::OriginalResult> {
+        ContractCallWithRewa {
             basic: self,
-            moa_payment: BigUint::zero(),
+            rewa_payment: BigUint::zero(),
         }
     }
 }
@@ -66,7 +66,7 @@ where
     }
 
     fn transfer_execute(self) {
-        self.transfer_execute_moa(BigUint::zero());
+        self.transfer_execute_rewa(BigUint::zero());
     }
 }
 
@@ -87,14 +87,14 @@ where
         }
     }
 
-    /// Sets payment to be MOA transfer.
-    pub fn with_moa_transfer(
+    /// Sets payment to be REWA transfer.
+    pub fn with_rewa_transfer(
         self,
-        moa_amount: BigUint<SA>,
-    ) -> ContractCallWithMoa<SA, OriginalResult> {
-        ContractCallWithMoa {
+        rewa_amount: BigUint<SA>,
+    ) -> ContractCallWithRewa<SA, OriginalResult> {
+        ContractCallWithRewa {
             basic: self,
-            moa_payment: moa_amount,
+            rewa_payment: rewa_amount,
         }
     }
 
@@ -142,7 +142,7 @@ where
     #[inline]
     pub fn with_any_payment(
         self,
-        payment: MoaOrMultiDcdtPayment<SA>,
+        payment: RewaOrMultiDcdtPayment<SA>,
     ) -> ContractCallWithAnyPayment<SA, OriginalResult> {
         ContractCallWithAnyPayment {
             basic: self,
@@ -150,12 +150,12 @@ where
         }
     }
 
-    /// Sets payment to be either MOA or a single DCDT transfer, as determined at runtime.
-    pub fn with_moa_or_single_dcdt_transfer<P: Into<MoaOrDcdtTokenPayment<SA>>>(
+    /// Sets payment to be either REWA or a single DCDT transfer, as determined at runtime.
+    pub fn with_rewa_or_single_dcdt_transfer<P: Into<RewaOrDcdtTokenPayment<SA>>>(
         self,
         payment: P,
-    ) -> ContractCallWithMoaOrSingleDcdt<SA, OriginalResult> {
-        ContractCallWithMoaOrSingleDcdt {
+    ) -> ContractCallWithRewaOrSingleDcdt<SA, OriginalResult> {
+        ContractCallWithRewaOrSingleDcdt {
             basic: self,
             payment: payment.into(),
         }
@@ -163,15 +163,15 @@ where
 
     #[deprecated(
         since = "0.39.0",
-        note = "Replace by `contract_call.with_moa_or_single_dcdt_transfer((payment_token, payment_nonce, payment_amount))`. "
+        note = "Replace by `contract_call.with_rewa_or_single_dcdt_transfer((payment_token, payment_nonce, payment_amount))`. "
     )]
-    pub fn with_moa_or_single_dcdt_token_transfer(
+    pub fn with_rewa_or_single_dcdt_token_transfer(
         self,
-        payment_token: MoaOrDcdtTokenIdentifier<SA>,
+        payment_token: RewaOrDcdtTokenIdentifier<SA>,
         payment_nonce: u64,
         payment_amount: BigUint<SA>,
-    ) -> ContractCallWithMoaOrSingleDcdt<SA, OriginalResult> {
-        self.with_moa_or_single_dcdt_transfer((payment_token, payment_nonce, payment_amount))
+    ) -> ContractCallWithRewaOrSingleDcdt<SA, OriginalResult> {
+        self.with_rewa_or_single_dcdt_transfer((payment_token, payment_nonce, payment_amount))
     }
 
     pub fn into_function_call(self) -> FunctionCall<SA> {

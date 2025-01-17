@@ -1,8 +1,8 @@
 use crate::{
     api::CallTypeApi,
     types::{
-        heap::H256, BigUint, CodeMetadata, MoaOrDcdtTokenIdentifier, MoaOrDcdtTokenPayment,
-        MoaOrDcdtTokenPaymentRefs, MoaOrMultiDcdtPayment, DcdtTokenPayment, DcdtTokenPaymentRefs,
+        heap::H256, BigUint, CodeMetadata, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment,
+        RewaOrDcdtTokenPaymentRefs, RewaOrMultiDcdtPayment, DcdtTokenPayment, DcdtTokenPaymentRefs,
         ManagedAddress, ManagedBuffer, ManagedOption, ManagedVec, MultiDcdtPayment,
         TokenIdentifier,
     },
@@ -11,12 +11,12 @@ use crate::{
 use dharitri_sc_codec::TopEncodeMulti;
 
 use super::{
-    AnnotatedValue, Code, ContractCallBase, ContractCallNoPayment, ContractCallWithMoa,
-    ContractDeploy, DeployCall, Moa, MoaPayment, ExplicitGas, FromSource, FunctionCall,
+    AnnotatedValue, Code, ContractCallBase, ContractCallNoPayment, ContractCallWithRewa,
+    ContractDeploy, DeployCall, Rewa, RewaPayment, ExplicitGas, FromSource, FunctionCall,
     ManagedArgBuffer, OriginalResultMarker, RHList, RHListAppendNoRet, RHListAppendRet, RHListItem,
-    TxCodeSource, TxCodeValue, TxData, TxDataFunctionCall, TxMoaValue, TxEnv,
+    TxCodeSource, TxCodeValue, TxData, TxDataFunctionCall, TxRewaValue, TxEnv,
     TxEnvMockDeployAddress, TxEnvWithTxHash, TxFrom, TxFromSourceValue, TxFromSpecified, TxGas,
-    TxGasValue, TxPayment, TxPaymentMoaOnly, TxProxyTrait, TxResultHandler, TxScEnv, TxTo,
+    TxGasValue, TxPayment, TxPaymentRewaOnly, TxProxyTrait, TxResultHandler, TxScEnv, TxTo,
     TxToSpecified, UpgradeCall, UNSPECIFIED_GAS_LIMIT,
 };
 
@@ -163,25 +163,25 @@ where
         }
     }
 
-    /// Adds MOA value to a transaction.
+    /// Adds REWA value to a transaction.
     ///
-    /// Accepts any type that can represent and MOA amount: BigUint, &BigUint, etc.
-    pub fn moa<MoaValue>(
+    /// Accepts any type that can represent and REWA amount: BigUint, &BigUint, etc.
+    pub fn rewa<RewaValue>(
         self,
-        moa_value: MoaValue,
-    ) -> Tx<Env, From, To, Moa<MoaValue>, Gas, Data, RH>
+        rewa_value: RewaValue,
+    ) -> Tx<Env, From, To, Rewa<RewaValue>, Gas, Data, RH>
     where
-        MoaValue: TxMoaValue<Env>,
+        RewaValue: TxRewaValue<Env>,
     {
-        self.payment(Moa(moa_value))
+        self.payment(Rewa(rewa_value))
     }
 
-    /// Backwards compatibility. Use method `moa` instead.
-    pub fn with_moa_transfer(
+    /// Backwards compatibility. Use method `rewa` instead.
+    pub fn with_rewa_transfer(
         self,
-        moa_amount: BigUint<Env::Api>,
-    ) -> Tx<Env, From, To, MoaPayment<Env::Api>, Gas, Data, RH> {
-        self.moa(moa_amount)
+        rewa_amount: BigUint<Env::Api>,
+    ) -> Tx<Env, From, To, RewaPayment<Env::Api>, Gas, Data, RH> {
+        self.rewa(rewa_amount)
     }
 
     /// Adds the first single, owned DCDT token payment to a transaction.
@@ -212,14 +212,14 @@ where
         })
     }
 
-    /// Syntactic sugar for `self.payment(MoaOrDcdtTokenPaymentRefs::new(...)`. Takes references.
-    pub fn moa_or_single_dcdt<'a>(
+    /// Syntactic sugar for `self.payment(RewaOrDcdtTokenPaymentRefs::new(...)`. Takes references.
+    pub fn rewa_or_single_dcdt<'a>(
         self,
-        token_identifier: &'a MoaOrDcdtTokenIdentifier<Env::Api>,
+        token_identifier: &'a RewaOrDcdtTokenIdentifier<Env::Api>,
         token_nonce: u64,
         amount: &'a BigUint<Env::Api>,
-    ) -> Tx<Env, From, To, MoaOrDcdtTokenPaymentRefs<'a, Env::Api>, Gas, Data, RH> {
-        self.payment(MoaOrDcdtTokenPaymentRefs::new(
+    ) -> Tx<Env, From, To, RewaOrDcdtTokenPaymentRefs<'a, Env::Api>, Gas, Data, RH> {
+        self.payment(RewaOrDcdtTokenPaymentRefs::new(
             token_identifier,
             token_nonce,
             amount,
@@ -259,20 +259,20 @@ where
     }
 
     /// Backwards compatibility.
-    pub fn with_moa_or_single_dcdt_transfer<P: Into<MoaOrDcdtTokenPayment<Env::Api>>>(
+    pub fn with_rewa_or_single_dcdt_transfer<P: Into<RewaOrDcdtTokenPayment<Env::Api>>>(
         self,
         payment: P,
-    ) -> Tx<Env, From, To, MoaOrDcdtTokenPayment<Env::Api>, Gas, Data, RH> {
+    ) -> Tx<Env, From, To, RewaOrDcdtTokenPayment<Env::Api>, Gas, Data, RH> {
         self.payment(payment.into())
     }
 
-    /// Converts argument to `MoaOrMultiDcdtPayment`, then sets it as payment.
+    /// Converts argument to `RewaOrMultiDcdtPayment`, then sets it as payment.
     ///
     /// In most cases, `payment` should be used instead.
-    pub fn moa_or_multi_dcdt<P: Into<MoaOrMultiDcdtPayment<Env::Api>>>(
+    pub fn rewa_or_multi_dcdt<P: Into<RewaOrMultiDcdtPayment<Env::Api>>>(
         self,
         payment: P,
-    ) -> Tx<Env, From, To, MoaOrMultiDcdtPayment<Env::Api>, Gas, Data, RH> {
+    ) -> Tx<Env, From, To, RewaOrMultiDcdtPayment<Env::Api>, Gas, Data, RH> {
         self.payment(payment.into())
     }
 }
@@ -483,24 +483,24 @@ where
         Env,
         From,
         ManagedAddress<Env::Api>,
-        MoaPayment<Env::Api>,
+        RewaPayment<Env::Api>,
         Gas,
         FunctionCall<Env::Api>,
         RH,
     > {
-        let (norm_to, norm_moa, norm_fc) = self.payment.with_normalized(
+        let (norm_to, norm_rewa, norm_fc) = self.payment.with_normalized(
             &self.env,
             &self.from,
             self.to,
             self.data,
-            |norm_to, norm_moa, norm_fc| (norm_to.clone(), norm_moa.clone(), norm_fc),
+            |norm_to, norm_rewa, norm_fc| (norm_to.clone(), norm_rewa.clone(), norm_fc),
         );
 
         Tx {
             env: self.env,
             from: self.from,
             to: norm_to,
-            payment: Moa(norm_moa),
+            payment: Rewa(norm_rewa),
             gas: self.gas,
             data: norm_fc,
             result_handler: self.result_handler,
@@ -678,7 +678,7 @@ where
     Env: TxEnv,
     From: TxFrom<Env>,
     To: TxTo<Env>,
-    Payment: TxPaymentMoaOnly<Env>,
+    Payment: TxPaymentRewaOnly<Env>,
     Gas: TxGas<Env>,
     RH: TxResultHandler<Env>,
 {
@@ -695,7 +695,7 @@ where
     Env: TxEnv,
     From: TxFrom<Env>,
     To: TxTo<Env>,
-    Payment: TxPaymentMoaOnly<Env>,
+    Payment: TxPaymentRewaOnly<Env>,
     Gas: TxGas<Env>,
     RH: TxResultHandler<Env>,
 {
@@ -743,7 +743,7 @@ where
     Env: TxEnv,
     From: TxFrom<Env>,
     To: TxTo<Env>,
-    Payment: TxPaymentMoaOnly<Env>,
+    Payment: TxPaymentRewaOnly<Env>,
     Gas: TxGas<Env>,
     RH: TxResultHandler<Env>,
 {
@@ -792,7 +792,7 @@ where
     Env: TxEnv,
     From: TxFrom<Env>,
     To: TxTo<Env>,
-    Payment: TxPaymentMoaOnly<Env>,
+    Payment: TxPaymentRewaOnly<Env>,
     Gas: TxGas<Env>,
     CodeSource: TxCodeSource<Env>,
     RH: TxResultHandler<Env>,
@@ -832,7 +832,7 @@ where
     Env: TxEnvMockDeployAddress,
     From: TxFromSpecified<Env>,
     To: TxTo<Env>,
-    Payment: TxPaymentMoaOnly<Env>,
+    Payment: TxPaymentRewaOnly<Env>,
     Gas: TxGas<Env>,
     CodeSource: TxCodeSource<Env>,
     RH: TxResultHandler<Env>,
@@ -854,7 +854,7 @@ where
     Env: TxEnv,
     From: TxFrom<Env>,
     To: TxTo<Env>,
-    Payment: TxPaymentMoaOnly<Env>,
+    Payment: TxPaymentRewaOnly<Env>,
     Gas: TxGas<Env>,
     RH: TxResultHandler<Env>,
 {
@@ -872,7 +872,7 @@ where
     Env: TxEnv,
     From: TxFrom<Env>,
     To: TxTo<Env>,
-    Payment: TxPaymentMoaOnly<Env>,
+    Payment: TxPaymentRewaOnly<Env>,
     Gas: TxGas<Env>,
     CodeSource: TxCodeSource<Env>,
     RH: TxResultHandler<Env>,
@@ -942,7 +942,7 @@ impl<Api, To, Payment, OriginalResult>
 where
     Api: CallTypeApi + 'static,
     To: TxTo<TxScEnv<Api>>,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     OriginalResult: TopEncodeMulti,
 {
     fn from(
@@ -959,7 +959,7 @@ where
         ContractDeploy {
             _phantom: core::marker::PhantomData,
             to: ManagedOption::none(),
-            moa_payment: value.payment.into_moa_payment(&value.env),
+            rewa_payment: value.payment.into_rewa_payment(&value.env),
             explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
             arg_buffer: value.data.arg_buffer,
             _return_type: core::marker::PhantomData,
@@ -986,13 +986,13 @@ where
 {
     type OriginalResult = OriginalResult;
 
-    fn into_normalized(self) -> ContractCallWithMoa<Api, OriginalResult> {
+    fn into_normalized(self) -> ContractCallWithRewa<Api, OriginalResult> {
         self.payment.with_normalized(
             &self.env,
             &self.from,
             self.to,
             self.data,
-            |norm_to, norm_moa, norm_fc| ContractCallWithMoa {
+            |norm_to, norm_rewa, norm_fc| ContractCallWithRewa {
                 basic: ContractCallNoPayment {
                     _phantom: core::marker::PhantomData,
                     to: norm_to.clone(),
@@ -1000,7 +1000,7 @@ where
                     explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
                     _return_type: core::marker::PhantomData,
                 },
-                moa_payment: norm_moa.clone(),
+                rewa_payment: norm_rewa.clone(),
             },
         )
     }

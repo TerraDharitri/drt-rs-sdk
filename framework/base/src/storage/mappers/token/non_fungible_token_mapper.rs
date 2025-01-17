@@ -1,4 +1,4 @@
-use dharitri_core::types::DcdtLocalRole;
+use dharitri_chain_core::types::DcdtLocalRole;
 
 use crate::{
     abi::TypeAbiFrom,
@@ -9,7 +9,7 @@ use crate::{
     },
     storage_clear, storage_get, storage_get_len, storage_set,
     types::{
-        system_proxy::DCDTSystemSCProxy, DCDTSystemSCAddress, MoaPayment, FunctionCall,
+        system_proxy::DCDTSystemSCProxy, DCDTSystemSCAddress, RewaPayment, FunctionCall,
         ManagedVec, OriginalResultMarker, Tx, TxScEnv,
     },
 };
@@ -43,7 +43,7 @@ pub type IssueCallTo<Api> = Tx<
     TxScEnv<Api>,
     (),
     DCDTSystemSCAddress,
-    MoaPayment<Api>,
+    RewaPayment<Api>,
     (),
     FunctionCall<Api>,
     OriginalResultMarker<TokenIdentifier<Api>>,

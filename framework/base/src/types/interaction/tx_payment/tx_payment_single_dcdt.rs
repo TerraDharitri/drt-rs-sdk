@@ -42,8 +42,8 @@ where
 
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
-            moa: None,
-            multi_dcdt: ManagedVec::from_single_item(self.into_multi_moa_or_dcdt_payment()),
+            rewa: None,
+            multi_dcdt: ManagedVec::from_single_item(self.into_multi_rewa_or_dcdt_payment()),
         }
     }
 }
@@ -88,8 +88,8 @@ where
 
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
-            moa: None,
-            multi_dcdt: ManagedVec::from_single_item(self.as_moa_or_dcdt_payment().clone()),
+            rewa: None,
+            multi_dcdt: ManagedVec::from_single_item(self.as_rewa_or_dcdt_payment().clone()),
         }
     }
 }

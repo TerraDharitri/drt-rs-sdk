@@ -3,7 +3,7 @@ use super::token_properties::*;
 use crate::{
     api::CallTypeApi,
     types::{
-        BigUint, MoaPayment, DcdtLocalRole, DcdtTokenType, FunctionCall, ManagedAddress,
+        BigUint, RewaPayment, DcdtLocalRole, DcdtTokenType, FunctionCall, ManagedAddress,
         ManagedBuffer, NotPayable, OriginalResultMarker, ProxyArg, TokenIdentifier, Tx, TxEnv,
         TxFrom, TxGas, TxProxyTrait, TxTo, TxTypedCall,
     },
@@ -22,7 +22,7 @@ pub type IssueCall<Env, From, To, Gas> = Tx<
     Env,
     From,
     To,
-    MoaPayment<<Env as TxEnv>::Api>,
+    RewaPayment<<Env as TxEnv>::Api>,
     Gas,
     FunctionCall<<Env as TxEnv>::Api>,
     OriginalResultMarker<TokenIdentifier<<Env as TxEnv>::Api>>,
@@ -234,7 +234,7 @@ where
         let mut tx = self
             .wrapped_tx
             .raw_call(endpoint)
-            .moa(issue_cost)
+            .rewa(issue_cost)
             .argument(&token_display_name)
             .argument(&token_ticker)
             .argument(&token_type_name);
@@ -275,7 +275,7 @@ where
         let mut tx = self
             .wrapped_tx
             .raw_call(endpoint_name)
-            .moa(issue_cost)
+            .rewa(issue_cost)
             .argument(&token_display_name)
             .argument(&token_ticker)
             .argument(&token_type_name);
@@ -312,7 +312,7 @@ where
         let mut tx = self
             .wrapped_tx
             .raw_call(endpoint_name)
-            .moa(issue_cost)
+            .rewa(issue_cost)
             .argument(&token_display_name)
             .argument(&token_ticker);
 

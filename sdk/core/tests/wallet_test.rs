@@ -1,6 +1,6 @@
 use bip39::Mnemonic;
 
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 use dharitri_sdk::bech32;
 use dharitri_sdk::{crypto::public_key::PublicKey, wallet::Wallet};
 use std::fs::{self, File};

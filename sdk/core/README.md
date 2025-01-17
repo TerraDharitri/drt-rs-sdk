@@ -9,4 +9,4 @@ It provides communication via the Dharitri gateway API.
 
 ## Acknowledgements
 
-Project originally started by [Bicarus labs](https://github.com/bicarus-labs/numbat-sdk-erdrs), later integrated into the Dharitri official codebase.
+Project originally started by [Bicarus labs](https://github.com/bicarus-labs/numbat-sdk-drtrs), later integrated into the Dharitri official codebase.

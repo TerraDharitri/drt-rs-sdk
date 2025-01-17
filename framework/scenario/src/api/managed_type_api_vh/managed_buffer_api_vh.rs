@@ -1,5 +1,5 @@
 use crate::api::{i32_to_bool, VMHooksApi, VMHooksApiBackend};
-use dharitri_vm::{executor::MemPtr, mem_conv};
+use dharitri_chain_vm::{executor::MemPtr, mem_conv};
 use dharitri_sc::{
     api::{use_raw_handle, HandleConstraints, InvalidSliceError, ManagedBufferApiImpl},
     types::BoxedBytes,

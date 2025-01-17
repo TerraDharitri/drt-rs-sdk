@@ -1,7 +1,7 @@
 [package]
 name = "rust-interact"
 version = "0.0.0"
-authors = ["you"]
+authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
@@ -13,7 +13,7 @@ path = "src/interactor_main.rs"
 path = ".."
 
 [dependencies.dharitri-sc-snippets]
-version = "0.55.0"
+version = "0.0.1"
 path = "../../../../framework/snippets"
 
 # [workspace]

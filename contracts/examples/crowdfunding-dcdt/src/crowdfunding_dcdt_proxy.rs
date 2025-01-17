@@ -46,7 +46,7 @@ where
     pub fn init<
         Arg0: ProxyArg<BigUint<Env::Api>>,
         Arg1: ProxyArg<u64>,
-        Arg2: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg2: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
     >(
         self,
         target: Arg0,
@@ -140,7 +140,7 @@ where
 
     pub fn cf_token_identifier(
         self,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, MoaOrDcdtTokenIdentifier<Env::Api>> {
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, RewaOrDcdtTokenIdentifier<Env::Api>> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("getCrowdfundingTokenIdentifier")

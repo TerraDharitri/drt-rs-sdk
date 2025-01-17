@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use anyhow::anyhow;
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 
 use super::{
     gateway_chain_simulator_blocks::GenerateBlocksResponse, GatewayRequest, GatewayRequestType,

@@ -118,14 +118,14 @@
         },
         {
             "step": "scCall",
-            "id": "echo_managed_vec_of_token_identifier-MOA",
+            "id": "echo_managed_vec_of_token_identifier-REWA",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "echo_managed_vec_of_token_identifier",
                 "arguments": [
                     [
-                        "nested:str:MOA"
+                        "nested:str:REWA"
                     ]
                 ],
                 "gasLimit": "50,000,000",
@@ -142,14 +142,14 @@
         },
         {
             "step": "scCall",
-            "id": "echo_managed_vec_of_token_identifier-MOA-000000",
+            "id": "echo_managed_vec_of_token_identifier-REWA-000000",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "echo_managed_vec_of_token_identifier",
                 "arguments": [
                     [
-                        "nested:str:MOA-000000"
+                        "nested:str:REWA-000000"
                     ]
                 ],
                 "gasLimit": "50,000,000",

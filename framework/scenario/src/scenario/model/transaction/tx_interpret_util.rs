@@ -6,17 +6,17 @@ use crate::{
     },
 };
 
-pub fn interpret_moa_value(
+pub fn interpret_rewa_value(
     opt_legacy_value: Option<ValueSubTree>,
-    opt_moa_value: Option<ValueSubTree>,
+    opt_rewa_value: Option<ValueSubTree>,
     context: &InterpreterContext,
 ) -> BigUintValue {
-    let mut moa_value = BigUintValue::default();
+    let mut rewa_value = BigUintValue::default();
     if let Some(parsed_legacy_value) = opt_legacy_value {
-        moa_value = BigUintValue::interpret_from(parsed_legacy_value, context);
+        rewa_value = BigUintValue::interpret_from(parsed_legacy_value, context);
     }
-    if let Some(parsed_moa_value) = opt_moa_value {
-        moa_value = BigUintValue::interpret_from(parsed_moa_value, context);
+    if let Some(parsed_rewa_value) = opt_rewa_value {
+        rewa_value = BigUintValue::interpret_from(parsed_rewa_value, context);
     }
-    moa_value
+    rewa_value
 }

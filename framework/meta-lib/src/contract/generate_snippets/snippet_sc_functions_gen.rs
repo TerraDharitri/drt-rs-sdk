@@ -144,13 +144,13 @@ fn write_payments_declaration(file: &mut File, accepted_tokens: &[String]) {
         return;
     }
 
-    // only handle MOA and "any" case, as they're the most common
+    // only handle REWA and "any" case, as they're the most common
     let biguint_default = map_abi_type_to_rust_type("BigUint".to_string());
     let first_accepted = &accepted_tokens[0];
-    if first_accepted == "MOA" {
+    if first_accepted == "REWA" {
         writeln!(
             file,
-            "        let moa_amount = {};",
+            "        let rewa_amount = {};",
             biguint_default.get_default_value_expr()
         )
         .unwrap();
@@ -201,8 +201,8 @@ fn endpoint_args_when_called(inputs: &[InputAbi]) -> String {
 fn write_contract_call(file: &mut File, endpoint_abi: &EndpointAbi, name: &String) {
     let payment_snippet = if endpoint_abi.payable_in_tokens.is_empty() {
         ""
-    } else if endpoint_abi.payable_in_tokens[0] == "MOA" {
-        "\n            .moa(moa_amount)"
+    } else if endpoint_abi.payable_in_tokens[0] == "REWA" {
+        "\n            .rewa(rewa_amount)"
     } else {
         "\n            .payment((TokenIdentifier::from(token_id.as_str()), token_nonce, token_amount))"
     };

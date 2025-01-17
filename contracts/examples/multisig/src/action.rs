@@ -9,7 +9,7 @@ use dharitri_sc::derive_imports::*;
 #[derive(NestedEncode, NestedDecode, Clone)]
 pub struct CallActionData<M: ManagedTypeApi> {
     pub to: ManagedAddress<M>,
-    pub moa_amount: BigUint<M>,
+    pub rewa_amount: BigUint<M>,
     pub endpoint_name: ManagedBuffer<M>,
     pub arguments: ManagedVec<M, ManagedBuffer<M>>,
 }

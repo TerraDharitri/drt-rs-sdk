@@ -98,7 +98,7 @@ where
     }
 
     pub fn claim_and_distribute<
-        Arg0: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg0: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
         Arg1: ProxyArg<u64>,
     >(
         self,
@@ -172,7 +172,7 @@ where
     >(
         self,
         nft_nonce: Arg0,
-    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, OptionalValue<MultiValue3<MoaOrDcdtTokenIdentifier<Env::Api>, u64, BigUint<Env::Api>>>> {
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, OptionalValue<MultiValue3<RewaOrDcdtTokenIdentifier<Env::Api>, u64, BigUint<Env::Api>>>> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("getNftPrice")

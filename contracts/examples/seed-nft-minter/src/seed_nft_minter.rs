@@ -44,15 +44,15 @@ pub trait SeedNftMinter:
         opt_token_used_as_payment_nonce: OptionalValue<u64>,
     ) {
         let token_used_as_payment = match opt_token_used_as_payment {
-            OptionalValue::Some(token) => MoaOrDcdtTokenIdentifier::dcdt(token),
-            OptionalValue::None => MoaOrDcdtTokenIdentifier::moa(),
+            OptionalValue::Some(token) => RewaOrDcdtTokenIdentifier::dcdt(token),
+            OptionalValue::None => RewaOrDcdtTokenIdentifier::rewa(),
         };
         require!(
             token_used_as_payment.is_valid(),
             "Invalid token_used_as_payment arg, not a valid token ID"
         );
 
-        let token_used_as_payment_nonce = if token_used_as_payment.is_moa() {
+        let token_used_as_payment_nonce = if token_used_as_payment.is_rewa() {
             0
         } else {
             match opt_token_used_as_payment_nonce {
@@ -79,12 +79,12 @@ pub trait SeedNftMinter:
 
     #[only_owner]
     #[endpoint(claimAndDistribute)]
-    fn claim_and_distribute(&self, token_id: MoaOrDcdtTokenIdentifier, token_nonce: u64) {
+    fn claim_and_distribute(&self, token_id: RewaOrDcdtTokenIdentifier, token_nonce: u64) {
         let total_amount = self.claim_royalties(&token_id, token_nonce);
         self.distribute_funds(&token_id, token_nonce, total_amount);
     }
 
-    fn claim_royalties(&self, token_id: &MoaOrDcdtTokenIdentifier, token_nonce: u64) -> BigUint {
+    fn claim_royalties(&self, token_id: &RewaOrDcdtTokenIdentifier, token_nonce: u64) -> BigUint {
         let claim_destination = self.blockchain().get_sc_address();
         let mut total_amount = BigUint::zero();
         for address in self.marketplaces().iter() {
@@ -96,9 +96,9 @@ pub trait SeedNftMinter:
                 .returns(ReturnsResult)
                 .sync_call();
 
-            let (moa_amount, dcdt_payments) = results.into_tuple();
-            let amount = if token_id.is_moa() {
-                moa_amount
+            let (rewa_amount, dcdt_payments) = results.into_tuple();
+            let amount = if token_id.is_rewa() {
+                rewa_amount
             } else {
                 dcdt_payments
                     .try_get(0)

@@ -58,15 +58,15 @@ impl ScCallStep {
         self
     }
 
-    pub fn moa_value<A>(mut self, amount: A) -> Self
+    pub fn rewa_value<A>(mut self, amount: A) -> Self
     where
         BigUintValue: From<A>,
     {
-        if !self.tx.dcdt_value.is_empty() && self.tx.moa_value.value > 0u32.into() {
-            panic!("Cannot transfer both MOA and DCDT");
+        if !self.tx.dcdt_value.is_empty() && self.tx.rewa_value.value > 0u32.into() {
+            panic!("Cannot transfer both REWA and DCDT");
         }
 
-        self.tx.moa_value = BigUintValue::from(amount);
+        self.tx.rewa_value = BigUintValue::from(amount);
         self
     }
 
@@ -76,8 +76,8 @@ impl ScCallStep {
         U64Value: From<N>,
         BigUintValue: From<A>,
     {
-        if self.tx.moa_value.value > 0u32.into() {
-            panic!("Cannot transfer both MOA and DCDT");
+        if self.tx.rewa_value.value > 0u32.into() {
+            panic!("Cannot transfer both REWA and DCDT");
         }
 
         self.tx.dcdt_value.push(TxDCDT {
@@ -93,8 +93,8 @@ impl ScCallStep {
     where
         T: IntoIterator<Item = TxDCDT>,
     {
-        if self.tx.moa_value.value > 0u32.into() {
-            panic!("Cannot transfer both MOA and DCDT");
+        if self.tx.rewa_value.value > 0u32.into() {
+            panic!("Cannot transfer both REWA and DCDT");
         }
 
         self.tx.dcdt_value.extend(tokens);
@@ -144,15 +144,15 @@ impl ScCallStep {
     where
         CC: dharitri_sc::types::ContractCallBase<StaticApi>,
     {
-        let (to_str, function, moa_value_expr, scenario_args) =
+        let (to_str, function, rewa_value_expr, scenario_args) =
             process_contract_call(contract_call);
         self = self.to(to_str.as_str());
 
         if self.tx.function.is_empty() {
             self = self.function(function.as_str());
         }
-        if self.tx.moa_value.value == 0u32.into() {
-            self = self.moa_value(moa_value_expr);
+        if self.tx.rewa_value.value == 0u32.into() {
+            self = self.rewa_value(rewa_value_expr);
         }
         for arg in scenario_args {
             self = self.argument(arg.as_str());
@@ -250,9 +250,9 @@ where
             .into_vec(),
     )
     .unwrap();
-    let moa_value_expr = BigUintValue::from(normalized_cc.moa_payment);
+    let rewa_value_expr = BigUintValue::from(normalized_cc.rewa_payment);
     let scenario_args = convert_call_args(&normalized_cc.basic.function_call.arg_buffer);
-    (to_str, function, moa_value_expr, scenario_args)
+    (to_str, function, rewa_value_expr, scenario_args)
 }
 
 pub fn convert_call_args(arg_buffer: &ManagedArgBuffer<StaticApi>) -> Vec<String> {

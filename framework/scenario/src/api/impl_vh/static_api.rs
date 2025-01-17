@@ -1,4 +1,4 @@
-use dharitri_vm::{
+use dharitri_chain_vm::{
     executor::VMHooks,
     vm_hooks::{StaticApiVMHooksHandler, VMHooksDispatcher, VMHooksHandler},
 };

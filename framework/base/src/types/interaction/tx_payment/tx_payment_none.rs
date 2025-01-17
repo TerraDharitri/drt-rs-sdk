@@ -1,7 +1,7 @@
 use crate::types::{BigUint, ManagedAddress, TxFrom, TxToSpecified};
 
 use super::{
-    Moa, FullPaymentData, FunctionCall, TxEnv, TxNoPayment, TxPayment, TxPaymentMoaOnly,
+    Rewa, FullPaymentData, FunctionCall, TxEnv, TxNoPayment, TxPayment, TxPaymentRewaOnly,
 };
 
 impl<Env> TxPayment<Env> for ()
@@ -21,7 +21,7 @@ where
         gas_limit: u64,
         fc: FunctionCall<Env::Api>,
     ) {
-        Moa(BigUint::zero_ref()).perform_transfer_execute(env, to, gas_limit, fc);
+        Rewa(BigUint::zero_ref()).perform_transfer_execute(env, to, gas_limit, fc);
     }
 
     #[inline]
@@ -48,4 +48,4 @@ where
 
 impl<Env> TxNoPayment<Env> for () where Env: TxEnv {}
 
-impl<Env> TxPaymentMoaOnly<Env> for () where Env: TxEnv {}
+impl<Env> TxPaymentRewaOnly<Env> for () where Env: TxEnv {}

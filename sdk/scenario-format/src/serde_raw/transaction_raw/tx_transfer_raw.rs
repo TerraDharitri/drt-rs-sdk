@@ -15,7 +15,7 @@ pub struct TxTransferRaw {
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub moa_value: Option<ValueSubTree>,
+    pub rewa_value: Option<ValueSubTree>,
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]

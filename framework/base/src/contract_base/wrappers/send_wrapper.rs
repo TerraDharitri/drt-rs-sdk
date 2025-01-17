@@ -8,7 +8,7 @@ use crate::{
     codec,
     types::{
         system_proxy, BigUint, ContractCallNoPayment, DCDTSystemSCAddress,
-        MoaOrDcdtTokenIdentifier, DcdtTokenPayment, FunctionCall, GasLeft, ManagedAddress,
+        RewaOrDcdtTokenIdentifier, DcdtTokenPayment, FunctionCall, GasLeft, ManagedAddress,
         ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, NotPayable, OriginalResultMarker,
         ReturnsRawResult, ReturnsResult, ToSelf, TokenIdentifier, Tx, TxScEnv,
     },
@@ -20,7 +20,7 @@ const PERCENTAGE_TOTAL: u64 = 10_000;
 
 use super::SendRawWrapper;
 
-/// API that groups methods that either send MOA or DCDT, or that call other contracts.
+/// API that groups methods that either send REWA or DCDT, or that call other contracts.
 // pub trait SendApi: Clone + Sized {
 
 #[derive(Default)]
@@ -63,7 +63,7 @@ where
             .typed(system_proxy::DCDTSystemSCProxy)
     }
 
-    /// Convenient way to quickly instance a minimal contract call (with no MOA, no arguments, etc.)
+    /// Convenient way to quickly instance a minimal contract call (with no REWA, no arguments, etc.)
     ///
     /// You can further configure this contract call by chaining methods to it.
     #[inline]
@@ -75,38 +75,38 @@ where
         ContractCallNoPayment::new(to, endpoint_name)
     }
 
-    /// Sends MOA to a given address, directly.
-    /// Used especially for sending MOA to regular accounts.
+    /// Sends REWA to a given address, directly.
+    /// Used especially for sending REWA to regular accounts.
     #[inline]
-    pub fn direct_moa(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
-        Tx::new_tx_from_sc().to(to).moa(amount).transfer();
+    pub fn direct_rewa(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
+        Tx::new_tx_from_sc().to(to).rewa(amount).transfer();
     }
 
-    /// Sends MOA to a given address, directly.
-    /// Used especially for sending MOA to regular accounts.
+    /// Sends REWA to a given address, directly.
+    /// Used especially for sending REWA to regular accounts.
     ///
     /// If the amount is 0, it returns without error.
-    pub fn direct_non_zero_moa(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
+    pub fn direct_non_zero_rewa(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
         Tx::new_tx_from_sc()
             .to(to)
-            .moa(amount)
+            .rewa(amount)
             .transfer_if_not_empty();
     }
 
-    /// Sends either MOA, DCDT or NFT to the target address,
+    /// Sends either REWA, DCDT or NFT to the target address,
     /// depending on the token identifier and nonce
     #[inline]
     pub fn direct(
         &self,
         to: &ManagedAddress<A>,
-        token: &MoaOrDcdtTokenIdentifier<A>,
+        token: &RewaOrDcdtTokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
     ) {
         self.direct_with_gas_limit(to, token, nonce, amount, 0, Empty, &[]);
     }
 
-    /// Sends either MOA, DCDT or NFT to the target address,
+    /// Sends either REWA, DCDT or NFT to the target address,
     /// depending on the token identifier and nonce.
     ///
     /// If the amount is 0, it returns without error.
@@ -114,7 +114,7 @@ where
     pub fn direct_non_zero(
         &self,
         to: &ManagedAddress<A>,
-        token: &MoaOrDcdtTokenIdentifier<A>,
+        token: &RewaOrDcdtTokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
     ) {
@@ -225,7 +225,7 @@ where
         );
     }
 
-    /// Sends either MOA, DCDT or NFT to the target address,
+    /// Sends either REWA, DCDT or NFT to the target address,
     /// depending on the token identifier and nonce.
     /// Also and calls an endpoint at the destination.
     ///
@@ -234,7 +234,7 @@ where
     pub fn direct_with_gas_limit<D>(
         &self,
         to: &ManagedAddress<A>,
-        token: &MoaOrDcdtTokenIdentifier<A>,
+        token: &RewaOrDcdtTokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
         gas: u64,
@@ -254,7 +254,7 @@ where
                 arguments,
             );
         } else {
-            let _ = self.send_raw_wrapper().direct_moa_execute(
+            let _ = self.send_raw_wrapper().direct_rewa_execute(
                 to,
                 amount,
                 gas,
@@ -263,7 +263,7 @@ where
             );
         }
     }
-    /// Sends either MOA, DCDT or NFT to the target address,
+    /// Sends either REWA, DCDT or NFT to the target address,
     /// depending on the token identifier and nonce.
     /// Also and calls an endpoint at the destination.
     ///
@@ -274,7 +274,7 @@ where
     pub fn direct_non_zero_with_gas_limit<D>(
         &self,
         to: &ManagedAddress<A>,
-        token: &MoaOrDcdtTokenIdentifier<A>,
+        token: &RewaOrDcdtTokenIdentifier<A>,
         nonce: u64,
         amount: &BigUint<A>,
         gas: u64,
@@ -305,7 +305,7 @@ where
     ///
     /// If you want to perform multiple transfers, use `self.send().transfer_multiple_dcdt_via_async_call()` instead.
     ///
-    /// Note that MOA can NOT be transfered with this function.  
+    /// Note that REWA can NOT be transfered with this function.  
     pub fn transfer_dcdt_via_async_call(
         &self,
         to: ManagedAddress<A>,
@@ -325,7 +325,7 @@ where
     /// so only use as the last call in your endpoint.
     ///
     /// If you want to perform multiple transfers, use `self.send().transfer_multiple_dcdt_via_async_call()` instead.  
-    /// Note that MOA can NOT be transfered with this function.
+    /// Note that REWA can NOT be transfered with this function.
     ///
     /// If the amount is 0, it returns without error.
     pub fn transfer_dcdt_non_zero_via_async_call(
@@ -654,7 +654,7 @@ where
         nft_nonce: u64,
         nft_amount: &BigUint<A>,
         buyer: &ManagedAddress<A>,
-        payment_token: &MoaOrDcdtTokenIdentifier<A>,
+        payment_token: &RewaOrDcdtTokenIdentifier<A>,
         payment_nonce: u64,
         payment_amount: &BigUint<A>,
     ) -> BigUint<A> {
@@ -701,7 +701,7 @@ where
         nft_nonce: u64,
         nft_amount: &BigUint<A>,
         buyer: &ManagedAddress<A>,
-        payment_token: &MoaOrDcdtTokenIdentifier<A>,
+        payment_token: &RewaOrDcdtTokenIdentifier<A>,
         payment_nonce: u64,
         payment_amount: &BigUint<A>,
     ) -> BigUint<A> {

@@ -56,7 +56,7 @@ fn add_managed_types(substitutions: &mut SubstitutionsMap) {
     add_managed_type_with_generics(substitutions, &quote!(ManagedAsyncCallResult));
     add_managed_type(substitutions, &quote!(DcdtTokenPaymentMultiArg));
     add_managed_type(substitutions, &quote!(DcdtTokenPaymentMultiValue));
-    add_managed_type(substitutions, &quote!(MoaOrDcdtTokenPaymentMultiValue));
+    add_managed_type(substitutions, &quote!(RewaOrDcdtTokenPaymentMultiValue));
     add_managed_type_with_generics(substitutions, &quote!(MultiValueEncodedIterator));
     add_managed_type_with_generics(substitutions, &quote!(MultiValueEncoded));
     add_managed_type_with_generics(substitutions, &quote!(ManagedVarArgs));
@@ -68,8 +68,8 @@ fn add_managed_types(substitutions: &mut SubstitutionsMap) {
     add_managed_type_with_generics(substitutions, &quote!(MultiValueManagedVec));
 
     // types::managed::wrapped
-    add_managed_type(substitutions, &quote!(MoaOrDcdtTokenIdentifier));
-    add_managed_type(substitutions, &quote!(MoaOrDcdtTokenPayment));
+    add_managed_type(substitutions, &quote!(RewaOrDcdtTokenIdentifier));
+    add_managed_type(substitutions, &quote!(RewaOrDcdtTokenPayment));
     add_managed_type(substitutions, &quote!(DcdtTokenData));
     add_managed_type(substitutions, &quote!(DcdtTokenPayment));
     add_managed_type(substitutions, &quote!(ManagedAddress));

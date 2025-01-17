@@ -1,6 +1,6 @@
 use std::{fmt::Debug, sync::MutexGuard};
 
-use dharitri_core::types::ReturnCode;
+use dharitri_chain_core::types::ReturnCode;
 
 use crate::{
     tx_mock::{BackTransfers, TxFunctionName, TxInput, TxLog, TxManagedTypes, TxResult},
@@ -69,7 +69,7 @@ pub trait VMHooksHandlerSource: Debug {
     fn perform_async_call(
         &self,
         to: VMAddress,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         args: Vec<Vec<u8>>,
     ) -> !;
@@ -77,14 +77,14 @@ pub trait VMHooksHandlerSource: Debug {
     fn perform_execute_on_dest_context(
         &self,
         to: VMAddress,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         args: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>>;
 
     fn perform_deploy(
         &self,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         contract_code: Vec<u8>,
         code_metadata: VMCodeMetadata,
         args: Vec<Vec<u8>>,
@@ -93,7 +93,7 @@ pub trait VMHooksHandlerSource: Debug {
     fn perform_transfer_execute(
         &self,
         to: VMAddress,
-        moa_value: num_bigint::BigUint,
+        rewa_value: num_bigint::BigUint,
         func_name: TxFunctionName,
         arguments: Vec<Vec<u8>>,
     );

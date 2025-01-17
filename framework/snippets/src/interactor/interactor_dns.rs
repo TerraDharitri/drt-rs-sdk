@@ -70,10 +70,10 @@ fn test_compute_dns_address() {
 fn test_dns_for_name() {
     assert_eq!(
         bech32::encode(&dns_address_for_name("test.numbat")),
-        "drt1qqqqqqqqqqqqqpgqx4ca3eu4k6w63hl8pjjyq2cp7ul7a4ukqz0stud29v"
+        "drt1qqqqqqqqqqqqqpgqydsrr9rw6wgl83dm7mgyqzr7khqp982zqp4q36cj29"
     );
     assert_eq!(
         bech32::encode(&dns_address_for_name("helloworld.numbat")),
-        "drt1qqqqqqqqqqqqqpgqhcm9k2xkk75e47wpmvfgj8fuzwaguvzyqqrqdhwtys"
+        "drt1qqqqqqqqqqqqqpgq37fmv57uqkayxctplh4swkw9vfz2jawvqqyqsqlm3z"
     );
 }

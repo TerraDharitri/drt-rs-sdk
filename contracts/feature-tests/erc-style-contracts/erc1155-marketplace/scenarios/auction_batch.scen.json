@@ -9,7 +9,7 @@
         {
             "step": "scCall",
             "id": "auction-batch",
-            "comment": "last argument is an AuctionArgument: token: MOA (serialized as empty string), min_bid: 100, max_bid: 500, deadline: 1000",
+            "comment": "last argument is an AuctionArgument: token: REWA (serialized as empty string), min_bid: 100, max_bid: 500, deadline: 1000",
             "tx": {
                 "from": "address:creator",
                 "to": "sc:ownership_contract",
@@ -19,7 +19,7 @@
                     "sc:marketplace_contract",
                     "biguint:1|biguint:1",
                     "biguint:2|biguint:3",
-                    "u32:3|str:MOA|biguint:100|u32:2|u16:500|u64:1000"
+                    "u32:4|str:REWA|biguint:100|u32:2|u16:500|u64:1000"
                 ],
                 "gasLimit": "0x100000",
                 "gasPrice": "0x00"
@@ -92,8 +92,8 @@
                     "storage": {
                         "str:tokenOwnershipContractAddress": "sc:ownership_contract",
                         "str:percentageCut": "10",
-                        "str:auctionForToken|biguint:1|biguint:2": "u32:3|str:MOA|biguint:100|u32:2|u16:500|u64:1000|address:creator|u32:0|u64:0|u64:0|u64:0|u64:0",
-                        "str:auctionForToken|biguint:1|biguint:3": "u32:3|str:MOA|biguint:100|u32:2|u16:500|u64:1000|address:creator|u32:0|u64:0|u64:0|u64:0|u64:0"
+                        "str:auctionForToken|biguint:1|biguint:2": "u32:4|str:REWA|biguint:100|u32:2|u16:500|u64:1000|address:creator|u32:0|u64:0|u64:0|u64:0|u64:0",
+                        "str:auctionForToken|biguint:1|biguint:3": "u32:4|str:REWA|biguint:100|u32:2|u16:500|u64:1000|address:creator|u32:0|u64:0|u64:0|u64:0|u64:0"
                     },
                     "code": "drtsc:../output/erc1155-marketplace.drtsc.json"
                 }

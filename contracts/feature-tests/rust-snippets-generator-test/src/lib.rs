@@ -13,7 +13,7 @@ dharitri_sc::derive_imports!();
 
 // Additionally, we also have to update the interactor snippets manually to add relative paths:
 // [dependencies.dharitri-sc-snippets]
-// version = "0.55.0"
+// version = "0.0.1"
 // path = "../../../../framework/snippets"
 
 #[type_abi]
@@ -80,7 +80,7 @@ pub trait PayableFeatures {
     }
 
     #[endpoint]
-    fn moa_or_dcdt_payment(&self, arg: MoaOrDcdtTokenPayment) -> MoaOrDcdtTokenIdentifier {
+    fn rewa_or_dcdt_payment(&self, arg: RewaOrDcdtTokenPayment) -> RewaOrDcdtTokenIdentifier {
         arg.token_identifier
     }
 

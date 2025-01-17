@@ -18,8 +18,8 @@ dharitri_sc_wasm_adapter::endpoints! {
     child
     (
         init => init
-        issueWrappedMoa => issue_wrapped_moa
-        getWrappedMoaTokenIdentifier => wrapped_moa_token_identifier
+        issueWrappedRewa => issue_wrapped_rewa
+        getWrappedRewaTokenIdentifier => wrapped_rewa_token_identifier
     )
 }
 

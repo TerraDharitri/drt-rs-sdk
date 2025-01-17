@@ -1,4 +1,4 @@
-use dharitri_vm::world_mock::BlockchainState;
+use dharitri_chain_vm::world_mock::BlockchainState;
 
 use crate::{
     scenario::{run_trace::ScenarioTrace, run_vm::ScenarioVMRunner},

@@ -1,4 +1,4 @@
-use dharitri_vm::{tx_mock::TxResult, types::H256};
+use dharitri_chain_vm::{tx_mock::TxResult, types::H256};
 use dharitri_sc::types::Address;
 
 use super::{Log, TxExpect, TxResponseStatus};

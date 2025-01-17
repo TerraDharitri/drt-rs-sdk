@@ -28,7 +28,7 @@ impl CallValueApiImpl for VmApiImpl {
         }
     }
 
-    fn load_moa_value(&self, dest: Self::BigIntHandle) {
+    fn load_rewa_value(&self, dest: Self::BigIntHandle) {
         unsafe {
             bigIntGetCallValue(dest);
         }

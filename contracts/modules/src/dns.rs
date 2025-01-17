@@ -9,16 +9,16 @@ dharitri_sc::imports!();
 ///
 #[dharitri_sc::module]
 pub trait DnsModule {
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[only_owner]
     #[endpoint(dnsRegister)]
     fn dns_register(&self, dns_address: ManagedAddress, name: ManagedBuffer) {
-        let payment = self.call_value().moa().clone();
+        let payment = self.call_value().rewa().clone();
         self.tx()
             .to(&dns_address)
             .typed(dns_proxy::DnsProxy)
             .register(name)
-            .moa(payment)
+            .rewa(payment)
             .async_call_and_exit();
     }
 }

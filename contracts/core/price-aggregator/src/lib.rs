@@ -25,7 +25,7 @@ pub trait PriceAggregator:
     #[init]
     fn init(
         &self,
-        staking_token: MoaOrDcdtTokenIdentifier,
+        staking_token: RewaOrDcdtTokenIdentifier,
         staking_amount: BigUint,
         slash_amount: BigUint,
         slash_quorum: usize,

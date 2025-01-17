@@ -1,4 +1,4 @@
-use dharitri_vm::types::H256;
+use dharitri_chain_vm::types::H256;
 use dharitri_sc::types::RHListItemExec;
 
 use crate::{

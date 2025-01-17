@@ -89,7 +89,7 @@ where
     pub fn claim_rewards<
         Arg0: ProxyArg<u64>,
         Arg1: ProxyArg<u64>,
-        Arg2: ProxyArg<MultiValueEncoded<Env::Api, MultiValue2<MoaOrDcdtTokenIdentifier<Env::Api>, u64>>>,
+        Arg2: ProxyArg<MultiValueEncoded<Env::Api, MultiValue2<RewaOrDcdtTokenIdentifier<Env::Api>, u64>>>,
     >(
         self,
         raffle_id_start: Arg0,
@@ -106,7 +106,7 @@ where
 
     pub fn compute_claimable_amount<
         Arg0: ProxyArg<u64>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
         Arg2: ProxyArg<u64>,
         Arg3: ProxyArg<u64>,
     >(
@@ -146,7 +146,7 @@ where
 
     pub fn royalties<
         Arg0: ProxyArg<u64>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
         Arg2: ProxyArg<u64>,
     >(
         self,
@@ -181,7 +181,7 @@ where
 
     pub fn was_claimed<
         Arg0: ProxyArg<u64>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
         Arg2: ProxyArg<u64>,
         Arg3: ProxyArg<u64>,
     >(

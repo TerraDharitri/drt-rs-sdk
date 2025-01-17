@@ -65,8 +65,8 @@ where
     step.tx.gas_limit = gas_annotated(env, gas);
 
     let full_payment_data = payment.into_full_payment_data(env);
-    if let Some(annotated_moa_payment) = full_payment_data.moa {
-        step.tx.moa_value = annotated_moa_payment.into();
+    if let Some(annotated_rewa_payment) = full_payment_data.rewa {
+        step.tx.rewa_value = annotated_rewa_payment.into();
     } else {
         step.tx.dcdt_value = full_payment_data
             .multi_dcdt

@@ -4,7 +4,7 @@ use crate::{
     imports::StaticApi, scenario::tx_to_step::TxToStep, scenario_model::TxResponse, ScenarioEnvExec,
 };
 use crate::{DebugApi, ScenarioEnvQuery};
-use dharitri_vm::tx_mock::TxFunctionName;
+use dharitri_chain_vm::tx_mock::TxFunctionName;
 use dharitri_sc::contract_base::ContractBase;
 use dharitri_sc::{
     tuple_util::NestedTupleFlatten,

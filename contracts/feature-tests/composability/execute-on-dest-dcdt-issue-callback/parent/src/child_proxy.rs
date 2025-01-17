@@ -62,7 +62,7 @@ where
     To: TxTo<Env>,
     Gas: TxGas<Env>,
 {
-    pub fn issue_wrapped_moa<
+    pub fn issue_wrapped_rewa<
         Arg0: ProxyArg<ManagedBuffer<Env::Api>>,
         Arg1: ProxyArg<ManagedBuffer<Env::Api>>,
         Arg2: ProxyArg<BigUint<Env::Api>>,
@@ -73,19 +73,19 @@ where
         initial_supply: Arg2,
     ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
         self.wrapped_tx
-            .raw_call("issueWrappedMoa")
+            .raw_call("issueWrappedRewa")
             .argument(&token_display_name)
             .argument(&token_ticker)
             .argument(&initial_supply)
             .original_result()
     }
 
-    pub fn wrapped_moa_token_identifier(
+    pub fn wrapped_rewa_token_identifier(
         self,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, TokenIdentifier<Env::Api>> {
         self.wrapped_tx
             .payment(NotPayable)
-            .raw_call("getWrappedMoaTokenIdentifier")
+            .raw_call("getWrappedRewaTokenIdentifier")
             .original_result()
     }
 }

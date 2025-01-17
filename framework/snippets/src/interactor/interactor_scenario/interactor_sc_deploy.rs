@@ -18,7 +18,7 @@ where
     pub(crate) fn sc_deploy_to_blockchain_tx(&self, sc_deploy_step: &ScDeployStep) -> Transaction {
         Transaction {
             nonce: 0,
-            value: sc_deploy_step.tx.moa_value.value.to_string(),
+            value: sc_deploy_step.tx.rewa_value.value.to_string(),
             sender: sc_deploy_step.tx.from.to_address().into(),
             receiver: Address::zero().into(),
             gas_price: self.network_config.min_gas_price,

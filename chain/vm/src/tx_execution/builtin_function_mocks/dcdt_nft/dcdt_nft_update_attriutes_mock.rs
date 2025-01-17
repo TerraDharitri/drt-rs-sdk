@@ -1,4 +1,4 @@
-use dharitri_core::types::ReturnCode;
+use dharitri_chain_core::types::ReturnCode;
 
 use crate::{
     chain_core::builtin_func_names::DCDT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME,

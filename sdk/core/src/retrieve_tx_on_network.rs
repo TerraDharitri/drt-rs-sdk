@@ -6,7 +6,7 @@ use crate::{
     gateway::{GetTxInfo, GetTxProcessStatus},
 };
 use log::info;
-use dharitri_core::types::{Address, ReturnCode};
+use dharitri_chain_core::types::{Address, ReturnCode};
 
 use crate::gateway::GatewayAsyncService;
 

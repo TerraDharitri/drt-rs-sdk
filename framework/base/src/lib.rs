@@ -9,7 +9,7 @@ extern crate alloc;
 pub use dharitri_sc_codec as codec;
 
 // Re-exporting the VM-core, for convenience.
-pub use dharitri_core as chain_core;
+pub use dharitri_chain_core as chain_core;
 
 /// Reexported for convenience.
 pub use crate::codec::arrayvec;

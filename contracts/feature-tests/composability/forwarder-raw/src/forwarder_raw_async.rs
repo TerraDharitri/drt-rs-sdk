@@ -5,10 +5,10 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
     #[endpoint]
     #[payable("*")]
     fn forward_payment(&self, to: ManagedAddress) {
-        let (token, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         self.tx()
             .to(to)
-            .moa_or_single_dcdt(&token, 0, &payment)
+            .rewa_or_single_dcdt(&token, 0, &payment)
             .transfer();
     }
 
@@ -32,7 +32,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
     fn forward_contract_call(
         &self,
         to: ManagedAddress,
-        payment_token: MoaOrDcdtTokenIdentifier,
+        payment_token: RewaOrDcdtTokenIdentifier,
         payment_amount: BigUint,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
@@ -40,7 +40,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
         TxScEnv<Self::Api>,
         (),
         ManagedAddress,
-        MoaOrDcdtTokenPayment<Self::Api>,
+        RewaOrDcdtTokenPayment<Self::Api>,
         (),
         FunctionCall<Self::Api>,
         (),
@@ -49,7 +49,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
             .to(to)
             .raw_call(endpoint_name)
             .arguments_raw(args.to_arg_buffer())
-            .payment(MoaOrDcdtTokenPayment::new(
+            .payment(RewaOrDcdtTokenPayment::new(
                 payment_token,
                 0,
                 payment_amount,
@@ -64,7 +64,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let (token, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         self.forward_contract_call(to, token, payment, endpoint_name, args)
             .async_call_and_exit()
     }
@@ -77,24 +77,24 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let (token, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         let half_payment = payment / 2u32;
         self.forward_contract_call(to, token, half_payment, endpoint_name, args)
             .async_call_and_exit()
     }
 
     #[endpoint]
-    #[payable("MOA")]
-    fn forward_transf_exec_moa(
+    #[payable("REWA")]
+    fn forward_transf_exec_rewa(
         &self,
         to: ManagedAddress,
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         self.forward_contract_call(
             to,
-            MoaOrDcdtTokenIdentifier::moa(),
+            RewaOrDcdtTokenIdentifier::rewa(),
             payment.clone(),
             endpoint_name,
             args,
@@ -114,7 +114,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
         let (token, payment) = self.call_value().single_fungible_dcdt();
         self.forward_contract_call(
             to,
-            MoaOrDcdtTokenIdentifier::dcdt(token.clone()),
+            RewaOrDcdtTokenIdentifier::dcdt(token.clone()),
             payment.clone(),
             endpoint_name,
             args,
@@ -131,7 +131,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let (token, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         self.forward_contract_call(to, token, payment, endpoint_name, args)
             .gas(self.blockchain().get_gas_left() / 2)
             .transfer_execute();
@@ -145,7 +145,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let (token, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         let half_payment = payment / 2u32;
         self.forward_contract_call(
             to.clone(),

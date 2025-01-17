@@ -18,8 +18,8 @@ use crate::{
 
 use super::{
     managed_vec_item_read_from_payload_index, managed_vec_item_save_to_payload_index,
-    MoaOrDcdtTokenIdentifier, MoaOrDcdtTokenPayment, ManagedVec, ManagedVecItemPayloadBuffer,
-    ManagedVecRef, MultiMoaOrDcdtPayment,
+    RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, ManagedVec, ManagedVecItemPayloadBuffer,
+    ManagedVecRef, MultiRewaOrDcdtPayment,
 };
 
 #[type_abi]
@@ -62,17 +62,17 @@ impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
         (self.token_identifier, self.token_nonce, self.amount)
     }
 
-    /// Zero-cost conversion that loosens the MOA restriction.
+    /// Zero-cost conversion that loosens the REWA restriction.
     ///
     /// It is always safe to do, since the 2 types are guaranteed to have the same layout.
-    pub fn as_moa_or_dcdt_payment(&self) -> &MoaOrDcdtTokenPayment<M> {
+    pub fn as_rewa_or_dcdt_payment(&self) -> &RewaOrDcdtTokenPayment<M> {
         unsafe { core::mem::transmute(self) }
     }
 
-    /// Conversion that loosens the MOA restriction.
-    pub fn into_multi_moa_or_dcdt_payment(self) -> MoaOrDcdtTokenPayment<M> {
-        MoaOrDcdtTokenPayment {
-            token_identifier: MoaOrDcdtTokenIdentifier::dcdt(self.token_identifier),
+    /// Conversion that loosens the REWA restriction.
+    pub fn into_multi_rewa_or_dcdt_payment(self) -> RewaOrDcdtTokenPayment<M> {
+        RewaOrDcdtTokenPayment {
+            token_identifier: RewaOrDcdtTokenIdentifier::dcdt(self.token_identifier),
             token_nonce: self.token_nonce,
             amount: self.amount,
         }
@@ -254,18 +254,18 @@ impl<'a, M: ManagedTypeApi> DcdtTokenPaymentRefs<'a, M> {
 }
 
 impl<M: ManagedTypeApi> MultiDcdtPayment<M> {
-    /// Zero-cost conversion that loosens the MOA restriction.
+    /// Zero-cost conversion that loosens the REWA restriction.
     ///
     /// It is always safe to do, since the 2 types are guaranteed to have the same layout.
-    pub fn as_multi_moa_or_dcdt_payment(&self) -> &MultiMoaOrDcdtPayment<M> {
+    pub fn as_multi_rewa_or_dcdt_payment(&self) -> &MultiRewaOrDcdtPayment<M> {
         unsafe { core::mem::transmute(self) }
     }
 
-    /// Zero-cost conversion that loosens the MOA restriction.
+    /// Zero-cost conversion that loosens the REWA restriction.
     ///
     /// It is always safe to do, since the 2 types are guaranteed to have the same layout.
-    pub fn into_multi_moa_or_dcdt_payment(self) -> MultiMoaOrDcdtPayment<M> {
-        unsafe { MultiMoaOrDcdtPayment::from_handle(self.forget_into_handle()) }
+    pub fn into_multi_rewa_or_dcdt_payment(self) -> MultiRewaOrDcdtPayment<M> {
+        unsafe { MultiRewaOrDcdtPayment::from_handle(self.forget_into_handle()) }
     }
 }
 

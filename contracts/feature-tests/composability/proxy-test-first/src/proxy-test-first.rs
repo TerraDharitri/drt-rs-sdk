@@ -26,10 +26,10 @@ pub trait ProxyTestFirst {
         self.set_other_contract(other_contract_addr);
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(deploySecondContract)]
     fn deploy_second_contract(&self, code: ManagedBuffer) -> i32 {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
 
         let (address, init_result) = self
             .tx()
@@ -39,17 +39,17 @@ pub trait ProxyTestFirst {
             .code_metadata(CodeMetadata::UPGRADEABLE)
             .returns(ReturnsNewManagedAddress)
             .returns(ReturnsResult)
-            .moa(payment)
+            .rewa(payment)
             .sync_call();
 
         self.set_other_contract(&address);
         init_result + 1
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(upgradeSecondContract)]
     fn upgrade_second_contract(&self, code: ManagedBuffer) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         let other_contract = self.get_other_contract();
 
         self.tx()
@@ -57,35 +57,35 @@ pub trait ProxyTestFirst {
             .typed(pay_me_proxy::PayMeProxy)
             .upgrade()
             .argument(&456)
-            .moa(payment)
+            .rewa(payment)
             .code(code)
             .code_metadata(CodeMetadata::UPGRADEABLE)
             .upgrade_async_call_and_exit();
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(forwardToOtherContract)]
     fn forward_to_other_contract(&self) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         let other_contract = self.get_other_contract();
         self.tx()
             .to(&other_contract)
             .typed(pay_me_proxy::PayMeProxy)
             .pay_me(0x56)
-            .moa(payment)
+            .rewa(payment)
             .async_call_and_exit();
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(forwardToOtherContractWithCallback)]
     fn forward_to_other_contract_with_callback(&self) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         let other_contract = self.get_other_contract();
         self.tx()
             .to(&other_contract)
             .typed(pay_me_proxy::PayMeProxy)
             .pay_me_with_result(0x56)
-            .moa(payment)
+            .rewa(payment)
             .callback(self.callbacks().pay_callback())
             .async_call_and_exit();
     }

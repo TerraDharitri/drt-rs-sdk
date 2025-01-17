@@ -5,7 +5,7 @@ use core::marker::PhantomData;
 use crate::{
     api::{CallTypeApi, SendApi},
     types::{
-        BigUint, ContractCall, ContractCallNoPayment, ContractCallWithMoa, DCDTSystemSCAddress,
+        BigUint, ContractCall, ContractCallNoPayment, ContractCallWithRewa, DCDTSystemSCAddress,
         DcdtLocalRole, DcdtTokenType, ManagedAddress, ManagedBuffer, TokenIdentifier,
     },
 };
@@ -60,7 +60,7 @@ where
         token_ticker: &ManagedBuffer<SA>,
         initial_supply: &BigUint<SA>,
         properties: FungibleTokenProperties,
-    ) -> ContractCallWithMoa<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         self.issue(
             issue_cost,
             DcdtTokenType::Fungible,
@@ -90,7 +90,7 @@ where
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: NonFungibleTokenProperties,
-    ) -> ContractCallWithMoa<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let zero = BigUint::zero();
         self.issue(
             issue_cost,
@@ -121,7 +121,7 @@ where
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: SemiFungibleTokenProperties,
-    ) -> ContractCallWithMoa<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let zero = BigUint::zero();
         self.issue(
             issue_cost,
@@ -152,7 +152,7 @@ where
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: MetaTokenProperties,
-    ) -> ContractCallWithMoa<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let zero = BigUint::zero();
         self.issue(
             issue_cost,
@@ -182,7 +182,7 @@ where
         token_ticker: ManagedBuffer<SA>,
         token_type: DcdtTokenType,
         num_decimals: usize,
-    ) -> ContractCallWithMoa<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let dcdt_system_sc_address = self.dcdt_system_sc_address();
 
         let token_type_name = match token_type {
@@ -207,7 +207,7 @@ where
         };
 
         let mut contract_call =
-            ContractCallWithMoa::new(dcdt_system_sc_address, endpoint, issue_cost)
+            ContractCallWithRewa::new(dcdt_system_sc_address, endpoint, issue_cost)
                 .argument(&token_display_name)
                 .argument(&token_ticker)
                 .argument(&token_type_name);
@@ -227,7 +227,7 @@ where
         token_ticker: &ManagedBuffer<SA>,
         token_type: DcdtTokenType,
         num_decimals: usize,
-    ) -> ContractCallWithMoa<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let dcdt_system_sc_address = self.dcdt_system_sc_address();
 
         let endpoint_name = match token_type {
@@ -245,7 +245,7 @@ where
         };
 
         let mut contract_call =
-            ContractCallWithMoa::new(dcdt_system_sc_address, endpoint_name, issue_cost);
+            ContractCallWithRewa::new(dcdt_system_sc_address, endpoint_name, issue_cost);
 
         contract_call.proxy_arg(token_display_name);
         contract_call.proxy_arg(token_ticker);
@@ -267,7 +267,7 @@ where
         token_ticker: &ManagedBuffer<SA>,
         initial_supply: &BigUint<SA>,
         properties: TokenProperties,
-    ) -> ContractCallWithMoa<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let dcdt_system_sc_address = self.dcdt_system_sc_address();
 
         let endpoint_name = match token_type {
@@ -279,7 +279,7 @@ where
         };
 
         let mut contract_call =
-            ContractCallWithMoa::new(dcdt_system_sc_address, endpoint_name, issue_cost);
+            ContractCallWithRewa::new(dcdt_system_sc_address, endpoint_name, issue_cost);
 
         contract_call.proxy_arg(token_display_name);
         contract_call.proxy_arg(token_ticker);

@@ -1,4 +1,4 @@
-use dharitri_scenario_format::serde_raw::ValueSubTree;
+use dharitri_chain_scenario_format::serde_raw::ValueSubTree;
 use dharitri_sc::types::{
     AnnotatedValue, BigUint, Code, ManagedAddress, ManagedBuffer, TokenIdentifier, TxCodeValue,
     TxEnv, TxGas,

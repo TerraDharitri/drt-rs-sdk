@@ -21,13 +21,13 @@ pub trait DigitalCash:
     + storage::StorageModule
 {
     #[init]
-    fn init(&self, fee: BigUint, token: MoaOrDcdtTokenIdentifier) {
+    fn init(&self, fee: BigUint, token: RewaOrDcdtTokenIdentifier) {
         self.whitelist_fee_token(fee, token);
     }
 
     #[endpoint(whitelistFeeToken)]
     #[only_owner]
-    fn whitelist_fee_token(&self, fee: BigUint, token: MoaOrDcdtTokenIdentifier) {
+    fn whitelist_fee_token(&self, fee: BigUint, token: RewaOrDcdtTokenIdentifier) {
         require!(self.fee(&token).is_empty(), "Token already whitelisted");
         self.fee(&token).set(fee);
         self.whitelisted_fee_tokens().insert(token.clone());
@@ -36,7 +36,7 @@ pub trait DigitalCash:
 
     #[endpoint(blacklistFeeToken)]
     #[only_owner]
-    fn blacklist_fee_token(&self, token: MoaOrDcdtTokenIdentifier) {
+    fn blacklist_fee_token(&self, token: RewaOrDcdtTokenIdentifier) {
         require!(!self.fee(&token).is_empty(), "Token is not whitelisted");
         self.fee(&token).clear();
         self.whitelisted_fee_tokens().swap_remove(&token);
@@ -54,8 +54,8 @@ pub trait DigitalCash:
             if fee == 0 {
                 continue;
             }
-            if token == MoaOrDcdtTokenIdentifier::moa() {
-                self.tx().to(&caller_address).moa(&fee).transfer();
+            if token == RewaOrDcdtTokenIdentifier::rewa() {
+                self.tx().to(&caller_address).rewa(&fee).transfer();
             } else {
                 let collected_fee = DcdtTokenPayment::new(token.unwrap_dcdt(), 0, fee);
                 collected_dcdt_fees.push(collected_fee);
@@ -73,15 +73,15 @@ pub trait DigitalCash:
     fn get_amount(
         &self,
         address: ManagedAddress,
-        token: MoaOrDcdtTokenIdentifier,
+        token: RewaOrDcdtTokenIdentifier,
         nonce: u64,
     ) -> BigUint {
         let deposit_mapper = self.deposit(&address);
         require!(!deposit_mapper.is_empty(), NON_EXISTENT_KEY_ERR_MSG);
 
         let deposit = deposit_mapper.get();
-        if token.is_moa() {
-            return deposit.moa_funds;
+        if token.is_rewa() {
+            return deposit.rewa_funds;
         }
 
         for dcdt in deposit.dcdt_funds.into_iter() {

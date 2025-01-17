@@ -12,7 +12,7 @@ use crate::{
     ScenarioTxEnvData, ScenarioWorld,
 };
 
-use dharitri_vm::world_mock::DcdtInstanceMetadata;
+use dharitri_chain_vm::world_mock::DcdtInstanceMetadata;
 use dharitri_sc::{
     proxy_imports::TopEncode,
     types::{AnnotatedValue, BigUint, DcdtLocalRole, ManagedAddress},
@@ -54,16 +54,16 @@ impl ScenarioWorld {
     pub fn create_account_raw<A, V>(
         &mut self,
         address: A,
-        moa_balance: V,
+        rewa_balance: V,
     ) -> SetStateBuilder<'_, AccountItem>
     where
         A: AnnotatedValue<ScenarioTxEnvData, ManagedAddress<StaticApi>>,
         V: AnnotatedValue<ScenarioTxEnvData, BigUint<StaticApi>>,
     {
-        self.empty_builder().account(address).balance(moa_balance)
+        self.empty_builder().account(address).balance(rewa_balance)
     }
 
-    pub fn set_moa_balance<A, V>(&mut self, address: A, balance: V)
+    pub fn set_rewa_balance<A, V>(&mut self, address: A, balance: V)
     where
         A: AnnotatedValue<ScenarioTxEnvData, ManagedAddress<StaticApi>>,
         V: AnnotatedValue<ScenarioTxEnvData, BigUint<StaticApi>>,
@@ -74,7 +74,7 @@ impl ScenarioWorld {
         let accounts = &mut self.get_mut_state().accounts;
         for (vm_address_key, account) in accounts.iter_mut() {
             if vm_address_key == &address_value.to_address() {
-                account.moa_balance.clone_from(&balance_value.value);
+                account.rewa_balance.clone_from(&balance_value.value);
             }
         }
     }

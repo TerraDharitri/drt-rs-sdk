@@ -6,19 +6,19 @@ use crate::{
     },
 };
 
-use super::tx_interpret_util::interpret_moa_value;
+use super::tx_interpret_util::interpret_rewa_value;
 
 #[derive(Debug, Clone)]
 pub struct TxValidatorReward {
     pub to: AddressValue,
-    pub moa_value: BigUintValue,
+    pub rewa_value: BigUintValue,
 }
 
 impl InterpretableFrom<TxValidatorRewardRaw> for TxValidatorReward {
     fn interpret_from(from: TxValidatorRewardRaw, context: &InterpreterContext) -> Self {
         TxValidatorReward {
             to: AddressValue::interpret_from(from.to, context),
-            moa_value: interpret_moa_value(from.value, from.moa_value, context),
+            rewa_value: interpret_rewa_value(from.value, from.rewa_value, context),
         }
     }
 }
@@ -28,7 +28,7 @@ impl IntoRaw<TxValidatorRewardRaw> for TxValidatorReward {
         TxValidatorRewardRaw {
             to: self.to.into_raw(),
             value: None,
-            moa_value: Some(self.moa_value.into_raw()),
+            rewa_value: Some(self.rewa_value.into_raw()),
         }
     }
 }

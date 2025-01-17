@@ -6,7 +6,7 @@ use crate::{
         HandleConstraints, ManagedBufferApiImpl, RawHandle, SendApiImpl, StaticVarApiImpl,
     },
     types::{
-        BigUint, CodeMetadata, MoaOrDcdtTokenPayment, DcdtTokenPayment, ManagedAddress,
+        BigUint, CodeMetadata, RewaOrDcdtTokenPayment, DcdtTokenPayment, ManagedAddress,
         ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier,
     },
 };
@@ -41,7 +41,7 @@ where
         );
     }
 
-    pub fn direct_moa<D>(&self, to: &ManagedAddress<A>, moa_value: &BigUint<A>, data: D)
+    pub fn direct_rewa<D>(&self, to: &ManagedAddress<A>, rewa_value: &BigUint<A>, data: D)
     where
         D: Into<ManagedBuffer<A>>,
     {
@@ -51,24 +51,24 @@ where
 
         let _ = A::send_api_impl().transfer_value_execute(
             to.get_handle().get_raw_handle(),
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             0,
             data.into().get_handle().get_raw_handle(),
             empty_mb_handle.get_raw_handle(),
         );
     }
 
-    pub fn direct_moa_execute(
+    pub fn direct_rewa_execute(
         &self,
         to: &ManagedAddress<A>,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         gas_limit: u64,
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> Result<(), &'static [u8]> {
         A::send_api_impl().transfer_value_execute(
             to.get_handle().get_raw_handle(),
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             gas_limit,
             endpoint_name.get_handle().get_raw_handle(),
             arg_buffer.get_handle().get_raw_handle(),
@@ -93,7 +93,7 @@ where
         to: &ManagedAddress<A>,
         token: &TokenIdentifier<A>,
         nonce: u64,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         gas_limit: u64,
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
@@ -102,7 +102,7 @@ where
         payments.push(DcdtTokenPayment::new(
             token.clone(),
             nonce,
-            moa_value.clone(),
+            rewa_value.clone(),
         ));
         self.multi_dcdt_transfer_execute(to, &payments, gas_limit, endpoint_name, arg_buffer)
     }
@@ -124,17 +124,17 @@ where
         )
     }
 
-    pub fn multi_moa_or_dcdt_transfer_execute(
+    pub fn multi_rewa_or_dcdt_transfer_execute(
         &self,
         to: &ManagedAddress<A>,
-        payments: &ManagedVec<A, MoaOrDcdtTokenPayment<A>>,
+        payments: &ManagedVec<A, RewaOrDcdtTokenPayment<A>>,
         gas_limit: u64,
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> Result<(), &'static [u8]> {
         if let Some(single_item) = payments.is_single_item() {
-            if single_item.token_identifier.is_moa() {
-                return self.direct_moa_execute(
+            if single_item.token_identifier.is_rewa() {
+                return self.direct_rewa_execute(
                     to,
                     &single_item.amount,
                     gas_limit,
@@ -155,13 +155,13 @@ where
     pub fn async_call_raw(
         &self,
         to: &ManagedAddress<A>,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
     ) -> ! {
         A::send_api_impl().async_call_raw(
             to.get_handle().get_raw_handle(),
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             endpoint_name.get_handle().get_raw_handle(),
             arg_buffer.get_handle().get_raw_handle(),
         )
@@ -171,7 +171,7 @@ where
     pub fn create_async_call_raw(
         &self,
         to: &ManagedAddress<A>,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         endpoint_name: &ManagedBuffer<A>,
         arg_buffer: &ManagedArgBuffer<A>,
         success_callback: &'static str,
@@ -182,7 +182,7 @@ where
     ) {
         A::send_api_impl().create_async_call_raw(
             to.get_handle().get_raw_handle(),
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             endpoint_name.get_handle().get_raw_handle(),
             arg_buffer.get_handle().get_raw_handle(),
             success_callback,
@@ -202,7 +202,7 @@ where
     pub fn deploy_contract(
         &self,
         gas: u64,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         code: &ManagedBuffer<A>,
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<A>,
@@ -213,7 +213,7 @@ where
         let result_handle = A::static_var_api_impl().next_handle();
         A::send_api_impl().deploy_contract(
             gas,
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             code.get_handle().get_raw_handle(),
             code_metadata_handle,
             arg_buffer.get_handle().get_raw_handle(),
@@ -234,7 +234,7 @@ where
     pub fn deploy_from_source_contract(
         &self,
         gas: u64,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         source_contract_address: &ManagedAddress<A>,
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<A>,
@@ -245,7 +245,7 @@ where
         let result_handle = A::static_var_api_impl().next_handle();
         A::send_api_impl().deploy_from_source_contract(
             gas,
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             source_contract_address.get_handle().get_raw_handle(),
             code_metadata_handle,
             arg_buffer.get_handle().get_raw_handle(),
@@ -264,7 +264,7 @@ where
         &self,
         sc_address: &ManagedAddress<A>,
         gas: u64,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         source_contract_address: &ManagedAddress<A>,
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<A>,
@@ -274,7 +274,7 @@ where
         A::send_api_impl().upgrade_from_source_contract(
             sc_address.get_handle().get_raw_handle(),
             gas,
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             source_contract_address.get_handle().get_raw_handle(),
             code_metadata_handle,
             arg_buffer.get_handle().get_raw_handle(),
@@ -288,7 +288,7 @@ where
         &self,
         sc_address: &ManagedAddress<A>,
         gas: u64,
-        moa_value: &BigUint<A>,
+        rewa_value: &BigUint<A>,
         code: &ManagedBuffer<A>,
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<A>,
@@ -298,7 +298,7 @@ where
         A::send_api_impl().upgrade_contract(
             sc_address.get_handle().get_raw_handle(),
             gas,
-            moa_value.get_handle().get_raw_handle(),
+            rewa_value.get_handle().get_raw_handle(),
             code.get_handle().get_raw_handle(),
             code_metadata_handle,
             arg_buffer.get_handle().get_raw_handle(),
@@ -376,13 +376,13 @@ where
         let own_address_handle: A::ManagedBufferHandle =
             use_raw_handle(const_handles::MBUF_TEMPORARY_1);
         A::blockchain_api_impl().load_sc_address_managed(own_address_handle.clone());
-        let moa_value_handle = A::managed_type_impl().bi_new_zero();
+        let rewa_value_handle = A::managed_type_impl().bi_new_zero();
 
         let result_handle = A::static_var_api_impl().next_handle();
         A::send_api_impl().execute_on_dest_context_raw(
             gas,
             own_address_handle.get_raw_handle(),
-            moa_value_handle.get_raw_handle(),
+            rewa_value_handle.get_raw_handle(),
             function_name.get_handle().get_raw_handle(),
             arg_buffer.get_handle().get_raw_handle(),
             result_handle,

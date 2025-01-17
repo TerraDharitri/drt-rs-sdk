@@ -124,7 +124,7 @@ impl MultisigTestState {
     fn propose_transfer_execute(
         &mut self,
         to: TestSCAddress,
-        moa_amount: u64,
+        rewa_amount: u64,
         contract_call: FunctionCall<StaticApi>,
     ) -> usize {
         self.world
@@ -132,7 +132,7 @@ impl MultisigTestState {
             .from(PROPOSER_ADDRESS)
             .to(MULTISIG_ADDRESS)
             .typed(multisig_proxy::MultisigProxy)
-            .propose_transfer_execute(to, moa_amount, contract_call)
+            .propose_transfer_execute(to, rewa_amount, contract_call)
             .returns(ReturnsResult)
             .run()
     }
@@ -140,7 +140,7 @@ impl MultisigTestState {
     fn propose_async_call(
         &mut self,
         to: TestSCAddress,
-        moa_amount: u64,
+        rewa_amount: u64,
         contract_call: FunctionCall<StaticApi>,
     ) -> usize {
         self.world
@@ -148,7 +148,7 @@ impl MultisigTestState {
             .from(PROPOSER_ADDRESS)
             .to(MULTISIG_ADDRESS)
             .typed(multisig_proxy::MultisigProxy)
-            .propose_async_call(to, moa_amount, contract_call)
+            .propose_async_call(to, rewa_amount, contract_call)
             .returns(ReturnsResult)
             .run()
     }
@@ -429,7 +429,7 @@ fn test_transfer_execute_to_user() {
         .to(MULTISIG_ADDRESS)
         .typed(multisig_proxy::MultisigProxy)
         .deposit()
-        .moa(amount)
+        .rewa(amount)
         .run();
 
     state.world.check_account(MULTISIG_ADDRESS).balance(amount);

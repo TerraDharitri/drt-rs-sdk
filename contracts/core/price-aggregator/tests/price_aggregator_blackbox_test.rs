@@ -8,7 +8,7 @@ use dharitri_sc_scenario::imports::*;
 mod price_aggregator_proxy;
 
 const DECIMALS: u8 = 0;
-const MOA_TICKER: &[u8] = b"MOA";
+const REWA_TICKER: &[u8] = b"REWA";
 const NR_ORACLES: usize = 4;
 const SLASH_AMOUNT: u64 = 10;
 const SLASH_QUORUM: usize = 3;
@@ -73,7 +73,7 @@ impl PriceAggregatorTestState {
             .from(OWNER_ADDRESS)
             .typed(price_aggregator_proxy::PriceAggregatorProxy)
             .init(
-                MoaOrDcdtTokenIdentifier::moa(),
+                RewaOrDcdtTokenIdentifier::rewa(),
                 STAKE_AMOUNT,
                 SLASH_AMOUNT,
                 SLASH_QUORUM,
@@ -90,7 +90,7 @@ impl PriceAggregatorTestState {
                 .to(PRICE_AGGREGATOR_ADDRESS)
                 .typed(price_aggregator_proxy::PriceAggregatorProxy)
                 .stake()
-                .moa(STAKE_AMOUNT)
+                .rewa(STAKE_AMOUNT)
                 .run();
         }
 
@@ -103,7 +103,7 @@ impl PriceAggregatorTestState {
             .from(OWNER_ADDRESS)
             .to(PRICE_AGGREGATOR_ADDRESS)
             .typed(price_aggregator_proxy::PriceAggregatorProxy)
-            .set_pair_decimals(MOA_TICKER, USD_TICKER, DECIMALS)
+            .set_pair_decimals(REWA_TICKER, USD_TICKER, DECIMALS)
             .run();
     }
 
@@ -124,7 +124,7 @@ impl PriceAggregatorTestState {
             .to(PRICE_AGGREGATOR_ADDRESS)
             .typed(price_aggregator_proxy::PriceAggregatorProxy)
             .submit(
-                MOA_TICKER,
+                REWA_TICKER,
                 USD_TICKER,
                 submission_timestamp,
                 price,
@@ -146,7 +146,7 @@ impl PriceAggregatorTestState {
             .to(PRICE_AGGREGATOR_ADDRESS)
             .typed(price_aggregator_proxy::PriceAggregatorProxy)
             .submit(
-                MOA_TICKER,
+                REWA_TICKER,
                 USD_TICKER,
                 submission_timestamp,
                 price,
@@ -199,7 +199,7 @@ fn test_price_aggregator_submit() {
         dharitri_sc_price_aggregator::contract_obj,
         |sc| {
             let token_pair = TokenPair {
-                from: managed_buffer!(MOA_TICKER),
+                from: managed_buffer!(REWA_TICKER),
                 to: managed_buffer!(USD_TICKER),
             };
             assert_eq!(
@@ -281,11 +281,11 @@ fn test_price_aggregator_submit_round_ok() {
         dharitri_sc_price_aggregator::contract_obj,
         |sc| {
             let result =
-                sc.latest_price_feed(managed_buffer!(MOA_TICKER), managed_buffer!(USD_TICKER));
+                sc.latest_price_feed(managed_buffer!(REWA_TICKER), managed_buffer!(USD_TICKER));
 
             let (round_id, from, to, timestamp, price, decimals) = result.into_tuple();
             assert_eq!(round_id, 1);
-            assert_eq!(from, managed_buffer!(MOA_TICKER));
+            assert_eq!(from, managed_buffer!(REWA_TICKER));
             assert_eq!(to, managed_buffer!(USD_TICKER));
             assert_eq!(timestamp, current_timestamp);
             assert_eq!(price, managed_biguint!(11_000));
@@ -337,7 +337,7 @@ fn test_price_aggregator_discarded_round() {
         dharitri_sc_price_aggregator::contract_obj,
         |sc| {
             let token_pair = TokenPair {
-                from: managed_buffer!(MOA_TICKER),
+                from: managed_buffer!(REWA_TICKER),
                 to: managed_buffer!(USD_TICKER),
             };
             let submissions = sc.submissions().get(&token_pair).unwrap();

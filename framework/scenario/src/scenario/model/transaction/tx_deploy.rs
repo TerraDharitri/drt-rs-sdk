@@ -7,12 +7,12 @@ use crate::{
     },
 };
 
-use super::{tx_interpret_util::interpret_moa_value, DEFAULT_GAS_EXPR};
+use super::{tx_interpret_util::interpret_rewa_value, DEFAULT_GAS_EXPR};
 
 #[derive(Debug, Clone)]
 pub struct TxDeploy {
     pub from: AddressValue,
-    pub moa_value: BigUintValue,
+    pub rewa_value: BigUintValue,
     pub contract_code: BytesValue,
     pub code_metadata: CodeMetadata,
     pub arguments: Vec<BytesValue>,
@@ -24,7 +24,7 @@ impl Default for TxDeploy {
     fn default() -> Self {
         Self {
             from: Default::default(),
-            moa_value: Default::default(),
+            rewa_value: Default::default(),
             code_metadata: CodeMetadata::all(),
             contract_code: Default::default(),
             arguments: Default::default(),
@@ -38,7 +38,7 @@ impl InterpretableFrom<TxDeployRaw> for TxDeploy {
     fn interpret_from(from: TxDeployRaw, context: &InterpreterContext) -> Self {
         TxDeploy {
             from: AddressValue::interpret_from(from.from, context),
-            moa_value: interpret_moa_value(from.value, from.moa_value, context),
+            rewa_value: interpret_rewa_value(from.value, from.rewa_value, context),
             code_metadata: CodeMetadata::empty(), // not yet modelled in scenarios
             contract_code: BytesValue::interpret_from(from.contract_code, context),
             arguments: from
@@ -57,7 +57,7 @@ impl IntoRaw<TxDeployRaw> for TxDeploy {
         TxDeployRaw {
             from: self.from.into_raw(),
             value: None,
-            moa_value: self.moa_value.into_raw_opt(),
+            rewa_value: self.rewa_value.into_raw_opt(),
             contract_code: self.contract_code.into_raw(),
             arguments: self
                 .arguments

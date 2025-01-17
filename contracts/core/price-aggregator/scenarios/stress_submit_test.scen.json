@@ -475,7 +475,7 @@
                 "from": "address:owner",
                 "contractCode": "drtsc:../output/dharitri-sc-price-aggregator.drtsc.json",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x14",
                     "0x0a",
                     "0x03",
@@ -544,7 +544,7 @@
             "tx": {
                 "from": "address:oracle1",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -560,7 +560,7 @@
             "tx": {
                 "from": "address:oracle2",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -576,7 +576,7 @@
             "tx": {
                 "from": "address:oracle3",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -592,7 +592,7 @@
             "tx": {
                 "from": "address:oracle4",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -608,7 +608,7 @@
             "tx": {
                 "from": "address:oracle5",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -624,7 +624,7 @@
             "tx": {
                 "from": "address:oracle6",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -640,7 +640,7 @@
             "tx": {
                 "from": "address:oracle7",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -656,7 +656,7 @@
             "tx": {
                 "from": "address:oracle8",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -672,7 +672,7 @@
             "tx": {
                 "from": "address:oracle9",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -688,7 +688,7 @@
             "tx": {
                 "from": "address:oracle10",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -704,7 +704,7 @@
             "tx": {
                 "from": "address:oracle11",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -720,7 +720,7 @@
             "tx": {
                 "from": "address:oracle12",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -736,7 +736,7 @@
             "tx": {
                 "from": "address:oracle13",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -752,7 +752,7 @@
             "tx": {
                 "from": "address:oracle14",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -768,7 +768,7 @@
             "tx": {
                 "from": "address:oracle15",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -784,7 +784,7 @@
             "tx": {
                 "from": "address:oracle16",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -800,7 +800,7 @@
             "tx": {
                 "from": "address:oracle17",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -816,7 +816,7 @@
             "tx": {
                 "from": "address:oracle18",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -832,7 +832,7 @@
             "tx": {
                 "from": "address:oracle19",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -848,7 +848,7 @@
             "tx": {
                 "from": "address:oracle20",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -864,7 +864,7 @@
             "tx": {
                 "from": "address:oracle21",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -880,7 +880,7 @@
             "tx": {
                 "from": "address:oracle22",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -896,7 +896,7 @@
             "tx": {
                 "from": "address:oracle23",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -912,7 +912,7 @@
             "tx": {
                 "from": "address:oracle24",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -928,7 +928,7 @@
             "tx": {
                 "from": "address:oracle25",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -944,7 +944,7 @@
             "tx": {
                 "from": "address:oracle26",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -960,7 +960,7 @@
             "tx": {
                 "from": "address:oracle27",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -976,7 +976,7 @@
             "tx": {
                 "from": "address:oracle28",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -992,7 +992,7 @@
             "tx": {
                 "from": "address:oracle29",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1008,7 +1008,7 @@
             "tx": {
                 "from": "address:oracle30",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1024,7 +1024,7 @@
             "tx": {
                 "from": "address:oracle31",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1040,7 +1040,7 @@
             "tx": {
                 "from": "address:oracle32",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1056,7 +1056,7 @@
             "tx": {
                 "from": "address:oracle33",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1072,7 +1072,7 @@
             "tx": {
                 "from": "address:oracle34",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1088,7 +1088,7 @@
             "tx": {
                 "from": "address:oracle35",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1104,7 +1104,7 @@
             "tx": {
                 "from": "address:oracle36",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1120,7 +1120,7 @@
             "tx": {
                 "from": "address:oracle37",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1136,7 +1136,7 @@
             "tx": {
                 "from": "address:oracle38",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1152,7 +1152,7 @@
             "tx": {
                 "from": "address:oracle39",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1168,7 +1168,7 @@
             "tx": {
                 "from": "address:oracle40",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1184,7 +1184,7 @@
             "tx": {
                 "from": "address:oracle41",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1200,7 +1200,7 @@
             "tx": {
                 "from": "address:oracle42",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1216,7 +1216,7 @@
             "tx": {
                 "from": "address:oracle43",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1232,7 +1232,7 @@
             "tx": {
                 "from": "address:oracle44",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1248,7 +1248,7 @@
             "tx": {
                 "from": "address:oracle45",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1264,7 +1264,7 @@
             "tx": {
                 "from": "address:oracle46",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1280,7 +1280,7 @@
             "tx": {
                 "from": "address:oracle47",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1296,7 +1296,7 @@
             "tx": {
                 "from": "address:oracle48",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1312,7 +1312,7 @@
             "tx": {
                 "from": "address:oracle49",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1328,7 +1328,7 @@
             "tx": {
                 "from": "address:oracle50",
                 "to": "sc:price-aggregator",
-                "moaValue": "20",
+                "rewaValue": "20",
                 "function": "stake",
                 "arguments": [],
                 "gasLimit": "5000000"
@@ -1346,7 +1346,7 @@
                 "to": "sc:price-aggregator",
                 "function": "setPairDecimals",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x"
                 ],
@@ -1380,10 +1380,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x5f",
-                    "0xe0acf1b9de8e360d",
+                    "0xba5cc4705eff3c91",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1401,10 +1401,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x9d8813387ddb1258",
+                    "0x5894bd0194f2a821",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1422,10 +1422,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x4f47dc128ee696db",
+                    "0xd4e2dfcca5f93dca",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1443,10 +1443,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x57308ecefdf34c23",
+                    "0xc94cf8dbb73da8ad",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1464,10 +1464,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xa220dde4827dee1e",
+                    "0x8355827ccb291ff6",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1485,10 +1485,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x606a1f9eaba25f87",
+                    "0x07d7b935a011c1f6",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1506,10 +1506,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x3660e2cf601099a7",
+                    "0xa21093ad9cc879cc",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1527,10 +1527,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x2545b3cabb443a79",
+                    "0x9a3df9f1cd367eda",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1548,10 +1548,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x2f7c8679221e6604",
+                    "0xd3a0cb5c3385ebbe",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1569,10 +1569,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xe014240a650b542b",
+                    "0x9fd7d51acc39211f",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1590,10 +1590,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x50164274a0d9df98",
+                    "0x1f9845659b2022ec",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1611,10 +1611,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xedd2b7f2625b3f59",
+                    "0x5b62bef0f59dd7fc",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1632,10 +1632,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x561d907bb0b627ed",
+                    "0xac7056e2b486ae14",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1653,10 +1653,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x783f05dedf1bd9e9",
+                    "0x22f42de216e492c6",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1674,10 +1674,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x9edb729da65011b5",
+                    "0x2c9da47c9495df73",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1695,10 +1695,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xb70b7cedf69e492d",
+                    "0xecf7d314d39f787e",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1716,10 +1716,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x722df3370ac760bf",
+                    "0xc048d66fe89a4ea0",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1737,10 +1737,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x1ab4f76f54e07bef",
+                    "0x803cb5132bed1587",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1758,10 +1758,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x6de76cc36582f8eb",
+                    "0x172098a8a8522e8f",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1779,10 +1779,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x9e2edf348d321253",
+                    "0x8e90c59c2c902ecf",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1800,10 +1800,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xf730a92d98f5562d",
+                    "0x7f2305ca2dbc3026",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1821,10 +1821,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x6f1f8e92a821541f",
+                    "0xf3e73d470c643441",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1842,10 +1842,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x5d8d6a988bed0300",
+                    "0x08f4709e616b0f04",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1863,10 +1863,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xae8333e6433a7c4f",
+                    "0x2a4489b194aaee4a",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1884,10 +1884,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x6d5ac6af575f12f3",
+                    "0x2d0519a993a95ca7",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1905,10 +1905,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xc0017dd4e9403fdc",
+                    "0xf5775fd5b9e97f32",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1926,10 +1926,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x5473b50d75b51bb0",
+                    "0xcaa8b6ab7d32cc6f",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1947,10 +1947,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x1a11415d1800a990",
+                    "0x18741fd3bafa7e1b",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1968,10 +1968,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x4060f2df79f61770",
+                    "0xe250c4d58899632a",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -1989,10 +1989,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x86840555ee28be05",
+                    "0x9b3153f0744192d0",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2010,10 +2010,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x67f739c9b584c46b",
+                    "0xdaad5601fe724ae7",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2031,10 +2031,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x420d0b68de1077fc",
+                    "0x74fc3dc8136a8c7a",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2052,10 +2052,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x3c7ca70d020bd592",
+                    "0xf1f700c80275670b",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2073,10 +2073,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x766ee5193c9e2fb9",
+                    "0x5c32baeccf553c1b",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2094,10 +2094,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x68e5498b9e27ae57",
+                    "0x6f94f1511c5e0be9",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2115,10 +2115,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xde417bc1f3bdce22",
+                    "0x33324f24194f75e0",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2136,10 +2136,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x6f7dc8dffc6ea984",
+                    "0x25403bc0e7d11bb4",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2157,10 +2157,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xaaae899b3f2a3cda",
+                    "0x8c550c3638e94790",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2178,10 +2178,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x22733e1f2a028f55",
+                    "0x3a9679c0d404f926",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2199,10 +2199,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x7dd7f6db98a86f5d",
+                    "0x805329ea24e9008f",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2220,10 +2220,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x8010c92d1c75e29c",
+                    "0x094d920bdabc1ecb",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2241,10 +2241,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x86bdea09735df264",
+                    "0xc3136d1f769972b2",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2262,10 +2262,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x24cc24858cc19d47",
+                    "0xeb8e786e2aa4cc80",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2283,10 +2283,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xd268e74c2ebcddf3",
+                    "0xd7929d5f8b06b9f5",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2304,10 +2304,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xb6141621bfdebebd",
+                    "0x69e11236bbcceec5",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2325,10 +2325,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x029ff3a51b5da79f",
+                    "0x7af888ddadc7e208",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2346,10 +2346,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xa6b73b37c804d5bf",
+                    "0x0eb5798a683a1565",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2367,10 +2367,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xd1cc251b0fe65008",
+                    "0xf0f479720493aaf5",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2388,10 +2388,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0xc46e4df93c126884",
+                    "0x06b16eb3ecdaf338",
                     "0x"
                 ],
                 "gasLimit": "7000000"
@@ -2409,10 +2409,10 @@
                 "to": "sc:price-aggregator",
                 "function": "submit",
                 "arguments": [
-                    "0x4d4f41",
+                    "0x52455741",
                     "0x55534443",
                     "0x64",
-                    "0x1ab9e0d29e016113",
+                    "0xb1fe0a6cbcd0c578",
                     "0x"
                 ],
                 "gasLimit": "7000000"

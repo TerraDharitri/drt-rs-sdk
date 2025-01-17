@@ -45,7 +45,7 @@
             "tx": {
                 "from": "address:owner",
                 "to": "sc:contract",
-                "moaValue": "1000",
+                "rewaValue": "1000",
                 "function": "repeat",
                 "arguments": [
                     "address:receiver",

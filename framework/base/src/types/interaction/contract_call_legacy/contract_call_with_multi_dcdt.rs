@@ -9,7 +9,7 @@ use crate::{
 
 use super::{
     contract_call_no_payment::ContractCallNoPayment, contract_call_trait::ContractCallBase,
-    ContractCall, ContractCallWithMoa,
+    ContractCall, ContractCallWithRewa,
 };
 
 #[deprecated(
@@ -32,7 +32,7 @@ where
 {
     type OriginalResult = OriginalResult;
 
-    fn into_normalized(self) -> ContractCallWithMoa<SA, Self::OriginalResult> {
+    fn into_normalized(self) -> ContractCallWithRewa<SA, Self::OriginalResult> {
         self.basic
             .into_normalized()
             .convert_to_dcdt_transfer_call(self.dcdt_payments)

@@ -16,12 +16,12 @@ pub trait ZombieHelper: storage::Storage {
         );
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn level_up(&self, zombie_id: usize) {
-        let payment_amount = self.call_value().moa();
+        let payment_amount = self.call_value().rewa();
         let fee = self.level_up_fee().get();
-        require!(*payment_amount == fee, "Payment must be must be 0.001 MOA");
+        require!(*payment_amount == fee, "Payment must be must be 0.001 REWA");
         self.zombies(&zombie_id)
             .update(|my_zombie| my_zombie.level += 1);
     }
@@ -33,7 +33,7 @@ pub trait ZombieHelper: storage::Storage {
         let collected_fees = self.collected_fees().get();
         self.tx()
             .to(&caller_address)
-            .moa(&collected_fees)
+            .rewa(&collected_fees)
             .transfer();
         self.collected_fees().clear();
     }

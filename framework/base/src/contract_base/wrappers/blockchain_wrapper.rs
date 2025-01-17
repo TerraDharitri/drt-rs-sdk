@@ -10,7 +10,7 @@ use crate::{
     err_msg::{ONLY_OWNER_CALLER, ONLY_USER_ACCOUNT_CALLER},
     storage::{self},
     types::{
-        BackTransfers, BigUint, CodeMetadata, MoaOrDcdtTokenIdentifier, DcdtLocalRoleFlags,
+        BackTransfers, BigUint, CodeMetadata, RewaOrDcdtTokenIdentifier, DcdtLocalRoleFlags,
         DcdtTokenData, DcdtTokenType, ManagedAddress, ManagedBuffer, ManagedByteArray,
         ManagedRefMut, ManagedType, ManagedVec, TokenIdentifier,
     },
@@ -164,7 +164,7 @@ where
     }
 
     #[inline]
-    pub fn get_sc_balance(&self, token: &MoaOrDcdtTokenIdentifier<A>, nonce: u64) -> BigUint<A> {
+    pub fn get_sc_balance(&self, token: &RewaOrDcdtTokenIdentifier<A>, nonce: u64) -> BigUint<A> {
         token.map_ref_or_else(
             (),
             |()| self.get_balance(&self.get_sc_address()),
@@ -402,7 +402,7 @@ where
 
         unsafe {
             BackTransfers {
-                total_moa_amount: BigUint::from_raw_handle(call_value_handle.get_raw_handle()),
+                total_rewa_amount: BigUint::from_raw_handle(call_value_handle.get_raw_handle()),
                 dcdt_payments: ManagedVec::from_raw_handle(
                     dcdt_transfer_value_handle.get_raw_handle(),
                 ),

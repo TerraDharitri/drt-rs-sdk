@@ -1,7 +1,7 @@
 use dharitri_sc::{
     api::ManagedTypeApi,
-    chain_core::MOA_000000_TOKEN_IDENTIFIER,
-    types::{MoaOrDcdtTokenPayment, DcdtTokenPayment},
+    chain_core::REWA_000000_TOKEN_IDENTIFIER,
+    types::{RewaOrDcdtTokenPayment, DcdtTokenPayment},
 };
 
 use crate::{
@@ -20,8 +20,8 @@ pub struct TxDCDT {
 }
 
 impl TxDCDT {
-    pub fn is_moa(&self) -> bool {
-        self.dcdt_token_identifier.value == MOA_000000_TOKEN_IDENTIFIER.as_bytes()
+    pub fn is_rewa(&self) -> bool {
+        self.dcdt_token_identifier.value == REWA_000000_TOKEN_IDENTIFIER.as_bytes()
     }
 }
 
@@ -57,8 +57,8 @@ impl<M: ManagedTypeApi> From<DcdtTokenPayment<M>> for TxDCDT {
     }
 }
 
-impl<M: ManagedTypeApi> From<MoaOrDcdtTokenPayment<M>> for TxDCDT {
-    fn from(value: MoaOrDcdtTokenPayment<M>) -> Self {
+impl<M: ManagedTypeApi> From<RewaOrDcdtTokenPayment<M>> for TxDCDT {
+    fn from(value: RewaOrDcdtTokenPayment<M>) -> Self {
         TxDCDT {
             dcdt_token_identifier: BytesValue::from(
                 value.token_identifier.as_managed_buffer().to_vec(),

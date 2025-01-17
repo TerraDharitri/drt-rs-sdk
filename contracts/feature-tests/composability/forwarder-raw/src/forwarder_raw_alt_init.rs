@@ -40,11 +40,11 @@ pub trait ForwarderRawAlterativeInit: super::forwarder_raw_common::ForwarderRawC
         self.init_async_call(to, endpoint_name, args)
     }
 
-    /// Works, but without forwarding MOA.
+    /// Works, but without forwarding REWA.
     ///
-    /// Forwarding MOA only shows up in a VM test.
+    /// Forwarding REWA only shows up in a VM test.
     #[init]
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[label("init-sync-call")]
     fn init_sync_call(
         &self,
@@ -52,14 +52,14 @@ pub trait ForwarderRawAlterativeInit: super::forwarder_raw_common::ForwarderRawC
         endpoint_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         let result = self
             .tx()
             .to(&to)
             .gas(half_gas)
-            .moa(payment)
+            .rewa(payment)
             .raw_call(endpoint_name)
             .arguments_raw(args.to_arg_buffer())
             .returns(ReturnsRawResult)

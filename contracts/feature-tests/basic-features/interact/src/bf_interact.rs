@@ -38,8 +38,8 @@ pub async fn basic_features_cli() {
         Some(bf_interact_cli::InteractCliCommand::LargeStorage(args)) => {
             bf_interact.large_storage(args.size_kb).await;
         },
-        Some(bf_interact_cli::InteractCliCommand::ReturnsMOADecimals(args)) => {
-            bf_interact.returns_moa_decimal(args.moa).await;
+        Some(bf_interact_cli::InteractCliCommand::ReturnsREWADecimals(args)) => {
+            bf_interact.returns_rewa_decimal(args.rewa).await;
         },
         Some(bf_interact_cli::InteractCliCommand::EchoManagedOption(args)) => {
             let mo = match args.managed_option {
@@ -181,9 +181,9 @@ impl BasicFeaturesInteract {
         data_raw.to_vec()
     }
 
-    pub async fn returns_moa_decimal(
+    pub async fn returns_rewa_decimal(
         &mut self,
-        moa: u64,
+        rewa: u64,
     ) -> ManagedDecimal<StaticApi, ConstDecimals<18>> {
         self.interactor
             .tx()
@@ -191,8 +191,8 @@ impl BasicFeaturesInteract {
             .to(self.state.bf_contract())
             .gas(10_000_000)
             .typed(basic_features_proxy::BasicFeaturesProxy)
-            .returns_moa_decimal()
-            .moa(moa)
+            .returns_rewa_decimal()
+            .rewa(rewa)
             .returns(ReturnsResultUnmanaged)
             .run()
             .await

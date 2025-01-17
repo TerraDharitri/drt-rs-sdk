@@ -206,7 +206,7 @@ where
     Api: ManagedTypeApi,
 {
     pub to: ManagedAddress<Api>,
-    pub moa_amount: BigUint<Api>,
+    pub rewa_amount: BigUint<Api>,
     pub endpoint_name: ManagedBuffer<Api>,
     pub arguments: ManagedVec<Api, ManagedBuffer<Api>>,
 }

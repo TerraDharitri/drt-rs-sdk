@@ -34,7 +34,7 @@
             "expect": {
                 "out": [
                     "0",
-                    "str:MOA"
+                    "str:REWA"
                 ],
                 "status": "",
                 "logs": "*",
@@ -48,7 +48,7 @@
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "moaValue": "5",
+                "rewaValue": "5",
                 "function": "payable_any_2",
                 "arguments": [],
                 "gasLimit": "50,000,000",
@@ -57,7 +57,7 @@
             "expect": {
                 "out": [
                     "5",
-                    "str:MOA"
+                    "str:REWA"
                 ],
                 "status": "",
                 "logs": "*",

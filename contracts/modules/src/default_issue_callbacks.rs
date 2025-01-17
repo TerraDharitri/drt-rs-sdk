@@ -46,9 +46,9 @@ pub trait DefaultIssueCallbacksModule {
     }
 
     fn return_failed_issue_funds(&self, initial_caller: ManagedAddress) {
-        let moa_returned = self.call_value().moa_direct_non_strict();
-        if *moa_returned > 0u64 {
-            self.tx().to(&initial_caller).moa(moa_returned).transfer();
+        let rewa_returned = self.call_value().rewa_direct_non_strict();
+        if *rewa_returned > 0u64 {
+            self.tx().to(&initial_caller).rewa(rewa_returned).transfer();
         }
     }
 }

@@ -3,21 +3,21 @@ use serde::{Deserialize, Serialize};
 // NetworkStatus holds the network status details of a specified shard
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct NetworkStatus {
-    #[serde(rename = "erd_current_round")]
+    #[serde(rename = "drt_current_round")]
     pub current_round: u64,
-    #[serde(rename = "erd_epoch_number")]
+    #[serde(rename = "drt_epoch_number")]
     pub epoch_number: u64,
-    #[serde(rename = "erd_nonce")]
+    #[serde(rename = "drt_nonce")]
     pub nonce: u64,
-    #[serde(rename = "erd_nonce_at_epoch_start")]
+    #[serde(rename = "drt_nonce_at_epoch_start")]
     pub nonce_at_epoch_start: u64,
-    #[serde(rename = "erd_nonces_passed_in_current_epoch")]
+    #[serde(rename = "drt_nonces_passed_in_current_epoch")]
     pub nonces_passed_in_current_epoch: u64,
-    #[serde(rename = "erd_round_at_epoch_start")]
+    #[serde(rename = "drt_round_at_epoch_start")]
     pub round_at_epoch_start: u64,
-    #[serde(rename = "erd_rounds_passed_in_current_epoch")]
+    #[serde(rename = "drt_rounds_passed_in_current_epoch")]
     pub rounds_passed_in_current_epoch: u64,
-    #[serde(rename = "erd_rounds_per_epoch")]
+    #[serde(rename = "drt_rounds_per_epoch")]
     pub rounds_per_epoch: u32,
 }
 

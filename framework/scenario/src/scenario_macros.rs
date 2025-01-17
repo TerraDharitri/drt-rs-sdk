@@ -37,14 +37,14 @@ macro_rules! managed_token_id {
 macro_rules! managed_token_id_wrapped {
     ($bytes:expr) => {{
         let ___dcdt_token_id___ = dharitri_sc::types::TokenIdentifier::from_dcdt_bytes($bytes);
-        dharitri_sc::types::MoaOrDcdtTokenIdentifier::dcdt(___dcdt_token_id___)
+        dharitri_sc::types::RewaOrDcdtTokenIdentifier::dcdt(___dcdt_token_id___)
     }};
 }
 
 #[macro_export]
-macro_rules! managed_moa_token_id {
+macro_rules! managed_rewa_token_id {
     () => {{
-        dharitri_sc::types::MoaOrDcdtTokenIdentifier::moa()
+        dharitri_sc::types::RewaOrDcdtTokenIdentifier::rewa()
     }};
 }
 

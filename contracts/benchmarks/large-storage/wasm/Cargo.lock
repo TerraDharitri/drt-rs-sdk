@@ -21,6 +21,64 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
 
 [[package]]
+name = "dharitri-chain-core"
+version = "0.0.1"
+dependencies = [
+ "bitflags",
+ "dharitri-sc-codec",
+]
+
+[[package]]
+name = "dharitri-sc"
+version = "0.0.1"
+dependencies = [
+ "bitflags",
+ "dharitri-chain-core",
+ "dharitri-sc-codec",
+ "dharitri-sc-derive",
+ "hex-literal",
+ "num-traits",
+ "unwrap-infallible",
+]
+
+[[package]]
+name = "dharitri-sc-codec"
+version = "0.0.1"
+dependencies = [
+ "arrayvec",
+ "dharitri-sc-codec-derive",
+ "unwrap-infallible",
+]
+
+[[package]]
+name = "dharitri-sc-codec-derive"
+version = "0.0.1"
+dependencies = [
+ "hex",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "dharitri-sc-derive"
+version = "0.0.1"
+dependencies = [
+ "hex",
+ "proc-macro2",
+ "quote",
+ "radix_trie",
+ "syn",
+]
+
+[[package]]
+name = "dharitri-sc-wasm-adapter"
+version = "0.0.1"
+dependencies = [
+ "dharitri-sc",
+]
+
+[[package]]
 name = "endian-type"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -49,66 +107,8 @@ dependencies = [
 name = "large-storage-wasm"
 version = "0.0.0"
 dependencies = [
- "large-storage",
  "dharitri-sc-wasm-adapter",
-]
-
-[[package]]
-name = "dharitri-core"
-version = "0.12.0"
-dependencies = [
- "bitflags",
- "dharitri-sc-codec",
-]
-
-[[package]]
-name = "dharitri-sc"
-version = "0.55.0"
-dependencies = [
- "bitflags",
- "hex-literal",
- "dharitri-core",
- "dharitri-sc-codec",
- "dharitri-sc-derive",
- "num-traits",
- "unwrap-infallible",
-]
-
-[[package]]
-name = "dharitri-sc-codec"
-version = "0.21.2"
-dependencies = [
- "arrayvec",
- "dharitri-sc-codec-derive",
- "unwrap-infallible",
-]
-
-[[package]]
-name = "dharitri-sc-codec-derive"
-version = "0.21.2"
-dependencies = [
- "hex",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "dharitri-sc-derive"
-version = "0.55.0"
-dependencies = [
- "hex",
- "proc-macro2",
- "quote",
- "radix_trie",
- "syn",
-]
-
-[[package]]
-name = "dharitri-sc-wasm-adapter"
-version = "0.55.0"
-dependencies = [
- "dharitri-sc",
+ "large-storage",
 ]
 
 [[package]]

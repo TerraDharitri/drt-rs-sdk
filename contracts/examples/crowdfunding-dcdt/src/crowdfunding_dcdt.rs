@@ -14,7 +14,7 @@ pub enum Status {
 #[dharitri_sc::contract]
 pub trait Crowdfunding {
     #[init]
-    fn init(&self, target: BigUint, deadline: u64, token_identifier: MoaOrDcdtTokenIdentifier) {
+    fn init(&self, target: BigUint, deadline: u64, token_identifier: RewaOrDcdtTokenIdentifier) {
         require!(target > 0, "Target must be more than 0");
         self.target().set(target);
 
@@ -31,7 +31,7 @@ pub trait Crowdfunding {
     #[endpoint]
     #[payable]
     fn fund(&self) {
-        let (token, _, payment) = self.call_value().moa_or_single_dcdt().into_tuple();
+        let (token, _, payment) = self.call_value().rewa_or_single_dcdt().into_tuple();
 
         require!(
             self.status() == Status::FundingPeriod,
@@ -78,7 +78,7 @@ pub trait Crowdfunding {
 
                 self.tx()
                     .to(&caller)
-                    .moa_or_single_dcdt(&token_identifier, 0, &sc_balance)
+                    .rewa_or_single_dcdt(&token_identifier, 0, &sc_balance)
                     .transfer();
             },
             Status::Failed => {
@@ -91,7 +91,7 @@ pub trait Crowdfunding {
                     self.deposit(&caller).clear();
                     self.tx()
                         .to(&caller)
-                        .moa_or_single_dcdt(&token_identifier, 0, &deposit)
+                        .rewa_or_single_dcdt(&token_identifier, 0, &deposit)
                         .transfer();
                 }
             },
@@ -124,5 +124,5 @@ pub trait Crowdfunding {
     #[view(getCrowdfundingTokenIdentifier)]
     #[title("tokenIdentifier")]
     #[storage_mapper("tokenIdentifier")]
-    fn cf_token_identifier(&self) -> SingleValueMapper<MoaOrDcdtTokenIdentifier>;
+    fn cf_token_identifier(&self) -> SingleValueMapper<RewaOrDcdtTokenIdentifier>;
 }

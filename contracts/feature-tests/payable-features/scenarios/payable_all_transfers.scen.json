@@ -50,11 +50,11 @@
         },
         {
             "step": "scCall",
-            "id": "payable_all_transfers-MOA",
+            "id": "payable_all_transfers-REWA",
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
-                "moaValue": "1000",
+                "rewaValue": "1000",
                 "function": "payable_all_transfers",
                 "arguments": [],
                 "gasLimit": "50,000,000",
@@ -63,7 +63,7 @@
             "expect": {
                 "out": [
                     [
-                        "nested:str:MOA|u64:0|biguint:1000"
+                        "nested:str:REWA|u64:0|biguint:1000"
                     ]
                 ],
                 "status": "",
@@ -74,17 +74,17 @@
         },
         {
             "step": "scCall",
-            "id": "payable_all_transfers-multi-MOA-2",
+            "id": "payable_all_transfers-multi-REWA-2",
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
                 "dcdtValue": [
                     {
-                        "tokenIdentifier": "str:MOA-000000",
+                        "tokenIdentifier": "str:REWA-000000",
                         "value": "1001"
                     },
                     {
-                        "tokenIdentifier": "str:MOA-000000",
+                        "tokenIdentifier": "str:REWA-000000",
                         "value": "1002"
                     }
                 ],
@@ -96,8 +96,8 @@
             "expect": {
                 "out": [
                     [
-                        "nested:str:MOA|u64:0|biguint:1001",
-                        "nested:str:MOA|u64:0|biguint:1002"
+                        "nested:str:REWA|u64:0|biguint:1001",
+                        "nested:str:REWA|u64:0|biguint:1002"
                     ]
                 ],
                 "status": "",
@@ -108,7 +108,7 @@
         },
         {
             "step": "scCall",
-            "id": "payable_all_transfers-MOA-with-DCDT",
+            "id": "payable_all_transfers-REWA-with-DCDT",
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
@@ -118,7 +118,7 @@
                         "value": "100"
                     },
                     {
-                        "tokenIdentifier": "str:MOA-000000",
+                        "tokenIdentifier": "str:REWA-000000",
                         "value": "1005"
                     },
                     {
@@ -131,7 +131,7 @@
                         "value": "10"
                     },
                     {
-                        "tokenIdentifier": "str:MOA-000000",
+                        "tokenIdentifier": "str:REWA-000000",
                         "value": "1006"
                     }
                 ],
@@ -144,10 +144,10 @@
                 "out": [
                     [
                         "nested:str:TOK-123456|u64:0|biguint:100|",
-                        "nested:str:MOA|u64:0|biguint:1005",
+                        "nested:str:REWA|u64:0|biguint:1005",
                         "nested:str:OTHERTOK-123456|u64:0|biguint:400",
                         "nested:str:SFT-123|u64:5|biguint:10",
-                        "nested:str:MOA|u64:0|biguint:1006"
+                        "nested:str:REWA|u64:0|biguint:1006"
                     ]
                 ],
                 "status": "",

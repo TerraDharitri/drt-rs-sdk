@@ -50,34 +50,34 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
     fn prepare_call_data(
         &self,
         to: ManagedAddress,
-        moa_amount: BigUint,
+        rewa_amount: BigUint,
         function_call: FunctionCall,
     ) -> CallActionData<Self::Api> {
         require!(
-            moa_amount > 0 || !function_call.is_empty(),
+            rewa_amount > 0 || !function_call.is_empty(),
             "proposed action has no effect"
         );
 
         CallActionData {
             to,
-            moa_amount,
+            rewa_amount,
             endpoint_name: function_call.function_name,
             arguments: function_call.arg_buffer.into_vec_of_buffers(),
         }
     }
 
     /// Propose a transaction in which the contract will perform a transfer-execute call.
-    /// Can send MOA without calling anything.
+    /// Can send REWA without calling anything.
     /// Can call smart contract endpoints directly.
     /// Doesn't really work with builtin functions.
     #[endpoint(proposeTransferExecute)]
     fn propose_transfer_execute(
         &self,
         to: ManagedAddress,
-        moa_amount: BigUint,
+        rewa_amount: BigUint,
         function_call: FunctionCall,
     ) -> usize {
-        let call_data = self.prepare_call_data(to, moa_amount, function_call);
+        let call_data = self.prepare_call_data(to, rewa_amount, function_call);
         self.propose_action(Action::SendTransferExecute(call_data))
     }
 
@@ -85,15 +85,15 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
     /// Can call smart contract endpoints directly.
     /// Can use DCDTTransfer/DCDTNFTTransfer/MultiDCDTTransfer to send tokens, while also optionally calling endpoints.
     /// Works well with builtin functions.
-    /// Cannot simply send MOA directly without calling anything.
+    /// Cannot simply send REWA directly without calling anything.
     #[endpoint(proposeAsyncCall)]
     fn propose_async_call(
         &self,
         to: ManagedAddress,
-        moa_amount: BigUint,
+        rewa_amount: BigUint,
         function_call: FunctionCall,
     ) -> usize {
-        let call_data = self.prepare_call_data(to, moa_amount, function_call);
+        let call_data = self.prepare_call_data(to, rewa_amount, function_call);
         self.propose_action(Action::SendAsyncCall(call_data))
     }
 

@@ -57,10 +57,10 @@ impl Config {
         }
     }
 
-    pub fn token_id(&self) -> MoaOrDcdtTokenIdentifier<StaticApi> {
+    pub fn token_id(&self) -> RewaOrDcdtTokenIdentifier<StaticApi> {
         match self.token_id.as_str() {
-            "MOA" => MoaOrDcdtTokenIdentifier::moa(),
-            _ => MoaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(self.token_id.as_str())),
+            "REWA" => RewaOrDcdtTokenIdentifier::rewa(),
+            _ => RewaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(self.token_id.as_str())),
         }
     }
 

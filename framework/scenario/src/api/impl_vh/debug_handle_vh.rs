@@ -1,4 +1,4 @@
-use dharitri_vm::tx_mock::{TxContext, TxContextStack};
+use dharitri_chain_vm::tx_mock::{TxContext, TxContextStack};
 use dharitri_sc::{
     api::{HandleConstraints, RawHandle},
     codec::TryStaticCast,

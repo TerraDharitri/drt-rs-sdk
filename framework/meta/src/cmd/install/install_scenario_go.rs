@@ -11,7 +11,7 @@ use super::system_info::{get_system_info, SystemInfo};
 
 const USER_AGENT: &str = "dharitri-sc-meta";
 const SCENARIO_CLI_RELEASES_BASE_URL: &str =
-    "https://api.github.com/repos/TerraDharitri/drt-go-scenario-cli/releases";
+    "https://api.github.com/repos/TerraDharitri/drt-go-chain-scenario-cli/releases";
 const CARGO_HOME: &str = env!("CARGO_HOME");
 
 #[derive(Clone, Debug)]
@@ -54,7 +54,7 @@ impl ScenarioGoInstaller {
         let release_raw = self
             .get_scenario_go_release_json()
             .await
-            .expect("couldn't retrieve drt-go-scenario-cli release");
+            .expect("couldn't retrieve drt-go-chain-scenario-cli release");
 
         assert!(
             !release_raw.contains("\"message\": \"Not Found\""),

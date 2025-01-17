@@ -20,7 +20,7 @@
             "tx": {
                 "from": "address:a_user",
                 "to": "sc:proxy-first",
-                "moaValue": "200",
+                "rewaValue": "200",
                 "function": "upgradeSecondContract",
                 "arguments": [
                     "drtsc:../proxy-test-second/output/proxy-test-second.drtsc.json"

@@ -171,10 +171,10 @@ where
             &self.from,
             self.to,
             self.data,
-            |norm_to, norm_moa, norm_fc| {
+            |norm_to, norm_rewa, norm_fc| {
                 SendRawWrapper::<Api>::new().create_async_call_raw(
                     norm_to,
-                    norm_moa,
+                    norm_rewa,
                     &norm_fc.function_name,
                     &norm_fc.arg_buffer,
                     callback_name,

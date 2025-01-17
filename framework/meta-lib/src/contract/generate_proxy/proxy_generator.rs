@@ -29,11 +29,11 @@ const ZERO: &str = "0";
 /// Types defined in the framework don't need to be generated again in the proxy.
 const TYPES_FROM_FRAMEWORK: &[&str] = &[
     "DcdtTokenPayment",
-    "MoaOrDcdtTokenPayment",
+    "RewaOrDcdtTokenPayment",
     "DcdtTokenData",
-    "MoaOrDcdtTokenIdentifier",
-    "MoaOrDcdtTokenPayment",
-    "MoaOrMultiDcdtPayment",
+    "RewaOrDcdtTokenIdentifier",
+    "RewaOrDcdtTokenPayment",
+    "RewaOrMultiDcdtPayment",
     "DcdtTokenData",
     "DcdtLocalRole",
     "DcdtTokenType",
