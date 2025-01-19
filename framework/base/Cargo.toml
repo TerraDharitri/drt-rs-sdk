@@ -30,7 +30,7 @@ num-traits = { version = "=0.2.19", default-features = false }
 unwrap-infallible = "0.1.5"
 
 [dependencies.dharitri-sc-derive]
-version = "=0.0.1"
+version = "=1.0.0"
 path = "../derive"
 
 [dependencies.dharitri-sc-codec]

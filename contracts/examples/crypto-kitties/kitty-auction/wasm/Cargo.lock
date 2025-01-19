@@ -124,7 +124,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "0.0.1"
+version = "1.0.0"
 dependencies = [
  "hex",
  "proc-macro2",
