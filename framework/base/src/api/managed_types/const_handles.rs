@@ -19,12 +19,12 @@ pub const MBUF_TEMPORARY_2: RawHandle = -26;
 pub const ADDRESS_CALLER: RawHandle = -30;
 pub const ADDRESS_SELF: RawHandle = -31;
 
-pub const CALL_VALUE_MOA: RawHandle = -35;
-pub const CALL_VALUE_MOA_MULTI: RawHandle = -36;
-pub const CALL_VALUE_MOA_FROM_DCDT: RawHandle = -37;
+pub const CALL_VALUE_REWA: RawHandle = -35;
+pub const CALL_VALUE_REWA_MULTI: RawHandle = -36;
+pub const CALL_VALUE_REWA_FROM_DCDT: RawHandle = -37;
 pub const CALL_VALUE_MULTI_DCDT: RawHandle = -38;
 pub const CALL_VALUE_ALL: RawHandle = -39;
-pub const MBUF_MOA_000000: RawHandle = -40;
+pub const MBUF_REWA_000000: RawHandle = -40;
 
 pub const CALLBACK_CLOSURE_ARGS_BUFFER: RawHandle = -50;
 
@@ -42,12 +42,12 @@ pub const fn get_scaling_factor_handle(decimals: usize) -> i32 {
     SCALING_FACTOR_START - decimals_i32
 }
 
-/// Payload of the singleton ManagedVec that contains the current single MOA transfer, modelled as an DCDT payment.
-pub const MOA_PAYMENT_PAYLOAD: [u8; 16] = [
+/// Payload of the singleton ManagedVec that contains the current single REWA transfer, modelled as an DCDT payment.
+pub const REWA_PAYMENT_PAYLOAD: [u8; 16] = [
     0xff,
     0xff,
     0xff,
-    (0x0100 + MBUF_MOA_000000) as u8,
+    (0x0100 + MBUF_REWA_000000) as u8,
     0,
     0,
     0,
@@ -59,7 +59,7 @@ pub const MOA_PAYMENT_PAYLOAD: [u8; 16] = [
     0xff,
     0xff,
     0xff,
-    (0x0100 + CALL_VALUE_MOA) as u8,
+    (0x0100 + CALL_VALUE_REWA) as u8,
 ];
 
 #[cfg(test)]
@@ -67,11 +67,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn moa_payment_payload_test() {
+    fn rewa_payment_payload_test() {
         let mut bytes = [0u8; 4];
-        bytes.copy_from_slice(&MOA_PAYMENT_PAYLOAD[0..4]);
-        assert_eq!(i32::from_be_bytes(bytes), MBUF_MOA_000000);
-        bytes.copy_from_slice(&MOA_PAYMENT_PAYLOAD[12..16]);
-        assert_eq!(i32::from_be_bytes(bytes), CALL_VALUE_MOA);
+        bytes.copy_from_slice(&REWA_PAYMENT_PAYLOAD[0..4]);
+        assert_eq!(i32::from_be_bytes(bytes), MBUF_REWA_000000);
+        bytes.copy_from_slice(&REWA_PAYMENT_PAYLOAD[12..16]);
+        assert_eq!(i32::from_be_bytes(bytes), CALL_VALUE_REWA);
     }
 }

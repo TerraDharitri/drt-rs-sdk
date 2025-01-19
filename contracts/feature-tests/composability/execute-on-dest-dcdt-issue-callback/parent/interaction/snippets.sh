@@ -7,8 +7,8 @@ CHAIN_ID=local-testnet
 CHILD_CODE=0x"$(xxd -p ../child/output/child.wasm | tr -d '\n')"
 DCDT_ISSUE_COST=5000000000000000000
 
-TOKEN_DISPLAY_NAME=0x5772617070656445676c64  # "WrappedMoa"
-TOKEN_TICKER=0x5745474c44  # "WMOA"
+TOKEN_DISPLAY_NAME=0x5772617070656452657761  # "WrappedRewa"
+TOKEN_TICKER=0x5752455741  # "WREWA"
 INITIAL_SUPPLY=0x03e8 # 1000
 
 deployParent() {
@@ -41,9 +41,9 @@ getChildContractAddress() {
     echo "Child address: ${CHILD_ADDRESS}"
 }
 
-getWrappedMoaTokenIdentifier() {
+getWrappedRewaTokenIdentifier() {
     getChildContractAddress
-    drtpy --verbose contract call ${CHILD_ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --function="getWrappedMoaTokenIdentifier" --send --proxy=${PROXY} --chain=${CHAIN_ID}
+    drtpy --verbose contract call ${CHILD_ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=50000000 --function="getWrappedRewaTokenIdentifier" --send --proxy=${PROXY} --chain=${CHAIN_ID}
 }
 
 # helpers

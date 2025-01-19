@@ -12,8 +12,8 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-fn claim_moa_rs() {
-    world().run("scenarios/claim-moa.scen.json");
+fn claim_rewa_rs() {
+    world().run("scenarios/claim-rewa.scen.json");
 }
 
 #[test]
@@ -37,8 +37,8 @@ fn forward_rs() {
 }
 
 #[test]
-fn fund_moa_and_dcdt_rs() {
-    world().run("scenarios/fund-moa-and-dcdt.scen.json");
+fn fund_rewa_and_dcdt_rs() {
+    world().run("scenarios/fund-rewa-and-dcdt.scen.json");
 }
 
 #[test]
@@ -57,13 +57,13 @@ fn pay_fee_and_fund_dcdt_rs() {
 }
 
 #[test]
-fn pay_fee_and_fund_moa_rs() {
-    world().run("scenarios/pay-fee-and-fund-moa.scen.json");
+fn pay_fee_and_fund_rewa_rs() {
+    world().run("scenarios/pay-fee-and-fund-rewa.scen.json");
 }
 
 #[test]
-fn withdraw_moa_rs() {
-    world().run("scenarios/withdraw-moa.scen.json");
+fn withdraw_rewa_rs() {
+    world().run("scenarios/withdraw-rewa.scen.json");
 }
 
 #[test]

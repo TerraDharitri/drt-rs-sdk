@@ -4,7 +4,7 @@ use crate::{
     types::{AsyncCall, AsyncCallPromises, BackTransfers, ManagedArgBuffer, ManagedBuffer},
 };
 
-use super::{ContractCallNoPayment, ContractCallWithMoa};
+use super::{ContractCallNoPayment, ContractCallWithRewa};
 
 /// Converts into a legacy contract call.
 #[deprecated(
@@ -18,9 +18,9 @@ where
     type OriginalResult: TopEncodeMulti;
 
     /// Converts any DCDT transfers into builtin function calls,
-    /// thus reducing it to a simple transaction with optional MOA value.
+    /// thus reducing it to a simple transaction with optional REWA value.
     #[doc(hidden)]
-    fn into_normalized(self) -> ContractCallWithMoa<SA, Self::OriginalResult>;
+    fn into_normalized(self) -> ContractCallWithRewa<SA, Self::OriginalResult>;
 }
 
 /// Defines a contract call object, which is the basis for all calls to other contracts.

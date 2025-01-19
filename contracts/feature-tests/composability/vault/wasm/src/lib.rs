@@ -29,7 +29,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         reject_funds => reject_funds
         retrieve_funds_with_transfer_exec => retrieve_funds_with_transfer_exec
         retrieve_funds => retrieve_funds
-        retrieve_funds_moa_or_single_dcdt => retrieve_funds_moa_or_single_dcdt
+        retrieve_funds_rewa_or_single_dcdt => retrieve_funds_rewa_or_single_dcdt
         retrieve_funds_multi_dcdt => retrieve_funds_multi_dcdt
         retrieve_multi_funds_async => retrieve_multi_funds_async
         burn_and_create_retrieve_async => burn_and_create_retrieve_async

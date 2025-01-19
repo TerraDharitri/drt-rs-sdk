@@ -3,7 +3,7 @@
 //! TODO: de-duplicate, place in chain core crate, if possible.
 
 use bech32::{Bech32, Hrp};
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 
 pub fn decode(bech32_address: &str) -> Address {
     let (_hrp, dest_address_bytes) = bech32::decode(bech32_address)

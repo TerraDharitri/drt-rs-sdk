@@ -1,7 +1,7 @@
 use dharitri_sc::{
     hex_literal::hex,
     types::{
-        BigInt, BigUint, MoaOrDcdtTokenIdentifier, ManagedAddress, ManagedBuffer,
+        BigInt, BigUint, RewaOrDcdtTokenIdentifier, ManagedAddress, ManagedBuffer,
         ManagedByteArray, ManagedVec, TokenIdentifier,
     },
 };
@@ -44,19 +44,19 @@ fn test_managed_byte_array() {
 
 #[test]
 fn test_managed_address() {
-    let addr = hex!("000000000000000000010000000000000000000000000000000000000002ffff");
+    let addr = hex!("233300000000000000000000000000233300000000000000000000000002ffff");
     let s = format!("{:?}", ManagedAddress::<StaticApi>::from(&addr));
-    assert_eq!("ManagedAddress { handle: -200, hex-value: \"000000000000000000010000000000000000000000000000000000000002ffff\" }", s);
+    assert_eq!("ManagedAddress { handle: -200, hex-value: \"233300000000000000000000000000233300000000000000000000000002ffff\" }", s);
 }
 
 #[test]
 fn test_managed_address_pretty() {
-    let addr = hex!("000000000000000000010000000000000000000000000000000000000002ffff");
+    let addr = hex!("233300000000000000000000000000233300000000000000000000000002ffff");
     let s = format!("{:#?}", ManagedAddress::<StaticApi>::from(&addr));
     assert_eq!(
         "ManagedAddress {
     handle: -200,
-    hex-value: \"000000000000000000010000000000000000000000000000000000000002ffff\",
+    hex-value: \"233300000000000000000000000000233300000000000000000000000002ffff\",
 }",
         s
     );
@@ -72,15 +72,15 @@ fn test_managed_vec_format_biguint() {
 }
 
 #[test]
-fn test_managed_vec_format_moa_or_dcdt() {
-    let mut mv = ManagedVec::<StaticApi, MoaOrDcdtTokenIdentifier<StaticApi>>::new();
-    mv.push(MoaOrDcdtTokenIdentifier::moa());
-    mv.push(MoaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(
+fn test_managed_vec_format_rewa_or_dcdt() {
+    let mut mv = ManagedVec::<StaticApi, RewaOrDcdtTokenIdentifier<StaticApi>>::new();
+    mv.push(RewaOrDcdtTokenIdentifier::rewa());
+    mv.push(RewaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(
         "MYTOKEN-5678",
     )));
     let s = format!("{:?}", &mv);
     assert_eq!(
-        "[MoaOrDcdtTokenIdentifier::Moa, MoaOrDcdtTokenIdentifier::Dcdt(\"MYTOKEN-5678\")]",
+        "[RewaOrDcdtTokenIdentifier::Rewa, RewaOrDcdtTokenIdentifier::Dcdt(\"MYTOKEN-5678\")]",
         s
     );
 }

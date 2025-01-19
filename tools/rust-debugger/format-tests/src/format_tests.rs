@@ -2,7 +2,7 @@ use dharitri_sc::{
     codec::multi_types::OptionalValue,
     types::{
         heap::{Address, BoxedBytes},
-        BigFloat, BigInt, BigUint, DCDTSystemSCAddress, MoaOrDcdtTokenIdentifier,
+        BigFloat, BigInt, BigUint, DCDTSystemSCAddress, RewaOrDcdtTokenIdentifier,
         DcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedOption,
         ManagedType, ManagedVec, TokenIdentifier,
     },
@@ -66,7 +66,7 @@ fn main() {
     push!(
         to_check,
         managed_address,
-        "(32) 0x000000000000000000010000000000000000000000000000000000000002ffff"
+        "(32) 0x233300000000000000000000000000233300000000000000000000000002ffff"
     );
 
     let managed_byte_array: ManagedByteArray<DebugApi, 4> =
@@ -115,20 +115,20 @@ fn main() {
     ));
     push!(to_check, managed_vec_of_payments, "(2) { [0] = { token_identifier: \"MYTOK-123456\", nonce: 42, amount: 1000 }, [1] = { token_identifier: \"MYTOK-abcdef\", nonce: 100, amount: 5000 } }");
 
-    let moa_or_dcdt_token_identifier_moa: MoaOrDcdtTokenIdentifier<DebugApi> =
-        MoaOrDcdtTokenIdentifier::moa();
+    let rewa_or_dcdt_token_identifier_rewa: RewaOrDcdtTokenIdentifier<DebugApi> =
+        RewaOrDcdtTokenIdentifier::rewa();
     push!(
         to_check,
-        moa_or_dcdt_token_identifier_moa,
-        "MoaOrDcdtTokenIdentifier::moa()"
+        rewa_or_dcdt_token_identifier_rewa,
+        "RewaOrDcdtTokenIdentifier::rewa()"
     );
 
-    let moa_or_dcdt_token_identifier_dcdt: MoaOrDcdtTokenIdentifier<DebugApi> =
-        MoaOrDcdtTokenIdentifier::dcdt("MYTOK-123456");
+    let rewa_or_dcdt_token_identifier_dcdt: RewaOrDcdtTokenIdentifier<DebugApi> =
+        RewaOrDcdtTokenIdentifier::dcdt("MYTOK-123456");
     push!(
         to_check,
-        moa_or_dcdt_token_identifier_dcdt,
-        "MoaOrDcdtTokenIdentifier::dcdt(\"MYTOK-123456\")"
+        rewa_or_dcdt_token_identifier_dcdt,
+        "RewaOrDcdtTokenIdentifier::dcdt(\"MYTOK-123456\")"
     );
 
     // Nested type tests
@@ -138,21 +138,21 @@ fn main() {
     push!(
         to_check,
         managed_vec_of_addresses,
-        "(1) { [0] = (32) 0x000000000000000000010000000000000000000000000000000000000002ffff }"
+        "(1) { [0] = (32) 0x233300000000000000000000000000233300000000000000000000000002ffff }"
     );
 
     let managed_option_of_vec_of_addresses: ManagedOption<
         DebugApi,
         ManagedVec<DebugApi, ManagedAddress<DebugApi>>,
     > = ManagedOption::some(managed_vec_of_addresses.clone());
-    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x000000000000000000010000000000000000000000000000000000000002ffff })");
+    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x233300000000000000000000000000233300000000000000000000000002ffff })");
 
     // 5. SC wasm - heap
     let heap_address: Address = managed_address.to_address();
     push!(
         to_check,
         heap_address,
-        "(32) 0x000000000000000000010000000000000000000000000000000000000002ffff"
+        "(32) 0x233300000000000000000000000000233300000000000000000000000002ffff"
     );
 
     let boxed_bytes: BoxedBytes = b"test"[..].into();

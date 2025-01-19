@@ -21,10 +21,10 @@ dharitri_sc_wasm_adapter::endpoints! {
         sum => sum
         sum_sc_result => sum_sc_result
         get_caller_legacy => get_caller_legacy
-        get_moa_balance => get_moa_balance
+        get_rewa_balance => get_rewa_balance
         get_dcdt_balance => get_dcdt_balance
-        receive_moa => receive_moa
-        recieve_moa_half => recieve_moa_half
+        receive_rewa => receive_rewa
+        recieve_rewa_half => recieve_rewa_half
         receive_dcdt => receive_dcdt
         reject_payment => reject_payment
         receive_dcdt_half => receive_dcdt_half

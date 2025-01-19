@@ -1,4 +1,4 @@
-use dharitri_vm::types::{top_encode_big_uint, top_encode_u64};
+use dharitri_chain_vm::types::{top_encode_big_uint, top_encode_u64};
 use dharitri_sc::api::{
     DCDT_MULTI_TRANSFER_FUNC_NAME, DCDT_NFT_TRANSFER_FUNC_NAME, DCDT_TRANSFER_FUNC_NAME,
 };
@@ -13,7 +13,7 @@ use crate::{
     },
 };
 
-use super::{tx_interpret_util::interpret_moa_value, TxDCDT};
+use super::{tx_interpret_util::interpret_rewa_value, TxDCDT};
 
 pub const DEFAULT_GAS_EXPR: &str = "5,000,000";
 
@@ -21,7 +21,7 @@ pub const DEFAULT_GAS_EXPR: &str = "5,000,000";
 pub struct TxCall {
     pub from: AddressValue,
     pub to: AddressValue,
-    pub moa_value: BigUintValue,
+    pub rewa_value: BigUintValue,
     pub dcdt_value: Vec<TxDCDT>,
     pub function: String,
     pub arguments: Vec<BytesValue>,
@@ -34,7 +34,7 @@ impl Default for TxCall {
         Self {
             from: Default::default(),
             to: Default::default(),
-            moa_value: Default::default(),
+            rewa_value: Default::default(),
             dcdt_value: Default::default(),
             function: Default::default(),
             arguments: Default::default(),
@@ -49,7 +49,7 @@ impl InterpretableFrom<TxCallRaw> for TxCall {
         TxCall {
             from: AddressValue::interpret_from(from.from, context),
             to: AddressValue::interpret_from(from.to, context),
-            moa_value: interpret_moa_value(from.value, from.moa_value, context),
+            rewa_value: interpret_rewa_value(from.value, from.rewa_value, context),
             dcdt_value: from
                 .dcdt_value
                 .into_iter()
@@ -73,7 +73,7 @@ impl IntoRaw<TxCallRaw> for TxCall {
             from: self.from.into_raw(),
             to: self.to.into_raw(),
             value: None,
-            moa_value: self.moa_value.into_raw_opt(),
+            rewa_value: self.rewa_value.into_raw_opt(),
             dcdt_value: self
                 .dcdt_value
                 .into_iter()
@@ -97,11 +97,11 @@ impl TxCall {
         note = "Please use the unified transaction syntax instead."
     )]
     #[allow(deprecated)]
-    pub fn to_contract_call(&self) -> dharitri_sc::types::ContractCallWithMoa<StaticApi, ()> {
-        let mut contract_call = dharitri_sc::types::ContractCallWithMoa::new(
+    pub fn to_contract_call(&self) -> dharitri_sc::types::ContractCallWithRewa<StaticApi, ()> {
+        let mut contract_call = dharitri_sc::types::ContractCallWithRewa::new(
             (&self.to.value).into(),
             self.function.as_bytes(),
-            (&self.moa_value.value).into(),
+            (&self.rewa_value.value).into(),
         );
 
         contract_call.basic.explicit_gas_limit = self.gas_limit.value;
@@ -143,7 +143,7 @@ impl TxCall {
             } else {
                 self.to.clone()
             },
-            moa_value: self.moa_value.clone(),
+            rewa_value: self.rewa_value.clone(),
             dcdt_value: Vec::new(),
             function,
             arguments,
@@ -154,14 +154,14 @@ impl TxCall {
 
     fn process_payments(&self) -> (String, Vec<BytesValue>, bool) {
         assert!(
-            self.moa_value.is_zero() || self.dcdt_value.is_empty(),
-            "Cannot have both MOA and DCDT fields filled. To transfer MOA and DCDT in the same transaction, represent MOA as MOA-000000 in the DCDTs.");
+            self.rewa_value.is_zero() || self.dcdt_value.is_empty(),
+            "Cannot have both REWA and DCDT fields filled. To transfer REWA and DCDT in the same transaction, represent REWA as REWA-000000 in the DCDTs.");
 
         match self.dcdt_value.len() {
             0 => (self.function.clone(), self.arguments.clone(), false),
             1 => {
                 let payment = self.dcdt_value.first().unwrap();
-                if payment.is_moa() {
+                if payment.is_rewa() {
                     self.construct_multi_transfer_dcdt_call()
                 } else if payment.nonce.value == 0 {
                     self.construct_single_transfer_fungible_call(payment)

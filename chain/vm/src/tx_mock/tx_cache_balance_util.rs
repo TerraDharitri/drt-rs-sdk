@@ -1,4 +1,4 @@
-use dharitri_core::MOA_000000_TOKEN_IDENTIFIER;
+use dharitri_chain_core::REWA_000000_TOKEN_IDENTIFIER;
 use num_bigint::BigUint;
 
 use crate::{
@@ -9,16 +9,16 @@ use crate::{
 use super::TxCache;
 
 impl TxCache {
-    pub fn subtract_moa_balance(
+    pub fn subtract_rewa_balance(
         &self,
         address: &VMAddress,
         call_value: &BigUint,
     ) -> Result<(), TxPanic> {
         self.with_account_mut(address, |account| {
-            if call_value > &account.moa_balance {
+            if call_value > &account.rewa_balance {
                 return Err(TxPanic::vm_error("failed transfer (insufficient funds)"));
             }
-            account.moa_balance -= call_value;
+            account.rewa_balance -= call_value;
             Ok(())
         })
     }
@@ -27,16 +27,16 @@ impl TxCache {
         self.with_account_mut(address, |account| {
             let gas_cost = BigUint::from(gas_limit) * BigUint::from(gas_price);
             assert!(
-                account.moa_balance >= gas_cost,
+                account.rewa_balance >= gas_cost,
                 "Not enough balance to pay gas upfront"
             );
-            account.moa_balance -= &gas_cost;
+            account.rewa_balance -= &gas_cost;
         });
     }
 
-    pub fn increase_moa_balance(&self, address: &VMAddress, amount: &BigUint) {
+    pub fn increase_rewa_balance(&self, address: &VMAddress, amount: &BigUint) {
         self.with_account_mut(address, |account| {
-            account.moa_balance += amount;
+            account.rewa_balance += amount;
         });
     }
 
@@ -87,17 +87,17 @@ impl TxCache {
         });
     }
 
-    pub fn transfer_moa_balance(
+    pub fn transfer_rewa_balance(
         &self,
         from: &VMAddress,
         to: &VMAddress,
         value: &BigUint,
     ) -> Result<(), TxPanic> {
         if !is_system_sc_address(from) {
-            self.subtract_moa_balance(from, value)?;
+            self.subtract_rewa_balance(from, value)?;
         }
         if !is_system_sc_address(to) {
-            self.increase_moa_balance(to, value);
+            self.increase_rewa_balance(to, value);
         }
         Ok(())
     }
@@ -110,8 +110,8 @@ impl TxCache {
         nonce: u64,
         value: &BigUint,
     ) -> Result<(), TxPanic> {
-        if dcdt_token_identifier == MOA_000000_TOKEN_IDENTIFIER.as_bytes() {
-            return self.transfer_moa_balance(from, to, value);
+        if dcdt_token_identifier == REWA_000000_TOKEN_IDENTIFIER.as_bytes() {
+            return self.transfer_rewa_balance(from, to, value);
         }
 
         if !is_system_sc_address(from) && !is_system_sc_address(to) {

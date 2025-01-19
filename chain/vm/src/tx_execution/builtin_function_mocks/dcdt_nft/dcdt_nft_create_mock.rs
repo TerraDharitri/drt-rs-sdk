@@ -1,4 +1,4 @@
-use dharitri_core::types::ReturnCode;
+use dharitri_chain_core::types::ReturnCode;
 use num_bigint::BigUint;
 
 use crate::{

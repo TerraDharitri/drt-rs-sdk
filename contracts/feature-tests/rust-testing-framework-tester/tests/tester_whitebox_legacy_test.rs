@@ -218,14 +218,14 @@ fn test_sc_payment_ok() {
 
     wrapper
         .execute_tx(&caller_addr, &sc_wrapper, &rust_biguint!(1_000), |sc| {
-            let actual_payment = sc.receive_moa();
+            let actual_payment = sc.receive_rewa();
             let expected_payment = managed_biguint!(1_000);
             assert_eq!(actual_payment, expected_payment);
         })
         .assert_ok();
 
-    wrapper.check_moa_balance(&caller_addr, &rust_biguint!(0));
-    wrapper.check_moa_balance(sc_wrapper.address_ref(), &rust_biguint!(3_000));
+    wrapper.check_rewa_balance(&caller_addr, &rust_biguint!(0));
+    wrapper.check_rewa_balance(sc_wrapper.address_ref(), &rust_biguint!(3_000));
 }
 
 #[test]
@@ -245,8 +245,8 @@ fn test_sc_payment_reverted() {
         })
         .assert_user_error("No payment allowed!");
 
-    wrapper.check_moa_balance(&caller_addr, &rust_biguint!(1_000));
-    wrapper.check_moa_balance(sc_wrapper.address_ref(), &rust_biguint!(2_000));
+    wrapper.check_rewa_balance(&caller_addr, &rust_biguint!(1_000));
+    wrapper.check_rewa_balance(sc_wrapper.address_ref(), &rust_biguint!(2_000));
 }
 
 #[test]
@@ -262,12 +262,12 @@ fn test_sc_half_payment() {
 
     wrapper
         .execute_tx(&caller_addr, &sc_wrapper, &rust_biguint!(1_000), |sc| {
-            sc.recieve_moa_half();
+            sc.recieve_rewa_half();
         })
         .assert_ok();
 
-    wrapper.check_moa_balance(&caller_addr, &rust_biguint!(500));
-    wrapper.check_moa_balance(sc_wrapper.address_ref(), &rust_biguint!(2_500));
+    wrapper.check_rewa_balance(&caller_addr, &rust_biguint!(500));
+    wrapper.check_rewa_balance(sc_wrapper.address_ref(), &rust_biguint!(2_500));
 }
 
 #[test]
@@ -789,7 +789,7 @@ fn test_query() {
     );
 
     let _ = wrapper.execute_query(&sc_wrapper, |sc| {
-        let actual_balance = sc.get_moa_balance();
+        let actual_balance = sc.get_rewa_balance();
         let expected_balance = managed_biguint!(2_000);
         assert_eq!(actual_balance, expected_balance);
     });
@@ -1195,7 +1195,7 @@ fn test_async_call() {
 #[test]
 fn test_wrapper_getters() {
     let mut wrapper = BlockchainStateWrapper::new();
-    let moa_balance = rust_biguint!(1_000);
+    let rewa_balance = rust_biguint!(1_000);
 
     let dcdt_token_id = b"DCDT-123456";
     let dcdt_balance = rust_biguint!(100);
@@ -1208,7 +1208,7 @@ fn test_wrapper_getters() {
         cool_factor: 100,
     };
 
-    let user_addr = wrapper.create_user_account(&moa_balance);
+    let user_addr = wrapper.create_user_account(&rewa_balance);
     wrapper.set_dcdt_balance(&user_addr, dcdt_token_id, &dcdt_balance);
     wrapper.set_nft_balance(
         &user_addr,
@@ -1218,14 +1218,14 @@ fn test_wrapper_getters() {
         &nft_attributes,
     );
 
-    let actual_moa_balance = wrapper.get_moa_balance(&user_addr);
+    let actual_rewa_balance = wrapper.get_rewa_balance(&user_addr);
     let actual_dcdt_balance = wrapper.get_dcdt_balance(&user_addr, dcdt_token_id, 0);
     let actual_nft_balance = wrapper.get_dcdt_balance(&user_addr, nft_token_id, nft_nonce);
     let actual_attributes = wrapper
         .get_nft_attributes::<NftDummyAttributes>(&user_addr, nft_token_id, nft_nonce)
         .unwrap();
 
-    assert_eq!(moa_balance, actual_moa_balance);
+    assert_eq!(rewa_balance, actual_rewa_balance);
     assert_eq!(dcdt_balance, actual_dcdt_balance);
     assert_eq!(nft_balance, actual_nft_balance);
     assert_eq!(nft_attributes, actual_attributes);
@@ -1539,7 +1539,7 @@ fn dump_state_single_test() {
         cool_factor: 255,
     };
 
-    wrapper.set_moa_balance(sc_wrapper.address_ref(), &rust_biguint!(444));
+    wrapper.set_rewa_balance(sc_wrapper.address_ref(), &rust_biguint!(444));
     wrapper.set_dcdt_balance(
         sc_wrapper.address_ref(),
         fungible_token_id,
@@ -1583,7 +1583,7 @@ fn dump_state_raw_attributes_test() {
         cool_factor: 255,
     };
 
-    wrapper.set_moa_balance(sc_wrapper.address_ref(), &rust_biguint!(444));
+    wrapper.set_rewa_balance(sc_wrapper.address_ref(), &rust_biguint!(444));
     wrapper.set_dcdt_balance(
         sc_wrapper.address_ref(),
         fungible_token_id,
@@ -1628,7 +1628,7 @@ fn dump_state_all_test() {
         cool_factor: 255,
     };
 
-    wrapper.set_moa_balance(sc_wrapper.address_ref(), &rust_biguint!(444));
+    wrapper.set_rewa_balance(sc_wrapper.address_ref(), &rust_biguint!(444));
     wrapper.set_dcdt_balance(
         sc_wrapper.address_ref(),
         fungible_token_id,

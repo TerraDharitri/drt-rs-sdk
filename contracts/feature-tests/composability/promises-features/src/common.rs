@@ -5,7 +5,7 @@ dharitri_sc::derive_imports!();
 #[derive(TopEncode, TopDecode)]
 pub struct CallbackData<M: ManagedTypeApi> {
     pub callback_name: ManagedBuffer<M>,
-    pub token_identifier: MoaOrDcdtTokenIdentifier<M>,
+    pub token_identifier: RewaOrDcdtTokenIdentifier<M>,
     pub token_nonce: u64,
     pub token_amount: BigUint<M>,
     pub args: ManagedVec<M, ManagedBuffer<M>>,
@@ -16,7 +16,7 @@ pub trait CommonModule {
     #[event("retrieve_funds_callback")]
     fn retrieve_funds_callback_event(
         &self,
-        #[indexed] token: &MoaOrDcdtTokenIdentifier,
+        #[indexed] token: &RewaOrDcdtTokenIdentifier,
         #[indexed] nonce: u64,
         #[indexed] payment: &BigUint,
     );
@@ -34,7 +34,7 @@ pub trait CommonModule {
         index: usize,
     ) -> MultiValue5<
         ManagedBuffer,
-        MoaOrDcdtTokenIdentifier,
+        RewaOrDcdtTokenIdentifier,
         u64,
         BigUint,
         MultiValueManagedVec<Self::Api, ManagedBuffer>,

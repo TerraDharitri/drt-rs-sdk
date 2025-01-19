@@ -56,11 +56,11 @@ impl<OriginalResult> TypedScCall<OriginalResult> {
         self
     }
 
-    pub fn moa_value<A>(mut self, amount: A) -> Self
+    pub fn rewa_value<A>(mut self, amount: A) -> Self
     where
         BigUintValue: From<A>,
     {
-        self.sc_call_step = self.sc_call_step.moa_value(amount);
+        self.sc_call_step = self.sc_call_step.rewa_value(amount);
         self
     }
 

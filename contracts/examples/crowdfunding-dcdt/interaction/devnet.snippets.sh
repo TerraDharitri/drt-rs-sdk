@@ -12,12 +12,12 @@ DEPLOY_GAS="25000000"
 TARGET=10
 
 DEADLINE_UNIX_TIMESTAMP=$(date -d '2100-05-12 00:00:01' +"%s")
-MOA_TOKEN_ID=0x45474c44 # "MOA"
+REWA_TOKEN_ID=0x52455741 # "REWA"
 
 deploy() {
     drtpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
           --gas-limit=${DEPLOY_GAS} \
-          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${MOA_TOKEN_ID} \
+          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${REWA_TOKEN_ID} \
           --proxy=${PROXY} --chain=${CHAINID} --send
           --outfile="deploy-devnet.interaction.json" || return
 
@@ -34,7 +34,7 @@ deploy() {
 deploySimulate() {
     drtpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
           --gas-limit=${DEPLOY_GAS} \
-          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${MOA_TOKEN_ID} \
+          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${REWA_TOKEN_ID} \
           --outfile="simulate-devnet.interaction.json" --simulate || return
 
     TRANSACTION=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['hash']")

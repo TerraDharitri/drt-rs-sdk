@@ -7,9 +7,9 @@ use crate::{
 };
 #[dharitri_sc::module]
 pub trait HelpersModule: storage::StorageModule {
-    fn send_fee_to_address(&self, fee: &MoaOrDcdtTokenPayment, address: &ManagedAddress) {
-        if fee.token_identifier == MoaOrDcdtTokenIdentifier::moa() {
-            self.tx().to(address).moa(&fee.amount).transfer();
+    fn send_fee_to_address(&self, fee: &RewaOrDcdtTokenPayment, address: &ManagedAddress) {
+        if fee.token_identifier == RewaOrDcdtTokenIdentifier::rewa() {
+            self.tx().to(address).rewa(&fee.amount).transfer();
         } else {
             let dcdt_fee = fee.clone().unwrap_dcdt();
             self.tx()
@@ -21,11 +21,11 @@ pub trait HelpersModule: storage::StorageModule {
 
     fn get_num_token_transfers(
         &self,
-        moa_value: &BigUint,
+        rewa_value: &BigUint,
         dcdt_transfers: &ManagedVec<DcdtTokenPayment>,
     ) -> usize {
         let mut amount = dcdt_transfers.len();
-        if moa_value > &0 {
+        if rewa_value > &0 {
             amount += 1;
         }
 
@@ -37,7 +37,7 @@ pub trait HelpersModule: storage::StorageModule {
         self.blockchain().get_block_round() + valability_rounds
     }
 
-    fn get_fee_for_token(&self, token: &MoaOrDcdtTokenIdentifier) -> BigUint {
+    fn get_fee_for_token(&self, token: &RewaOrDcdtTokenIdentifier) -> BigUint {
         require!(
             self.whitelisted_fee_tokens().contains(token),
             "invalid fee toke provided"
@@ -48,7 +48,7 @@ pub trait HelpersModule: storage::StorageModule {
 
     fn make_fund(
         &self,
-        moa_payment: BigUint,
+        rewa_payment: BigUint,
         dcdt_payment: ManagedVec<DcdtTokenPayment>,
         address: ManagedAddress,
         valability: u64,
@@ -57,15 +57,15 @@ pub trait HelpersModule: storage::StorageModule {
 
         deposit_mapper.update(|deposit| {
             require!(
-                deposit.moa_funds == 0 && deposit.dcdt_funds.is_empty(),
+                deposit.rewa_funds == 0 && deposit.dcdt_funds.is_empty(),
                 "key already used"
             );
-            let num_tokens = self.get_num_token_transfers(&moa_payment, &dcdt_payment);
+            let num_tokens = self.get_num_token_transfers(&rewa_payment, &dcdt_payment);
             deposit.fees.num_token_to_transfer += num_tokens;
             deposit.valability = valability;
             deposit.expiration_round = self.get_expiration_round(valability);
             deposit.dcdt_funds = dcdt_payment;
-            deposit.moa_funds = moa_payment;
+            deposit.rewa_funds = rewa_payment;
         });
     }
 
@@ -86,7 +86,7 @@ pub trait HelpersModule: storage::StorageModule {
         &self,
         caller_address: ManagedAddress,
         address: &ManagedAddress,
-        payment: MoaOrDcdtTokenPayment,
+        payment: RewaOrDcdtTokenPayment,
     ) {
         self.get_fee_for_token(&payment.token_identifier);
         let deposit_mapper = self.deposit(address);
@@ -108,7 +108,7 @@ pub trait HelpersModule: storage::StorageModule {
         let new_deposit = DepositInfo {
             depositor_address: caller_address,
             dcdt_funds: ManagedVec::new(),
-            moa_funds: BigUint::zero(),
+            rewa_funds: BigUint::zero(),
             valability: 0,
             expiration_round: 0,
             fees: Fee {

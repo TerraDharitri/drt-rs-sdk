@@ -3,10 +3,10 @@ mod dns_mock {
 
     #[dharitri_sc::contract]
     pub trait DnsMock {
-        #[payable("MOA")]
+        #[payable("REWA")]
         #[endpoint]
         fn register(&self, name: BoxedBytes) {
-            let _payment = self.call_value().moa();
+            let _payment = self.call_value().rewa();
             let address = self.blockchain().get_caller();
             self.tx()
                 .to(&address)

@@ -1,6 +1,6 @@
 use crate::types::{BigUint, ManagedAddress, TxFrom, TxToSpecified};
 
-use super::{FullPaymentData, FunctionCall, TxEnv, TxNoPayment, TxPayment, TxPaymentMoaOnly};
+use super::{FullPaymentData, FunctionCall, TxEnv, TxNoPayment, TxPayment, TxPaymentRewaOnly};
 
 /// Transaction marker, which indicates that a transaction should never have any payment added to it.
 ///
@@ -54,4 +54,4 @@ where
 
 impl<Env> TxNoPayment<Env> for NotPayable where Env: TxEnv {}
 
-impl<Env> TxPaymentMoaOnly<Env> for NotPayable where Env: TxEnv {}
+impl<Env> TxPaymentRewaOnly<Env> for NotPayable where Env: TxEnv {}

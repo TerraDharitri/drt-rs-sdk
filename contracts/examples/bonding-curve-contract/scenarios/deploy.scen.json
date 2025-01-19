@@ -13,14 +13,14 @@
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
-                        "str:MOA-135790": "200"
+                        "str:REWA-135790": "200"
                     }
                 },
                 "address:buyer2": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
-                        "str:MOA-135790": "20000"
+                        "str:REWA-135790": "20000"
                     }
                 },
                 "address:artist1": {
@@ -130,14 +130,14 @@
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
-                        "str:MOA-135790": "200"
+                        "str:REWA-135790": "200"
                     }
                 },
                 "address:buyer2": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
-                        "str:MOA-135790": "20000"
+                        "str:REWA-135790": "20000"
                     }
                 },
                 "address:artist1": {

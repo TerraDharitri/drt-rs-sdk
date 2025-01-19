@@ -14,4 +14,4 @@ It does **not** contain:
 - file read/write logic,
 - the value interpreter.
 
-These features are the scope of the `dharitri-scenario-format` crate.
+These features are the scope of the `dharitri-chain-scenario-format` crate.

@@ -14,7 +14,7 @@ pub fn process_payable_attribute(
 
 fn parse_payable_identifier(identifier: &str) -> MethodPayableMetadata {
     match identifier {
-        "MOA" => MethodPayableMetadata::Moa,
+        "REWA" => MethodPayableMetadata::Rewa,
         "*" => MethodPayableMetadata::AnyToken,
         "" => panic!("empty token name not allowed in #[payable] attribute"),
         _ => MethodPayableMetadata::SingleDcdtToken(identifier.to_string()),

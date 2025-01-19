@@ -238,7 +238,7 @@ where
     pub gas_limit: u64,
     pub endpoint_name: ManagedBuffer<Api>,
     pub args: ManagedArgBuffer<Api>,
-    pub payments: MoaOrMultiDcdtPayment<Api>,
+    pub payments: RewaOrMultiDcdtPayment<Api>,
 }
 
 #[type_abi]

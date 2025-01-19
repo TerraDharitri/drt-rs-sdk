@@ -2,13 +2,13 @@ use crate::dharitri_sc::{
     codec::{top_encode_to_vec_u8_or_panic, TopEncode},
     types::heap::Address,
 };
-use dharitri_vm::tx_mock::TxTokenTransfer;
+use dharitri_chain_vm::tx_mock::TxTokenTransfer;
 use num_traits::Zero;
 
 pub struct ScCallDenali {
     pub(crate) from: Address,
     pub(crate) to: Address,
-    pub(crate) moa_value: num_bigint::BigUint,
+    pub(crate) rewa_value: num_bigint::BigUint,
     pub(crate) dcdt: Vec<TxTokenTransfer>,
     pub(crate) function: String,
     pub(crate) arguments: Vec<Vec<u8>>,
@@ -21,7 +21,7 @@ impl ScCallDenali {
         ScCallDenali {
             from: from.clone(),
             to: to.clone(),
-            moa_value: num_bigint::BigUint::zero(),
+            rewa_value: num_bigint::BigUint::zero(),
             dcdt: Vec::new(),
             function: function.to_owned(),
             arguments: Vec::new(),
@@ -30,8 +30,8 @@ impl ScCallDenali {
         }
     }
 
-    pub fn add_moa_value(&mut self, moa_value: &num_bigint::BigUint) {
-        self.moa_value.clone_from(moa_value);
+    pub fn add_rewa_value(&mut self, rewa_value: &num_bigint::BigUint) {
+        self.rewa_value.clone_from(rewa_value);
     }
 
     pub fn add_dcdt_transfer(

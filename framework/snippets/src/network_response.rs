@@ -4,7 +4,7 @@ use crate::sdk::{
 };
 use dharitri_sc_scenario::{
     imports::{Address, DCDTSystemSCAddress, ReturnCode},
-    dharitri_vm::{crypto_functions::keccak256, types::H256},
+    dharitri_chain_vm::{crypto_functions::keccak256, types::H256},
     scenario_model::{Log, TxResponse, TxResponseStatus},
 };
 
@@ -30,6 +30,7 @@ fn process_signal_error(tx: &TransactionOnNetwork, return_code: ReturnCode) -> T
         let topics = event.topics.as_ref();
 
         let error = topics.unwrap().first().unwrap();
+        
         return TxResponseStatus::new(return_code, error);
     }
 
@@ -51,6 +52,7 @@ fn process_success(tx: &TransactionOnNetwork) -> TxResponse {
 fn process_tx_hash(tx: &TransactionOnNetwork) -> Option<H256> {
     tx.hash.as_ref().map(|encoded_hash| {
         let decoded = hex::decode(encoded_hash).expect("error decoding tx hash from hex");
+        
         assert_eq!(decoded.len(), 32);
         H256::from_slice(&decoded)
     })

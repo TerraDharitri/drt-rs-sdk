@@ -25,7 +25,7 @@ pub struct BondingCurve<
     pub curve: T,
     pub arguments: CurveArguments<M>,
     pub sell_availability: bool,
-    pub payment: MoaOrDcdtTokenPayment<M>,
+    pub payment: RewaOrDcdtTokenPayment<M>,
 }
 
 impl<
@@ -33,11 +33,11 @@ impl<
         T: CurveFunction<M> + TopEncode + TopDecode + NestedEncode + NestedDecode + TypeAbi,
     > BondingCurve<M, T>
 {
-    pub fn payment_token(&self) -> MoaOrDcdtTokenIdentifier<M> {
+    pub fn payment_token(&self) -> RewaOrDcdtTokenIdentifier<M> {
         self.payment.token_identifier.clone()
     }
-    pub fn payment_is_moa(&self) -> bool {
-        self.payment.token_identifier.is_moa()
+    pub fn payment_is_rewa(&self) -> bool {
+        self.payment.token_identifier.is_rewa()
     }
 }
 

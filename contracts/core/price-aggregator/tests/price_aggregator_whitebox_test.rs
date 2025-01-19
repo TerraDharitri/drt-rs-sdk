@@ -6,7 +6,7 @@ use dharitri_sc_modules::{pause::PauseModule, staking::StakingModule};
 use dharitri_sc_scenario::imports::*;
 
 pub const DECIMALS: u8 = 0;
-pub const MOA_TICKER: &[u8] = b"MOA";
+pub const REWA_TICKER: &[u8] = b"REWA";
 pub const NR_ORACLES: usize = 4;
 pub const SLASH_AMOUNT: u64 = 10;
 pub const SLASH_QUORUM: usize = 3;
@@ -42,7 +42,7 @@ fn test_price_aggregator_submit() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.set_pair_decimals(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 DECIMALS,
             )
@@ -56,7 +56,7 @@ fn test_price_aggregator_submit() {
         .returns(ExpectError(4u64, "Contract is paused"))
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 99,
                 managed_biguint!(100),
@@ -81,7 +81,7 @@ fn test_price_aggregator_submit() {
         .returns(ExpectError(4u64, "First submission too old"))
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 10,
                 managed_biguint!(100),
@@ -96,7 +96,7 @@ fn test_price_aggregator_submit() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 95,
                 managed_biguint!(100),
@@ -109,7 +109,7 @@ fn test_price_aggregator_submit() {
         dharitri_sc_price_aggregator::contract_obj,
         |sc| {
             let token_pair = TokenPair {
-                from: managed_buffer!(MOA_TICKER),
+                from: managed_buffer!(REWA_TICKER),
                 to: managed_buffer!(USD_TICKER),
             };
             assert_eq!(
@@ -147,7 +147,7 @@ fn test_price_aggregator_submit() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 95,
                 managed_biguint!(100),
@@ -182,7 +182,7 @@ fn test_price_aggregator_submit_round_ok() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.set_pair_decimals(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 DECIMALS,
             )
@@ -204,7 +204,7 @@ fn test_price_aggregator_submit_round_ok() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 95,
                 managed_biguint!(10_000),
@@ -222,7 +222,7 @@ fn test_price_aggregator_submit_round_ok() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 101,
                 managed_biguint!(11_000),
@@ -237,7 +237,7 @@ fn test_price_aggregator_submit_round_ok() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 105,
                 managed_biguint!(12_000),
@@ -249,11 +249,11 @@ fn test_price_aggregator_submit_round_ok() {
         dharitri_sc_price_aggregator::contract_obj,
         |sc| {
             let result =
-                sc.latest_price_feed(managed_buffer!(MOA_TICKER), managed_buffer!(USD_TICKER));
+                sc.latest_price_feed(managed_buffer!(REWA_TICKER), managed_buffer!(USD_TICKER));
 
             let (round_id, from, to, timestamp, price, decimals) = result.into_tuple();
             assert_eq!(round_id, 1);
-            assert_eq!(from, managed_buffer!(MOA_TICKER));
+            assert_eq!(from, managed_buffer!(REWA_TICKER));
             assert_eq!(to, managed_buffer!(USD_TICKER));
             assert_eq!(timestamp, current_timestamp);
             assert_eq!(price, managed_biguint!(11_000));
@@ -289,7 +289,7 @@ fn test_price_aggregator_discarded_round() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.set_pair_decimals(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 DECIMALS,
             )
@@ -311,7 +311,7 @@ fn test_price_aggregator_discarded_round() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 95,
                 managed_biguint!(10_000),
@@ -329,7 +329,7 @@ fn test_price_aggregator_discarded_round() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 current_timestamp - 1,
                 managed_biguint!(11_000),
@@ -341,7 +341,7 @@ fn test_price_aggregator_discarded_round() {
         dharitri_sc_price_aggregator::contract_obj,
         |sc| {
             let token_pair = TokenPair {
-                from: managed_buffer!(MOA_TICKER),
+                from: managed_buffer!(REWA_TICKER),
                 to: managed_buffer!(USD_TICKER),
             };
             let submissions = sc.submissions().get(&token_pair).unwrap();
@@ -365,7 +365,7 @@ fn test_price_aggregator_slashing() {
         .to(PRICE_AGGREGATOR_ADDRESS)
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.set_pair_decimals(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 DECIMALS,
             )
@@ -430,7 +430,7 @@ fn test_price_aggregator_slashing() {
         .returns(ExpectError(4u64, "only oracles allowed"))
         .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
             sc.submit(
-                managed_buffer!(MOA_TICKER),
+                managed_buffer!(REWA_TICKER),
                 managed_buffer!(USD_TICKER),
                 95,
                 managed_biguint!(10_000),
@@ -470,7 +470,7 @@ fn setup() -> (ScenarioWorld, Vec<Address>) {
             }
 
             sc.init(
-                MoaOrDcdtTokenIdentifier::moa(),
+                RewaOrDcdtTokenIdentifier::rewa(),
                 managed_biguint!(STAKE_AMOUNT),
                 managed_biguint!(SLASH_AMOUNT),
                 SLASH_QUORUM,
@@ -484,7 +484,7 @@ fn setup() -> (ScenarioWorld, Vec<Address>) {
             .tx()
             .from(oracle_address)
             .to(PRICE_AGGREGATOR_ADDRESS)
-            .moa(STAKE_AMOUNT)
+            .rewa(STAKE_AMOUNT)
             .whitebox(dharitri_sc_price_aggregator::contract_obj, |sc| {
                 sc.stake();
             });

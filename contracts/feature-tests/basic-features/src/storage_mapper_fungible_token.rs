@@ -4,14 +4,14 @@ dharitri_sc::imports!();
 pub trait FungibleTokenMapperFeatures:
     dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn issue_fungible_default_callback(
         &self,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let payment_amount = self.call_value().moa();
+        let payment_amount = self.call_value().rewa();
         self.fungible_token_mapper().issue(
             payment_amount.clone(),
             ManagedBuffer::new(),
@@ -22,10 +22,10 @@ pub trait FungibleTokenMapperFeatures:
         );
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn issue_fungible_custom_callback(&self, token_ticker: ManagedBuffer, initial_supply: BigUint) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         let cb = if initial_supply > 0 {
             FungibleTokenMapperFeatures::callbacks(self).custom_issue_non_zero_supply_cb()
         } else {
@@ -71,10 +71,10 @@ pub trait FungibleTokenMapperFeatures:
         }
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn issue_and_set_all_roles_fungible(&self, token_ticker: ManagedBuffer) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         self.fungible_token_mapper().issue_and_set_all_roles(
             payment.clone(),
             ManagedBuffer::new(),

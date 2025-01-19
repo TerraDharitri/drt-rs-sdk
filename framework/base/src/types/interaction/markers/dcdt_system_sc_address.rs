@@ -1,5 +1,5 @@
 use hex_literal::hex;
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 use dharitri_sc_codec::{EncodeErrorHandler, TopEncode, TopEncodeOutput};
 
 use crate::{
@@ -10,11 +10,11 @@ use crate::{
 
 /// Address of the system smart contract that manages DCDT.
 const SYSTEM_SC_ADDRESS_BYTES: [u8; 32] =
-    hex!("000000000000000000010000000000000000000000000000000000000002ffff");
+    hex!("233300000000000000000000000000233300000000000000000000000002ffff");
 const SYSTEM_SC_ADDRESS_BECH32: &str =
-    "drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez";
+    "drt1yvesqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqqqqqzlllsahl0pc";
 const SYSTEM_SC_ADDRESS_ANNOTATION: &str =
-    "bech32:drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez";
+    "bech32:drt1yvesqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqqqqqzlllsahl0pc";
 
 /// Indicates the system SC address, which is the same on any Dharitri blockchain.
 pub struct DCDTSystemSCAddress;

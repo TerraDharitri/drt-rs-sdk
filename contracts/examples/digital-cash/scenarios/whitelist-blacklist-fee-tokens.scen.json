@@ -14,7 +14,7 @@
                 "function": "whitelistFeeToken",
                 "arguments": [
                     "biguint:10",
-                    "str:MOA"
+                    "str:REWA"
                 ],
                 "gasLimit": "500,000,000",
                 "gasPrice": "0"
@@ -125,18 +125,18 @@
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
-                        "str:fee|nested:str:MOA": "10",
+                        "str:fee|nested:str:REWA": "10",
                         "str:fee|nested:str:CASHTOKEN-778899": "3",
                         "str:whitelistedFeeTokens|str:.len": "2",
-                        "str:whitelistedFeeTokens|str:.item|u32:1": "str:MOA",
+                        "str:whitelistedFeeTokens|str:.item|u32:1": "str:REWA",
                         "str:whitelistedFeeTokens|str:.item|u32:2": "str:CASHTOKEN-778899",
-                        "str:whitelistedFeeTokens|str:.index|nested:str:MOA": "1",
+                        "str:whitelistedFeeTokens|str:.index|nested:str:REWA": "1",
                         "str:whitelistedFeeTokens|str:.index|nested:str:CASHTOKEN-778899": "2",
                         "str:allTimeFeeTokens|str:.len": "3",
-                        "str:allTimeFeeTokens|str:.item|u32:1": "str:MOA",
+                        "str:allTimeFeeTokens|str:.item|u32:1": "str:REWA",
                         "str:allTimeFeeTokens|str:.item|u32:2": "str:CASHTOKEN-778899",
                         "str:allTimeFeeTokens|str:.item|u32:3": "str:DCDT-778899",
-                        "str:allTimeFeeTokens|str:.index|nested:str:MOA": "1",
+                        "str:allTimeFeeTokens|str:.index|nested:str:REWA": "1",
                         "str:allTimeFeeTokens|str:.index|nested:str:CASHTOKEN-778899": "2",
                         "str:allTimeFeeTokens|str:.index|nested:str:DCDT-778899": "3"
                     },

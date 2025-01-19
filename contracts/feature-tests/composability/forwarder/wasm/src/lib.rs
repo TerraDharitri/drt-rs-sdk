@@ -18,11 +18,11 @@ dharitri_sc_wasm_adapter::endpoints! {
     forwarder
     (
         init => init
-        send_moa => send_moa
+        send_rewa => send_rewa
         echo_arguments_sync => echo_arguments_sync
         echo_arguments_sync_twice => echo_arguments_sync_twice
         forward_sync_accept_funds => forward_sync_accept_funds
-        forward_sync_accept_funds_rh_moa => forward_sync_accept_funds_rh_moa
+        forward_sync_accept_funds_rh_rewa => forward_sync_accept_funds_rh_rewa
         forward_sync_accept_funds_rh_single_dcdt => forward_sync_accept_funds_rh_single_dcdt
         forward_sync_accept_funds_rh_multi_dcdt => forward_sync_accept_funds_rh_multi_dcdt
         forward_sync_accept_funds_with_fees => forward_sync_accept_funds_with_fees

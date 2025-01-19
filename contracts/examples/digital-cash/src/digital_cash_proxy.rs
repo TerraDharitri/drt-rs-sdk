@@ -45,7 +45,7 @@ where
 {
     pub fn init<
         Arg0: ProxyArg<BigUint<Env::Api>>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
     >(
         self,
         fee: Arg0,
@@ -71,7 +71,7 @@ where
 {
     pub fn whitelist_fee_token<
         Arg0: ProxyArg<BigUint<Env::Api>>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
     >(
         self,
         fee: Arg0,
@@ -86,7 +86,7 @@ where
     }
 
     pub fn blacklist_fee_token<
-        Arg0: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg0: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
     >(
         self,
         token: Arg0,
@@ -109,7 +109,7 @@ where
 
     pub fn get_amount<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
         Arg2: ProxyArg<u64>,
     >(
         self,
@@ -141,7 +141,7 @@ where
             .original_result()
     }
 
-    pub fn pay_fee_and_fund_moa<
+    pub fn pay_fee_and_fund_rewa<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
         Arg1: ProxyArg<u64>,
     >(
@@ -150,7 +150,7 @@ where
         valability: Arg1,
     ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
         self.wrapped_tx
-            .raw_call("payFeeAndFundMOA")
+            .raw_call("payFeeAndFundREWA")
             .argument(&address)
             .argument(&valability)
             .original_result()
@@ -252,7 +252,7 @@ where
 {
     pub depositor_address: ManagedAddress<Api>,
     pub dcdt_funds: ManagedVec<Api, DcdtTokenPayment<Api>>,
-    pub moa_funds: BigUint<Api>,
+    pub rewa_funds: BigUint<Api>,
     pub valability: u64,
     pub expiration_round: u64,
     pub fees: Fee<Api>,
@@ -265,5 +265,5 @@ where
     Api: ManagedTypeApi,
 {
     pub num_token_to_transfer: usize,
-    pub value: MoaOrDcdtTokenPayment<Api>,
+    pub value: RewaOrDcdtTokenPayment<Api>,
 }

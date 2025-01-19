@@ -43,28 +43,28 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     }
 
     #[endpoint]
-    fn get_moa_balance(&self) -> BigUint {
+    fn get_rewa_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&MoaOrDcdtTokenIdentifier::moa(), 0)
+            .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
     }
 
     #[endpoint]
     fn get_dcdt_balance(&self, token_id: TokenIdentifier, nonce: u64) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&MoaOrDcdtTokenIdentifier::dcdt(token_id), nonce)
+            .get_sc_balance(&RewaOrDcdtTokenIdentifier::dcdt(token_id), nonce)
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
-    fn receive_moa(&self) -> BigUint {
-        self.call_value().moa().clone()
+    fn receive_rewa(&self) -> BigUint {
+        self.call_value().rewa().clone()
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
-    fn recieve_moa_half(&self) {
-        let payment_amount = &*self.call_value().moa() / 2u32;
-        self.tx().to(ToCaller).moa(payment_amount).transfer();
+    fn recieve_rewa_half(&self) {
+        let payment_amount = &*self.call_value().rewa() / 2u32;
+        self.tx().to(ToCaller).rewa(payment_amount).transfer();
     }
 
     #[payable("*")]

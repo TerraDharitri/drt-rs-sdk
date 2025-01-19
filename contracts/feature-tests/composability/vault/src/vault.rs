@@ -50,7 +50,7 @@ pub trait Vault {
         self.blockchain().get_caller()
     }
 
-    fn all_transfers_multi(&self) -> MultiValueEncoded<MoaOrDcdtTokenPaymentMultiValue> {
+    fn all_transfers_multi(&self) -> MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue> {
         self.call_value().all_transfers().clone().into_multi_value()
     }
 
@@ -66,7 +66,7 @@ pub trait Vault {
 
     #[payable("*")]
     #[endpoint]
-    fn accept_funds_echo_payment(&self) -> MultiValueEncoded<MoaOrDcdtTokenPaymentMultiValue> {
+    fn accept_funds_echo_payment(&self) -> MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue> {
         let dcdt_transfers_multi = self.all_transfers_multi();
         self.accept_funds_event(&dcdt_transfers_multi);
 
@@ -118,7 +118,7 @@ pub trait Vault {
         back_transfers: OptionalValue<u64>,
         back_transfer_value: OptionalValue<BigUint>,
     ) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         let caller = self.blockchain().get_caller();
         let endpoint_name = ManagedBuffer::from(b"");
         let nr_callbacks = match back_transfers.into_option() {
@@ -132,7 +132,7 @@ pub trait Vault {
         };
 
         let return_payment =
-            MoaOrDcdtTokenPayment::new(payment.token_identifier, payment.token_nonce, value);
+            RewaOrDcdtTokenPayment::new(payment.token_identifier, payment.token_nonce, value);
 
         self.num_called_retrieve_funds_promises()
             .update(|c| *c += 1);
@@ -150,7 +150,7 @@ pub trait Vault {
     }
 
     #[endpoint]
-    fn retrieve_funds(&self, token: MoaOrDcdtTokenIdentifier, nonce: u64, amount: BigUint) {
+    fn retrieve_funds(&self, token: RewaOrDcdtTokenIdentifier, nonce: u64, amount: BigUint) {
         self.retrieve_funds_event(&token, nonce, &amount);
         let caller = self.blockchain().get_caller();
 
@@ -160,14 +160,14 @@ pub trait Vault {
                 .dcdt((dcdt_token_id, nonce, amount))
                 .transfer();
         } else {
-            self.tx().to(caller).moa(amount).transfer();
+            self.tx().to(caller).rewa(amount).transfer();
         }
     }
 
     #[endpoint]
     #[payable("*")]
-    fn retrieve_funds_moa_or_single_dcdt(&self) {
-        let token = self.call_value().moa_or_single_dcdt();
+    fn retrieve_funds_rewa_or_single_dcdt(&self) {
+        let token = self.call_value().rewa_or_single_dcdt();
         self.retrieve_funds_event(&token.token_identifier, token.token_nonce, &token.amount);
 
         if let Some(dcdt_token_id) = token.token_identifier.into_dcdt_option() {
@@ -176,7 +176,7 @@ pub trait Vault {
                 .dcdt((dcdt_token_id, token.token_nonce, token.amount))
                 .transfer();
         } else {
-            self.tx().to(ToCaller).moa(token.amount).transfer();
+            self.tx().to(ToCaller).rewa(token.amount).transfer();
         }
     }
 
@@ -252,19 +252,19 @@ pub trait Vault {
     #[event("accept_funds")]
     fn accept_funds_event(
         &self,
-        #[indexed] multi_dcdt: &MultiValueEncoded<MoaOrDcdtTokenPaymentMultiValue>,
+        #[indexed] multi_dcdt: &MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue>,
     );
 
     #[event("reject_funds")]
     fn reject_funds_event(
         &self,
-        #[indexed] multi_dcdt: &MultiValueEncoded<MoaOrDcdtTokenPaymentMultiValue>,
+        #[indexed] multi_dcdt: &MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue>,
     );
 
     #[event("retrieve_funds")]
     fn retrieve_funds_event(
         &self,
-        #[indexed] token: &MoaOrDcdtTokenIdentifier,
+        #[indexed] token: &RewaOrDcdtTokenIdentifier,
         #[indexed] nonce: u64,
         #[indexed] amount: &BigUint,
     );

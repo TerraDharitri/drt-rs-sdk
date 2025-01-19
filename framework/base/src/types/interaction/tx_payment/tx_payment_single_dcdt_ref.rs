@@ -71,9 +71,9 @@ where
 
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
-            moa: None,
+            rewa: None,
             multi_dcdt: ManagedVec::from_single_item(
-                self.to_owned_payment().into_multi_moa_or_dcdt_payment(),
+                self.to_owned_payment().into_multi_rewa_or_dcdt_payment(),
             ),
         }
     }

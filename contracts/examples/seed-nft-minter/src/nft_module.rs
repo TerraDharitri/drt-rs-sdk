@@ -10,7 +10,7 @@ const ROYALTIES_MAX: u32 = 10_000; // 100%
 #[type_abi]
 #[derive(TopEncode, TopDecode)]
 pub struct PriceTag<M: ManagedTypeApi> {
-    pub token: MoaOrDcdtTokenIdentifier<M>,
+    pub token: RewaOrDcdtTokenIdentifier<M>,
     pub nonce: u64,
     pub amount: BigUint<M>,
 }
@@ -22,10 +22,10 @@ pub trait NftModule:
     // endpoints - owner-only
 
     #[only_owner]
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(issueToken)]
     fn issue_token(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         self.nft_token_id().issue_and_set_all_roles(
             DcdtTokenType::NonFungible,
             issue_cost.clone(),
@@ -41,7 +41,7 @@ pub trait NftModule:
     #[payable]
     #[endpoint(buyNft)]
     fn buy_nft(&self, nft_nonce: u64) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
 
         self.require_token_issued();
         require!(
@@ -86,7 +86,7 @@ pub trait NftModule:
     fn get_nft_price(
         &self,
         nft_nonce: u64,
-    ) -> OptionalValue<MultiValue3<MoaOrDcdtTokenIdentifier, u64, BigUint>> {
+    ) -> OptionalValue<MultiValue3<RewaOrDcdtTokenIdentifier, u64, BigUint>> {
         if self.price_tag(nft_nonce).is_empty() {
             // NFT was already sold
             OptionalValue::None
@@ -107,7 +107,7 @@ pub trait NftModule:
         attributes: T,
         uri: ManagedBuffer,
         selling_price: BigUint,
-        token_used_as_payment: MoaOrDcdtTokenIdentifier,
+        token_used_as_payment: RewaOrDcdtTokenIdentifier,
         token_used_as_payment_nonce: u64,
     ) -> u64 {
         self.require_token_issued();

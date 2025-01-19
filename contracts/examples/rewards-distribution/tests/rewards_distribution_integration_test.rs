@@ -177,7 +177,7 @@ fn test_raffle_and_claim() {
         .to(REWARDS_DISTRIBUTION_ADDRESS)
         .typed(rewards_distribution_proxy::RewardsDistributionProxy)
         .deposit_royalties()
-        .moa(2_070_000_000)
+        .rewa(2_070_000_000)
         .run();
 
     // run the raffle
@@ -200,7 +200,7 @@ fn test_raffle_and_claim() {
             .from(ALICE_ADDRESS)
             .to(REWARDS_DISTRIBUTION_ADDRESS)
             .typed(rewards_distribution_proxy::RewardsDistributionProxy)
-            .compute_claimable_amount(0u64, &MoaOrDcdtTokenIdentifier::moa(), 0u64, nonce)
+            .compute_claimable_amount(0u64, &RewaOrDcdtTokenIdentifier::rewa(), 0u64, nonce)
             .returns(ReturnsResult)
             .run();
         rewards.push(reward);
@@ -241,7 +241,7 @@ fn test_raffle_and_claim() {
             .from(ALICE_ADDRESS)
             .to(REWARDS_DISTRIBUTION_ADDRESS)
             .typed(rewards_distribution_proxy::RewardsDistributionProxy)
-            .compute_claimable_amount(0u64, &MoaOrDcdtTokenIdentifier::moa(), 0u64, nonce)
+            .compute_claimable_amount(0u64, &RewaOrDcdtTokenIdentifier::rewa(), 0u64, nonce)
             .returns(ExpectValue(expected_reward))
             .run();
     }
@@ -249,9 +249,9 @@ fn test_raffle_and_claim() {
     // claim rewards
     let mut reward_tokens: MultiValueEncoded<
         StaticApi,
-        MultiValue2<MoaOrDcdtTokenIdentifier<StaticApi>, u64>,
+        MultiValue2<RewaOrDcdtTokenIdentifier<StaticApi>, u64>,
     > = MultiValueEncoded::new();
-    reward_tokens.push((MoaOrDcdtTokenIdentifier::moa(), 0).into());
+    reward_tokens.push((RewaOrDcdtTokenIdentifier::rewa(), 0).into());
     state
         .world
         .tx()
@@ -269,7 +269,7 @@ fn test_raffle_and_claim() {
             .query()
             .to(REWARDS_DISTRIBUTION_ADDRESS)
             .typed(rewards_distribution_proxy::RewardsDistributionProxy)
-            .was_claimed(0u64, &MoaOrDcdtTokenIdentifier::moa(), 0u64, nonce)
+            .was_claimed(0u64, &RewaOrDcdtTokenIdentifier::rewa(), 0u64, nonce)
             .returns(ExpectValue(true))
             .run();
     }
@@ -285,9 +285,9 @@ fn test_raffle_and_claim() {
     // a second claim with the same nfts should succeed, but return no more rewards
     let mut reward_tokens: MultiValueEncoded<
         StaticApi,
-        MultiValue2<MoaOrDcdtTokenIdentifier<StaticApi>, u64>,
+        MultiValue2<RewaOrDcdtTokenIdentifier<StaticApi>, u64>,
     > = MultiValueEncoded::new();
-    reward_tokens.push((MoaOrDcdtTokenIdentifier::moa(), 0).into());
+    reward_tokens.push((RewaOrDcdtTokenIdentifier::rewa(), 0).into());
     state
         .world
         .tx()

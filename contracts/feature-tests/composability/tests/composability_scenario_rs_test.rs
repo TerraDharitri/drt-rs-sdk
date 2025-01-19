@@ -68,8 +68,8 @@ fn forw_queue_async_rs() {
 }
 
 #[test]
-fn forw_raw_async_accept_moa_rs() {
-    world().run("scenarios/forw_raw_async_accept_moa.scen.json");
+fn forw_raw_async_accept_rewa_rs() {
+    world().run("scenarios/forw_raw_async_accept_rewa.scen.json");
 }
 
 #[test]
@@ -118,8 +118,8 @@ fn forw_raw_contract_upgrade_self_rs() {
 }
 
 #[test]
-fn forw_raw_direct_moa_rs() {
-    world().run("scenarios/forw_raw_direct_moa.scen.json");
+fn forw_raw_direct_rewa_rs() {
+    world().run("scenarios/forw_raw_direct_rewa.scen.json");
 }
 
 #[test]
@@ -140,8 +140,8 @@ fn forw_raw_init_async_rs() {
 
 #[test]
 #[ignore = "not yet supported"]
-fn forw_raw_init_sync_accept_moa_rs() {
-    world().run("scenarios/forw_raw_init_sync_accept_moa.scen.json");
+fn forw_raw_init_sync_accept_rewa_rs() {
+    world().run("scenarios/forw_raw_init_sync_accept_rewa.scen.json");
 }
 
 #[test]
@@ -161,8 +161,8 @@ fn forw_raw_sync_echo_caller_rs() {
 }
 
 #[test]
-fn forw_raw_sync_moa_rs() {
-    world().run("scenarios/forw_raw_sync_moa.scen.json");
+fn forw_raw_sync_rewa_rs() {
+    world().run("scenarios/forw_raw_sync_rewa.scen.json");
 }
 
 #[test]
@@ -179,18 +179,18 @@ fn forw_raw_sync_same_context_rs() {
 
 #[test]
 #[ignore]
-fn forw_raw_sync_same_context_moa_rs() {
-    world().run("scenarios/forw_raw_sync_same_context_moa.scen.json");
+fn forw_raw_sync_same_context_rewa_rs() {
+    world().run("scenarios/forw_raw_sync_same_context_rewa.scen.json");
 }
 
 #[test]
-fn forw_raw_transf_exec_accept_moa_rs() {
-    world().run("scenarios/forw_raw_transf_exec_accept_moa.scen.json");
+fn forw_raw_transf_exec_accept_rewa_rs() {
+    world().run("scenarios/forw_raw_transf_exec_accept_rewa.scen.json");
 }
 
 #[test]
-fn forw_raw_transf_exec_reject_moa_rs() {
-    world().run("scenarios/forw_raw_transf_exec_reject_moa.scen.json");
+fn forw_raw_transf_exec_reject_rewa_rs() {
+    world().run("scenarios/forw_raw_transf_exec_reject_rewa.scen.json");
 }
 
 #[test]
@@ -219,8 +219,8 @@ fn forwarder_builtin_nft_local_mint_rs() {
 }
 
 #[test]
-fn forwarder_call_async_accept_moa_rs() {
-    world().run("scenarios/forwarder_call_async_accept_moa.scen.json");
+fn forwarder_call_async_accept_rewa_rs() {
+    world().run("scenarios/forwarder_call_async_accept_rewa.scen.json");
 }
 
 #[test]
@@ -239,13 +239,13 @@ fn forwarder_call_async_multi_transfer_rs() {
 }
 
 #[test]
-fn forwarder_call_async_multi_transfer_moa_rs() {
-    world().run("scenarios/forwarder_call_async_multi_transfer_moa.scen.json");
+fn forwarder_call_async_multi_transfer_rewa_rs() {
+    world().run("scenarios/forwarder_call_async_multi_transfer_rewa.scen.json");
 }
 
 #[test]
-fn forwarder_call_async_retrieve_moa_rs() {
-    world().run("scenarios/forwarder_call_async_retrieve_moa.scen.json");
+fn forwarder_call_async_retrieve_rewa_rs() {
+    world().run("scenarios/forwarder_call_async_retrieve_rewa.scen.json");
 }
 
 #[test]
@@ -259,8 +259,8 @@ fn forwarder_call_async_retrieve_nft_rs() {
 }
 
 #[test]
-fn forwarder_call_sync_accept_moa_rs() {
-    world().run("scenarios/forwarder_call_sync_accept_moa.scen.json");
+fn forwarder_call_sync_accept_rewa_rs() {
+    world().run("scenarios/forwarder_call_sync_accept_rewa.scen.json");
 }
 
 #[test]
@@ -279,8 +279,8 @@ fn forwarder_call_sync_accept_nft_rs() {
 }
 
 #[test]
-fn forwarder_call_sync_accept_then_read_moa_rs() {
-    world().run("scenarios/forwarder_call_sync_accept_then_read_moa.scen.json");
+fn forwarder_call_sync_accept_then_read_rewa_rs() {
+    world().run("scenarios/forwarder_call_sync_accept_then_read_rewa.scen.json");
 }
 
 #[test]
@@ -294,13 +294,13 @@ fn forwarder_call_sync_accept_then_read_nft_rs() {
 }
 
 #[test]
-fn forwarder_call_sync_retrieve_moa_rs() {
-    world().run("scenarios/forwarder_call_sync_retrieve_moa.scen.json");
+fn forwarder_call_sync_retrieve_rewa_rs() {
+    world().run("scenarios/forwarder_call_sync_retrieve_rewa.scen.json");
 }
 
 #[test]
-fn forwarder_call_sync_retrieve_moa_bt_rs() {
-    world().run("scenarios/forwarder_call_sync_retrieve_moa_bt.scen.json");
+fn forwarder_call_sync_retrieve_rewa_bt_rs() {
+    world().run("scenarios/forwarder_call_sync_retrieve_rewa_bt.scen.json");
 }
 
 #[test]
@@ -324,13 +324,13 @@ fn forwarder_call_sync_retrieve_nft_bt_rs() {
 }
 
 #[test]
-fn forwarder_call_transf_exec_accept_moa_rs() {
-    world().run("scenarios/forwarder_call_transf_exec_accept_moa.scen.json");
+fn forwarder_call_transf_exec_accept_rewa_rs() {
+    world().run("scenarios/forwarder_call_transf_exec_accept_rewa.scen.json");
 }
 
 #[test]
-fn forwarder_call_transf_exec_accept_moa_twice_rs() {
-    world().run("scenarios/forwarder_call_transf_exec_accept_moa_twice.scen.json");
+fn forwarder_call_transf_exec_accept_rewa_twice_rs() {
+    world().run("scenarios/forwarder_call_transf_exec_accept_rewa_twice.scen.json");
 }
 
 #[test]
@@ -349,8 +349,8 @@ fn forwarder_call_transf_exec_accept_multi_transfer_rs() {
 }
 
 #[test]
-fn forwarder_call_transf_exec_accept_multi_transfer_moa_rs() {
-    world().run("scenarios/forwarder_call_transf_exec_accept_multi_transfer_moa.scen.json");
+fn forwarder_call_transf_exec_accept_multi_transfer_rewa_rs() {
+    world().run("scenarios/forwarder_call_transf_exec_accept_multi_transfer_rewa.scen.json");
 }
 
 #[test]
@@ -474,8 +474,8 @@ fn forwarder_validate_token_identifier_rs() {
 }
 
 #[test]
-fn promises_call_async_accept_moa_rs() {
-    world().run("scenarios/promises_call_async_accept_moa.scen.json");
+fn promises_call_async_accept_rewa_rs() {
+    world().run("scenarios/promises_call_async_accept_rewa.scen.json");
 }
 
 #[test]
@@ -484,8 +484,8 @@ fn promises_call_async_accept_dcdt_rs() {
 }
 
 #[test]
-fn promises_call_async_retrieve_moa_rs() {
-    world().run("scenarios/promises_call_async_retrieve_moa.scen.json");
+fn promises_call_async_retrieve_rewa_rs() {
+    world().run("scenarios/promises_call_async_retrieve_rewa.scen.json");
 }
 
 #[test]
@@ -499,8 +499,8 @@ fn promises_call_callback_directly_rs() {
 }
 
 #[test]
-fn promises_call_transfer_callback_moa_rs() {
-    world().run("scenarios/promises_call_transfer_callback_moa.scen.json");
+fn promises_call_transfer_callback_rewa_rs() {
+    world().run("scenarios/promises_call_transfer_callback_rewa.scen.json");
 }
 
 #[test]
@@ -588,8 +588,8 @@ fn proxy_test_upgrade_rs() {
 }
 
 #[test]
-fn recursive_caller_moa_1_rs() {
-    world().run("scenarios/recursive_caller_moa_1.scen.json");
+fn recursive_caller_rewa_1_rs() {
+    world().run("scenarios/recursive_caller_rewa_1.scen.json");
 }
 
 #[test]
@@ -598,8 +598,8 @@ fn recursive_caller_dcdt_1_rs() {
 }
 
 #[test]
-fn send_moa_rs() {
-    world().run("scenarios/send_moa.scen.json");
+fn send_rewa_rs() {
+    world().run("scenarios/send_rewa.scen.json");
 }
 
 #[test]

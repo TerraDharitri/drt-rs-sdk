@@ -73,7 +73,7 @@ fn test_staking_module() {
             whitelist.push(SALLY_ADDRESS.to_managed_address());
 
             sc.init_staking_module(
-                &MoaOrDcdtTokenIdentifier::dcdt(STAKING_TOKEN_ID.to_token_identifier()),
+                &RewaOrDcdtTokenIdentifier::dcdt(STAKING_TOKEN_ID.to_token_identifier()),
                 &BigUint::from(REQUIRED_STAKE_AMOUNT),
                 &BigUint::from(SLASH_AMOUNT),
                 QUORUM,

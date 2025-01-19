@@ -23,23 +23,23 @@ fn auction_batch_rs() {
 }
 
 #[test]
-fn auction_single_token_moa_rs() {
-    world().run("scenarios/auction_single_token_moa.scen.json");
+fn auction_single_token_rewa_rs() {
+    world().run("scenarios/auction_single_token_rewa.scen.json");
 }
 
 #[test]
-fn bid_first_moa_rs() {
-    world().run("scenarios/bid_first_moa.scen.json");
+fn bid_first_rewa_rs() {
+    world().run("scenarios/bid_first_rewa.scen.json");
 }
 
 #[test]
-fn bid_second_moa_rs() {
-    world().run("scenarios/bid_second_moa.scen.json");
+fn bid_second_rewa_rs() {
+    world().run("scenarios/bid_second_rewa.scen.json");
 }
 
 #[test]
-fn bid_third_moa_rs() {
-    world().run("scenarios/bid_third_moa.scen.json");
+fn bid_third_rewa_rs() {
+    world().run("scenarios/bid_third_rewa.scen.json");
 }
 
 #[test]

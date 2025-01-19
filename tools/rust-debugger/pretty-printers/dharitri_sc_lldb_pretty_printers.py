@@ -34,7 +34,7 @@ MANAGED_OPTION_INNER_TYPE_INDEX = 1
 MANAGED_OPTION_NONE_HANDLE = 2147483646  # i32::MAX - 1
 MANAGED_OPTION_TYPE = f"{MOD_PATH}::managed_option::ManagedOption<{DEBUG_API_TYPE}, {ANY_TYPE}>"
 DCDT_TOKEN_PAYMENT_TYPE = f"{MOD_PATH}::dcdt_token_payment::DcdtTokenPayment<{DEBUG_API_TYPE} ?>"
-MOA_OR_DCDT_TOKEN_IDENTIFIER_TYPE = f"{MOD_PATH}::moa_or_dcdt_token_identifier::MoaOrDcdtTokenIdentifier<{DEBUG_API_TYPE} ?>"
+REWA_OR_DCDT_TOKEN_IDENTIFIER_TYPE = f"{MOD_PATH}::rewa_or_dcdt_token_identifier::RewaOrDcdtTokenIdentifier<{DEBUG_API_TYPE} ?>"
 
 # ManagedVec
 MANAGED_VEC_INNER_TYPE_INDEX = 1
@@ -43,7 +43,7 @@ MANAGED_VEC_TYPE = f"{MOD_PATH}::managed_vec::ManagedVec<{DEBUG_API_TYPE}, {ANY_
 # 4. SC wasm - Managed multi value types
 
 # 5. VM core types
-MOD_PATH = "dharitri_core::types"
+MOD_PATH = "dharitri_chain_core::types"
 
 HEAP_ADDRESS_TYPE = f"{MOD_PATH}::address::Address"
 BOXED_BYTES_TYPE = f"{MOD_PATH}::boxed_bytes::BoxedBytes"
@@ -415,15 +415,15 @@ class DcdtTokenPayment(ManagedVecItem, ManagedType):
         return f"{{ token_identifier: {token_id}, nonce: {nonce}, amount: {amount} }}"
 
 
-class MoaOrDcdtTokenIdentifier(PlainManagedVecItem, ManagedType):
-    def lookup(self, moa_or_dcdt_token_identifier: lldb.value) -> lldb.value:
-        return moa_or_dcdt_token_identifier.buffer
+class RewaOrDcdtTokenIdentifier(PlainManagedVecItem, ManagedType):
+    def lookup(self, rewa_or_dcdt_token_identifier: lldb.value) -> lldb.value:
+        return rewa_or_dcdt_token_identifier.buffer
 
     def value_summary(self, buffer: lldb.value, context: lldb.value, type_info: lldb.SBType) -> str:
         token_id = buffer_as_string(buffer)
-        if token_id == '"MOA-000000"':
-            return "MoaOrDcdtTokenIdentifier::moa()"
-        return f"MoaOrDcdtTokenIdentifier::dcdt({token_id})" 
+        if token_id == '"REWA-000000"':
+            return "RewaOrDcdtTokenIdentifier::rewa()"
+        return f"RewaOrDcdtTokenIdentifier::dcdt({token_id})" 
 
 
 class ManagedVec(PlainManagedVecItem, ManagedType):
@@ -480,7 +480,7 @@ DHARITRI_WASM_TYPE_HANDLERS = [
     (MANAGED_BYTE_ARRAY_TYPE, ManagedByteArray),
     (MANAGED_OPTION_TYPE, ManagedOption),
     (DCDT_TOKEN_PAYMENT_TYPE, DcdtTokenPayment),
-    (MOA_OR_DCDT_TOKEN_IDENTIFIER_TYPE, MoaOrDcdtTokenIdentifier),
+    (REWA_OR_DCDT_TOKEN_IDENTIFIER_TYPE, RewaOrDcdtTokenIdentifier),
     (MANAGED_VEC_TYPE, ManagedVec),
     # 4. SC wasm - Managed multi value types
     # 5. SC wasm - heap

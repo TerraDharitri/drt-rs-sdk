@@ -11,7 +11,7 @@ use anyhow::Result;
 use bip39::{Language, Mnemonic};
 use ctr::{cipher::StreamCipher, Ctr128BE};
 use hmac::{Hmac, Mac};
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 use pbkdf2::pbkdf2;
 use rand::RngCore;
 use scrypt::{scrypt, Params};
@@ -31,7 +31,7 @@ use crate::{
 
 use uuid::Uuid;
 
-const MOA_COIN_TYPE: u32 = 508;
+const REWA_COIN_TYPE: u32 = 508;
 const HARDENED: u32 = 0x80000000;
 const CIPHER_ALGORITHM_AES_128_CTR: &str = "aes-128-ctr";
 const KDF_SCRYPT: &str = "scrypt";
@@ -89,7 +89,7 @@ impl Wallet {
 
         for child_idx in [
             44 | HARDENED,
-            MOA_COIN_TYPE | HARDENED,
+            REWA_COIN_TYPE | HARDENED,
             account | HARDENED, // account
             HARDENED,
             address_index | HARDENED, // addressIndex
@@ -195,7 +195,7 @@ impl Wallet {
 
     #[deprecated(
         since = "0.54.0",
-        note = "Renamed to `to_address`, type changed to dharitri_core::types::Address"
+        note = "Renamed to `to_address`, type changed to dharitri_chain_core::types::Address"
     )]
     pub fn address(&self) -> crate::data::sdk_address::SdkAddress {
         crate::data::sdk_address::SdkAddress(self.to_address())

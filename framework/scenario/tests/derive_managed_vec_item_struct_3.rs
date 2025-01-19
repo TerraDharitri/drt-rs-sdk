@@ -15,7 +15,7 @@ pub struct Auction<M: ManagedTypeApi> {
     pub auctioned_token_nonce: u64,
     pub nr_auctioned_tokens: BigUint<M>,
     pub auction_type: AuctionType,
-    pub payment_token_type: MoaOrDcdtTokenIdentifier<M>,
+    pub payment_token_type: RewaOrDcdtTokenIdentifier<M>,
     pub payment_token_nonce: u64,
     pub min_bid: BigUint<M>,
     pub max_bid: Option<BigUint<M>>,

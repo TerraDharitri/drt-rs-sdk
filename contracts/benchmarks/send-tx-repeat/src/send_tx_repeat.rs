@@ -7,11 +7,11 @@ pub trait SendTxRepeat {
     #[init]
     fn init(&self) {}
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn repeat(&self, to: ManagedAddress, amount: BigUint, times: usize) {
         for _ in 0..times {
-            self.tx().to(&to).moa(&amount).transfer();
+            self.tx().to(&to).rewa(&amount).transfer();
         }
     }
 }

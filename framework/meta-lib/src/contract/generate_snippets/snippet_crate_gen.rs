@@ -73,7 +73,7 @@ pub(crate) fn create_snippets_cargo_toml(
         r#"[package]
 name = "rust-interact"
 version = "0.0.0"
-authors = ["you"]
+authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 

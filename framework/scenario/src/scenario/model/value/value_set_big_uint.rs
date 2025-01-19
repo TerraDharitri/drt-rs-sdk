@@ -110,10 +110,10 @@ impl<M: ManagedTypeApi> From<crate::dharitri_sc::types::BigUint<M>> for BigUintV
     }
 }
 
-impl<M: ManagedTypeApi> From<crate::dharitri_sc::types::AnnotatedMoaPayment<M>>
+impl<M: ManagedTypeApi> From<crate::dharitri_sc::types::AnnotatedRewaPayment<M>>
     for BigUintValue
 {
-    fn from(from: crate::dharitri_sc::types::AnnotatedMoaPayment<M>) -> Self {
+    fn from(from: crate::dharitri_sc::types::AnnotatedRewaPayment<M>) -> Self {
         BigUintValue {
             value: from.value.to_alloc(),
             original: ValueSubTree::Str(from.annotation.to_string()),

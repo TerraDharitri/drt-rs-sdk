@@ -1,4 +1,4 @@
-use dharitri_core::types::ReturnCode;
+use dharitri_chain_core::types::ReturnCode;
 use dharitri_sdk::retrieve_tx_on_network::{
     extract_message_from_string_reason, find_code_and_message, parse_reason,
 };

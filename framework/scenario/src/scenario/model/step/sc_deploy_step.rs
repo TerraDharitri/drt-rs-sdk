@@ -52,11 +52,11 @@ impl ScDeployStep {
         self
     }
 
-    pub fn moa_value<V>(mut self, expr: V) -> Self
+    pub fn rewa_value<V>(mut self, expr: V) -> Self
     where
         BigUintValue: From<V>,
     {
-        self.tx.moa_value = BigUintValue::from(expr);
+        self.tx.rewa_value = BigUintValue::from(expr);
         self
     }
 

@@ -15,7 +15,7 @@
             "id": "1",
             "tx": {
                 "to": "address:A",
-                "moaValue": "100"
+                "rewaValue": "100"
             }
         },
         {
@@ -36,7 +36,7 @@
             "id": "2",
             "tx": {
                 "to": "address:A",
-                "moaValue": "50"
+                "rewaValue": "50"
             }
         },
         {

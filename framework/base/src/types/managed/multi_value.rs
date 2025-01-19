@@ -1,5 +1,5 @@
 mod async_call_result_managed;
-mod moa_or_dcdt_token_payment_multi_value;
+mod rewa_or_dcdt_token_payment_multi_value;
 mod dcdt_token_payment_multi_value;
 mod multi_value_encoded;
 mod multi_value_encoded_counted;
@@ -8,7 +8,7 @@ mod multi_value_managed_vec;
 mod multi_value_managed_vec_counted;
 
 pub use async_call_result_managed::{ManagedAsyncCallError, ManagedAsyncCallResult};
-pub use moa_or_dcdt_token_payment_multi_value::MoaOrDcdtTokenPaymentMultiValue;
+pub use rewa_or_dcdt_token_payment_multi_value::RewaOrDcdtTokenPaymentMultiValue;
 pub use dcdt_token_payment_multi_value::{DcdtTokenPaymentMultiArg, DcdtTokenPaymentMultiValue};
 pub use multi_value_encoded::{ManagedMultiResultVec, ManagedVarArgs, MultiValueEncoded};
 pub use multi_value_encoded_counted::MultiValueEncodedCounted;

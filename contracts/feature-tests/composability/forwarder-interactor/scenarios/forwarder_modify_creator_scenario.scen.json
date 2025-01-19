@@ -41,8 +41,8 @@
             "id": "",
             "tx": {
                 "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
-                "to": "bech32:drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez",
-                "moaValue": "50000000000000000",
+                "to": "bech32:drt1yvesqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqqqqqzlllsahl0pc",
+                "rewaValue": "50000000000000000",
                 "function": "registerDynamic",
                 "arguments": [
                     "0x544553544e4654",
@@ -63,12 +63,12 @@
             "id": "",
             "tx": {
                 "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
-                "to": "bech32:drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez",
+                "to": "bech32:drt1yvesqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqqqqqzlllsahl0pc",
                 "function": "setSpecialRole",
                 "arguments": [
                     "0x544553542d643363346535",
                     "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
-                    "0x45534454526f6c654e4654437265617465"
+                    "0x44434454526f6c654e4654437265617465"
                 ],
                 "gasLimit": "80000000"
             },
@@ -107,12 +107,12 @@
             "id": "",
             "tx": {
                 "from": "0x0139472eff6886771a982f3083da5d421f24c29181e63888228dc81ca60d69e1",
-                "to": "bech32:drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez",
+                "to": "bech32:drt1yvesqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqqqqqzlllsahl0pc",
                 "function": "setSpecialRole",
                 "arguments": [
                     "0x544553542d643363346535",
                     "0x00000000000000000500de9bec07cf2792bd1b3e3a7d3097a86efcc0e33a69e1",
-                    "0x45534454526f6c654d6f6469667943726561746f72"
+                    "0x44434454526f6c654d6f6469667943726561746f72"
                 ],
                 "gasLimit": "80000000"
             },

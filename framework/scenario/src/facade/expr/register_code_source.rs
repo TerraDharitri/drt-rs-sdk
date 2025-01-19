@@ -1,4 +1,4 @@
-use dharitri_scenario_format::value_interpreter::interpret_string;
+use dharitri_chain_scenario_format::value_interpreter::interpret_string;
 
 use crate::ScenarioTxEnvData;
 

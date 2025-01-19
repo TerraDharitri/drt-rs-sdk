@@ -1,5 +1,5 @@
 use hex::FromHex;
-use dharitri_vm::crypto_functions;
+use dharitri_chain_vm::crypto_functions;
 
 #[test]
 fn test_verify_ed25519_basic() {

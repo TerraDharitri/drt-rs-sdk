@@ -3,12 +3,12 @@ name = "check-pause-meta"
 version = "0.0.0"
 edition = "2021"
 publish = false
-authors = ["Dharitri <contact@dharitri.org>"]
+authors = ["contact@dharitri.org"]
 
 [dependencies.check-pause]
 path = ".."
 
 [dependencies.dharitri-sc-meta-lib]
-version = "0.55.0"
+version = "0.0.1"
 path = "../../../../framework/meta-lib"
 default-features = false

@@ -6,9 +6,9 @@ use crate::{
     types::{BigUint, DcdtTokenPayment, ManagedVec},
 };
 
-use super::{contract_call_no_payment::ContractCallNoPayment, ContractCallWithMoa};
+use super::{contract_call_no_payment::ContractCallNoPayment, ContractCallWithRewa};
 
-impl<SA, OriginalResult> ContractCallWithMoa<SA, OriginalResult>
+impl<SA, OriginalResult> ContractCallWithRewa<SA, OriginalResult>
 where
     SA: CallTypeApi + 'static,
 {
@@ -31,7 +31,7 @@ where
     ) -> Self {
         if payment.token_nonce == 0 {
             // fungible DCDT
-            ContractCallWithMoa {
+            ContractCallWithRewa {
                 basic: ContractCallNoPayment {
                     _phantom: PhantomData,
                     to: self.basic.to,
@@ -42,13 +42,13 @@ where
                     explicit_gas_limit: self.basic.explicit_gas_limit,
                     _return_type: PhantomData,
                 },
-                moa_payment: BigUint::zero(),
+                rewa_payment: BigUint::zero(),
             }
         } else {
             // nft transfer is sent to self, sender = receiver
             let recipient_addr = BlockchainWrapper::<SA>::new().get_sc_address();
 
-            ContractCallWithMoa {
+            ContractCallWithRewa {
                 basic: ContractCallNoPayment {
                     _phantom: PhantomData,
                     to: recipient_addr,
@@ -59,7 +59,7 @@ where
                     explicit_gas_limit: self.basic.explicit_gas_limit,
                     _return_type: PhantomData,
                 },
-                moa_payment: BigUint::zero(),
+                rewa_payment: BigUint::zero(),
             }
         }
     }
@@ -71,7 +71,7 @@ where
         // multi transfer is sent to self, sender = receiver
         let recipient_addr = BlockchainWrapper::<SA>::new().get_sc_address();
 
-        ContractCallWithMoa {
+        ContractCallWithRewa {
             basic: ContractCallNoPayment {
                 _phantom: PhantomData,
                 to: recipient_addr,
@@ -80,12 +80,12 @@ where
                     .function_call
                     .convert_to_multi_transfer_dcdt_call(
                         &self.basic.to,
-                        payments.as_multi_moa_or_dcdt_payment(),
+                        payments.as_multi_rewa_or_dcdt_payment(),
                     ),
                 explicit_gas_limit: self.basic.explicit_gas_limit,
                 _return_type: PhantomData,
             },
-            moa_payment: BigUint::zero(),
+            rewa_payment: BigUint::zero(),
         }
     }
 }

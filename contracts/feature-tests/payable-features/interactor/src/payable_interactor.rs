@@ -74,9 +74,9 @@ impl PayableInteract {
     }
 
     pub async fn check_all_transfers(&mut self) {
-        let mut payment = MultiMoaOrDcdtPayment::new();
-        payment.push(MoaOrDcdtTokenPayment::moa_payment(1_0000u64.into()));
-        payment.push(MoaOrDcdtTokenPayment::moa_payment(2_0000u64.into()));
+        let mut payment = MultiRewaOrDcdtPayment::new();
+        payment.push(RewaOrDcdtTokenPayment::rewa_payment(1_0000u64.into()));
+        payment.push(RewaOrDcdtTokenPayment::rewa_payment(2_0000u64.into()));
 
         let result = self
             .interactor

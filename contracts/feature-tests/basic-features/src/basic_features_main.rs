@@ -11,7 +11,7 @@ pub mod codec_err_test;
 pub mod crypto_features;
 pub mod echo;
 pub mod echo_managed;
-pub mod moa_decimal;
+pub mod rewa_decimal;
 pub mod elliptic_curve_features;
 pub mod event_features;
 pub mod macro_features;
@@ -80,7 +80,7 @@ pub trait BasicFeatures:
     + small_num_overflow_test_ops::SmallIntOverflow
     + token_identifier_features::TokenIdentifierFeatures
     + non_zero_features::TypeFeatures
-    + moa_decimal::MoaDecimal
+    + rewa_decimal::RewaDecimal
     + dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
     + storage_mapper_get_at_address::StorageMapperGetAtAddress
     + managed_decimal_features::ManagedDecimalFeatures

@@ -61,7 +61,7 @@ pub trait ForwarderSyncCallModule {
     #[endpoint]
     #[payable("*")]
     fn forward_sync_accept_funds(&self, to: ManagedAddress) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         let result = self
@@ -78,18 +78,18 @@ pub trait ForwarderSyncCallModule {
     }
 
     #[endpoint]
-    #[payable("MOA")]
-    fn forward_sync_accept_funds_rh_moa(&self, to: ManagedAddress) -> BigUint {
-        let payment = self.call_value().moa();
+    #[payable("REWA")]
+    fn forward_sync_accept_funds_rh_rewa(&self, to: ManagedAddress) -> BigUint {
+        let payment = self.call_value().rewa();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         self.tx()
             .to(&to)
             .gas(half_gas)
             .typed(vault_proxy::VaultProxy)
-            .retrieve_funds_moa_or_single_dcdt()
-            .moa(payment)
-            .returns(ReturnsBackTransfersMOA)
+            .retrieve_funds_rewa_or_single_dcdt()
+            .rewa(payment)
+            .returns(ReturnsBackTransfersREWA)
             .sync_call()
     }
 
@@ -107,7 +107,7 @@ pub trait ForwarderSyncCallModule {
             .to(&to)
             .gas(half_gas)
             .typed(vault_proxy::VaultProxy)
-            .retrieve_funds_moa_or_single_dcdt()
+            .retrieve_funds_rewa_or_single_dcdt()
             .single_dcdt(
                 &payment.token_identifier,
                 payment.token_nonce,
@@ -141,7 +141,7 @@ pub trait ForwarderSyncCallModule {
     #[payable("*")]
     #[endpoint]
     fn forward_sync_accept_funds_with_fees(&self, to: ManagedAddress, percentage_fees: BigUint) {
-        let (token_id, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (token_id, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = payment - fees;
 
@@ -149,7 +149,7 @@ pub trait ForwarderSyncCallModule {
             .to(&to)
             .typed(vault_proxy::VaultProxy)
             .accept_funds()
-            .moa_or_single_dcdt(&token_id, 0u64, &amount_to_send)
+            .rewa_or_single_dcdt(&token_id, 0u64, &amount_to_send)
             .returns(ReturnsResult)
             .sync_call();
     }
@@ -157,13 +157,13 @@ pub trait ForwarderSyncCallModule {
     #[event("accept_funds_sync_result")]
     fn accept_funds_sync_result_event(
         &self,
-        #[indexed] multi_dcdt: &MultiValueEncoded<MoaOrDcdtTokenPaymentMultiValue>,
+        #[indexed] multi_dcdt: &MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue>,
     );
 
     #[endpoint]
     #[payable("*")]
     fn forward_sync_accept_funds_then_read(&self, to: ManagedAddress) -> usize {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
         self.tx()
             .to(&to)
             .typed(vault_proxy::VaultProxy)
@@ -183,7 +183,7 @@ pub trait ForwarderSyncCallModule {
     fn forward_sync_retrieve_funds(
         &self,
         to: ManagedAddress,
-        token: MoaOrDcdtTokenIdentifier,
+        token: RewaOrDcdtTokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {

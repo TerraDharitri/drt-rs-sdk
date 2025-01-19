@@ -15,9 +15,9 @@ pub trait CallValueApi: HandleTypeInfo {
 pub trait CallValueApiImpl: ErrorApiImpl + ManagedTypeApiImpl + Sized {
     fn check_not_payable(&self);
 
-    /// Retrieves the MOA call value from the VM.
-    /// Will return 0 in case of an DCDT transfer (cannot have both MOA and DCDT transfer simultaneously).
-    fn load_moa_value(&self, dest_handle: Self::BigIntHandle);
+    /// Retrieves the REWA call value from the VM.
+    /// Will return 0 in case of an DCDT transfer (cannot have both REWA and DCDT transfer simultaneously).
+    fn load_rewa_value(&self, dest_handle: Self::BigIntHandle);
 
     /// Loads all DCDT call values into a managed vec. Overwrites destination.
     fn load_all_dcdt_transfers(&self, dest_handle: Self::ManagedBufferHandle);

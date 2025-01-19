@@ -1,4 +1,4 @@
-use dharitri_core::types::ReturnCode;
+use dharitri_chain_core::types::ReturnCode;
 
 use crate::{types::RawHandle, vm_hooks::VMHooksHandlerSource};
 

@@ -6,13 +6,13 @@ use crate::{
     },
 };
 
-use super::{tx_interpret_util::interpret_moa_value, TxCall, TxDCDT};
+use super::{tx_interpret_util::interpret_rewa_value, TxCall, TxDCDT};
 
 #[derive(Debug, Default, Clone)]
 pub struct TxTransfer {
     pub from: AddressValue,
     pub to: AddressValue,
-    pub moa_value: BigUintValue,
+    pub rewa_value: BigUintValue,
     pub dcdt_value: Vec<TxDCDT>,
     pub gas_limit: U64Value,
     pub gas_price: U64Value,
@@ -23,7 +23,7 @@ impl InterpretableFrom<TxTransferRaw> for TxTransfer {
         TxTransfer {
             from: AddressValue::interpret_from(from.from, context),
             to: AddressValue::interpret_from(from.to, context),
-            moa_value: interpret_moa_value(from.value, from.moa_value, context),
+            rewa_value: interpret_rewa_value(from.value, from.rewa_value, context),
             dcdt_value: from
                 .dcdt_value
                 .iter()
@@ -41,7 +41,7 @@ impl IntoRaw<TxTransferRaw> for TxTransfer {
             from: self.from.into_raw(),
             to: self.to.into_raw(),
             value: None,
-            moa_value: self.moa_value.into_raw_opt(),
+            rewa_value: self.rewa_value.into_raw_opt(),
             dcdt_value: self
                 .dcdt_value
                 .into_iter()
@@ -59,7 +59,7 @@ impl TxTransfer {
         TxCall {
             from: self.from.clone(),
             to: self.to.clone(),
-            moa_value: self.moa_value.clone(),
+            rewa_value: self.rewa_value.clone(),
             dcdt_value: self.dcdt_value.clone(),
             function: String::new(),
             arguments: Vec::new(),

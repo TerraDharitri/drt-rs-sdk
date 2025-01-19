@@ -1,7 +1,7 @@
 [package]
 name = "drtpy-snippet-generator"
 version = "0.0.0"
-authors = ["Dharitri <contact@dharitri.org>"]
+authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
@@ -10,7 +10,7 @@ name = "drtpy-snippet-generator"
 path = "src/drtpy_snippet_generator.rs"
 
 [dependencies.dharitri-sc]
-version = "0.55.0"
+version = "0.0.1"
 path = "../../framework/base"
 
 [dependencies]

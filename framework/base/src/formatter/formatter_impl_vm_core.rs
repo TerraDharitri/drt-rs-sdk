@@ -1,4 +1,4 @@
-use dharitri_core::types::CodeMetadata;
+use dharitri_chain_core::types::CodeMetadata;
 
 use super::{hex_util, FormatByteReceiver, SCBinary, SCDisplay, SCLowerHex};
 

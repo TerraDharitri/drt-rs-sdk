@@ -8,7 +8,7 @@ use crate::{
     types::{
         decode_result, Code, CodeMetadata, DeployCall, FromSource, ManagedAddress, ManagedBuffer,
         ManagedVec, OriginalResultMarker, RHListExec, Tx, TxCodeValue, TxFromSourceValue, TxGas,
-        TxPaymentMoaOnly, TxResultHandler, TxScEnv,
+        TxPaymentRewaOnly, TxResultHandler, TxScEnv,
     },
 };
 
@@ -24,7 +24,7 @@ impl<Api, Payment, Gas, CodeValue, RH>
     Tx<TxScEnv<Api>, (), (), Payment, Gas, DeployCall<TxScEnv<Api>, Code<CodeValue>>, RH>
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     CodeValue: TxCodeValue<TxScEnv<Api>>,
     RH: TxResultHandler<TxScEnv<Api>>,
@@ -32,10 +32,10 @@ where
     fn execute_deploy_raw(self) -> (ManagedAddress<Api>, ManagedVec<Api, ManagedBuffer<Api>>, RH) {
         let gas_limit = self.gas.gas_value(&self.env);
 
-        let (new_address, raw_results) = self.payment.with_moa_value(&self.env, |moa_value| {
+        let (new_address, raw_results) = self.payment.with_rewa_value(&self.env, |rewa_value| {
             SendRawWrapper::<Api>::new().deploy_contract(
                 gas_limit,
-                moa_value,
+                rewa_value,
                 &self.data.code_source.0.into_value(&self.env),
                 self.data.code_metadata,
                 &self.data.arg_buffer,
@@ -60,7 +60,7 @@ impl<Api, Payment, Gas, FromSourceValue, RH>
     >
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     FromSourceValue: TxFromSourceValue<TxScEnv<Api>>,
     RH: TxResultHandler<TxScEnv<Api>>,
@@ -70,10 +70,10 @@ where
     ) -> (ManagedAddress<Api>, ManagedVec<Api, ManagedBuffer<Api>>, RH) {
         let gas_limit = self.gas.gas_value(&self.env);
 
-        let (new_address, raw_results) = self.payment.with_moa_value(&self.env, |moa_value| {
+        let (new_address, raw_results) = self.payment.with_rewa_value(&self.env, |rewa_value| {
             SendRawWrapper::<Api>::new().deploy_from_source_contract(
                 gas_limit,
-                moa_value,
+                rewa_value,
                 &self.data.code_source.0.into_value(&self.env),
                 self.data.code_metadata,
                 &self.data.arg_buffer,
@@ -90,7 +90,7 @@ impl<Api, Payment, Gas, CodeValue, RH>
     Tx<TxScEnv<Api>, (), (), Payment, Gas, DeployCall<TxScEnv<Api>, Code<CodeValue>>, RH>
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     CodeValue: TxCodeValue<TxScEnv<Api>>,
     RH: RHListExec<DeployRawResult<Api>, TxScEnv<Api>>,
@@ -121,7 +121,7 @@ impl<Api, Payment, Gas, FromSourceValue, RH>
     >
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     FromSourceValue: TxFromSourceValue<TxScEnv<Api>>,
     RH: RHListExec<DeployRawResult<Api>, TxScEnv<Api>>,
@@ -152,7 +152,7 @@ impl<Api, Payment, Gas, OriginalResult>
     >
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     OriginalResult: TopEncodeMulti,
 {
@@ -215,7 +215,7 @@ impl<Api, Payment, Gas, OriginalResult>
     >
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     OriginalResult: TopEncodeMulti,
 {
@@ -236,11 +236,11 @@ where
     )]
     pub fn upgrade_contract(self, code: &ManagedBuffer<Api>, code_metadata: CodeMetadata) {
         let gas = self.gas.explicit_or_gas_left(&self.env);
-        self.payment.with_moa_value(&self.env, |moa_value| {
+        self.payment.with_rewa_value(&self.env, |rewa_value| {
             SendRawWrapper::<Api>::new().upgrade_contract(
                 &self.to,
                 gas,
-                moa_value,
+                rewa_value,
                 code,
                 code_metadata,
                 &self.data.arg_buffer,
@@ -269,11 +269,11 @@ where
         code_metadata: CodeMetadata,
     ) {
         let gas = self.gas.explicit_or_gas_left(&self.env);
-        self.payment.with_moa_value(&self.env, |moa_value| {
+        self.payment.with_rewa_value(&self.env, |rewa_value| {
             SendRawWrapper::<Api>::new().upgrade_from_source_contract(
                 &self.to,
                 gas,
-                moa_value,
+                rewa_value,
                 source_address,
                 code_metadata,
                 &self.data.arg_buffer,

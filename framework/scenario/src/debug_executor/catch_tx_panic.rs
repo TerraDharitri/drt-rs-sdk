@@ -1,4 +1,4 @@
-use dharitri_vm::tx_mock::TxPanic;
+use dharitri_chain_vm::tx_mock::TxPanic;
 use dharitri_vm_executor::BreakpointValue;
 use dharitri_sc::err_msg;
 

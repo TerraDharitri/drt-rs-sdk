@@ -26,7 +26,7 @@
             "tx": {
                 "from": "address:acc1",
                 "to": "sc:crypto_bubbles",
-                "moaValue": "0x4000000",
+                "rewaValue": "0x4000000",
                 "function": "topUp",
                 "arguments": [],
                 "gasLimit": "0x100000",

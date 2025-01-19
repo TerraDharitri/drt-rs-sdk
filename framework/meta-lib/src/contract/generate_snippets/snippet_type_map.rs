@@ -92,10 +92,10 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
         },
     );
     m.insert(
-        "MoaOrDcdtTokenIdentifier",
+        "RewaOrDcdtTokenIdentifier",
         RustTypeString {
-            type_name: "MoaOrDcdtTokenIdentifier".to_string() + STATIC_API_SUFFIX,
-            default_value_expr: "MoaOrDcdtTokenIdentifier::dcdt(&b\"\"[..])".to_string(),
+            type_name: "RewaOrDcdtTokenIdentifier".to_string() + STATIC_API_SUFFIX,
+            default_value_expr: "RewaOrDcdtTokenIdentifier::dcdt(&b\"\"[..])".to_string(),
             contains_custom_types: false,
         },
     );
@@ -114,11 +114,11 @@ fn init_rust_types_map() -> HashMap<&'static str, RustTypeString> {
         },
     );
     m.insert(
-        "MoaOrDcdtTokenPayment",
+        "RewaOrDcdtTokenPayment",
         RustTypeString {
-            type_name: "MoaOrDcdtTokenPayment".to_string() + STATIC_API_SUFFIX,
-            default_value_expr: "MoaOrDcdtTokenPayment::new(
-            MoaOrDcdtTokenIdentifier::dcdt(&b\"\"[..]),
+            type_name: "RewaOrDcdtTokenPayment".to_string() + STATIC_API_SUFFIX,
+            default_value_expr: "RewaOrDcdtTokenPayment::new(
+            RewaOrDcdtTokenIdentifier::dcdt(&b\"\"[..]),
             0u64,
             BigUint::from(0u128),
         )"

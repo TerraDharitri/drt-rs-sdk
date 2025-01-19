@@ -1,4 +1,4 @@
-use dharitri_scenario_format::{
+use dharitri_chain_scenario_format::{
     interpret_trait::{InterpretableFrom, InterpreterContext},
     serde_raw::ScenarioRaw,
 };

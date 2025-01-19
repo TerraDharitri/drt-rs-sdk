@@ -1,6 +1,6 @@
 use crate::{
     api::{CallTypeApi, StorageWriteApi},
-    types::{CallbackClosure, MoaPayment, FunctionCall, ManagedAddress, Tx, TxScEnv},
+    types::{CallbackClosure, RewaPayment, FunctionCall, ManagedAddress, Tx, TxScEnv},
 };
 
 /// Kept as alias for backwards compatibility.
@@ -12,7 +12,7 @@ pub type AsyncCall<Api> = Tx<
     TxScEnv<Api>,
     (),
     ManagedAddress<Api>,
-    MoaPayment<Api>,
+    RewaPayment<Api>,
     (),
     FunctionCall<Api>,
     Option<CallbackClosure<Api>>,

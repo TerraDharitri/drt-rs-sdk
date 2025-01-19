@@ -1,6 +1,6 @@
 use super::{sc_call::tx_dcdt_transfers_from_scenario, ScenarioVMRunner};
 use crate::scenario::model::{TransferStep, TxTransfer, ValidatorRewardStep};
-use dharitri_vm::{
+use dharitri_chain_vm::{
     tx_execution::{execute_current_tx_context_input, BlockchainVMRef},
     tx_mock::{TxFunctionName, TxInput},
     with_shared::Shareable,
@@ -19,7 +19,7 @@ impl ScenarioVMRunner {
     pub fn perform_validator_reward(&mut self, validator_rewards_step: &ValidatorRewardStep) {
         self.blockchain_mock.state.increase_validator_reward(
             &validator_rewards_step.tx.to.to_address(),
-            &validator_rewards_step.tx.moa_value.value,
+            &validator_rewards_step.tx.rewa_value.value,
         );
     }
 }
@@ -28,7 +28,7 @@ fn tx_input_from_transfer(tx_transfer: &TxTransfer) -> TxInput {
     TxInput {
         from: tx_transfer.from.to_address(),
         to: tx_transfer.to.to_address(),
-        moa_value: tx_transfer.moa_value.value.clone(),
+        rewa_value: tx_transfer.rewa_value.value.clone(),
         dcdt_values: tx_dcdt_transfers_from_scenario(tx_transfer.dcdt_value.as_slice()),
         func_name: TxFunctionName::EMPTY,
         args: Vec::new(),

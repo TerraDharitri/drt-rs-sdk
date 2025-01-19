@@ -31,15 +31,15 @@ pub trait NftMinter: nft_module::NftModule {
         opt_token_used_as_payment_nonce: OptionalValue<u64>,
     ) {
         let token_used_as_payment = match opt_token_used_as_payment {
-            OptionalValue::Some(token) => MoaOrDcdtTokenIdentifier::dcdt(token),
-            OptionalValue::None => MoaOrDcdtTokenIdentifier::moa(),
+            OptionalValue::Some(token) => RewaOrDcdtTokenIdentifier::dcdt(token),
+            OptionalValue::None => RewaOrDcdtTokenIdentifier::rewa(),
         };
         require!(
             token_used_as_payment.is_valid(),
             "Invalid token_used_as_payment arg, not a valid token ID"
         );
 
-        let token_used_as_payment_nonce = if token_used_as_payment.is_moa() {
+        let token_used_as_payment_nonce = if token_used_as_payment.is_rewa() {
             0
         } else {
             match opt_token_used_as_payment_nonce {

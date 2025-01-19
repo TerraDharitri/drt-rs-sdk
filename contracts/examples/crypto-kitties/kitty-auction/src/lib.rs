@@ -149,10 +149,10 @@ pub trait KittyAuction {
         )
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn bid(&self, kitty_id: u32) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
 
         require!(
             self.is_up_for_auction(kitty_id),
@@ -187,7 +187,7 @@ pub trait KittyAuction {
         if !auction.current_winner.is_zero() {
             self.tx()
                 .to(&auction.current_winner)
-                .moa(&auction.current_bid)
+                .rewa(&auction.current_bid)
                 .transfer();
         }
 
@@ -365,7 +365,7 @@ pub trait KittyAuction {
                 {
                     self.tx()
                         .to(&auction.kitty_owner)
-                        .moa(&auction.current_bid)
+                        .rewa(&auction.current_bid)
                         .transfer();
                 }
             },

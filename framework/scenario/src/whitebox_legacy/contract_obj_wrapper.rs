@@ -12,8 +12,8 @@ use crate::{
     testing_framework::raw_converter::bytes_to_hex,
     ScenarioWorld,
 };
-use dharitri_scenario_format::interpret_trait::InterpretableFrom;
-use dharitri_vm::tx_mock::{TxContext, TxContextStack, TxFunctionName, TxResult};
+use dharitri_chain_scenario_format::interpret_trait::InterpretableFrom;
+use dharitri_chain_vm::tx_mock::{TxContext, TxContextStack, TxFunctionName, TxResult};
 use dharitri_sc::types::{BigUint, H256};
 use num_traits::Zero;
 
@@ -22,7 +22,7 @@ use super::{
     AddressFactory, DenaliGenerator, ScQueryDenali,
 };
 
-pub use dharitri_vm::tx_mock::TxTokenTransfer;
+pub use dharitri_chain_vm::tx_mock::TxTokenTransfer;
 
 #[derive(Clone)]
 pub struct ContractObjWrapper<
@@ -85,15 +85,15 @@ impl BlockchainStateWrapper {
         }
     }
 
-    pub fn check_moa_balance(&self, address: &Address, expected_balance: &num_bigint::BigUint) {
+    pub fn check_rewa_balance(&self, address: &Address, expected_balance: &num_bigint::BigUint) {
         let actual_balance = match &self.world.get_state().accounts.get(address) {
-            Some(acc) => acc.moa_balance.clone(),
+            Some(acc) => acc.rewa_balance.clone(),
             None => num_bigint::BigUint::zero(),
         };
 
         assert!(
             expected_balance == &actual_balance,
-            "MOA balance mismatch for address {}\n Expected: {}\n Have: {}\n",
+            "REWA balance mismatch for address {}\n Expected: {}\n Have: {}\n",
             address_to_hex(address),
             expected_balance,
             actual_balance
@@ -174,10 +174,10 @@ impl BlockchainStateWrapper {
 }
 
 impl BlockchainStateWrapper {
-    pub fn create_user_account(&mut self, moa_balance: &num_bigint::BigUint) -> Address {
+    pub fn create_user_account(&mut self, rewa_balance: &num_bigint::BigUint) -> Address {
         let address = self.address_factory.new_address();
         self.world
-            .create_account_raw(&address, BigUint::from(moa_balance));
+            .create_account_raw(&address, BigUint::from(rewa_balance));
 
         address
     }
@@ -185,15 +185,15 @@ impl BlockchainStateWrapper {
     pub fn create_user_account_fixed_address(
         &mut self,
         address: &Address,
-        moa_balance: &num_bigint::BigUint,
+        rewa_balance: &num_bigint::BigUint,
     ) {
         self.world
-            .create_account_raw(address, BigUint::from(moa_balance));
+            .create_account_raw(address, BigUint::from(rewa_balance));
     }
 
     pub fn create_sc_account<CB, ContractObjBuilder>(
         &mut self,
-        moa_balance: &num_bigint::BigUint,
+        rewa_balance: &num_bigint::BigUint,
         owner: Option<&Address>,
         obj_builder: ContractObjBuilder,
         contract_wasm_path: &str,
@@ -205,7 +205,7 @@ impl BlockchainStateWrapper {
         let address = self.address_factory.new_sc_address();
         self.create_sc_account_fixed_address(
             &address,
-            moa_balance,
+            rewa_balance,
             owner,
             obj_builder,
             contract_wasm_path,
@@ -215,7 +215,7 @@ impl BlockchainStateWrapper {
     pub fn create_sc_account_fixed_address<CB, ContractObjBuilder>(
         &mut self,
         address: &Address,
-        moa_balance: &num_bigint::BigUint,
+        rewa_balance: &num_bigint::BigUint,
         owner: Option<&Address>,
         obj_builder: ContractObjBuilder,
         contract_wasm_path: &str,
@@ -242,7 +242,7 @@ impl BlockchainStateWrapper {
         );
 
         let mut account = Account::new()
-            .balance(moa_balance)
+            .balance(rewa_balance)
             .code(contract_code_expr.clone());
         if let Some(owner) = owner {
             account = account.owner(owner);
@@ -281,13 +281,13 @@ impl BlockchainStateWrapper {
     pub fn create_account_raw(
         &mut self,
         address: &Address,
-        moa_balance: &num_bigint::BigUint,
+        rewa_balance: &num_bigint::BigUint,
         _owner: Option<&Address>,
         _sc_identifier: Option<Vec<u8>>,
         _sc_denali_path_expr: Option<Vec<u8>>,
     ) {
         self.world
-            .create_account_raw(address, BigUint::from(moa_balance));
+            .create_account_raw(address, BigUint::from(rewa_balance));
     }
 
     // Has to be used before perfoming a deploy from a SC
@@ -333,8 +333,8 @@ impl BlockchainStateWrapper {
         ContractObjWrapper::new(old_wrapper.address, new_builder)
     }
 
-    pub fn set_moa_balance(&mut self, address: &Address, balance: &num_bigint::BigUint) {
-        self.world.set_moa_balance(address, BigUint::from(balance));
+    pub fn set_rewa_balance(&mut self, address: &Address, balance: &num_bigint::BigUint) {
+        self.world.set_rewa_balance(address, BigUint::from(balance));
     }
 
     pub fn set_dcdt_balance(
@@ -513,7 +513,7 @@ impl BlockchainStateWrapper {
         &mut self,
         caller: &Address,
         sc_wrapper: &ContractObjWrapper<CB, ContractObjBuilder>,
-        moa_payment: &num_bigint::BigUint,
+        rewa_payment: &num_bigint::BigUint,
         tx_fn: TxFn,
     ) -> TxResult
     where
@@ -521,7 +521,7 @@ impl BlockchainStateWrapper {
         ContractObjBuilder: 'static + Copy + Fn() -> CB,
         TxFn: FnOnce(CB),
     {
-        self.execute_tx_any(caller, sc_wrapper, moa_payment, Vec::new(), tx_fn)
+        self.execute_tx_any(caller, sc_wrapper, rewa_payment, Vec::new(), tx_fn)
     }
 
     pub fn execute_dcdt_transfer<CB, ContractObjBuilder, TxFn>(
@@ -596,7 +596,7 @@ impl BlockchainStateWrapper {
         &mut self,
         caller: &Address,
         sc_wrapper: &ContractObjWrapper<CB, ContractObjBuilder>,
-        moa_payment: &num_bigint::BigUint,
+        rewa_payment: &num_bigint::BigUint,
         dcdt_payments: Vec<TxTokenTransfer>,
         tx_fn: TxFn,
     ) -> TxResult
@@ -609,7 +609,7 @@ impl BlockchainStateWrapper {
             .from(caller)
             .to(sc_wrapper.address_ref())
             .function(TxFunctionName::WHITEBOX_CALL.as_str())
-            .moa_value(moa_payment)
+            .rewa_value(rewa_payment)
             .gas_limit("100,000,000")
             .no_expect();
 
@@ -655,11 +655,11 @@ impl BlockchainStateWrapper {
 }
 
 impl BlockchainStateWrapper {
-    pub fn get_moa_balance(&self, address: &Address) -> num_bigint::BigUint {
+    pub fn get_rewa_balance(&self, address: &Address) -> num_bigint::BigUint {
         match self.world.get_state().accounts.get(address) {
-            Some(acc) => acc.moa_balance.clone(),
+            Some(acc) => acc.rewa_balance.clone(),
             None => panic!(
-                "get_moa_balance: Account {:?} does not exist",
+                "get_rewa_balance: Account {:?} does not exist",
                 address_to_hex(address)
             ),
         }
@@ -728,7 +728,7 @@ impl BlockchainStateWrapper {
         };
 
         println!("State for account: {:?}", address_to_hex(address));
-        println!("MOA: {}", account.moa_balance);
+        println!("REWA: {}", account.rewa_balance);
 
         if !account.dcdt.is_empty() {
             println!("DCDT Tokens:");

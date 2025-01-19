@@ -13,14 +13,14 @@ pub trait FractionalNfts: default_issue_callbacks::DefaultIssueCallbacksModule {
     fn init(&self) {}
 
     #[only_owner]
-    #[payable("MOA")]
+    #[payable("REWA")]
     fn issue_and_set_all_roles(
         &self,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         num_decimals: usize,
     ) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         self.fractional_token().issue_and_set_all_roles(
             DcdtTokenType::SemiFungible,
             issue_cost.clone(),

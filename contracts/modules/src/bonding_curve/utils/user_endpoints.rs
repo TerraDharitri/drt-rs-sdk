@@ -53,7 +53,7 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
 
         self.tx()
             .to(&caller)
-            .moa_or_single_dcdt(&payment_token, 0u64, &calculated_price)
+            .rewa_or_single_dcdt(&payment_token, 0u64, &calculated_price)
             .transfer();
 
         self.token_details(offered_token)
@@ -77,7 +77,7 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
             + PartialEq
             + Default,
     {
-        let (offered_token, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (offered_token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         let payment_token =
             self.check_owned_return_payment_token::<T>(&requested_token, &requested_amount);
         self.check_given_token(&payment_token, &offered_token);
@@ -124,7 +124,7 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
 
         self.tx()
             .to(&caller)
-            .moa_or_single_dcdt(&offered_token, 0u64, &(&payment - &calculated_price))
+            .rewa_or_single_dcdt(&offered_token, 0u64, &(&payment - &calculated_price))
             .transfer();
 
         self.buy_token_event(&caller, &calculated_price);
@@ -226,7 +226,7 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
         &self,
         issued_token: &TokenIdentifier,
         amount: &BigUint,
-    ) -> MoaOrDcdtTokenIdentifier
+    ) -> RewaOrDcdtTokenIdentifier
     where
         T: CurveFunction<Self::Api>
             + TopEncode
@@ -253,8 +253,8 @@ pub trait UserEndpointsModule: storage::StorageModule + events::EventsModule {
 
     fn check_given_token(
         &self,
-        accepted_token: &MoaOrDcdtTokenIdentifier,
-        given_token: &MoaOrDcdtTokenIdentifier,
+        accepted_token: &RewaOrDcdtTokenIdentifier,
+        given_token: &RewaOrDcdtTokenIdentifier,
     ) {
         require!(
             given_token == accepted_token,

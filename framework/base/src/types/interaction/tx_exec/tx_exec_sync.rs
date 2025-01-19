@@ -32,11 +32,11 @@ where
             &self.from,
             self.to,
             self.data.into(),
-            |norm_to, norm_moa, norm_fc| {
+            |norm_to, norm_rewa, norm_fc| {
                 SendRawWrapper::<Api>::new().execute_on_dest_context_raw(
                     gas_limit,
                     norm_to,
-                    norm_moa,
+                    norm_rewa,
                     &norm_fc.function_name,
                     &norm_fc.arg_buffer,
                 )
@@ -66,11 +66,11 @@ where
             &self.from,
             self.to,
             self.data.into(),
-            |norm_to, norm_moa, norm_fc| {
+            |norm_to, norm_rewa, norm_fc| {
                 SendRawWrapper::<Api>::new().execute_on_same_context_raw(
                     gas_limit,
                     norm_to,
-                    norm_moa,
+                    norm_rewa,
                     &norm_fc.function_name,
                     &norm_fc.arg_buffer,
                 )

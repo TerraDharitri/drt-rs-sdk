@@ -18,7 +18,7 @@ pub struct Config {
     pub gateway_uri: String,
     pub chain_type: ChainType,
     pub quorum: usize,
-    pub wmoa_address: Bech32Address,
+    pub wrewa_address: Bech32Address,
 }
 
 impl Config {

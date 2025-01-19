@@ -1,4 +1,4 @@
-use dharitri_scenario_format::interpret_trait::InterpreterContext;
+use dharitri_chain_scenario_format::interpret_trait::InterpreterContext;
 use dharitri_sc::types::{ManagedAddress, ManagedBuffer, TxEnv, TxEnvWithTxHash, H256};
 
 use crate::{api::StaticApi, scenario_model::TxExpect, ScenarioWorld};

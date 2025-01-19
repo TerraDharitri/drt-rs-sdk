@@ -1,11 +1,11 @@
 use crate::ScenarioTxEnv;
 
-use dharitri_scenario_format::{
+use dharitri_chain_scenario_format::{
     interpret_trait::InterpreterContext, value_interpreter::interpret_string,
 };
 use dharitri_sc::{
     api::ManagedTypeApi,
-    types::{AnnotatedValue, BigUint, ManagedBuffer, TxMoaValue, TxGasValue},
+    types::{AnnotatedValue, BigUint, ManagedBuffer, TxRewaValue, TxGasValue},
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -45,5 +45,5 @@ where
     }
 }
 
-impl<Env> TxMoaValue<Env> for NumExpr<'_> where Env: ScenarioTxEnv {}
+impl<Env> TxRewaValue<Env> for NumExpr<'_> where Env: ScenarioTxEnv {}
 impl<Env> TxGasValue<Env> for NumExpr<'_> where Env: ScenarioTxEnv {}

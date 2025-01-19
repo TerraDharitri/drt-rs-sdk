@@ -45,7 +45,7 @@ impl BuiltinFunction for ClaimDeveloperRewards {
         });
 
         if caller_is_owner {
-            tx_cache.increase_moa_balance(&tx_input.from, &developer_rewards);
+            tx_cache.increase_rewa_balance(&tx_input.from, &developer_rewards);
             (TxResult::empty(), tx_cache.into_blockchain_updates())
         } else {
             (

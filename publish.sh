@@ -13,7 +13,7 @@
 # Be mindful that hotfixes need to be backwards compatible, minor releases do not.
 # We always publish all `framework/*` crates together.
 # We always publish `dharitri-codec` and `dharitri-codec-derive` together.
-# `framework/*` depend on both `dharitri-codec` and `dharitri-scenario-format`,
+# `framework/*` depend on both `dharitri-codec` and `dharitri-chain-scenario-format`,
 # so if you have a minor release on the latter, you also need a minor release on `framework/*`.
 # See the Changelog for more details.
 #
@@ -31,7 +31,7 @@
 #
 # 6. Make sure that the contract upgrade tool is still sound.
 # At the very least add the new version to `VERSIONS` and change `DEFAULT_LAST_VERSION` in 
-# `/home/andreim/TerraDharitri/rs/drt-rs-sdk/framework/meta/src/sc_upgrade/upgrade_versions.rs`+
+# `/home/andreim/dharitri/rs/drt-rs-sdk/framework/meta/src/sc_upgrade/upgrade_versions.rs`+
 # 
 # 7. Run this script, `./publish.sh`.
 # You can comment out the crates you are not publishing. The script will stop otherwise when it cannot publish them.
@@ -128,6 +128,6 @@ cd contracts/core/price-aggregator
 cargo publish || return 1
 cd ../../..
 
-cd contracts/core/wmoa-swap
+cd contracts/core/wrewa-swap
 cargo publish || return 1
 cd ../../..

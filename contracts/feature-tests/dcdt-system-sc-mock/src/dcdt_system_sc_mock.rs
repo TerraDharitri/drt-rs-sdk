@@ -11,7 +11,7 @@ pub trait PayableFeatures {
     #[init]
     fn init(&self) {}
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(issue)]
     fn issue_fungible(
         &self,
@@ -36,7 +36,7 @@ pub trait PayableFeatures {
         new_token_id
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(issueNonFungible)]
     fn issue_non_fungible(
         &self,
@@ -47,7 +47,7 @@ pub trait PayableFeatures {
         self.create_new_token_id(token_ticker)
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(issueSemiFungible)]
     fn issue_semi_fungible(
         &self,
@@ -58,7 +58,7 @@ pub trait PayableFeatures {
         self.create_new_token_id(token_ticker)
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(registerMetaDCDT)]
     fn issue_meta_dcdt(
         &self,
@@ -79,7 +79,7 @@ pub trait PayableFeatures {
     ) {
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(registerAndSetAllRoles)]
     fn register_and_set_all_roles(
         &self,

@@ -4,7 +4,7 @@ use crate::{
     scenario_model::TxResponse,
 };
 
-use dharitri_vm::{
+use dharitri_chain_vm::{
     tx_execution::execute_current_tx_context_input,
     tx_mock::{TxInput, TxResult, TxTokenTransfer},
 };
@@ -88,7 +88,7 @@ fn tx_input_from_call(sc_call_step: &ScCallStep) -> TxInput {
     TxInput {
         from: tx.from.to_address(),
         to: tx.to.to_address(),
-        moa_value: tx.moa_value.value.clone(),
+        rewa_value: tx.rewa_value.value.clone(),
         dcdt_values: tx_dcdt_transfers_from_scenario(tx.dcdt_value.as_slice()),
         func_name: tx.function.clone().into(),
         args: tx

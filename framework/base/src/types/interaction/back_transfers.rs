@@ -8,6 +8,6 @@ pub struct BackTransfers<A>
 where
     A: ManagedTypeApi,
 {
-    pub total_moa_amount: BigUint<A>,
+    pub total_rewa_amount: BigUint<A>,
     pub dcdt_payments: MultiDcdtPayment<A>,
 }

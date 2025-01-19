@@ -37,7 +37,7 @@ fn extract_token_identifier(attr: &syn::Attribute) -> String {
                     let clean = clean_string(literal.to_string());
                     assert!(
                         !clean.is_empty(),
-                        "ticker can not be empty. attribute needs 1 string argument: Replace with #[payable(\"*\")] or #[payable(\"MOA\")"
+                        "ticker can not be empty. attribute needs 1 string argument: Replace with #[payable(\"*\")] or #[payable(\"REWA\")"
                     );
 
                     assert!(!is_first_char_numeric(&clean), "argument can not be a number");
@@ -48,13 +48,13 @@ fn extract_token_identifier(attr: &syn::Attribute) -> String {
                     .is_some_and(|s|
                         s == '*'
                     ) {
-                        assert!(clean.len() == 1usize, "attribute needs 1 string argument: \"*\", \"MOA\" or token identifier");
+                        assert!(clean.len() == 1usize, "attribute needs 1 string argument: \"*\", \"REWA\" or token identifier");
                     }
 
                     clean
                 },
                 Some(_) => panic!("expected a string as argument"),
-                None => panic!("argument can not be empty. attribute needs 1 string argument: Replace with #[payable(\"*\")] or #[payable(\"MOA\")"),
+                None => panic!("argument can not be empty. attribute needs 1 string argument: Replace with #[payable(\"*\")] or #[payable(\"REWA\")"),
             };
 
             assert!(
@@ -64,7 +64,7 @@ fn extract_token_identifier(attr: &syn::Attribute) -> String {
             ticker
         },
         syn::Meta::NameValue(_) => panic!(
-            "attribute can not be name value. attribute needs 1 string argument: \"*\" or \"MOA\""
+            "attribute can not be name value. attribute needs 1 string argument: \"*\" or \"REWA\""
         ),
     }
 }

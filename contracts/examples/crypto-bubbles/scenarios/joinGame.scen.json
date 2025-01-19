@@ -34,7 +34,7 @@
             "tx": {
                 "from": "address:acc1",
                 "to": "sc:crypto_bubbles",
-                "moaValue": "0x200",
+                "rewaValue": "0x200",
                 "function": "joinGame",
                 "arguments": [
                     "0x12"
@@ -80,7 +80,7 @@
             "tx": {
                 "from": "address:acc2",
                 "to": "sc:crypto_bubbles",
-                "moaValue": "0x150",
+                "rewaValue": "0x150",
                 "function": "joinGame",
                 "arguments": [
                     "0x12"
@@ -126,7 +126,7 @@
             "tx": {
                 "from": "address:acc2",
                 "to": "sc:crypto_bubbles",
-                "moaValue": "0x2000",
+                "rewaValue": "0x2000",
                 "function": "joinGame",
                 "arguments": [
                     "0x12"

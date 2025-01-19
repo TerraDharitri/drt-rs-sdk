@@ -15,7 +15,7 @@ impl CallValueApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn load_moa_value(&self, _dest: Self::BigIntHandle) {
+    fn load_rewa_value(&self, _dest: Self::BigIntHandle) {
         unreachable!()
     }
 

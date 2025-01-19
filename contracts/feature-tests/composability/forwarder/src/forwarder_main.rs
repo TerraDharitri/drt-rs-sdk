@@ -39,7 +39,7 @@ pub trait Forwarder:
     fn init(&self) {}
 
     #[endpoint]
-    fn send_moa(&self, to: &ManagedAddress, amount: &BigUint) {
-        self.tx().to(to).moa(amount).transfer();
+    fn send_rewa(&self, to: &ManagedAddress, amount: &BigUint) {
+        self.tx().to(to).rewa(amount).transfer();
     }
 }

@@ -297,7 +297,7 @@
             "comment": "another",
             "tx": {
                 "from": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b000000000000000000000000",
-                "moaValue": "123,456,000",
+                "rewaValue": "123,456,000",
                 "contractCode": "``new contract code here",
                 "arguments": [
                     "0x1234123400000000000000000000000000000000000000000000000000000004",
@@ -335,7 +335,7 @@
             "tx": {
                 "from": "0xa94f5374fce5edbc8e2a8697c15331677e6ebf0b000000000000000000000000",
                 "to": "0x1000000000000000000000000000000000000000000000000000000000000000",
-                "moaValue": "1234",
+                "rewaValue": "1234",
                 "dcdtValue": [
                     {
                         "tokenIdentifier": "str:MyToken",
@@ -350,7 +350,7 @@
             "comment": "system send out validator rewards",
             "tx": {
                 "to": "sc:delegation",
-                "moaValue": "555,000,000"
+                "rewaValue": "555,000,000"
             }
         },
         {

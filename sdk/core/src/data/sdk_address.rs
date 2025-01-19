@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Display};
 
 use anyhow::Result;
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 use serde::{
     de::{Deserialize, Deserializer},
     ser::{Serialize, Serializer},
@@ -38,13 +38,13 @@ impl SdkAddress {
     }
 }
 
-impl From<dharitri_core::types::Address> for SdkAddress {
-    fn from(value: dharitri_core::types::Address) -> Self {
+impl From<dharitri_chain_core::types::Address> for SdkAddress {
+    fn from(value: dharitri_chain_core::types::Address) -> Self {
         SdkAddress(value)
     }
 }
 
-impl From<SdkAddress> for dharitri_core::types::Address {
+impl From<SdkAddress> for dharitri_chain_core::types::Address {
     fn from(value: SdkAddress) -> Self {
         value.0
     }

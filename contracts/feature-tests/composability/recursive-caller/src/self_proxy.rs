@@ -64,7 +64,7 @@ where
 {
     pub fn recursive_send_funds<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
         Arg2: ProxyArg<BigUint<Env::Api>>,
         Arg3: ProxyArg<u32>,
     >(

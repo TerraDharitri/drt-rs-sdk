@@ -4,4 +4,4 @@ This directory contains various tools and SDKs written in Rust for the Dharitri 
 
 They are as follows:
     - `dharitri-sdk`: The core Rust SDK for interacting with the Dharitri blockchain.
-    - `dharitri-scenario-format`: The Rust implementation of the scenario format we use for tests.
+    - `dharitri-chain-scenario-format`: The Rust implementation of the scenario format we use for tests.

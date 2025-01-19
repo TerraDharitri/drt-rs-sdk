@@ -4,10 +4,10 @@ use crate::{
     scenario_format::serde_raw::StepRaw,
     scenario_model::{Scenario, Step},
 };
-use dharitri_scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext};
+use dharitri_chain_scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext};
 
 use super::{raw_converter::*, ScCallDenali, ScQueryDenali, TxExpectDenali};
-use dharitri_vm::world_mock::AccountData;
+use dharitri_chain_vm::world_mock::AccountData;
 
 pub(crate) struct DenaliGenerator<'a> {
     scenario: &'a mut Scenario,

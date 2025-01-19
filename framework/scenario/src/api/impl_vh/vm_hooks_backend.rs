@@ -1,4 +1,4 @@
-use dharitri_vm::executor::VMHooks;
+use dharitri_chain_vm::executor::VMHooks;
 use dharitri_sc::api::HandleConstraints;
 
 use crate::debug_executor::StaticVarData;

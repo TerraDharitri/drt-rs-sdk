@@ -6,7 +6,7 @@ use dharitri_sc_price_aggregator::{
 use dharitri_sc_scenario::imports::*;
 
 const DECIMALS: u8 = 0;
-const MOA_TICKER: &[u8] = b"MOA";
+const REWA_TICKER: &[u8] = b"REWA";
 const NR_ORACLES: usize = 50;
 const OWNER: TestAddress = TestAddress::new("owner");
 const PRICE_AGGREGATOR_ADDRESS: TestSCAddress = TestSCAddress::new("price-aggregator");
@@ -77,7 +77,7 @@ impl PriceAggregatorTestState {
             .gas(120_000_000u64)
             .typed(price_aggregator_proxy::PriceAggregatorProxy)
             .init(
-                MoaOrDcdtTokenIdentifier::moa(),
+                RewaOrDcdtTokenIdentifier::rewa(),
                 STAKE_AMOUNT,
                 SLASH_AMOUNT,
                 SLASH_QUORUM,
@@ -95,7 +95,7 @@ impl PriceAggregatorTestState {
                 .gas(5_000_000u64)
                 .typed(price_aggregator_proxy::PriceAggregatorProxy)
                 .stake()
-                .moa(STAKE_AMOUNT)
+                .rewa(STAKE_AMOUNT)
                 .run();
         }
 
@@ -108,7 +108,7 @@ impl PriceAggregatorTestState {
             .from(OWNER)
             .to(PRICE_AGGREGATOR_ADDRESS)
             .typed(price_aggregator_proxy::PriceAggregatorProxy)
-            .set_pair_decimals(MOA_TICKER, USD_TICKER, DECIMALS)
+            .set_pair_decimals(REWA_TICKER, USD_TICKER, DECIMALS)
             .run();
     }
 
@@ -131,7 +131,7 @@ impl PriceAggregatorTestState {
             .gas(7_000_000u64)
             .typed(price_aggregator_proxy::PriceAggregatorProxy)
             .submit(
-                MOA_TICKER,
+                REWA_TICKER,
                 USD_TICKER,
                 submission_timestamp,
                 price,
@@ -167,7 +167,7 @@ fn test_price_aggregator_submit() {
             let blockchain_timestamp = sc.blockchain().get_block_timestamp();
 
             let token_pair = TokenPair {
-                from: managed_buffer!(MOA_TICKER),
+                from: managed_buffer!(REWA_TICKER),
                 to: managed_buffer!(USD_TICKER),
             };
             assert_eq!(blockchain_timestamp, current_timestamp);

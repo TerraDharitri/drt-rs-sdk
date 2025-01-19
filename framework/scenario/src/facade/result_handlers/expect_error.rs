@@ -1,4 +1,4 @@
-use dharitri_scenario_format::serde_raw::ValueSubTree;
+use dharitri_chain_scenario_format::serde_raw::ValueSubTree;
 use dharitri_sc::types::{RHListItem, RHListItemExec, TxEnv};
 
 use crate::scenario_model::{BytesValue, CheckValue, TxExpect, TxResponse};

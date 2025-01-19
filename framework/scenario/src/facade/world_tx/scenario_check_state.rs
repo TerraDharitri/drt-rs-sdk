@@ -1,6 +1,6 @@
 use std::collections::{btree_map::Entry, BTreeMap};
 
-use dharitri_scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext};
+use dharitri_chain_scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext};
 use dharitri_sc::{
     codec::{top_encode_to_vec_u8, TopEncode},
     types::{AnnotatedValue, BigUint, ManagedAddress, ManagedBuffer, TokenIdentifier},

@@ -4,7 +4,7 @@ use dharitri_sc_snippets::imports::*;
 
 use super::*;
 
-const ISSUE_COST: u64 = 50000000000000000; // 0.05 MOA
+const ISSUE_COST: u64 = 50000000000000000; // 0.05 REWA
 
 const COLLECTION_NAME: &str = "TestCollection1";
 const COLLECTION_TICKER: &str = "TESTCOLL1";
@@ -17,7 +17,7 @@ const METADATA: &str = "tags:test,rust-interactor";
 impl MultisigInteract {
     pub async fn issue_multisig_and_collection_full(&mut self) {
         self.deploy().await;
-        self.feed_contract_moa().await;
+        self.feed_contract_rewa().await;
         self.issue_collection().await;
         self.set_special_role().await;
         self.interactor.sleep(Duration::from_secs(15)).await;
@@ -26,7 +26,7 @@ impl MultisigInteract {
 
     pub async fn issue_multisig_and_collection_with_all_roles_full(&mut self) {
         self.deploy().await;
-        self.feed_contract_moa().await;
+        self.feed_contract_rewa().await;
         self.issue_collection_with_all_roles().await;
         self.interactor.sleep(Duration::from_secs(15)).await;
         self.create_items().await;

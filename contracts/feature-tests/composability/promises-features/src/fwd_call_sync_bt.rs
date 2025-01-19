@@ -9,7 +9,7 @@ pub trait BackTransfersFeatureModule {
     fn forward_sync_retrieve_funds_bt(
         &self,
         to: ManagedAddress,
-        token: MoaOrDcdtTokenIdentifier,
+        token: RewaOrDcdtTokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {
@@ -22,12 +22,12 @@ pub trait BackTransfersFeatureModule {
             .sync_call();
 
         require!(
-            back_transfers.dcdt_payments.len() == 1 || back_transfers.total_moa_amount != 0,
+            back_transfers.dcdt_payments.len() == 1 || back_transfers.total_rewa_amount != 0,
             "Only one DCDT payment expected"
         );
 
         self.back_transfers_event(
-            &back_transfers.total_moa_amount,
+            &back_transfers.total_rewa_amount,
             &back_transfers.dcdt_payments.into_multi_value(),
         );
     }
@@ -36,7 +36,7 @@ pub trait BackTransfersFeatureModule {
     fn forward_sync_retrieve_funds_bt_twice(
         &self,
         to: ManagedAddress,
-        token: MoaOrDcdtTokenIdentifier,
+        token: RewaOrDcdtTokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {
@@ -49,12 +49,12 @@ pub trait BackTransfersFeatureModule {
             .sync_call();
 
         require!(
-            back_transfers.dcdt_payments.len() == 1 || back_transfers.total_moa_amount != 0,
+            back_transfers.dcdt_payments.len() == 1 || back_transfers.total_rewa_amount != 0,
             "Only one DCDT payment expected"
         );
 
         self.back_transfers_event(
-            &back_transfers.total_moa_amount,
+            &back_transfers.total_rewa_amount,
             &back_transfers.dcdt_payments.into_multi_value(),
         );
 
@@ -67,12 +67,12 @@ pub trait BackTransfersFeatureModule {
             .sync_call();
 
         require!(
-            back_transfers.dcdt_payments.len() == 1 || back_transfers.total_moa_amount != 0,
+            back_transfers.dcdt_payments.len() == 1 || back_transfers.total_rewa_amount != 0,
             "Only one DCDT payment expected"
         );
 
         self.back_transfers_event(
-            &back_transfers.total_moa_amount,
+            &back_transfers.total_rewa_amount,
             &back_transfers.dcdt_payments.into_multi_value(),
         );
     }
@@ -80,7 +80,7 @@ pub trait BackTransfersFeatureModule {
     #[event("back_tranfers")]
     fn back_transfers_event(
         &self,
-        #[indexed] moa_value: &BigUint,
+        #[indexed] rewa_value: &BigUint,
         #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
     );
 }

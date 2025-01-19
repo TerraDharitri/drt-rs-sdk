@@ -2,22 +2,22 @@
 
 dharitri_sc::imports!();
 
-const MOA_DECIMALS: usize = 18;
+const REWA_DECIMALS: usize = 18;
 
 #[dharitri_sc::contract]
 pub trait Child {
     #[init]
     fn init(&self) {}
 
-    #[payable("MOA")]
-    #[endpoint(issueWrappedMoa)]
-    fn issue_wrapped_moa(
+    #[payable("REWA")]
+    #[endpoint(issueWrappedRewa)]
+    fn issue_wrapped_rewa(
         &self,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
@@ -26,7 +26,7 @@ pub trait Child {
                 &token_ticker,
                 &initial_supply,
                 FungibleTokenProperties {
-                    num_decimals: MOA_DECIMALS,
+                    num_decimals: REWA_DECIMALS,
                     can_freeze: false,
                     can_wipe: false,
                     can_pause: false,
@@ -46,12 +46,12 @@ pub trait Child {
     #[callback]
     fn dcdt_issue_callback(&self, #[call_result] _result: IgnoreValue) {
         let (token_identifier, _amount) = self.call_value().single_fungible_dcdt();
-        self.wrapped_moa_token_identifier().set(token_identifier);
+        self.wrapped_rewa_token_identifier().set(token_identifier);
     }
 
     // storage
 
-    #[view(getWrappedMoaTokenIdentifier)]
-    #[storage_mapper("wrappedMoaTokenIdentifier")]
-    fn wrapped_moa_token_identifier(&self) -> SingleValueMapper<TokenIdentifier>;
+    #[view(getWrappedRewaTokenIdentifier)]
+    #[storage_mapper("wrappedRewaTokenIdentifier")]
+    fn wrapped_rewa_token_identifier(&self) -> SingleValueMapper<TokenIdentifier>;
 }

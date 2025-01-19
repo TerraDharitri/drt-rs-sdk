@@ -18,7 +18,7 @@ impl ComposabilityInteract {
         forwarders: &Vec<Rc<RefCell<ForwarderQueueTarget>>>,
         call_type: QueuedCallType,
         endpoint_name: &str,
-        payment_token: MoaOrDcdtTokenIdentifier<StaticApi>,
+        payment_token: RewaOrDcdtTokenIdentifier<StaticApi>,
         payment_nonce: u64,
         payment_amount: BigUint,
     ) {
@@ -56,7 +56,7 @@ impl ComposabilityInteract {
                                     FORWARD_QUEUED_CALLS_ENDPOINT,
                                     MultiValueEncoded::<StaticApi, _>::new(),
                                 )
-                                .payment(MoaOrDcdtTokenPayment::new(
+                                .payment(RewaOrDcdtTokenPayment::new(
                                     payment_token.clone(),
                                     payment_nonce,
                                     payment_amount.clone().into(),
@@ -85,7 +85,7 @@ impl ComposabilityInteract {
                                     endpoint_name,
                                     MultiValueEncoded::<StaticApi, _>::new(),
                                 )
-                                .payment(MoaOrDcdtTokenPayment::new(
+                                .payment(RewaOrDcdtTokenPayment::new(
                                     payment_token.clone(),
                                     payment_nonce,
                                     payment_amount.clone().into(),

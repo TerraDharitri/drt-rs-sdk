@@ -1,6 +1,6 @@
 use crate::data::account::{Account, AccountResponse};
 use anyhow::anyhow;
-use dharitri_core::types::Address;
+use dharitri_chain_core::types::Address;
 
 use super::ACCOUNT_ENDPOINT;
 use super::{GatewayRequest, GatewayRequestType};

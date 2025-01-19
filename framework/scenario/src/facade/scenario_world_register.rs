@@ -9,7 +9,7 @@ use crate::{
     scenario_model::BytesValue,
     ScenarioWorld,
 };
-use dharitri_scenario_format::interpret_trait::InterpretableFrom;
+use dharitri_chain_scenario_format::interpret_trait::InterpretableFrom;
 
 use dharitri_sc_meta_lib::contract::sc_config::ContractVariant;
 

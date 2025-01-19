@@ -34,7 +34,7 @@ async fn main() {
         "optional_type" => state.optional_type().await,
         "option_type" => state.option_type().await,
         "dcdt_token_payment" => state.dcdt_token_payment().await,
-        "moa_or_dcdt_payment" => state.moa_or_dcdt_payment().await,
+        "rewa_or_dcdt_payment" => state.rewa_or_dcdt_payment().await,
         "payable_endpoint" => state.payable_endpoint().await,
         "managed_buffer" => state.managed_buffer().await,
         "multi_value_2" => state.multi_value_2().await,
@@ -267,18 +267,18 @@ impl State {
         println!("Result: {result:?}");
     }
 
-    async fn moa_or_dcdt_payment(&mut self) {
-        let arg = MoaOrDcdtTokenPayment::new(
-            MoaOrDcdtTokenIdentifier::dcdt(&b""[..]),
+    async fn rewa_or_dcdt_payment(&mut self) {
+        let arg = RewaOrDcdtTokenPayment::new(
+            RewaOrDcdtTokenIdentifier::dcdt(&b""[..]),
             0u64,
             BigUint::from(0u128),
         );
 
-        let response: TypedResponse<MoaOrDcdtTokenIdentifier<StaticApi>> = self
+        let response: TypedResponse<RewaOrDcdtTokenIdentifier<StaticApi>> = self
             .interactor
             .sc_call_use_result(
                 ScCallStep::new()
-                    .call(self.contract.moa_or_dcdt_payment(arg))
+                    .call(self.contract.rewa_or_dcdt_payment(arg))
                     .from(&self.wallet_address)
                     .expect(TxExpect::ok().additional_error_message("SC call failed: ")),
             )

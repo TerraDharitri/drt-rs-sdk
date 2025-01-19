@@ -45,7 +45,7 @@
                 "contractCode": "drtsc:../output/digital-cash.drtsc.json",
                 "arguments": [
                     "10",
-                    "str:MOA"
+                    "str:REWA"
                 ],
                 "gasLimit": "5,000,000",
                 "gasPrice": "0"
@@ -64,13 +64,13 @@
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
-                        "str:fee|nested:str:MOA": "10",
+                        "str:fee|nested:str:REWA": "10",
                         "str:whitelistedFeeTokens|str:.len": "1",
-                        "str:whitelistedFeeTokens|str:.item|u32:1": "str:MOA",
-                        "str:whitelistedFeeTokens|str:.index|nested:str:MOA": "1",
+                        "str:whitelistedFeeTokens|str:.item|u32:1": "str:REWA",
+                        "str:whitelistedFeeTokens|str:.index|nested:str:REWA": "1",
                         "str:allTimeFeeTokens|str:.len": "1",
-                        "str:allTimeFeeTokens|str:.item|u32:1": "str:MOA",
-                        "str:allTimeFeeTokens|str:.index|nested:str:MOA": "1"
+                        "str:allTimeFeeTokens|str:.item|u32:1": "str:REWA",
+                        "str:allTimeFeeTokens|str:.index|nested:str:REWA": "1"
                     },
                     "code": "drtsc:../output/digital-cash.drtsc.json"
                 },

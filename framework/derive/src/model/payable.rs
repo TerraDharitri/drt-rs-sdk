@@ -3,7 +3,7 @@
 #[derive(Clone, Debug)]
 pub enum MethodPayableMetadata {
     NotPayable,
-    Moa,
+    Rewa,
     SingleDcdtToken(String),
     AnyToken,
 }
@@ -16,14 +16,14 @@ impl MethodPayableMetadata {
     pub fn no_dcdt(&self) -> bool {
         matches!(
             self,
-            MethodPayableMetadata::NotPayable | MethodPayableMetadata::Moa
+            MethodPayableMetadata::NotPayable | MethodPayableMetadata::Rewa
         )
     }
 
     pub fn abi_strings(&self) -> Vec<String> {
         match self {
             MethodPayableMetadata::NotPayable => Vec::new(),
-            MethodPayableMetadata::Moa => vec!["MOA".to_string()],
+            MethodPayableMetadata::Rewa => vec!["REWA".to_string()],
             MethodPayableMetadata::SingleDcdtToken(s) => vec![s.clone()],
             MethodPayableMetadata::AnyToken => vec!["*".to_string()],
         }

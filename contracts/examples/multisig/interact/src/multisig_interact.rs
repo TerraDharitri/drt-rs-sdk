@@ -2,8 +2,8 @@ mod multisig_interact_cli;
 mod multisig_interact_config;
 mod multisig_interact_nfts;
 mod multisig_interact_state;
-mod multisig_interact_wmoa;
-mod wmoa_proxy;
+mod multisig_interact_wrewa;
+mod wrewa_proxy;
 
 use clap::Parser;
 use multisig::multisig_proxy;
@@ -33,7 +33,7 @@ async fn main() {
             multisig_interact.dns_register(&args.name).await;
         },
         Some(multisig_interact_cli::InteractCliCommand::Feed) => {
-            multisig_interact.feed_contract_moa().await;
+            multisig_interact.feed_contract_rewa().await;
         },
         Some(multisig_interact_cli::InteractCliCommand::MultiDeploy(args)) => {
             multisig_interact.multi_deploy(&args.count).await;
@@ -61,14 +61,14 @@ async fn main() {
         Some(multisig_interact_cli::InteractCliCommand::Quorum) => {
             multisig_interact.print_quorum().await;
         },
-        Some(multisig_interact_cli::InteractCliCommand::UnwrapMoa) => {
-            multisig_interact.unwrap_moa().await;
+        Some(multisig_interact_cli::InteractCliCommand::UnwrapRewa) => {
+            multisig_interact.unwrap_rewa().await;
         },
-        Some(multisig_interact_cli::InteractCliCommand::WMoaSwapFull) => {
-            multisig_interact.wmoa_swap_full().await;
+        Some(multisig_interact_cli::InteractCliCommand::WRewaSwapFull) => {
+            multisig_interact.wrewa_swap_full().await;
         },
-        Some(multisig_interact_cli::InteractCliCommand::WrapMoa) => {
-            multisig_interact.wrap_moa().await;
+        Some(multisig_interact_cli::InteractCliCommand::WrapRewa) => {
+            multisig_interact.wrap_rewa().await;
         },
         None => {},
     }
@@ -129,7 +129,7 @@ impl MultisigInteract {
                 .await;
         }
 
-        self.wmoa_swap_set_state().await;
+        self.wrewa_swap_set_state().await;
     }
 
     async fn deploy(&mut self) {
@@ -197,12 +197,12 @@ impl MultisigInteract {
         ])
     }
 
-    async fn feed_contract_moa(&mut self) {
+    async fn feed_contract_rewa(&mut self) {
         self.interactor
             .tx()
             .from(&self.wallet_address)
             .to(self.state.current_multisig_address())
-            .moa(BigUint::from(50_000_000_000_000_000u64)) // 0,05 or 5 * 10^16
+            .rewa(BigUint::from(50_000_000_000_000_000u64)) // 0,05 or 5 * 10^16
             .run()
             .await;
     }

@@ -27,10 +27,10 @@ pub enum InteractCliCommand {
     )]
     LargeStorage(LargeStorageArgs),
     #[command(
-        name = "moa-decimals",
-        about = "Experiment with returns_moa_decimals on basic-features contract"
+        name = "rewa-decimals",
+        about = "Experiment with returns_rewa_decimals on basic-features contract"
     )]
-    ReturnsMOADecimals(ReturnsMOADecimalsArgs),
+    ReturnsREWADecimals(ReturnsREWADecimalsArgs),
     #[command(
         name = "echo-mo",
         about = "Experiment with echo_managed_option on basic-features contract"
@@ -46,10 +46,10 @@ pub struct LargeStorageArgs {
 }
 
 #[derive(Default, Clone, PartialEq, Eq, Debug, Args)]
-pub struct ReturnsMOADecimalsArgs {
-    /// The amount of MOA
+pub struct ReturnsREWADecimalsArgs {
+    /// The amount of REWA
     #[arg(short = 'e')]
-    pub moa: u64,
+    pub rewa: u64,
 }
 
 #[derive(Default, Clone, PartialEq, Eq, Debug, Args)]

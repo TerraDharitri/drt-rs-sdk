@@ -43,7 +43,7 @@ fn test_transaction_multiple_sc_results() {
                   "value": 0,
                   "receiver": "drt1qqqqqqqqqqqqqpgq4zafu6rzdw7fj07hjh5tkm68jsaj7hl60n4s6ankqr",
                   "sender": "drt1qqqqqqqqqqqqqpgq4zafu6rzdw7fj07hjh5tkm68jsaj7hl60n4s6ankqr",
-                  "data": "swapTokensFixedInput@5745474c442d613238633539@e8d4a51000",
+                  "data": "swapTokensFixedInput@57524557412d613238633539@e8d4a51000",
                   "prevTxHash": "c6dc718c56c8795156d847f4f9768f2b1976a516d390fdce0f5b8bad1ac3cce5",
                   "originalTxHash": "c6dc718c56c8795156d847f4f9768f2b1976a516d390fdce0f5b8bad1ac3cce5",
                   "gasLimit": 99559500,
@@ -59,7 +59,7 @@ fn test_transaction_multiple_sc_results() {
                   "value": 0,
                   "receiver": "drt1uv40ahysflse896x4ktnh6ecx43u7cmy9wnxnvcyp7deg299a4sq8s28dr",
                   "sender": "drt1qqqqqqqqqqqqqpgq4zafu6rzdw7fj07hjh5tkm68jsaj7hl60n4s6ankqr",
-                  "data": "DCDTTransfer@5745474c442d613238633539@9b35e4dd3902b9",
+                  "data": "DCDTTransfer@57524557412d613238633539@9b35e4dd3902b9",
                   "prevTxHash": "c6dc718c56c8795156d847f4f9768f2b1976a516d390fdce0f5b8bad1ac3cce5",
                   "originalTxHash": "c6dc718c56c8795156d847f4f9768f2b1976a516d390fdce0f5b8bad1ac3cce5",
                   "gasLimit": 0,
@@ -109,7 +109,7 @@ fn test_transaction_multiple_sc_results() {
                     ]
                   },
                   "tokens": [
-                    "WMOA-a28c59"
+                    "WREWA-a28c59"
                   ],
                   "dcdtValues": [
                     "43687878470468281"
@@ -122,7 +122,7 @@ fn test_transaction_multiple_sc_results() {
                   "value": 872320020000000,
                   "receiver": "drt1uv40ahysflse896x4ktnh6ecx43u7cmy9wnxnvcyp7deg299a4sq8s28dr",
                   "sender": "drt1qqqqqqqqqqqqqpgq4zafu6rzdw7fj07hjh5tkm68jsaj7hl60n4s6ankqr",
-                  "data": "@6f6b@0000000c5745474c442d6132386335390000000000000000000000079b35e4dd3902b9",
+                  "data": "@6f6b@0000000c57524557412d6132386335390000000000000000000000079b35e4dd3902b9",
                   "prevTxHash": "c6dc718c56c8795156d847f4f9768f2b1976a516d390fdce0f5b8bad1ac3cce5",
                   "originalTxHash": "c6dc718c56c8795156d847f4f9768f2b1976a516d390fdce0f5b8bad1ac3cce5",
                   "gasLimit": 0,

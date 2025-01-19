@@ -155,11 +155,11 @@ where
             .original_result()
     }
 
-    pub fn returns_moa_decimal(
+    pub fn returns_rewa_decimal(
         self,
     ) -> TxTypedCall<Env, From, To, (), Gas, ManagedDecimal<Env::Api, ConstDecimals<18>>> {
         self.wrapped_tx
-            .raw_call("returns_moa_decimal")
+            .raw_call("returns_rewa_decimal")
             .original_result()
     }
 }

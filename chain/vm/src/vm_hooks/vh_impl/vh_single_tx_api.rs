@@ -3,7 +3,7 @@ use std::{
     sync::{Arc, Mutex, MutexGuard},
 };
 
-use dharitri_core::types::ReturnCode;
+use dharitri_chain_core::types::ReturnCode;
 
 use crate::{
     tx_mock::{BackTransfers, TxFunctionName, TxInput, TxManagedTypes, TxResult},
@@ -110,7 +110,7 @@ impl VMHooksHandlerSource for SingleTxApiVMHooksHandler {
     fn perform_async_call(
         &self,
         _to: VMAddress,
-        _moa_value: num_bigint::BigUint,
+        _rewa_value: num_bigint::BigUint,
         _func_name: TxFunctionName,
         _args: Vec<Vec<u8>>,
     ) -> ! {
@@ -120,7 +120,7 @@ impl VMHooksHandlerSource for SingleTxApiVMHooksHandler {
     fn perform_execute_on_dest_context(
         &self,
         _to: VMAddress,
-        _moa_value: num_bigint::BigUint,
+        _rewa_value: num_bigint::BigUint,
         _func_name: TxFunctionName,
         _args: Vec<Vec<u8>>,
     ) -> Vec<Vec<u8>> {
@@ -129,7 +129,7 @@ impl VMHooksHandlerSource for SingleTxApiVMHooksHandler {
 
     fn perform_deploy(
         &self,
-        _moa_value: num_bigint::BigUint,
+        _rewa_value: num_bigint::BigUint,
         _contract_code: Vec<u8>,
         _code_metadata: VMCodeMetadata,
         _args: Vec<Vec<u8>>,
@@ -140,7 +140,7 @@ impl VMHooksHandlerSource for SingleTxApiVMHooksHandler {
     fn perform_transfer_execute(
         &self,
         _to: VMAddress,
-        _moa_value: num_bigint::BigUint,
+        _rewa_value: num_bigint::BigUint,
         _func_name: TxFunctionName,
         _arguments: Vec<Vec<u8>>,
     ) {

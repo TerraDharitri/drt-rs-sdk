@@ -162,7 +162,7 @@ fn dcdt_zero_balance_check_err_rs() {
 
 #[test]
 #[ignore = "TODO: not yet implemented in Rust VM"]
-fn multi_transfer_moa_rs() {
+fn multi_transfer_rewa_rs() {
     world().run("tests/scenarios-self/multi-transfer-dcdt.scen.json");
 }
 
@@ -172,8 +172,8 @@ fn multi_transfer_dcdt_rs() {
 }
 
 #[test]
-fn transfer_moa_rs() {
-    world().run("tests/scenarios-self/transfer-moa.scen.json");
+fn transfer_rewa_rs() {
+    world().run("tests/scenarios-self/transfer-rewa.scen.json");
 }
 
 #[test]

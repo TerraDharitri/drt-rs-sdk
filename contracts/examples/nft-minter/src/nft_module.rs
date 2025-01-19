@@ -6,7 +6,7 @@ const ROYALTIES_MAX: u32 = 10_000;
 #[type_abi]
 #[derive(TopEncode, TopDecode)]
 pub struct PriceTag<M: ManagedTypeApi> {
-    pub token: MoaOrDcdtTokenIdentifier<M>,
+    pub token: RewaOrDcdtTokenIdentifier<M>,
     pub nonce: u64,
     pub amount: BigUint<M>,
 }
@@ -16,12 +16,12 @@ pub trait NftModule {
     // endpoints - owner-only
 
     #[only_owner]
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(issueToken)]
     fn issue_token(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer) {
         require!(self.nft_token_id().is_empty(), "Token already issued");
 
-        let payment_amount = self.call_value().moa();
+        let payment_amount = self.call_value().rewa();
         self.send()
             .dcdt_system_sc_proxy()
             .issue_non_fungible(
@@ -62,7 +62,7 @@ pub trait NftModule {
     #[payable]
     #[endpoint(buyNft)]
     fn buy_nft(&self, nft_nonce: u64) {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
 
         self.require_token_issued();
         require!(
@@ -104,7 +104,7 @@ pub trait NftModule {
     fn get_nft_price(
         &self,
         nft_nonce: u64,
-    ) -> OptionalValue<MultiValue3<MoaOrDcdtTokenIdentifier, u64, BigUint>> {
+    ) -> OptionalValue<MultiValue3<RewaOrDcdtTokenIdentifier, u64, BigUint>> {
         if self.price_tag(nft_nonce).is_empty() {
             // NFT was already sold
             OptionalValue::None
@@ -120,16 +120,16 @@ pub trait NftModule {
     #[callback]
     fn issue_callback(
         &self,
-        #[call_result] result: ManagedAsyncCallResult<MoaOrDcdtTokenIdentifier>,
+        #[call_result] result: ManagedAsyncCallResult<RewaOrDcdtTokenIdentifier>,
     ) {
         match result {
             ManagedAsyncCallResult::Ok(token_id) => {
                 self.nft_token_id().set(token_id.unwrap_dcdt());
             },
             ManagedAsyncCallResult::Err(_) => {
-                let returned = self.call_value().moa_or_single_dcdt();
-                if returned.token_identifier.is_moa() && returned.amount > 0 {
-                    self.tx().to(ToCaller).moa(returned.amount).transfer();
+                let returned = self.call_value().rewa_or_single_dcdt();
+                if returned.token_identifier.is_rewa() && returned.amount > 0 {
+                    self.tx().to(ToCaller).rewa(returned.amount).transfer();
                 }
             },
         }
@@ -145,7 +145,7 @@ pub trait NftModule {
         attributes: T,
         uri: ManagedBuffer,
         selling_price: BigUint,
-        token_used_as_payment: MoaOrDcdtTokenIdentifier,
+        token_used_as_payment: RewaOrDcdtTokenIdentifier,
         token_used_as_payment_nonce: u64,
     ) -> u64 {
         self.require_token_issued();

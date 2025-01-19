@@ -10,7 +10,7 @@ const PERCENTAGE_TOTAL: u8 = 100;
 #[type_abi]
 #[derive(TopEncode, TopDecode)]
 pub struct Auction<M: ManagedTypeApi> {
-    pub token_identifier: MoaOrDcdtTokenIdentifier<M>,
+    pub token_identifier: RewaOrDcdtTokenIdentifier<M>,
     pub min_bid: BigUint<M>,
     pub max_bid: BigUint<M>,
     pub deadline: u64,
@@ -22,7 +22,7 @@ pub struct Auction<M: ManagedTypeApi> {
 #[type_abi]
 #[derive(TopEncode, TopDecode)]
 pub struct AuctionArgument<M: ManagedTypeApi> {
-    pub token_identifier: MoaOrDcdtTokenIdentifier<M>,
+    pub token_identifier: RewaOrDcdtTokenIdentifier<M>,
     pub min_bid: BigUint<M>,
     pub max_bid: BigUint<M>,
     pub deadline: u64,
@@ -112,7 +112,7 @@ pub trait Erc1155Marketplace {
         for (token_identifier, amount) in claimable_funds_mapper.iter() {
             self.tx()
                 .to(&caller)
-                .moa_or_single_dcdt(&token_identifier, 0, &amount)
+                .rewa_or_single_dcdt(&token_identifier, 0, &amount)
                 .transfer();
             self.clear_claimable_funds(&token_identifier);
         }
@@ -146,7 +146,7 @@ pub trait Erc1155Marketplace {
     #[payable("*")]
     #[endpoint]
     fn bid(&self, type_id: BigUint, nft_id: BigUint) {
-        let (payment_token, payment) = self.call_value().moa_or_single_fungible_dcdt();
+        let (payment_token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         require!(
             self.is_up_for_auction(&type_id, &nft_id),
             "Token is not up for auction"
@@ -185,7 +185,7 @@ pub trait Erc1155Marketplace {
         if !auction.current_winner.is_zero() {
             self.tx()
                 .to(&auction.current_winner)
-                .moa_or_single_dcdt(&auction.token_identifier, 0, &auction.current_bid)
+                .rewa_or_single_dcdt(&auction.token_identifier, 0, &auction.current_bid)
                 .transfer();
         }
 
@@ -222,7 +222,7 @@ pub trait Erc1155Marketplace {
             // send part of the bid to the original owner
             self.tx()
                 .to(&auction.original_owner)
-                .moa_or_single_dcdt(&auction.token_identifier, 0, &amount_to_send)
+                .rewa_or_single_dcdt(&auction.token_identifier, 0, &amount_to_send)
                 .transfer();
 
             // send token to winner
@@ -280,7 +280,7 @@ pub trait Erc1155Marketplace {
         type_id: &BigUint,
         nft_id: &BigUint,
         original_owner: &ManagedAddress,
-        token: &MoaOrDcdtTokenIdentifier,
+        token: &RewaOrDcdtTokenIdentifier,
         min_bid: &BigUint,
         max_bid: &BigUint,
         deadline: u64,
@@ -324,14 +324,14 @@ pub trait Erc1155Marketplace {
         total_amount * cut_percentage as u32 / PERCENTAGE_TOTAL as u32
     }
 
-    fn add_claimable_funds(&self, token_identifier: &MoaOrDcdtTokenIdentifier, amount: &BigUint) {
+    fn add_claimable_funds(&self, token_identifier: &RewaOrDcdtTokenIdentifier, amount: &BigUint) {
         let mut mapper = self.get_claimable_funds_mapper();
         let mut total = mapper.get(token_identifier).unwrap_or_default();
         total += amount;
         mapper.insert(token_identifier.clone(), total);
     }
 
-    fn clear_claimable_funds(&self, token_identifier: &MoaOrDcdtTokenIdentifier) {
+    fn clear_claimable_funds(&self, token_identifier: &RewaOrDcdtTokenIdentifier) {
         let mut mapper = self.get_claimable_funds_mapper();
         mapper.insert(token_identifier.clone(), BigUint::zero());
     }
@@ -352,7 +352,7 @@ pub trait Erc1155Marketplace {
     // claimable funds - only after an auction ended and the fixed percentage has been reserved by the SC
 
     #[storage_mapper("claimableFunds")]
-    fn get_claimable_funds_mapper(&self) -> MapMapper<MoaOrDcdtTokenIdentifier, BigUint>;
+    fn get_claimable_funds_mapper(&self) -> MapMapper<RewaOrDcdtTokenIdentifier, BigUint>;
 
     // auction properties for each token
 

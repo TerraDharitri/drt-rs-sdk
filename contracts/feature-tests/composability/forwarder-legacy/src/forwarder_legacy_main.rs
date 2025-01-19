@@ -36,7 +36,7 @@ pub trait ForwarderLegacy:
     fn init(&self) {}
 
     #[endpoint]
-    fn send_moa(&self, to: &ManagedAddress, amount: &BigUint) {
-        self.send().direct_moa(to, amount);
+    fn send_rewa(&self, to: &ManagedAddress, amount: &BigUint) {
+        self.send().direct_rewa(to, amount);
     }
 }

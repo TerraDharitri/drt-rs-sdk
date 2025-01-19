@@ -11,10 +11,10 @@ pub static DIFFERENT_CREATOR_ERR_MSG: &[u8] = b"All merged tokens must have the 
 #[dharitri_sc::module]
 pub trait MergedTokenSetupModule {
     #[only_owner]
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(issueMergedToken)]
     fn issue_merged_token(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let payment_amount = self.call_value().moa();
+        let payment_amount = self.call_value().rewa();
         self.merged_token().issue_and_set_all_roles(
             DcdtTokenType::NonFungible,
             payment_amount.clone(),

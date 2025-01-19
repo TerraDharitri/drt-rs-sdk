@@ -9,10 +9,10 @@ use crate::{
     },
 };
 
-use super::{ContractCallNoPayment, ContractCallWithMoa, UNSPECIFIED_GAS_LIMIT};
+use super::{ContractCallNoPayment, ContractCallWithRewa, UNSPECIFIED_GAS_LIMIT};
 use crate::api::managed_types::handles::HandleConstraints;
 
-impl<SA, OriginalResult> ContractCallWithMoa<SA, OriginalResult>
+impl<SA, OriginalResult> ContractCallWithRewa<SA, OriginalResult>
 where
     SA: CallTypeApi + 'static,
 {
@@ -55,27 +55,27 @@ where
     }
 }
 
-impl<SA, OriginalResult> ContractCallWithMoa<SA, OriginalResult>
+impl<SA, OriginalResult> ContractCallWithRewa<SA, OriginalResult>
 where
     SA: CallTypeApi + StorageWriteApi + 'static,
 {
     pub(super) fn build_async_call(self) -> AsyncCall<SA> {
         Tx::new_tx_from_sc()
             .to(self.basic.to)
-            .moa(self.moa_payment)
+            .rewa(self.rewa_payment)
             .raw_data(self.basic.function_call)
             .callback(None)
     }
 }
 
-impl<SA, OriginalResult> ContractCallWithMoa<SA, OriginalResult>
+impl<SA, OriginalResult> ContractCallWithRewa<SA, OriginalResult>
 where
     SA: CallTypeApi + 'static,
 {
     pub(super) fn build_async_call_promise(self) -> AsyncCallPromises<SA> {
         AsyncCallPromises {
             to: self.basic.to,
-            moa_payment: self.moa_payment,
+            rewa_payment: self.rewa_payment,
             function_call: self.basic.function_call,
             explicit_gas_limit: self.basic.explicit_gas_limit,
             extra_gas_for_callback: 0,
@@ -92,7 +92,7 @@ where
         let raw_result = SendRawWrapper::<SA>::new().execute_on_dest_context_raw(
             self.resolve_gas_limit(),
             &self.basic.to,
-            &self.moa_payment,
+            &self.rewa_payment,
             &self.basic.function_call.function_name,
             &self.basic.function_call.arg_buffer,
         );
@@ -125,7 +125,7 @@ where
         let raw_result = SendRawWrapper::<SA>::new().execute_on_same_context_raw(
             self.resolve_gas_limit(),
             &self.basic.to,
-            &self.moa_payment,
+            &self.rewa_payment,
             &self.basic.function_call.function_name,
             &self.basic.function_call.arg_buffer,
         );
@@ -152,12 +152,12 @@ where
         }
     }
 
-    pub(super) fn transfer_execute_moa(self, moa_payment: BigUint<SA>) {
+    pub(super) fn transfer_execute_rewa(self, rewa_payment: BigUint<SA>) {
         let gas_limit = self.resolve_gas_limit_with_leftover();
 
-        let _ = SendRawWrapper::<SA>::new().direct_moa_execute(
+        let _ = SendRawWrapper::<SA>::new().direct_rewa_execute(
             &self.to,
-            &moa_payment,
+            &rewa_payment,
             gas_limit,
             &self.function_call.function_name,
             &self.function_call.arg_buffer,
@@ -207,7 +207,7 @@ where
 
     pub(super) fn transfer_execute_dcdt(self, payments: ManagedVec<SA, DcdtTokenPayment<SA>>) {
         match payments.len() {
-            0 => self.transfer_execute_moa(BigUint::zero()),
+            0 => self.transfer_execute_rewa(BigUint::zero()),
             1 => self.transfer_execute_single_dcdt(payments.get(0).clone()),
             _ => self.transfer_execute_multi_dcdt(payments),
         }

@@ -7,7 +7,7 @@ use crate::{
     },
     scenario_model::Checkable,
 };
-use dharitri_vm::tx_mock::result_values_to_string;
+use dharitri_chain_vm::tx_mock::result_values_to_string;
 use dharitri_sc::chain_core::types::ReturnCode;
 
 #[derive(Debug, Clone)]

@@ -397,12 +397,12 @@ dharitri_sc_wasm_adapter::endpoints! {
         overflow_i16 => overflow_i16
         overflow_i32 => overflow_i32
         overflow_i64 => overflow_i64
-        token_identifier_moa => token_identifier_moa
+        token_identifier_rewa => token_identifier_rewa
         token_identifier_is_valid_1 => token_identifier_is_valid_1
         token_identifier_is_valid_2 => token_identifier_is_valid_2
         non_zero_usize_iter => non_zero_usize_iter
         non_zero_usize_macro => non_zero_usize_macro
-        returns_moa_decimal => returns_moa_decimal
+        returns_rewa_decimal => returns_rewa_decimal
         set_contract_address => set_contract_address
         is_empty_at_address => is_empty_at_address
         contains_at_address => contains_at_address

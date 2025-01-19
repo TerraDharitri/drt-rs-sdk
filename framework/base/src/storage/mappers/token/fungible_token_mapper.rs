@@ -1,4 +1,4 @@
-use dharitri_core::types::DcdtLocalRole;
+use dharitri_chain_core::types::DcdtLocalRole;
 
 use crate::{
     abi::{TypeAbi, TypeAbiFrom},

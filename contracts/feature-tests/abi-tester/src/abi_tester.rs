@@ -30,7 +30,7 @@ use only_nested::*;
 pub trait AbiTester {
     /// Contract constructor.
     #[init]
-    #[payable("MOA")]
+    #[payable("REWA")]
     fn init(&self, _constructor_arg_1: i32, _constructor_arg_2: OnlyShowsUpInConstructor) {}
 
     /// Upgrade constructor.
@@ -190,8 +190,8 @@ pub trait AbiTester {
     }
 
     #[endpoint]
-    #[payable("MOA")]
-    fn payable_moa(&self) {}
+    #[payable("REWA")]
+    fn payable_rewa(&self) {}
 
     #[endpoint]
     #[payable("TOKEN-FOR-ABI")]

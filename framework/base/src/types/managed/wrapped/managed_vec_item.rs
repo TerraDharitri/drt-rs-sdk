@@ -1,6 +1,6 @@
 use core::borrow::Borrow;
 
-use dharitri_core::types::{DcdtLocalRole, DcdtTokenType};
+use dharitri_chain_core::types::{DcdtLocalRole, DcdtTokenType};
 use dharitri_sc_codec::multi_types::{MultiValue2, MultiValue3};
 
 use crate::{
@@ -12,7 +12,7 @@ use crate::{
 };
 
 use super::{
-    MoaOrDcdtTokenIdentifier, ManagedVecItemNestedTuple, ManagedVecItemPayload,
+    RewaOrDcdtTokenIdentifier, ManagedVecItemNestedTuple, ManagedVecItemPayload,
     ManagedVecItemPayloadAdd, ManagedVecItemPayloadBuffer, ManagedVecRef,
 };
 
@@ -230,7 +230,7 @@ impl_managed_type! {BigInt}
 impl_managed_type! {EllipticCurve}
 impl_managed_type! {ManagedAddress}
 impl_managed_type! {TokenIdentifier}
-impl_managed_type! {MoaOrDcdtTokenIdentifier}
+impl_managed_type! {RewaOrDcdtTokenIdentifier}
 
 impl<M, const N: usize> ManagedVecItem for ManagedByteArray<M, N>
 where

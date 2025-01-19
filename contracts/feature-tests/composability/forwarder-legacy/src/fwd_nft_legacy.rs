@@ -36,7 +36,7 @@ pub trait ForwarderNftModule: fwd_storage_legacy::ForwarderStorageModule {
     #[payable("*")]
     #[endpoint]
     fn buy_nft(&self, nft_id: TokenIdentifier, nft_nonce: u64, nft_amount: BigUint) -> BigUint {
-        let payment = self.call_value().moa_or_single_dcdt();
+        let payment = self.call_value().rewa_or_single_dcdt();
 
         self.send().sell_nft(
             &nft_id,
@@ -49,10 +49,10 @@ pub trait ForwarderNftModule: fwd_storage_legacy::ForwarderStorageModule {
         )
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint]
     fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().moa();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -90,9 +90,9 @@ pub trait ForwarderNftModule: fwd_storage_legacy::ForwarderStorageModule {
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 let (token_identifier, returned_tokens) =
-                    self.call_value().moa_or_single_fungible_dcdt();
-                if token_identifier.is_moa() && returned_tokens > 0 {
-                    self.send().direct_moa(caller, &returned_tokens);
+                    self.call_value().rewa_or_single_fungible_dcdt();
+                if token_identifier.is_rewa() && returned_tokens > 0 {
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);

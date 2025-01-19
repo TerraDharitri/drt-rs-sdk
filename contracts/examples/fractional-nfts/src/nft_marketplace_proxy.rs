@@ -39,7 +39,7 @@ where
 {
     pub fn claim_tokens<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
-        Arg1: ProxyArg<MoaOrDcdtTokenIdentifier<Env::Api>>,
+        Arg1: ProxyArg<RewaOrDcdtTokenIdentifier<Env::Api>>,
         Arg2: ProxyArg<u64>,
     >(
         self,

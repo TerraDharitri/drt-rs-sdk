@@ -23,7 +23,7 @@ pub struct DrtpySnippetGenerator {
     sender_nonce: Option<u64>,
     tx: TransactionType,
     gas_limit: u64,
-    moa_value: num_bigint::BigUint,
+    rewa_value: num_bigint::BigUint,
     arguments: Vec<Vec<u8>>,
     proxy: String,
     chain_id: String,
@@ -48,7 +48,7 @@ impl DrtpySnippetGenerator {
                 opt_json_out_file,
             },
             gas_limit: bounded_gas_limit,
-            moa_value: num_bigint::BigUint::zero(),
+            rewa_value: num_bigint::BigUint::zero(),
             arguments: Vec::new(),
             proxy,
             chain_id,
@@ -75,7 +75,7 @@ impl DrtpySnippetGenerator {
                 opt_json_out_file,
             },
             gas_limit: bounded_gas_limit,
-            moa_value: num_bigint::BigUint::zero(),
+            rewa_value: num_bigint::BigUint::zero(),
             arguments: Vec::new(),
             proxy,
             chain_id,
@@ -103,7 +103,7 @@ impl DrtpySnippetGenerator {
                 dcdt_transfers: Vec::new(),
             },
             gas_limit: bounded_gas_limit,
-            moa_value: num_bigint::BigUint::zero(),
+            rewa_value: num_bigint::BigUint::zero(),
             arguments: Vec::new(),
             proxy,
             chain_id,
@@ -125,15 +125,15 @@ impl DrtpySnippetGenerator {
                 function,
             },
             gas_limit: 0,
-            moa_value: num_bigint::BigUint::zero(),
+            rewa_value: num_bigint::BigUint::zero(),
             arguments: Vec::new(),
             proxy,
             chain_id,
         }
     }
 
-    pub fn set_moa_value(&mut self, moa_value: &num_bigint::BigUint) {
-        self.moa_value.clone_from(moa_value);
+    pub fn set_rewa_value(&mut self, rewa_value: &num_bigint::BigUint) {
+        self.rewa_value.clone_from(rewa_value);
     }
 
     pub fn add_dcdt_transfer(
@@ -337,8 +337,8 @@ impl DrtpySnippetGenerator {
             },
         }
 
-        if self.moa_value > num_bigint::BigUint::zero() {
-            cmd_builder.add_numerical_argument(MOA_VALUE_ARG_NAME, &self.moa_value);
+        if self.rewa_value > num_bigint::BigUint::zero() {
+            cmd_builder.add_numerical_argument(REWA_VALUE_ARG_NAME, &self.rewa_value);
         }
 
         cmd_builder.add_numerical_argument(
@@ -502,7 +502,7 @@ fn main() {
     println!();
     println!();
 
-    // sc call with MOA
+    // sc call with REWA
 
     generator = DrtpySnippetGenerator::new_sc_call(
         ChainConfig::Devnet,
@@ -515,9 +515,9 @@ fn main() {
     generator.add_argument(&my_val);
     generator.add_argument(&other_arg);
 
-    generator.set_moa_value(&num_bigint::BigUint::from_str("10_000_000_000_000_000_000").unwrap());
+    generator.set_rewa_value(&num_bigint::BigUint::from_str("10_000_000_000_000_000_000").unwrap());
 
-    println!("SC Call with MOA transfer:");
+    println!("SC Call with REWA transfer:");
     generator.print(PrintOption::Both);
     println!();
     println!();

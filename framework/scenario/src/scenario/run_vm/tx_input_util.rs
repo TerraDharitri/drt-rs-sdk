@@ -1,7 +1,7 @@
 pub fn generate_tx_hash(
     tx_id: &str,
     explicit_tx_hash: &Option<dharitri_sc::types::H256>,
-) -> dharitri_vm::types::H256 {
+) -> dharitri_chain_vm::types::H256 {
     if let Some(explicit_tx_hash) = explicit_tx_hash {
         explicit_tx_hash.as_array().into()
     } else {

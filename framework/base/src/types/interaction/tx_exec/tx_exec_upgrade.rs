@@ -4,7 +4,7 @@ use crate::{
     proxy_imports::TxToSpecified,
     types::{
         Code, CodeMetadata, FromSource, ManagedAddress, ManagedBuffer, Tx, TxCodeValue,
-        TxEmptyResultHandler, TxFromSourceValue, TxGas, TxPaymentMoaOnly, TxScEnv, UpgradeCall,
+        TxEmptyResultHandler, TxFromSourceValue, TxGas, TxPaymentRewaOnly, TxScEnv, UpgradeCall,
     },
 };
 
@@ -20,7 +20,7 @@ impl<Api, Payment, Gas, CodeValue, RH>
     >
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     CodeValue: TxCodeValue<TxScEnv<Api>>,
     RH: TxEmptyResultHandler<TxScEnv<Api>>,
@@ -30,11 +30,11 @@ where
     /// TODO: change return type to `!`.
     pub fn upgrade_async_call_and_exit(self) {
         let gas = self.gas.explicit_or_gas_left(&self.env);
-        self.payment.with_moa_value(&self.env, |moa_value| {
+        self.payment.with_rewa_value(&self.env, |rewa_value| {
             SendRawWrapper::<Api>::new().upgrade_contract(
                 &self.to,
                 gas,
-                moa_value,
+                rewa_value,
                 &self.data.code_source.0.into_value(&self.env),
                 self.data.code_metadata,
                 &self.data.arg_buffer,
@@ -55,7 +55,7 @@ impl<Api, Payment, Gas, FromSourceValue, RH>
     >
 where
     Api: CallTypeApi,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     FromSourceValue: TxFromSourceValue<TxScEnv<Api>>,
     RH: TxEmptyResultHandler<TxScEnv<Api>>,
@@ -65,11 +65,11 @@ where
     /// TODO: change return type to `!`.
     pub fn upgrade_async_call_and_exit(self) {
         let gas = self.gas.explicit_or_gas_left(&self.env);
-        self.payment.with_moa_value(&self.env, |moa_value| {
+        self.payment.with_rewa_value(&self.env, |rewa_value| {
             SendRawWrapper::<Api>::new().upgrade_from_source_contract(
                 &self.to,
                 gas,
-                moa_value,
+                rewa_value,
                 &self.data.code_source.0.into_value(&self.env),
                 self.data.code_metadata,
                 &self.data.arg_buffer,
@@ -83,7 +83,7 @@ impl<Api, To, Payment, Gas, RH>
 where
     Api: CallTypeApi,
     To: TxToSpecified<TxScEnv<Api>>,
-    Payment: TxPaymentMoaOnly<TxScEnv<Api>>,
+    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
     Gas: TxGas<TxScEnv<Api>>,
     RH: TxEmptyResultHandler<TxScEnv<Api>>,
 {
@@ -100,12 +100,12 @@ where
     )]
     pub fn upgrade_contract(self, code: &ManagedBuffer<Api>, code_metadata: CodeMetadata) {
         let gas = self.gas.explicit_or_gas_left(&self.env);
-        self.payment.with_moa_value(&self.env, |moa_value| {
+        self.payment.with_rewa_value(&self.env, |rewa_value| {
             self.to.with_value_ref(&self.env, |to| {
                 SendRawWrapper::<Api>::new().upgrade_contract(
                     to,
                     gas,
-                    moa_value,
+                    rewa_value,
                     code,
                     code_metadata,
                     &self.data.arg_buffer,
@@ -131,12 +131,12 @@ where
         code_metadata: CodeMetadata,
     ) {
         let gas = self.gas.explicit_or_gas_left(&self.env);
-        self.payment.with_moa_value(&self.env, |moa_value| {
+        self.payment.with_rewa_value(&self.env, |rewa_value| {
             self.to.with_value_ref(&self.env, |to| {
                 SendRawWrapper::<Api>::new().upgrade_from_source_contract(
                     to,
                     gas,
-                    moa_value,
+                    rewa_value,
                     source_address,
                     code_metadata,
                     &self.data.arg_buffer,

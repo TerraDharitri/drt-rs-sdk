@@ -9,17 +9,17 @@ use crate::{
     types::{ManagedBuffer, ManagedType},
 };
 
-use super::{MoaOrDcdtTokenIdentifier, ManagedRef};
+use super::{RewaOrDcdtTokenIdentifier, ManagedRef};
 
 /// Specialized type for handling token identifiers.
 /// It wraps a BoxedBytes with the full ASCII name of the token.
-/// MOA is stored as an empty name.
+/// REWA is stored as an empty name.
 ///
 /// Not yet implemented, but we might add additional restrictions when deserializing as argument.
 #[repr(transparent)]
 #[derive(Clone)]
 pub struct TokenIdentifier<M: ErrorApi + ManagedTypeApi> {
-    pub(crate) data: MoaOrDcdtTokenIdentifier<M>,
+    pub(crate) data: RewaOrDcdtTokenIdentifier<M>,
 }
 
 impl<M: ManagedTypeApi> ManagedType<M> for TokenIdentifier<M> {
@@ -28,7 +28,7 @@ impl<M: ManagedTypeApi> ManagedType<M> for TokenIdentifier<M> {
     #[inline]
     unsafe fn from_handle(handle: M::ManagedBufferHandle) -> Self {
         TokenIdentifier {
-            data: MoaOrDcdtTokenIdentifier::from_handle(handle),
+            data: RewaOrDcdtTokenIdentifier::from_handle(handle),
         }
     }
 
@@ -50,17 +50,17 @@ impl<M: ManagedTypeApi> ManagedType<M> for TokenIdentifier<M> {
 }
 
 impl<M: ManagedTypeApi> TokenIdentifier<M> {
-    /// Creates a new TokenIdentifier without verifying that it is not MOA-000000.
+    /// Creates a new TokenIdentifier without verifying that it is not REWA-000000.
     ///
     /// ## Safety
     ///
-    /// Calling it for the MOA token might lead to unexpected bugs.
-    pub unsafe fn dcdt_unchecked(data: MoaOrDcdtTokenIdentifier<M>) -> Self {
+    /// Calling it for the REWA token might lead to unexpected bugs.
+    pub unsafe fn dcdt_unchecked(data: RewaOrDcdtTokenIdentifier<M>) -> Self {
         Self { data }
     }
 
-    pub fn try_new(data: MoaOrDcdtTokenIdentifier<M>) -> Option<Self> {
-        if data.is_moa() {
+    pub fn try_new(data: RewaOrDcdtTokenIdentifier<M>) -> Option<Self> {
+        if data.is_rewa() {
             return None;
         }
 
@@ -104,13 +104,13 @@ impl<M: ManagedTypeApi> TokenIdentifier<M> {
 impl<M: ManagedTypeApi> From<ManagedBuffer<M>> for TokenIdentifier<M> {
     #[inline]
     fn from(buffer: ManagedBuffer<M>) -> Self {
-        MoaOrDcdtTokenIdentifier::from(buffer).unwrap_dcdt()
+        RewaOrDcdtTokenIdentifier::from(buffer).unwrap_dcdt()
     }
 }
 
 impl<M: ManagedTypeApi> From<&[u8]> for TokenIdentifier<M> {
     fn from(bytes: &[u8]) -> Self {
-        MoaOrDcdtTokenIdentifier::from(bytes).unwrap_dcdt()
+        RewaOrDcdtTokenIdentifier::from(bytes).unwrap_dcdt()
     }
 }
 
@@ -135,9 +135,9 @@ impl<M: ManagedTypeApi> PartialEq for TokenIdentifier<M> {
 
 impl<M: ManagedTypeApi> Eq for TokenIdentifier<M> {}
 
-impl<M: ManagedTypeApi> PartialEq<MoaOrDcdtTokenIdentifier<M>> for TokenIdentifier<M> {
+impl<M: ManagedTypeApi> PartialEq<RewaOrDcdtTokenIdentifier<M>> for TokenIdentifier<M> {
     #[inline]
-    fn eq(&self, other: &MoaOrDcdtTokenIdentifier<M>) -> bool {
+    fn eq(&self, other: &RewaOrDcdtTokenIdentifier<M>) -> bool {
         other.map_ref_or_else(
             (),
             |()| false,
@@ -174,7 +174,7 @@ impl<M: ManagedTypeApi> NestedDecode for TokenIdentifier<M> {
         I: NestedDecodeInput,
         H: DecodeErrorHandler,
     {
-        let data = MoaOrDcdtTokenIdentifier::dep_decode_or_handle_err(input, h)?;
+        let data = RewaOrDcdtTokenIdentifier::dep_decode_or_handle_err(input, h)?;
         if let Some(ti) = TokenIdentifier::try_new(data) {
             Ok(ti)
         } else {
@@ -189,7 +189,7 @@ impl<M: ManagedTypeApi> TopDecode for TokenIdentifier<M> {
         I: TopDecodeInput,
         H: DecodeErrorHandler,
     {
-        let data = MoaOrDcdtTokenIdentifier::top_decode_or_handle_err(input, h)?;
+        let data = RewaOrDcdtTokenIdentifier::top_decode_or_handle_err(input, h)?;
         if let Some(ti) = TokenIdentifier::try_new(data) {
             Ok(ti)
         } else {

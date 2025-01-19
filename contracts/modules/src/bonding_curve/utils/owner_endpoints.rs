@@ -95,11 +95,11 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         let nonce = dcdt_payment.token_nonce;
         let amount = &dcdt_payment.amount;
         let caller = self.blockchain().get_caller();
-        let mut set_payment = MoaOrDcdtTokenIdentifier::moa();
+        let mut set_payment = RewaOrDcdtTokenIdentifier::rewa();
 
         if self.bonding_curve(identifier).is_empty() {
             match payment_token {
-                OptionalValue::Some(token) => set_payment = MoaOrDcdtTokenIdentifier::dcdt(token),
+                OptionalValue::Some(token) => set_payment = RewaOrDcdtTokenIdentifier::dcdt(token),
                 OptionalValue::None => {
                     sc_panic!("Expected provided accepted_payment for the token");
                 },
@@ -147,7 +147,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         );
 
         let mut tokens_to_claim = ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new();
-        let mut moa_to_claim = BigUint::zero();
+        let mut rewa_to_claim = BigUint::zero();
         let serializer = ManagedSerializer::new();
         for token in self.owned_tokens(&caller).iter() {
             let nonces = self.token_details(&token).get().token_nonces;
@@ -173,7 +173,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
                     bonding_curve.payment.amount,
                 ));
             } else {
-                moa_to_claim += bonding_curve.payment.amount;
+                rewa_to_claim += bonding_curve.payment.amount;
             }
 
             self.token_details(&token).clear();
@@ -181,8 +181,8 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         }
         self.owned_tokens(&caller).clear();
         self.tx().to(&caller).multi_dcdt(tokens_to_claim).transfer();
-        if moa_to_claim > BigUint::zero() {
-            self.tx().to(&caller).moa(&moa_to_claim).transfer();
+        if rewa_to_claim > BigUint::zero() {
+            self.tx().to(&caller).rewa(&rewa_to_claim).transfer();
         }
     }
 
@@ -190,7 +190,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
         &self,
         identifier: &TokenIdentifier,
         amount: BigUint,
-        payment_token_identifier: MoaOrDcdtTokenIdentifier,
+        payment_token_identifier: RewaOrDcdtTokenIdentifier,
     ) where
         T: CurveFunction<Self::Api>
             + TopEncode
@@ -212,7 +212,7 @@ pub trait OwnerEndpointsModule: storage::StorageModule + events::EventsModule {
                 available_supply: amount.clone(),
                 balance: amount,
             };
-            payment = MoaOrDcdtTokenPayment::new(payment_token_identifier, 0, BigUint::zero());
+            payment = RewaOrDcdtTokenPayment::new(payment_token_identifier, 0, BigUint::zero());
             sell_availability = false;
         } else {
             let bonding_curve: BondingCurve<Self::Api, T> =

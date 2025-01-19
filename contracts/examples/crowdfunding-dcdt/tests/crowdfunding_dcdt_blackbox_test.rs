@@ -50,7 +50,7 @@ impl CrowdfundingDCDTTestState {
             .init(
                 2_000u32,
                 CF_DEADLINE,
-                MoaOrDcdtTokenIdentifier::dcdt(CF_TOKEN_ID),
+                RewaOrDcdtTokenIdentifier::dcdt(CF_TOKEN_ID),
             )
             .code(CODE_PATH)
             .new_address(CROWDFUNDING_ADDRESS)
@@ -64,8 +64,8 @@ impl CrowdfundingDCDTTestState {
             .to(CROWDFUNDING_ADDRESS)
             .typed(crowdfunding_dcdt_proxy::CrowdfundingProxy)
             .fund()
-            .moa_or_single_dcdt(
-                &MoaOrDcdtTokenIdentifier::dcdt(CF_TOKEN_ID),
+            .rewa_or_single_dcdt(
+                &RewaOrDcdtTokenIdentifier::dcdt(CF_TOKEN_ID),
                 0u64,
                 &dharitri_sc::proxy_imports::BigUint::from(amount),
             )
@@ -144,7 +144,7 @@ fn test_sc_error() {
         .to(CROWDFUNDING_ADDRESS)
         .typed(crowdfunding_dcdt_proxy::CrowdfundingProxy)
         .fund()
-        .moa(1000)
+        .rewa(1000)
         .with_result(ExpectError(4, "wrong token"))
         .run();
 

@@ -26,32 +26,32 @@ pub trait ProxyTestSecond {
     fn set_message_me_4(&self, s4: &ManagedAddress);
 
     #[init]
-    #[payable("MOA")]
+    #[payable("REWA")]
     fn init(&self, init_arg: i32) -> i32 {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         self.set_last_payment(&payment);
         self.set_init_arg(init_arg);
         init_arg + 1
     }
 
     #[upgrade]
-    #[payable("MOA")]
+    #[payable("REWA")]
     fn upgrade(&self, init_arg: i32) -> i32 {
         self.init(init_arg)
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(payMe)]
     fn pay_me(&self, arg1: i64) {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         self.set_last_payment(&payment);
         self.set_pay_me_arg(arg1);
     }
 
-    #[payable("MOA")]
+    #[payable("REWA")]
     #[endpoint(payMeWithResult)]
     fn pay_me_with_result_endpoint(&self, arg1: i64) -> i64 {
-        let payment = self.call_value().moa();
+        let payment = self.call_value().rewa();
         self.set_last_payment(&payment);
         self.set_pay_me_arg(arg1);
 

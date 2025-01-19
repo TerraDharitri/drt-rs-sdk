@@ -5,7 +5,7 @@ use dharitri_sc::{derive_imports::*, imports::*};
 pub struct DepositInfo<M: ManagedTypeApi> {
     pub depositor_address: ManagedAddress<M>,
     pub dcdt_funds: ManagedVec<M, DcdtTokenPayment<M>>,
-    pub moa_funds: BigUint<M>,
+    pub rewa_funds: BigUint<M>,
     pub valability: u64,
     pub expiration_round: u64,
     pub fees: Fee<M>,
@@ -17,7 +17,7 @@ where
 {
     pub fn get_num_tokens(&self) -> usize {
         let mut amount = self.dcdt_funds.len();
-        if self.moa_funds > 0 {
+        if self.rewa_funds > 0 {
             amount += 1;
         }
 
@@ -29,5 +29,5 @@ where
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
 pub struct Fee<M: ManagedTypeApi> {
     pub num_token_to_transfer: usize,
-    pub value: MoaOrDcdtTokenPayment<M>,
+    pub value: RewaOrDcdtTokenPayment<M>,
 }

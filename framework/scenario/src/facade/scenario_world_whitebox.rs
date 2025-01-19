@@ -1,6 +1,6 @@
 #![allow(deprecated)]
 
-use dharitri_vm::tx_mock::{TxFunctionName, TxResult};
+use dharitri_chain_vm::tx_mock::{TxFunctionName, TxResult};
 use dharitri_sc::contract_base::{CallableContract, ContractBase};
 
 use crate::{

@@ -20,7 +20,7 @@ pub struct ValidatorRewardStep {
 
 impl TransferStep {
     pub fn new() -> Self {
-        // 50,000 is the gas limit for simple MOA transfers, so it is default for convenience
+        // 50,000 is the gas limit for simple REWA transfers, so it is default for convenience
         // DCDT transfers will need more
         Self::default().gas_limit("50,000")
     }
@@ -41,15 +41,15 @@ impl TransferStep {
         self
     }
 
-    pub fn moa_value<A>(mut self, amount: A) -> Self
+    pub fn rewa_value<A>(mut self, amount: A) -> Self
     where
         BigUintValue: From<A>,
     {
         if !self.tx.dcdt_value.is_empty() {
-            panic!("Cannot transfer both MOA and DCDT");
+            panic!("Cannot transfer both REWA and DCDT");
         }
 
-        self.tx.moa_value = BigUintValue::from(amount);
+        self.tx.rewa_value = BigUintValue::from(amount);
         self
     }
 
@@ -59,8 +59,8 @@ impl TransferStep {
         U64Value: From<N>,
         BigUintValue: From<A>,
     {
-        if self.tx.moa_value.value > 0u32.into() {
-            panic!("Cannot transfer both MOA and DCDT");
+        if self.tx.rewa_value.value > 0u32.into() {
+            panic!("Cannot transfer both REWA and DCDT");
         }
 
         self.tx.dcdt_value.push(TxDCDT {

@@ -15,7 +15,7 @@ static MAXIMUM_BOARD_MEMBERS: usize = 100;
 pub trait StakingModule {
     fn init_staking_module(
         &self,
-        staking_token: &MoaOrDcdtTokenIdentifier,
+        staking_token: &RewaOrDcdtTokenIdentifier,
         staking_amount: &BigUint,
         slash_amount: &BigUint,
         slash_quorum: usize,
@@ -57,7 +57,7 @@ pub trait StakingModule {
     #[payable("*")]
     #[endpoint]
     fn stake(&self) {
-        let (payment_token, payment_amount) = self.call_value().moa_or_single_fungible_dcdt();
+        let (payment_token, payment_amount) = self.call_value().rewa_or_single_fungible_dcdt();
         let staking_token = self.staking_token().get();
         require!(payment_token == staking_token, "Invalid payment token");
 
@@ -92,7 +92,7 @@ pub trait StakingModule {
         let staking_token = self.staking_token().get();
         self.tx()
             .to(caller)
-            .moa_or_single_dcdt(&staking_token, 0, &unstake_amount)
+            .rewa_or_single_dcdt(&staking_token, 0, &unstake_amount)
             .transfer();
     }
 
@@ -180,7 +180,7 @@ pub trait StakingModule {
     }
 
     #[storage_mapper("staking_module:stakingToken")]
-    fn staking_token(&self) -> SingleValueMapper<MoaOrDcdtTokenIdentifier>;
+    fn staking_token(&self) -> SingleValueMapper<RewaOrDcdtTokenIdentifier>;
 
     #[storage_mapper("staking_module:requiredStakeAmount")]
     fn required_stake_amount(&self) -> SingleValueMapper<BigUint>;

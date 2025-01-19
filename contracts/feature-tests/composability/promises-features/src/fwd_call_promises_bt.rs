@@ -11,7 +11,7 @@ pub trait CallPromisesBackTransfersModule: common::CommonModule {
     fn forward_promise_retrieve_funds_back_transfers(
         &self,
         to: ManagedAddress,
-        token: MoaOrDcdtTokenIdentifier,
+        token: RewaOrDcdtTokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
     ) {
@@ -29,24 +29,24 @@ pub trait CallPromisesBackTransfersModule: common::CommonModule {
     #[promises_callback]
     fn retrieve_funds_back_transfers_callback(&self) {
         let back_transfers = self.blockchain().get_back_transfers();
-        let moa_transfer = back_transfers.total_moa_amount;
+        let rewa_transfer = back_transfers.total_rewa_amount;
 
-        if moa_transfer != BigUint::zero() {
-            let moa_token_id = MoaOrDcdtTokenIdentifier::moa();
-            self.retrieve_funds_callback_event(&moa_token_id, 0, &moa_transfer);
+        if rewa_transfer != BigUint::zero() {
+            let rewa_token_id = RewaOrDcdtTokenIdentifier::rewa();
+            self.retrieve_funds_callback_event(&rewa_token_id, 0, &rewa_transfer);
 
             let _ = self.callback_data().push(&CallbackData {
                 callback_name: ManagedBuffer::from(b"retrieve_funds_callback"),
-                token_identifier: moa_token_id,
+                token_identifier: rewa_token_id,
                 token_nonce: 0,
-                token_amount: moa_transfer,
+                token_amount: rewa_transfer,
                 args: ManagedVec::new(),
             });
         }
 
         for dcdt_transfer in &back_transfers.dcdt_payments {
             let dcdt_token_id =
-                MoaOrDcdtTokenIdentifier::dcdt(dcdt_transfer.token_identifier.clone());
+                RewaOrDcdtTokenIdentifier::dcdt(dcdt_transfer.token_identifier.clone());
             self.retrieve_funds_callback_event(
                 &dcdt_token_id,
                 dcdt_transfer.token_nonce,

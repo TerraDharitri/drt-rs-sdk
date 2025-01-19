@@ -64,7 +64,7 @@ where
             _ => to.with_address_ref(env, |to_addr| {
                 let fc_conv = fc.convert_to_multi_transfer_dcdt_call(
                     to_addr,
-                    self.as_multi_moa_or_dcdt_payment(),
+                    self.as_multi_rewa_or_dcdt_payment(),
                 );
                 f(&from.resolve_address(env), &*BigUint::zero_ref(), fc_conv)
             }),
@@ -73,8 +73,8 @@ where
 
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
-            moa: None,
-            multi_dcdt: self.as_multi_moa_or_dcdt_payment().clone(),
+            rewa: None,
+            multi_dcdt: self.as_multi_rewa_or_dcdt_payment().clone(),
         }
     }
 }
@@ -161,8 +161,8 @@ where
 
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
-            moa: None,
-            multi_dcdt: self.into_multi_moa_or_dcdt_payment(),
+            rewa: None,
+            multi_dcdt: self.into_multi_rewa_or_dcdt_payment(),
         }
     }
 }

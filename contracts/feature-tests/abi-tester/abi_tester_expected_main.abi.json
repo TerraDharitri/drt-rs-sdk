@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-sc",
-            "version": "0.55.0"
+            "version": "0.0.1"
         }
     },
     "docs": [
@@ -30,7 +30,7 @@
             "Contract constructor."
         ],
         "payableInTokens": [
-            "MOA"
+            "REWA"
         ],
         "inputs": [
             {
@@ -421,10 +421,10 @@
             ]
         },
         {
-            "name": "payable_moa",
+            "name": "payable_rewa",
             "mutability": "mutable",
             "payableInTokens": [
-                "MOA"
+                "REWA"
             ],
             "inputs": [],
             "outputs": []

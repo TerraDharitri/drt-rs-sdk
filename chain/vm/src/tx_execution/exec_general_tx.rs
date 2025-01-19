@@ -45,7 +45,7 @@ fn should_add_transfer_value_log(tx_input: &TxInput) -> bool {
     }
 
     // skip for transactions coming directly from scenario json, which should all be coming from user wallets
-    tx_input.from.is_smart_contract_address() && !tx_input.moa_value.is_zero()
+    tx_input.from.is_smart_contract_address() && !tx_input.rewa_value.is_zero()
 }
 
 pub(crate) fn create_transfer_value_log(tx_input: &TxInput, call_type: CallType) -> TxLog {
@@ -53,7 +53,7 @@ pub(crate) fn create_transfer_value_log(tx_input: &TxInput, call_type: CallType)
     data.append(&mut tx_input.args.clone());
 
     if tx_input.dcdt_values.is_empty()
-        && !tx_input.callback_payments.moa_value.is_zero()
+        && !tx_input.callback_payments.rewa_value.is_zero()
         && tx_input.call_type == CallType::AsyncCallback
     {
         return TxLog {
@@ -64,16 +64,16 @@ pub(crate) fn create_transfer_value_log(tx_input: &TxInput, call_type: CallType)
         };
     }
 
-    let moa_value = if tx_input.call_type == CallType::AsyncCallback {
-        &tx_input.callback_payments.moa_value
+    let rewa_value = if tx_input.call_type == CallType::AsyncCallback {
+        &tx_input.callback_payments.rewa_value
     } else {
-        &tx_input.moa_value
+        &tx_input.rewa_value
     };
 
     TxLog {
         address: tx_input.from.clone(),
         endpoint: "transferValueOnly".into(),
-        topics: vec![top_encode_big_uint(moa_value), tx_input.to.to_vec()],
+        topics: vec![top_encode_big_uint(rewa_value), tx_input.to.to_vec()],
         data,
     }
 }
@@ -90,7 +90,7 @@ impl BlockchainVMRef {
         F: FnOnce(),
     {
         if let Err(err) =
-            tx_cache.transfer_moa_balance(&tx_input.from, &tx_input.to, &tx_input.moa_value)
+            tx_cache.transfer_rewa_balance(&tx_input.from, &tx_input.to, &tx_input.rewa_value)
         {
             return (TxResult::from_panic_obj(&err), BlockchainUpdate::empty());
         }
@@ -156,7 +156,7 @@ impl BlockchainVMRef {
 
         if let Err(err) = tx_context_sh
             .tx_cache
-            .subtract_moa_balance(&tx_input_ref.from, &tx_input_ref.moa_value)
+            .subtract_rewa_balance(&tx_input_ref.from, &tx_input_ref.rewa_value)
         {
             return (
                 TxResult::from_panic_obj(&err),
@@ -172,7 +172,7 @@ impl BlockchainVMRef {
         );
         tx_context_sh
             .tx_cache
-            .increase_moa_balance(&new_address, &tx_input_ref.moa_value);
+            .increase_rewa_balance(&new_address, &tx_input_ref.rewa_value);
 
         TxContextStack::execute_on_vm_stack(&mut tx_context_sh, f);
 

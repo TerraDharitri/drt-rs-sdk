@@ -72,7 +72,7 @@ where
     let exec_input = TxInput {
         from: tx_input.from,
         to: parsed_tx.destination,
-        moa_value: BigUint::zero(),
+        rewa_value: BigUint::zero(),
         dcdt_values: process_raw_dcdt_transfers(parsed_tx.raw_dcdt_transfers),
         func_name: parsed_tx.func_name,
         args: parsed_tx.args,

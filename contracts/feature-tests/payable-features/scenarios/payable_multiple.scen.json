@@ -70,7 +70,7 @@
         },
         {
             "step": "scCall",
-            "id": "payment-multiple-bad-moa",
+            "id": "payment-multiple-bad-rewa",
             "tx": {
                 "from": "address:an-account",
                 "to": "sc:payable-features",
@@ -89,7 +89,7 @@
                         "value": "10"
                     },
                     {
-                        "tokenIdentifier": "str:MOA-000000",
+                        "tokenIdentifier": "str:REWA-000000",
                         "nonce": "0",
                         "value": "120"
                     }
@@ -102,7 +102,7 @@
             "expect": {
                 "out": [],
                 "status": "4",
-                "message": "str:unexpected MOA transfer",
+                "message": "str:unexpected REWA transfer",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"

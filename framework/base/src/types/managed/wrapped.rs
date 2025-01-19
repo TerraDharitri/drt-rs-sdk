@@ -2,9 +2,9 @@ mod big_uint;
 mod big_uint_cmp;
 mod big_uint_operators;
 mod builder;
-mod moa_or_dcdt_token_identifier;
-mod moa_or_dcdt_token_payment;
-mod moa_or_multi_dcdt_payment;
+mod rewa_or_dcdt_token_identifier;
+mod rewa_or_dcdt_token_payment;
+mod rewa_or_multi_dcdt_payment;
 mod encoded_managed_vec_item;
 mod dcdt_token_data;
 mod dcdt_token_payment;
@@ -31,11 +31,11 @@ mod traits;
 
 pub use big_uint::BigUint;
 pub use builder::*;
-pub use moa_or_dcdt_token_identifier::MoaOrDcdtTokenIdentifier;
-pub use moa_or_dcdt_token_payment::{
-    MoaOrDcdtTokenPayment, MoaOrDcdtTokenPaymentRefs, MultiMoaOrDcdtPayment,
+pub use rewa_or_dcdt_token_identifier::RewaOrDcdtTokenIdentifier;
+pub use rewa_or_dcdt_token_payment::{
+    RewaOrDcdtTokenPayment, RewaOrDcdtTokenPaymentRefs, MultiRewaOrDcdtPayment,
 };
-pub use moa_or_multi_dcdt_payment::{MoaOrMultiDcdtPayment, MoaOrMultiDcdtPaymentRefs};
+pub use rewa_or_multi_dcdt_payment::{RewaOrMultiDcdtPayment, RewaOrMultiDcdtPaymentRefs};
 pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 pub use dcdt_token_data::DcdtTokenData;
 pub use dcdt_token_payment::{DcdtTokenPayment, DcdtTokenPaymentRefs, MultiDcdtPayment};
