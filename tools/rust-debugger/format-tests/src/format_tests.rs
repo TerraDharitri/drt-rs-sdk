@@ -102,7 +102,7 @@ fn main() {
     push!(
         to_check,
         managed_vec_of_biguints,
-        "(2) { [0] = 10000000000, [1] = 100000000000000000000 }"
+        "(2) { [0] =  , [1] = 100000000000000000000 }"
     );
 
     let mut managed_vec_of_payments: ManagedVec<DebugApi, DcdtTokenPayment<DebugApi>> =

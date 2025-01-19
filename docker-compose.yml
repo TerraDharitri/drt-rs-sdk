@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
  chain-simulator:
-  image: dharitri/chainsimulator:latest
+  image: terradharitri/chainsimulator:latest
   ports:
     - 8085:8085
   volumes:
