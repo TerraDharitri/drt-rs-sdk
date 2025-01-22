@@ -93,7 +93,7 @@ checksum = "a7a70ba024b9dc04c27ea2f0c0548feb474ec5c54bba33a7f72f873a39d07b24"
 
 [[package]]
 name = "dharitri-chain-core"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "bitflags",
  "dharitri-sc-codec",
@@ -120,7 +120,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "bitflags",
  "hex-literal",
@@ -152,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "hex",
  "proc-macro2",

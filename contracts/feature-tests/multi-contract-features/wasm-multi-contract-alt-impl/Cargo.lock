@@ -55,7 +55,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-chain-core"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "bitflags",
  "dharitri-sc-codec",
@@ -63,7 +63,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "bitflags",
  "hex-literal",
@@ -95,7 +95,7 @@ dependencies = [
 
 [[package]]
 name = "dharitri-sc-derive"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "hex",
  "proc-macro2",
