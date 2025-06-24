@@ -1,17 +1,29 @@
 [package]
 name = "lottery-dcdt"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = [ "Dorin Iancu <dorin.iancu@numbat.com>",]
+edition = "2018"
 publish = false
 
 [lib]
-path = "src/lottery.rs"
+path = "src/lib.rs"
 
-[dependencies.dharitri-sc]
-version = "1.0.1"
-path = "../../../framework/base"
+[features]
+wasm-output-mode = [ "numbat-wasm-node",]
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "1.0.1"
-path = "../../../framework/scenario"
+[dependencies.numbat-wasm]
+version = "0.10.3"
+path = "../../../numbat-wasm"
+
+[dependencies.numbat-wasm-derive]
+version = "0.10.3"
+path = "../../../numbat-wasm-derive"
+
+[dependencies.numbat-wasm-node]
+version = "0.10.3"
+path = "../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.10.3"
+path = "../../../numbat-wasm-debug"

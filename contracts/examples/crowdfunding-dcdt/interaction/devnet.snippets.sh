@@ -1,28 +1,16 @@
-ALICE="./interaction/alice.pem"
-PROJECT="${PWD}"
-PROXY=https://devnet-gateway.dharitri.org
-CHAINID=D
-
-BOB="${USERS}/bob.pem"
-
+ALICE="${USERS}/alice.pem"
 ADDRESS=$(drtpy data load --key=address-devnet)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-devnet)
-
-DEPLOY_GAS="25000000"
-TARGET=10
-
-DEADLINE_UNIX_TIMESTAMP=$(date -d '2100-05-12 00:00:01' +"%s")
-REWA_TOKEN_ID=0x52455741 # "REWA"
+DEPLOY_ARGUMENTS="12 4096 0xABBAABBA"
+DEPLOY_GAS="80000000"
 
 deploy() {
     drtpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
-          --gas-limit=${DEPLOY_GAS} \
-          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${REWA_TOKEN_ID} \
-          --proxy=${PROXY} --chain=${CHAINID} --send
-          --outfile="deploy-devnet.interaction.json" || return
+          --gas-limit=${DEPLOY_GAS} --arguments ${DEPLOY_ARGUMENTS} \
+          --outfile="deploy-devnet.interaction.json" --send || return
 
-    TRANSACTION=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['emittedTransactionHash']")
-    ADDRESS=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['contractAddress']")
+    TRANSACTION=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['hash']")
+    ADDRESS=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['address']")
 
     drtpy data store --key=address-devnet --value=${ADDRESS}
     drtpy data store --key=deployTransaction-devnet --value=${TRANSACTION}
@@ -33,12 +21,11 @@ deploy() {
 
 deploySimulate() {
     drtpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
-          --gas-limit=${DEPLOY_GAS} \
-          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${REWA_TOKEN_ID} \
+          --gas-limit=${DEPLOY_GAS} --arguments ${DEPLOY_ARGUMENTS} \
           --outfile="simulate-devnet.interaction.json" --simulate || return
 
     TRANSACTION=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['hash']")
-    ADDRESS=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['contractAddress']")
+    ADDRESS=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['emitted_tx']['address']")
     RETCODE=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['returnCode']")
     RETMSG=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['returnMessage']")
 
@@ -54,47 +41,16 @@ checkDeployment() {
     drtpy account get --address=$ADDRESS --omit-fields="['code']"
 }
 
-# BOB sends funds
-sendFunds() {
-    drtpy --verbose contract call ${ADDRESS} --recall-nonce --pem=${BOB} --gas-limit=10000000 \
-        --function="fund" --value=5 \
-        --send
-}
-
-# ALICE claims
-claimFunds() {
-    drtpy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
-        --function="claim" \
-        --send
-}
-
-# 0 - Funding Period
-# 1 - Successful
-# 2 - Failed
 status() {
     drtpy --verbose contract query ${ADDRESS} --function="status"
 }
 
-getCurrentFunds() {
-    drtpy --verbose contract query ${ADDRESS} --function="getCurrentFunds"
+currentFunds() {
+    drtpy --verbose contract query ${ADDRESS} --function="currentFunds"
 }
 
-getTarget() {
-    drtpy --verbose contract query ${ADDRESS} --function="getTarget"
-}
-
-getDeadline() {
-    drtpy --verbose contract query ${ADDRESS} --function="getDeadline"
-}
-
-# BOB's deposit
-getDeposit() {
-    local BOB_ADDRESS_BECH32=drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c
-    local BOB_ADDRESS_HEX=0x$(drtpy wallet bech32 --decode ${BOB_ADDRESS_BECH32})
-
-    drtpy --verbose contract query ${ADDRESS} --function="getDeposit" --arguments ${BOB_ADDRESS_HEX}
-}
-
-getCrowdfundingTokenName() {
-    drtpy --verbose contract query ${ADDRESS} --function="getCrowdfundingTokenName"
+sendFunds() {
+    drtpy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
+        --function="fund" --value=3\
+        --send
 }

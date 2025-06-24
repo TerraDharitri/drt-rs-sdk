@@ -1,18 +1,16 @@
-use dharitri_sc::{
-    api::ManagedTypeApi,
-    types::{BigUint, RewaOrDcdtTokenIdentifier, ManagedVec},
-};
+use numbat_wasm::{Address, BigUintApi, BoxedBytes, Vec};
 
-use dharitri_sc::derive_imports::*;
+derive_imports!();
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
-pub struct LotteryInfo<M: ManagedTypeApi> {
-    pub token_identifier: RewaOrDcdtTokenIdentifier<M>,
-    pub ticket_price: BigUint<M>,
-    pub tickets_left: usize,
-    pub deadline: u64,
-    pub max_entries_per_user: usize,
-    pub prize_distribution: ManagedVec<M, u8>,
-    pub prize_pool: BigUint<M>,
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
+pub struct LotteryInfo<BigUint: BigUintApi> {
+	pub dcdt_token_name: BoxedBytes,
+	pub ticket_price: BigUint,
+	pub tickets_left: u32,
+	pub deadline: u64,
+	pub max_entries_per_user: u32,
+	pub prize_distribution: Vec<u8>,
+	pub whitelist: Vec<Address>,
+	pub current_ticket_number: u32,
+	pub prize_pool: BigUint,
 }

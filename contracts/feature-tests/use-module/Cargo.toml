@@ -1,25 +1,64 @@
 [package]
 name = "use-module"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = ["Andrei Marinica <andrei.marinica@numbat.com>"]
+edition = "2018"
 publish = false
 
 [lib]
-path = "src/use_module.rs"
+path = "src/lib.rs"
 
-[dependencies.dharitri-sc-modules]
-version = "1.0.1"
-path = "../../../contracts/modules"
+[features]
+wasm-output-mode = [
+    "numbat-wasm-node",
+    "numbat-wasm-module-features-wasm",
+    "numbat-wasm-module-pause-wasm"
+]
 
-[dependencies.dharitri-sc]
-version = "1.0.1"
-path = "../../../framework/base"
+default = [
+    "numbat-wasm-module-features-default",
+    "numbat-wasm-module-pause-default"
+]
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "1.0.1"
-path = "../../../framework/scenario"
+[dependencies.numbat-wasm-module-features-wasm]
+package = "numbat-wasm-module-features"
+version = "0.10.3"
+path = "../../modules/numbat-wasm-module-features"
+features = ["wasm-output-mode"]
+optional = true
 
-[dev-dependencies.dharitri-sc-meta-lib]
-version = "1.0.1"
-path = "../../../framework/meta-lib"
+[dependencies.numbat-wasm-module-features-default]
+package = "numbat-wasm-module-features"
+version = "0.10.3"
+path = "../../modules/numbat-wasm-module-features"
+optional = true
+
+[dependencies.numbat-wasm-module-pause-wasm]
+package = "numbat-wasm-module-pause"
+version = "0.10.3"
+path = "../../modules/numbat-wasm-module-pause"
+features = ["wasm-output-mode"]
+optional = true
+
+[dependencies.numbat-wasm-module-pause-default]
+package = "numbat-wasm-module-pause"
+version = "0.10.3"
+path = "../../modules/numbat-wasm-module-pause"
+optional = true
+
+[dependencies.numbat-wasm]
+version = "0.10.3"
+path = "../../../numbat-wasm"
+
+[dependencies.numbat-wasm-derive]
+version = "0.10.3"
+path = "../../../numbat-wasm-derive"
+
+[dependencies.numbat-wasm-node]
+version = "0.10.3"
+path = "../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.10.3"
+path = "../../../numbat-wasm-debug"
