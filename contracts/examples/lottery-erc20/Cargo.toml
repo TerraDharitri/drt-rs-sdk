@@ -12,15 +12,15 @@ path = "src/lib.rs"
 wasm-output-mode = [ "numbat-wasm-node",]
 
 [dependencies.numbat-wasm]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm"
 
 [dependencies.numbat-wasm-derive]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm-derive"
 
 [dependencies.numbat-wasm-node]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm-node"
 optional = true
 
@@ -28,5 +28,5 @@ optional = true
 path = "../simple-erc20"
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm-debug"

@@ -20,30 +20,30 @@ default = [
 
 [dependencies.numbat-wasm-module-users-wasm]
 package = "numbat-wasm-module-users"
-version = "0.10.3"
+version = "0.0.3"
 path = "../../modules/numbat-wasm-module-users"
 features = ["wasm-output-mode"]
 optional = true
 
 [dependencies.numbat-wasm-module-users-default]
 package = "numbat-wasm-module-users"
-version = "0.10.3"
+version = "0.0.3"
 path = "../../modules/numbat-wasm-module-users"
 optional = true
 
 [dependencies.numbat-wasm]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm"
 
 [dependencies.numbat-wasm-derive]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm-derive"
 
 [dependencies.numbat-wasm-node]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm-node"
 optional = true
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.10.3"
+version = "0.0.3"
 path = "../../../numbat-wasm-debug"

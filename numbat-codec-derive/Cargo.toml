@@ -1,6 +1,6 @@
 [package]
 name = "numbat-codec-derive"
-version = "0.4.2"
+version = "0.0.3"
 edition = "2018"
 
 authors = ["dorin.iancu <dorin.iancu@numbat.com>", "Andrei Marinica <andrei.marinica@numbat.com>", "Numbat Network <contact@numbat.com>"]
