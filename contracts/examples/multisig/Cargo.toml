@@ -1,37 +1,49 @@
 [package]
 name = "multisig"
-version = "1.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+version = "0.0.0"
+authors = ["Andrei Marinica <andrei.marinica@numbat.com>"]
+edition = "2018"
 publish = false
 
 [lib]
-path = "src/multisig.rs"
+path = "src/lib.rs"
 
-[dependencies.dharitri-sc]
-version = "1.0.1"
-path = "../../../framework/base"
+[features]
+wasm-output-mode = [
+    "numbat-wasm-node",
+    "numbat-wasm-module-users-wasm",
+]
 
-[dependencies.dharitri-sc-modules]
-version = "1.0.1"
-path = "../../../contracts/modules"
+default = [
+    "numbat-wasm-module-users-default"
+]
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "1.0.1"
-path = "../../../framework/scenario"
+[dependencies.numbat-wasm-module-users-wasm]
+package = "numbat-wasm-module-users"
+version = "0.10.3"
+path = "../../modules/numbat-wasm-module-users"
+features = ["wasm-output-mode"]
+optional = true
 
-[dev-dependencies.adder]
-path = "../adder"
+[dependencies.numbat-wasm-module-users-default]
+package = "numbat-wasm-module-users"
+version = "0.10.3"
+path = "../../modules/numbat-wasm-module-users"
+optional = true
 
-[dev-dependencies.factorial]
-path = "../factorial"
+[dependencies.numbat-wasm]
+version = "0.10.3"
+path = "../../../numbat-wasm"
 
-[dev-dependencies.dharitri-sc-wrewa-swap]
-version = "1.0.1"
-path = "../../core/wrewa-swap"
+[dependencies.numbat-wasm-derive]
+version = "0.10.3"
+path = "../../../numbat-wasm-derive"
 
-[dev-dependencies]
-num-bigint = "0.4"
-num-traits = "0.2"
-hex = "0.4"
+[dependencies.numbat-wasm-node]
+version = "0.10.3"
+path = "../../../numbat-wasm-node"
+optional = true
 
+[dev-dependencies.numbat-wasm-debug]
+version = "0.10.3"
+path = "../../../numbat-wasm-debug"

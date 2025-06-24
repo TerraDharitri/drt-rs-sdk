@@ -1,15 +1,13 @@
-dharitri_sc::imports!();
+imports!();
 
-/// Example of a module that lies in the same crate.
-#[dharitri_sc::module]
-pub trait InternalModuleB {
-    #[view]
-    fn call_mod_b(&self) {}
+use super::internal_mod_a::*;
 
-    #[view]
-    #[label("module-external-view")]
-    fn external_view_mod_b(&self) {}
+/// Contains all events that can be emitted by the contract.
+#[numbat_wasm_derive::module(InteralModuleBImpl)]
+pub trait InteralModuleB {
+	#[module(InteralModuleAImpl)]
+	fn internal_module_a(&self) -> InteralModuleAImpl<T, BigInt, BigUint>;
 
-    #[event("eventInModule")]
-    fn event_in_module(&self, #[indexed] arg: u32);
+	#[view]
+	fn call_mod_b(&self) {}
 }

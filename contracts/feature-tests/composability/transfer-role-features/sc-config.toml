@@ -1,2 +1,0 @@
-[[proxy]]
-path = "src/transfer_role_proxy.rs"
