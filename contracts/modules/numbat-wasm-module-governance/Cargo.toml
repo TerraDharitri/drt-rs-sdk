@@ -1,0 +1,31 @@
+[package]
+name = "numbat-wasm-module-governance"
+version = "0.0.11"
+edition = "2018"
+
+authors = ["contact@dharitri.org"]
+license = "GPL-3.0-only"
+readme = "README.md"
+repository = "https://github.com/TerraDharitri/drt-rs-sdk"
+homepage = "https://numbat.com/"
+documentation = "https://docs.numbat.com/"
+description = "Numbat WebAssembly smart contract module that provides governance features"
+keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
+categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
+
+[features]
+wasm-output-mode = ["numbat-wasm-node"]
+
+[dependencies.numbat-wasm]
+version = "0.0.11"
+path = "../../../numbat-wasm"
+features = ["derive"]
+
+[dependencies.numbat-wasm-node]
+version = "0.0.11"
+path = "../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.11"
+path = "../../../numbat-wasm-debug"

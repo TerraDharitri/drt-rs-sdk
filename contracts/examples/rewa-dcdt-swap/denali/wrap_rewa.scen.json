@@ -41,8 +41,19 @@
                 "logs": [
                     {
                         "address": "sc:rewa-dcdt-swap",
-                        "identifier": "str:wrap-rewa",
+                        "endpoint": "str:DCDTTransfer",
                         "topics": [
+                            "str:WREWA-abcdef",
+                            "500",
+                            "address:user"
+                        ],
+                        "data": ""
+                    },
+                    {
+                        "address": "sc:rewa-dcdt-swap",
+                        "endpoint": "str:wrapRewa",
+                        "topics": [
+                            "str:wrap-rewa",
                             "address:user"
                         ],
                         "data": "500"

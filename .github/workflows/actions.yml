@@ -21,7 +21,7 @@ jobs:
           source .github/workflows/env
           pip3 install drtpy
           mkdir $HOME/numbatsdk
-          drtpy config set dependencies.andestools.tag v1.3.3
+          drtpy config set dependencies.andestools.tag v1.4.4
           drtpy deps install andestools
       - name: Build the wasm contracts
         run: |
@@ -30,7 +30,7 @@ jobs:
       - name: Run Andes tests
         run: |
           source .github/workflows/env
-          cargo test --features andes-tests
+          cargo test --features numbat-wasm-debug/andes-tests
   rust_test:
     name: Rust tests
     runs-on: ubuntu-latest

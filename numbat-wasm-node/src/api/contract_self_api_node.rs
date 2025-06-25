@@ -1,8 +1,9 @@
-use super::{AndesBigInt, AndesBigUint};
+use super::{AndesBigInt, AndesBigUint, AndesEllipticCurve};
 use crate::AndesApiImpl;
 use numbat_wasm::api::ContractBase;
 
 impl ContractBase for AndesApiImpl {
+	type EllipticCurve = AndesEllipticCurve;
 	type BigUint = AndesBigUint;
 	type BigInt = AndesBigInt;
 	type Storage = Self;

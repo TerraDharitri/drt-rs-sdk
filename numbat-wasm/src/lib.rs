@@ -2,6 +2,10 @@
 #![feature(never_type)]
 #![feature(try_trait_v2)]
 #![feature(control_flow_enum)]
+#![allow(deprecated)]
+
+#[cfg(feature = "derive")]
+pub use numbat_wasm_derive::{self as derive, contract, module, proxy};
 
 // re-export basic heap types
 extern crate alloc;

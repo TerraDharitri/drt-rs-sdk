@@ -4,10 +4,30 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
-### New math hooks exposed from Andes:
-- `pow`, `log2`, `sqrt`
-- cryptography: elliptic curves
+## [numbat-wasm 0.18.2] - 2021-08-20
+- Crypto API: `ripemd160` function, custom secp256k1 signature verification (`verify_custom_secp256k1`) and signature generation (`encode_secp256k1_der_signature`).
+
+## [numbat-wasm 0.18.1] - 2021-08-05
+- Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
+
+## [numbat-wasm 0.18.0, denali 0.8.0] - 2021-07-28
+
+- New math hooks exposed from Andes:
+	- `pow`, `log2`, `sqrt`
+	- cryptography: elliptic curves
+- `deploy_contract` now returns `Option<Address>`
+- `deploy_from_source_contract` API
+- Send API refactored for more consistency and ease of use.
+- High level proxies can be used to deploy contracts.
+- Denali log syntax updated, to match Andes.
+- A better `#[only_owner]` annotation, which can be applied directly to endoint methods. This annotation also shows up in the ABI.
+- `numbat-wasm-derive` now an optional dependency of `numbat-wasm`. Use `#[numbat_wasm::contract]` instead of `#[numbat_wasm_derive::contract]` now. Same for proxies and modules.
+
+## [numbat-wasm 0.17.4] - 2021-06-30
+- conversions from big ints to small int: `BigUint::to_u64`, `BigInt::to_i64`
+
+## [numbat-wasm 0.17.3] - 2021-06-11
+- `SingleValueMapper` `set_if_empty` method
 
 ## [numbat-wasm 0.17.2] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)

@@ -1,8 +1,8 @@
 import path = require("path");
 import fs = require("fs");
-import { Account, Argument, BackendSigner, Balance, Code, ContractFunction, GasLimit, NetworkConfig, ProxyProvider, SmartContract } from "@numbatnetwork/drtjs";
-import { AbiRegistry, U32Value } from "@numbatnetwork/drtjs/out/smartcontracts/typesystem";
-import { BinaryCodec } from "@numbatnetwork/drtjs/out/smartcontracts/codec"
+import { Account, Argument, BackendSigner, Balance, Code, ContractFunction, GasLimit, NetworkConfig, ProxyProvider, SmartContract } from "@terradharitri/drtjs";
+import { AbiRegistry, U32Value } from "@terradharitri/drtjs/out/smartcontracts/typesystem";
+import { BinaryCodec } from "@terradharitri/drtjs/out/smartcontracts/codec"
 
 async function main() {
     let codec = new BinaryCodec();

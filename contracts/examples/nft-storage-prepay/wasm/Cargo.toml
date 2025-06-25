@@ -1,7 +1,7 @@
 [package]
 name = "nft-storage-prepay-wasm"
 version = "0.0.0"
-authors = [ "Dorin Iancu <dorin.iancu@numbat.com>",]
+authors = ["contact@dharitri.org"]
 edition = "2018"
 publish = false
 
@@ -26,6 +26,6 @@ default-features = false
 path = ".."
 
 [dependencies.numbat-wasm-output]
-version = "0.0.9"
+version = "0.0.11"
 path = "../../../../numbat-wasm-output"
 features = [ "wasm-output-mode",]

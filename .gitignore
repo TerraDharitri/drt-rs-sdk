@@ -19,6 +19,9 @@ tutorial/book
 my-andes.sh
 publish.sh
 
+# Zip output with example wasm binaries
+examples-wasm.zip
+
 tags
 
 # Numbat IDE
@@ -27,3 +30,6 @@ tags
 **/testnet/**
 **/drtpy.data-storage.json
 **/*.interaction.json
+
+# Python scripts
+**/__pycache__/**

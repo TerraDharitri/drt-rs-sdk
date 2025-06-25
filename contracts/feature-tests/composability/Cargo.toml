@@ -1,0 +1,35 @@
+[package]
+name = "async"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[dependencies.forwarder]
+path = "forwarder"
+
+[dependencies.forwarder-raw]
+path = "forwarder-raw"
+
+[dependencies.proxy-test-first]
+path = "proxy-test-first"
+
+[dependencies.proxy-test-second]
+path = "proxy-test-second"
+
+[dependencies.vault]
+path = "vault"
+
+[dependencies.numbat-wasm]
+version = "0.0.11"
+path = "../../../numbat-wasm"
+features = ["derive"]
+
+[dependencies.numbat-wasm-node]
+version = "0.0.11"
+path = "../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.11"
+path = "../../../numbat-wasm-debug"

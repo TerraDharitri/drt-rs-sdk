@@ -23,6 +23,6 @@ default-features = false
 path = ".."
 
 [dependencies.numbat-wasm-output]
-version = "0.0.9"
+version = "0.0.11"
 path = "../../../../../numbat-wasm-output"
 features = [ "wasm-output-mode",]

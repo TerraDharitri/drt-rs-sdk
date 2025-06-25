@@ -27,8 +27,9 @@
                 "logs": [
                     {
                         "address": "sc:rewa-dcdt-swap",
-                        "identifier": "str:unwrap-rewa",
+                        "endpoint": "str:unwrapRewa",
                         "topics": [
+                            "str:unwrap-rewa",
                             "address:user"
                         ],
                         "data": "300"

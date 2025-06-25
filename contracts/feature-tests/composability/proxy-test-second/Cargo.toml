@@ -1,0 +1,26 @@
+[package]
+name = "proxy-test-second"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/proxy-test-second.rs"
+
+[features]
+wasm-output-mode = ["numbat-wasm-node"]
+
+[dependencies.numbat-wasm]
+version = "0.0.11"
+path = "../../../../numbat-wasm"
+features = ["derive"]
+
+[dependencies.numbat-wasm-node]
+version = "0.0.11"
+path = "../../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.11"
+path = "../../../../numbat-wasm-debug"
