@@ -10,10 +10,12 @@
             "txId": "unwrap-rewa",
             "tx": {
                 "from": "address:user",
-                "to": "address:contract",
+                "to": "sc:rewa-dcdt-swap",
                 "value": "0",
-                "dcdtTokenName": "str:WREWA-abcdef",
-                "dcdtValue": "300",
+                "dcdt": {
+                    "tokenIdentifier": "str:WREWA-abcdef",
+                    "value": "300"
+                },
                 "function": "unwrapRewa",
                 "arguments": [],
                 "gasLimit": "100,000,000",
@@ -24,7 +26,7 @@
                 "message": "",
                 "logs": [
                     {
-                        "address": "address:contract",
+                        "address": "sc:rewa-dcdt-swap",
                         "identifier": "str:unwrap-rewa",
                         "topics": [
                             "address:user"
@@ -47,7 +49,7 @@
                     },
                     "storage": {}
                 },
-                "address:contract": {
+                "sc:rewa-dcdt-swap": {
                     "nonce": "0",
                     "balance": "200",
                     "dcdt": {

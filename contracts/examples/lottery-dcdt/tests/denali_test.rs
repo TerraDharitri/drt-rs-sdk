@@ -1,18 +1,16 @@
-extern crate lottery_dcdt;
-use lottery_dcdt::*;
-
 use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
+fn _contract_map() -> ContractMap<TxContext> {
 	let mut contract_map = ContractMap::new();
 	contract_map.register_contract(
 		"file:../output/lottery-dcdt.wasm",
-		Box::new(|context| Box::new(LotteryImpl::new(context))),
+		Box::new(|context| Box::new(lottery_dcdt::contract_obj(context))),
 	);
 	contract_map
 }
 
+/* Uncomment when denali-rs is brought up to date with denali-go features
 #[test]
 fn buy_all_tickets_different_accounts() {
 	parse_execute_denali(
@@ -205,3 +203,4 @@ fn start_with_all_options() {
 fn start_with_no_options() {
 	parse_execute_denali("denali/start-with-no-options.scen.json", &contract_map());
 }
+*/

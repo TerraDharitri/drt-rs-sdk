@@ -1,7 +1,3 @@
-use numbat_wasm_debug::*;
-use lottery_dcdt::*;
-
 fn main() {
-	let contract = LotteryImpl::new(TxContext::dummy());
-	print!("{}", abi_json::contract_abi(&contract));
+	numbat_wasm_debug::abi_json::print_abi::<lottery_dcdt::AbiProvider>();
 }

@@ -1,0 +1,33 @@
+[package]
+name = "parent"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+wasm-output-mode = ["numbat-wasm-node"]
+
+[dependencies.child]
+path = "../child"
+
+[dependencies.numbat-wasm]
+version = "0.0.7"
+path = "../../../../numbat-wasm"
+
+[dependencies.numbat-wasm-derive]
+version = "0.0.7"
+path = "../../../../numbat-wasm-derive"
+
+[dependencies.numbat-wasm-node]
+version = "0.0.7"
+path = "../../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.7"
+path = "../../../../numbat-wasm-debug"
+

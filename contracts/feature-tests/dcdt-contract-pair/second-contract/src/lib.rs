@@ -3,7 +3,7 @@
 
 numbat_wasm::imports!();
 
-#[numbat_wasm_derive::contract(SecondContractImpl)]
+#[numbat_wasm_derive::contract]
 pub trait SecondContract {
 	#[init]
 	fn init(&self, dcdt_token_name: TokenIdentifier) {

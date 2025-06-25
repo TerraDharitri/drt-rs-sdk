@@ -1,5 +1,4 @@
-use numbat_wasm::storage::mappers::SetMapper;
-use numbat_wasm::storage::mappers::{StorageClearable, StorageMapper};
+use numbat_wasm::storage::mappers::{SetMapper, StorageClearable, StorageMapper};
 use numbat_wasm::types::BoxedBytes;
 use numbat_wasm_debug::TxContext;
 

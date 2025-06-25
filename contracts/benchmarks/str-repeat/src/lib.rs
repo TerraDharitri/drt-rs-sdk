@@ -2,7 +2,7 @@
 
 numbat_wasm::imports!();
 
-#[numbat_wasm_derive::contract(StrRepeatImpl)]
+#[numbat_wasm_derive::contract]
 pub trait StrRepeat {
 	#[init]
 	fn init(&self) {}

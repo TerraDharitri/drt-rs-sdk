@@ -20,7 +20,7 @@ use simple_enum::*;
 
 use core::num::NonZeroUsize;
 
-#[numbat_wasm_derive::contract(BasicFeaturesImpl)]
+#[numbat_wasm_derive::contract]
 pub trait BasicFeatures {
 	#[init]
 	fn init(&self) {}
@@ -33,12 +33,12 @@ pub trait BasicFeatures {
 	// TEST ARGUMENT AND RETURN TYPE SERIALIZATION
 
 	#[endpoint]
-	fn echo_big_uint(&self, bi: BigUint) -> BigUint {
+	fn echo_big_uint(&self, bi: Self::BigUint) -> Self::BigUint {
 		bi
 	}
 
 	#[endpoint]
-	fn echo_big_int(&self, bi: BigInt) -> BigInt {
+	fn echo_big_int(&self, bi: Self::BigInt) -> Self::BigInt {
 		bi
 	}
 
@@ -164,7 +164,10 @@ pub trait BasicFeatures {
 	}
 
 	#[endpoint]
-	fn echo_varags_big_uint(&self, #[var_args] m: VarArgs<BigUint>) -> MultiResultVec<BigUint> {
+	fn echo_varags_big_uint(
+		&self,
+		#[var_args] m: VarArgs<Self::BigUint>,
+	) -> MultiResultVec<Self::BigUint> {
 		m.into_vec().into()
 	}
 
@@ -239,11 +242,11 @@ pub trait BasicFeatures {
 
 	#[endpoint]
 	#[storage_set("big_uint")]
-	fn store_big_uint(&self, bi: BigUint);
+	fn store_big_uint(&self, bi: Self::BigUint);
 
 	#[endpoint]
 	#[storage_set("big_int")]
-	fn store_big_int(&self, bi: BigInt);
+	fn store_big_int(&self, bi: Self::BigInt);
 
 	#[endpoint]
 	#[storage_set("usize")]
@@ -291,18 +294,18 @@ pub trait BasicFeatures {
 
 	#[endpoint]
 	#[storage_set("map1")]
-	fn store_map1(&self, addr: Address, bi: BigUint);
+	fn store_map1(&self, addr: Address, bi: Self::BigUint);
 
 	#[endpoint]
 	#[storage_set("map2")]
-	fn store_map2(&self, addr1: &Address, addr2: &Address, bi: &BigUint);
+	fn store_map2(&self, addr1: &Address, addr2: &Address, bi: &Self::BigUint);
 
 	#[endpoint]
 	#[storage_set("map3")]
 	fn store_map3(&self, x: usize, b: bool);
 
 	#[storage_set("slice1")]
-	fn store_slice1(&self, slice: &[BigUint]);
+	fn store_slice1(&self, slice: &[Self::BigUint]);
 
 	#[endpoint]
 	#[storage_set("NUMBATi64")]
@@ -310,7 +313,7 @@ pub trait BasicFeatures {
 
 	#[endpoint]
 	#[storage_set("NUMBATBigUint")]
-	fn store_reserved_big_uint(&self, i: BigUint);
+	fn store_reserved_big_uint(&self, i: Self::BigUint);
 
 	#[endpoint]
 	#[storage_set("NUMBATreserved")]
@@ -320,11 +323,11 @@ pub trait BasicFeatures {
 
 	#[endpoint]
 	#[storage_get("big_uint")]
-	fn load_big_uint(&self) -> BigUint;
+	fn load_big_uint(&self) -> Self::BigUint;
 
 	#[endpoint]
 	#[storage_get("big_int")]
-	fn load_big_int(&self) -> BigInt;
+	fn load_big_int(&self) -> Self::BigInt;
 
 	#[endpoint]
 	#[storage_get("u64")]
@@ -359,7 +362,7 @@ pub trait BasicFeatures {
 	}
 
 	#[endpoint(storage_load_cumulated_validator_reward)]
-	fn storage_load_cumulated_validator_reward_endpoint(&self) -> BigUint {
+	fn storage_load_cumulated_validator_reward_endpoint(&self) -> Self::BigUint {
 		self.storage_load_cumulated_validator_reward()
 	}
 
@@ -385,11 +388,11 @@ pub trait BasicFeatures {
 
 	#[endpoint]
 	#[storage_get("map1")]
-	fn load_map1(&self, addr: Address) -> BigUint;
+	fn load_map1(&self, addr: Address) -> Self::BigUint;
 
 	#[endpoint]
 	#[storage_get("map2")]
-	fn load_map2(&self, addr1: &Address, addr2: &Address) -> BigUint;
+	fn load_map2(&self, addr1: &Address, addr2: &Address) -> Self::BigUint;
 
 	#[endpoint]
 	#[storage_get("map3")]
@@ -399,19 +402,31 @@ pub trait BasicFeatures {
 
 	#[view]
 	#[storage_mapper("my_single_value_mapper")]
-	fn map_my_single_value_mapper(&self) -> SingleValueMapper<Self::Storage, BigInt>;
+	fn map_my_single_value_mapper(&self) -> SingleValueMapper<Self::Storage, Self::BigInt>;
 
 	#[endpoint]
-	fn my_single_value_mapper_increment_1(&self, amount: BigInt) {
+	fn my_single_value_mapper_increment_1(&self, amount: Self::BigInt) {
 		let my_single_value_mapper = self.map_my_single_value_mapper();
 		my_single_value_mapper.set(&(my_single_value_mapper.get() + amount));
 	}
 
 	/// Same as my_single_value_mapper_increment_1, but expressed more compactly.
 	#[endpoint]
-	fn my_single_value_mapper_increment_2(&self, amount: &BigInt) {
+	fn my_single_value_mapper_increment_2(&self, amount: &Self::BigInt) {
 		self.map_my_single_value_mapper()
 			.update(|value| *value += amount);
+	}
+
+	// Often times the update of a value is conditioned by a requirement
+	// For example, when subtracting from a balance, we must first check that we have enough funds
+	// The closure can return a Result, which can be propagated (either directly, or via sc_try!)
+	#[endpoint]
+	fn my_single_value_mapper_subtract_with_require(&self, amount: &Self::BigInt) -> SCResult<()> {
+		self.map_my_single_value_mapper().update(|value| {
+			require!(*value >= *amount, "not enough funds");
+			*value -= amount;
+			Ok(())
+		})
 	}
 
 	#[endpoint]
@@ -535,6 +550,38 @@ pub trait BasicFeatures {
 		map_mapper.remove(&item)
 	}
 
+	#[endpoint]
+	fn map_mapper_entry_or_default_update_increment(&self, item: u32, increment: u32) -> u32 {
+		self.map_mapper().entry(item).or_default().update(|value| {
+			*value += increment;
+			*value
+		})
+	}
+
+	#[endpoint]
+	fn map_mapper_entry_or_insert_default(&self, item: u32, default: u32) -> u32 {
+		let mut mapper = self.map_mapper();
+		let entry = mapper.entry(item);
+		entry.or_insert_with(|| default).get()
+	}
+
+	#[endpoint]
+	fn map_mapper_entry_and_modify(&self, item: u32, increment: u32, otherwise: u32) -> u32 {
+		self.map_mapper()
+			.entry(item)
+			.and_modify(|value| *value += increment)
+			.or_insert(otherwise)
+			.get()
+	}
+
+	#[endpoint]
+	fn map_mapper_entry_or_insert_with_key(&self, item: u32, key_increment: u32) -> u32 {
+		self.map_mapper()
+			.entry(item)
+			.or_insert_with_key(|key| key + key_increment)
+			.get()
+	}
+
 	// MapStorageMapper
 
 	#[storage_mapper("map_storage_mapper")]
@@ -616,420 +663,481 @@ pub trait BasicFeatures {
 		map_storage_mapper.clear();
 	}
 
+	#[endpoint]
+	fn map_storage_mapper_entry_or_default_update_increment(
+		&self,
+		item: u32,
+		key: u32,
+		increment: u32,
+	) -> u32 {
+		let mut map = self.map_storage_mapper().entry(item).or_default().get();
+		map.entry(key).or_default().update(|value| {
+			*value += increment;
+			*value
+		})
+	}
+
+	#[endpoint]
+	fn map_storage_mapper_entry_and_modify_increment_or_default(
+		&self,
+		item: u32,
+		key: u32,
+		value: u32,
+		other: u32,
+	) -> u32 {
+		let map = self
+			.map_storage_mapper()
+			.entry(item)
+			.and_modify(|map| {
+				map.insert(key, value);
+			})
+			.or_default()
+			.get();
+		map.get(&key).unwrap_or(other)
+	}
+
+	#[endpoint]
+	fn map_storage_mapper_entry_or_default_update(
+		&self,
+		item: u32,
+		key: u32,
+		value: u32,
+	) -> Option<u32> {
+		self.map_storage_mapper()
+			.entry(item)
+			.or_default()
+			.update(|map| map.insert(key, value))
+	}
+
 	// BASIC API
 	#[endpoint(get_caller)]
 	fn get_caller_endpoint(&self) -> Address {
-		self.get_caller()
+		self.blockchain().get_caller()
 	}
 
 	#[endpoint(get_shard_of_address)]
 	fn get_shard_of_address_endpoint(&self, address: &Address) -> u32 {
-		self.get_shard_of_address(address)
+		self.blockchain().get_shard_of_address(address)
 	}
 
 	#[endpoint(is_smart_contract)]
 	fn is_smart_contract_endpoint(&self, address: &Address) -> bool {
-		self.is_smart_contract(address)
+		self.blockchain().is_smart_contract(address)
+	}
+
+	#[endpoint(get_owner_address)]
+	fn get_owner_address_endpoint(&self) -> Address {
+		self.blockchain().get_owner_address()
 	}
 
 	#[endpoint(get_gas_left)]
 	fn get_gas_left_endpoint(&self) -> u64 {
-		self.get_gas_left()
+		self.blockchain().get_gas_left()
 	}
 
 	// EVENTS
 
 	#[endpoint(logEventA)]
-	fn log_event_a(&self, data: &BigUint) {
+	fn log_event_a(&self, data: &Self::BigUint) {
 		self.event_a(data);
 	}
 
 	#[event("event_a")]
-	fn event_a(&self, data: &BigUint);
+	fn event_a(&self, data: &Self::BigUint);
 
 	#[endpoint(logEventB)]
-	fn log_event_b(&self, arg1: &BigUint, arg2: &Address, #[var_args] data: VarArgs<BoxedBytes>) {
+	fn log_event_b(
+		&self,
+		arg1: &Self::BigUint,
+		arg2: &Address,
+		#[var_args] data: VarArgs<BoxedBytes>,
+	) {
 		self.event_b(arg1, arg2, data.as_slice());
 	}
 
 	#[event("event_b")]
-	fn event_b(&self, #[indexed] arg1: &BigUint, #[indexed] arg2: &Address, data: &[BoxedBytes]);
+	fn event_b(
+		&self,
+		#[indexed] arg1: &Self::BigUint,
+		#[indexed] arg2: &Address,
+		data: &[BoxedBytes],
+	);
 
 	// EVENTS (LEGACY)
 
 	#[endpoint(logLegacyEventA)]
-	fn log_legacy_event_a(&self, data: &BigUint) {
+	fn log_legacy_event_a(&self, data: &Self::BigUint) {
 		self.legacy_event_a(data);
 	}
 
 	#[endpoint(logLegacyEventB)]
-	fn log_legacy_event_b(&self, arg1: &BigUint, arg2: &Address, data: &BigUint) {
+	fn log_legacy_event_b(&self, arg1: &Self::BigUint, arg2: &Address, data: &Self::BigUint) {
 		self.legacy_event_b(arg1, arg2, data);
 	}
 
 	#[legacy_event("0x0123456789abcdef0123456789abcdef0123456789abcdef000000000000000a")]
-	fn legacy_event_a(&self, data: &BigUint);
+	fn legacy_event_a(&self, data: &Self::BigUint);
 
 	#[legacy_event("0x0123456789abcdef0123456789abcdef0123456789abcdef000000000000000b")]
-	fn legacy_event_b(&self, arg1: &BigUint, arg2: &Address, data: &BigUint);
+	fn legacy_event_b(&self, arg1: &Self::BigUint, arg2: &Address, data: &Self::BigUint);
 
 	// BLOCK INFO
 
 	#[view(get_block_timestamp)]
 	fn get_block_timestamp_view(&self) -> u64 {
-		self.get_block_timestamp()
+		self.blockchain().get_block_timestamp()
 	}
 
 	#[view(get_block_nonce)]
 	fn get_block_nonce_view(&self) -> u64 {
-		self.get_block_nonce()
+		self.blockchain().get_block_nonce()
 	}
 
 	#[view(get_block_round)]
 	fn get_block_round_view(&self) -> u64 {
-		self.get_block_round()
+		self.blockchain().get_block_round()
 	}
 
 	#[view(get_block_epoch)]
 	fn get_block_epoch_view(&self) -> u64 {
-		self.get_block_epoch()
+		self.blockchain().get_block_epoch()
 	}
 
 	#[view(get_block_random_seed)]
 	fn get_block_random_seed_view(&self) -> Box<[u8; 48]> {
-		self.get_block_random_seed()
+		self.blockchain().get_block_random_seed()
 	}
 
 	#[view(get_prev_block_timestamp)]
 	fn get_prev_block_timestamp_view(&self) -> u64 {
-		self.get_prev_block_timestamp()
+		self.blockchain().get_prev_block_timestamp()
 	}
 
 	#[view(get_prev_block_nonce)]
 	fn get_prev_block_nonce_view(&self) -> u64 {
-		self.get_prev_block_nonce()
+		self.blockchain().get_prev_block_nonce()
 	}
 
 	#[view(get_prev_block_round)]
 	fn get_prev_block_round_view(&self) -> u64 {
-		self.get_prev_block_round()
+		self.blockchain().get_prev_block_round()
 	}
 
 	#[view(get_prev_block_epoch)]
 	fn get_prev_block_epoch_view(&self) -> u64 {
-		self.get_prev_block_epoch()
+		self.blockchain().get_prev_block_epoch()
 	}
 
 	#[view(get_prev_block_random_seed)]
 	fn get_prev_block_random_seed_view(&self) -> Box<[u8; 48]> {
-		self.get_prev_block_random_seed()
+		self.blockchain().get_prev_block_random_seed()
 	}
 
 	// BIG INT OPERATIONS
 
 	// arithmetic ooperators: + - * / %
 	#[endpoint]
-	fn add_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn add_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		a + b
 	}
 	#[endpoint]
-	fn add_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn add_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		a + b
 	}
 	#[endpoint]
-	fn add_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn add_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a + b
 	}
 	#[endpoint]
-	fn add_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn add_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a + b
 	}
 	#[endpoint]
-	fn sub_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn sub_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		a - b
 	}
 	#[endpoint]
-	fn sub_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn sub_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		a - b
 	}
 	#[endpoint]
-	fn sub_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn sub_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a - b
 	}
 	#[endpoint]
-	fn sub_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn sub_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a - b
 	}
 	#[endpoint]
-	fn mul_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn mul_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		a * b
 	}
 	#[endpoint]
-	fn mul_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn mul_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		a * b
 	}
 	#[endpoint]
-	fn mul_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn mul_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a * b
 	}
 	#[endpoint]
-	fn mul_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn mul_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a * b
 	}
 	#[endpoint]
-	fn div_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn div_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		a / b
 	}
 	#[endpoint]
-	fn div_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn div_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		a / b
 	}
 	#[endpoint]
-	fn div_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn div_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a / b
 	}
 	#[endpoint]
-	fn div_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn div_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a / b
 	}
 	#[endpoint]
-	fn rem_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn rem_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		a % b
 	}
 	#[endpoint]
-	fn rem_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn rem_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		a % b
 	}
 	#[endpoint]
-	fn rem_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn rem_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a % b
 	}
 	#[endpoint]
-	fn rem_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn rem_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a % b
 	}
 
 	// assign version of all operators above
 	#[endpoint]
-	fn add_assign_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn add_assign_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r += b;
 		r
 	}
 	#[endpoint]
-	fn add_assign_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn add_assign_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r += b;
 		r
 	}
 	#[endpoint]
-	fn add_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn add_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r += b;
 		r
 	}
 	#[endpoint]
-	fn add_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn add_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r += b;
 		r
 	}
 	#[endpoint]
-	fn sub_assign_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn sub_assign_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r -= b;
 		r
 	}
 	#[endpoint]
-	fn sub_assign_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn sub_assign_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r -= b;
 		r
 	}
 	#[endpoint]
-	fn sub_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn sub_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r -= b;
 		r
 	}
 	#[endpoint]
-	fn sub_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn sub_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r -= b;
 		r
 	}
 	#[endpoint]
-	fn mul_assign_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn mul_assign_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r *= b;
 		r
 	}
 	#[endpoint]
-	fn mul_assign_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn mul_assign_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r *= b;
 		r
 	}
 	#[endpoint]
-	fn mul_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn mul_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r *= b;
 		r
 	}
 	#[endpoint]
-	fn mul_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn mul_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r *= b;
 		r
 	}
 	#[endpoint]
-	fn div_assign_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn div_assign_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r /= b;
 		r
 	}
 	#[endpoint]
-	fn div_assign_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn div_assign_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r /= b;
 		r
 	}
 	#[endpoint]
-	fn div_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn div_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r /= b;
 		r
 	}
 	#[endpoint]
-	fn div_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn div_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r /= b;
 		r
 	}
 	#[endpoint]
-	fn rem_assign_big_int(&self, a: BigInt, b: BigInt) -> BigInt {
+	fn rem_assign_big_int(&self, a: Self::BigInt, b: Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r %= b;
 		r
 	}
 	#[endpoint]
-	fn rem_assign_big_int_ref(&self, a: &BigInt, b: &BigInt) -> BigInt {
+	fn rem_assign_big_int_ref(&self, a: &Self::BigInt, b: &Self::BigInt) -> Self::BigInt {
 		let mut r = a.clone();
 		r %= b;
 		r
 	}
 	#[endpoint]
-	fn rem_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn rem_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r %= b;
 		r
 	}
 	#[endpoint]
-	fn rem_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn rem_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r %= b;
 		r
 	}
 
 	#[endpoint]
-	fn bit_and_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn bit_and_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a & b
 	}
 	#[endpoint]
-	fn bit_and_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn bit_and_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a & b
 	}
 	#[endpoint]
-	fn bit_or_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn bit_or_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a | b
 	}
 	#[endpoint]
-	fn bit_or_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn bit_or_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a | b
 	}
 	#[endpoint]
-	fn bit_xor_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn bit_xor_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		a ^ b
 	}
 	#[endpoint]
-	fn bit_xor_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn bit_xor_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		a ^ b
 	}
 
 	#[endpoint]
-	fn bit_and_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn bit_and_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r &= b;
 		r
 	}
 	#[endpoint]
-	fn bit_and_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn bit_and_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r &= b;
 		r
 	}
 	#[endpoint]
-	fn bit_or_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn bit_or_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r |= b;
 		r
 	}
 	#[endpoint]
-	fn bit_or_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn bit_or_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r |= b;
 		r
 	}
 	#[endpoint]
-	fn bit_xor_assign_big_uint(&self, a: BigUint, b: BigUint) -> BigUint {
+	fn bit_xor_assign_big_uint(&self, a: Self::BigUint, b: Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r ^= b;
 		r
 	}
 	#[endpoint]
-	fn bit_xor_assign_big_uint_ref(&self, a: &BigUint, b: &BigUint) -> BigUint {
+	fn bit_xor_assign_big_uint_ref(&self, a: &Self::BigUint, b: &Self::BigUint) -> Self::BigUint {
 		let mut r = a.clone();
 		r ^= b;
 		r
 	}
 
 	#[endpoint]
-	fn shr_big_uint(&self, a: BigUint, b: usize) -> BigUint {
+	fn shr_big_uint(&self, a: Self::BigUint, b: usize) -> Self::BigUint {
 		a >> b
 	}
 	#[endpoint]
-	fn shr_big_uint_ref(&self, a: &BigUint, b: usize) -> BigUint {
+	fn shr_big_uint_ref(&self, a: &Self::BigUint, b: usize) -> Self::BigUint {
 		a >> b
 	}
 	#[endpoint]
-	fn shl_big_uint(&self, a: BigUint, b: usize) -> BigUint {
+	fn shl_big_uint(&self, a: Self::BigUint, b: usize) -> Self::BigUint {
 		a << b
 	}
 	#[endpoint]
-	fn shl_big_uint_ref(&self, a: &BigUint, b: usize) -> BigUint {
+	fn shl_big_uint_ref(&self, a: &Self::BigUint, b: usize) -> Self::BigUint {
 		a << b
 	}
 
 	#[endpoint]
-	fn shr_assign_big_uint(&self, a: BigUint, b: usize) -> BigUint {
+	fn shr_assign_big_uint(&self, a: Self::BigUint, b: usize) -> Self::BigUint {
 		let mut r = a.clone();
 		r >>= b;
 		r
 	}
 	#[endpoint]
-	fn shr_assign_big_uint_ref(&self, a: &BigUint, b: usize) -> BigUint {
+	fn shr_assign_big_uint_ref(&self, a: &Self::BigUint, b: usize) -> Self::BigUint {
 		let mut r = a.clone();
 		r >>= b;
 		r
 	}
 	#[endpoint]
-	fn shl_assign_big_uint(&self, a: BigUint, b: usize) -> BigUint {
+	fn shl_assign_big_uint(&self, a: Self::BigUint, b: usize) -> Self::BigUint {
 		let mut r = a.clone();
 		r <<= b;
 		r
 	}
 	#[endpoint]
-	fn shl_assign_big_uint_ref(&self, a: &BigUint, b: usize) -> BigUint {
+	fn shl_assign_big_uint_ref(&self, a: &Self::BigUint, b: usize) -> Self::BigUint {
 		let mut r = a.clone();
 		r <<= b;
 		r
@@ -1094,29 +1202,29 @@ pub trait BasicFeatures {
 
 	#[endpoint(computeSha256)]
 	fn compute_sha256(&self, input: Vec<u8>) -> H256 {
-		self.sha256(&input)
+		self.crypto().sha256(&input)
 	}
 
 	#[endpoint(computeKeccak256)]
 	fn compute_keccak256(&self, input: Vec<u8>) -> H256 {
-		self.keccak256(&input)
+		self.crypto().keccak256(&input)
 	}
 
 	// Not called, they currently just panic with "Not implemented yet!"
 
 	#[endpoint]
 	fn verify_bls_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-		self.verify_bls(key, message, signature)
+		self.crypto().verify_bls(key, message, signature)
 	}
 
 	#[endpoint]
 	fn verify_ed25519_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-		self.verify_ed25519(key, message, signature)
+		self.crypto().verify_ed25519(key, message, signature)
 	}
 
 	#[endpoint]
 	fn verify_secp256k1_signature(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-		self.verify_secp256k1(key, message, signature)
+		self.crypto().verify_secp256k1(key, message, signature)
 	}
 
 	// MACROS
@@ -1139,32 +1247,40 @@ pub trait BasicFeatures {
 	}
 
 	#[view]
-	fn result_ok(&self) -> Result<(), !> {
-		Result::Ok(())
+	fn result_ok(&self) -> SCResult<()> {
+		SCResult::Ok(())
 	}
 
 	#[view]
-	fn result_err_from_bytes_1(&self, e: BoxedBytes) -> Result<(), BoxedBytes> {
-		Result::Err(e)
+	fn result_err_from_bytes_1(&self, e: BoxedBytes) -> SCResult<()> {
+		SCResult::Err(e.into())?;
+		unreachable!()
 	}
 
 	#[view]
-	fn result_err_from_bytes_2<'a>(&self, e: &'a [u8]) -> Result<(), &'a [u8]> {
-		Result::Err(e)
+	fn result_err_from_bytes_2<'a>(&self, e: &'a [u8]) -> SCResult<()> {
+		SCResult::Err(e.into())
 	}
 
 	#[view]
-	fn result_err_from_bytes_3(&self, e: Vec<u8>) -> Result<(), Vec<u8>> {
-		Result::Err(e)
+	fn result_err_from_bytes_3(&self, e: Vec<u8>) -> SCResult<()> {
+		SCResult::Err(e.into())
 	}
 
 	#[view]
-	fn result_err_from_string(&self, e: String) -> Result<(), String> {
-		Result::Err(e)
+	fn result_err_from_string(&self, e: String) -> SCResult<()> {
+		SCResult::Err(e.into())
 	}
 
 	#[view]
-	fn result_err_from_str<'a>(&self, e: &'a str) -> Result<(), &'a str> {
-		Result::Err(e)
+	fn result_err_from_str<'a>(&self, e: &'a str) -> SCResult<()> {
+		SCResult::Err(e.into())
+	}
+
+	#[endpoint]
+	fn result_echo(&self, arg: Option<String>, test: bool) -> SCResult<String> {
+		require!(test, "test argument is false");
+		let unwrapped = SCResult::from_result(arg.ok_or("option argument is none"))?;
+		Ok(unwrapped)
 	}
 }

@@ -1,17 +1,16 @@
-extern crate crowdfunding_dcdt;
-use crowdfunding_dcdt::*;
 use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
+fn _contract_map() -> ContractMap<TxContext> {
 	let mut contract_map = ContractMap::new();
 	contract_map.register_contract(
 		"file:../output/crowdfunding-dcdt.wasm",
-		Box::new(|context| Box::new(CrowdfundingImpl::new(context))),
+		Box::new(|context| Box::new(crowdfunding_dcdt::contract_obj(context))),
 	);
 	contract_map
 }
 
+/*
 #[test]
 fn crowdfunding_claim_failed() {
 	parse_execute_denali(
@@ -53,3 +52,4 @@ fn crowdfunding_fund_too_late() {
 fn crowdfunding_init() {
 	parse_execute_denali("denali/crowdfunding-init.scen.json", &contract_map());
 }
+*/

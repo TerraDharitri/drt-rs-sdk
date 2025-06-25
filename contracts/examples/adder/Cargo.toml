@@ -1,7 +1,7 @@
 [package]
 name = "adder"
 version = "0.0.0"
-authors = ["Andrei Marinica <andrei.marinica@numbat.com>"]
+authors = ["contact@dharitri.org"]
 edition = "2018"
 publish = false
 
@@ -12,18 +12,18 @@ path = "src/lib.rs"
 wasm-output-mode = ["numbat-wasm-node"]
 
 [dependencies.numbat-wasm]
-version = "0.0.5"
+version = "0.0.7"
 path = "../../../numbat-wasm"
 
 [dependencies.numbat-wasm-derive]
-version = "0.0.5"
+version = "0.0.7"
 path = "../../../numbat-wasm-derive"
 
 [dependencies.numbat-wasm-node]
-version = "0.0.5"
+version = "0.0.7"
 path = "../../../numbat-wasm-node"
 optional = true
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.5"
+version = "0.0.7"
 path = "../../../numbat-wasm-debug"

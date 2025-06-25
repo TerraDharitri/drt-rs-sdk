@@ -1,9 +1,6 @@
-use crate::types::{
-	Address, ArgBuffer, AsyncCall, BoxedBytes, TokenIdentifier, TransferRewaExecute,
-	TransferDcdtExecute, TransferExecute,
-};
+use crate::types::{Address, ArgBuffer, AsyncCall, BoxedBytes, TokenIdentifier};
 use crate::{
-	api::{BigUintApi, SendApi, DCDT_TRANSFER_STRING},
+	api::{BigUintApi, SendApi, DCDT_NFT_TRANSFER_STRING, DCDT_TRANSFER_STRING},
 	BytesArgLoader, DynArg,
 };
 use crate::{hex_call_data::HexCallDataSerializer, ArgId};
@@ -12,42 +9,70 @@ use core::marker::PhantomData;
 /// Represents metadata for calling another contract.
 /// Can transform into either an async call, transfer call or other types of calls.
 #[must_use]
-pub struct ContractCall<BigUint: BigUintApi + 'static, R> {
+pub struct ContractCall<SA, R>
+where
+	SA: SendApi + 'static,
+{
+	api: SA,
 	to: Address,
-	token: TokenIdentifier,
-	payment: BigUint,
+	payment_token: TokenIdentifier,
+	payment_amount: SA::AmountType,
+	payment_nonce: u64,
 	endpoint_name: BoxedBytes,
 	pub arg_buffer: ArgBuffer, // TODO: make private and find a better way to serialize
 	_return_type: PhantomData<R>,
 }
 
-pub fn new_contract_call<BigUint: BigUintApi, R>(
+/// Syntactical sugar to help macros to generate code easier.
+/// Unlike calling `ContractCall::<SA, R>::new`, here types can be inferred from the context.
+pub fn new_contract_call<SA, R>(
+	api: SA,
 	to: Address,
-	token: TokenIdentifier,
-	payment: BigUint,
+	payment_token: TokenIdentifier,
+	payment_amount: SA::AmountType,
+	payment_nonce: u64,
 	endpoint_name: BoxedBytes,
-) -> ContractCall<BigUint, R> {
-	ContractCall::<BigUint, R>::new(to, token, payment, endpoint_name)
+) -> ContractCall<SA, R>
+where
+	SA: SendApi + 'static,
+{
+	let mut contract_call = ContractCall::<SA, R>::new(api, to, endpoint_name);
+	contract_call.payment_token = payment_token;
+	contract_call.payment_amount = payment_amount;
+	contract_call.payment_nonce = payment_nonce;
+	contract_call
 }
 
-impl<BigUint, R> ContractCall<BigUint, R>
+impl<SA, R> ContractCall<SA, R>
 where
-	BigUint: BigUintApi,
+	SA: SendApi + 'static,
 {
-	pub fn new(
-		to: Address,
-		token: TokenIdentifier,
-		payment: BigUint,
-		endpoint_name: BoxedBytes,
-	) -> Self {
+	pub fn new(api: SA, to: Address, endpoint_name: BoxedBytes) -> Self {
 		ContractCall {
+			api,
 			to,
-			token,
-			payment,
+			payment_token: TokenIdentifier::rewa(),
+			payment_amount: SA::AmountType::zero(),
+			payment_nonce: 0,
 			endpoint_name,
 			arg_buffer: ArgBuffer::new(),
 			_return_type: PhantomData,
 		}
+	}
+
+	pub fn with_token_transfer(
+		mut self,
+		payment_token: TokenIdentifier,
+		payment_amount: SA::AmountType,
+	) -> Self {
+		self.payment_token = payment_token;
+		self.payment_amount = payment_amount;
+		self
+	}
+
+	pub fn with_nft_nonce(mut self, payment_nonce: u64) -> Self {
+		self.payment_nonce = payment_nonce;
+		self
 	}
 
 	pub fn get_mut_arg_buffer(&mut self) -> &mut ArgBuffer {
@@ -62,30 +87,63 @@ where
 	/// If this is an DCDT call, it converts it to a regular call to DCDTTransfer.
 	/// Async calls require this step, but not `transfer_dcdt_execute`.
 	fn convert_to_dcdt_transfer_call(self) -> Self {
-		if !self.token.is_rewa() {
+		if self.payment_token.is_rewa() {
+			self
+		} else if self.payment_nonce == 0 {
+			// fungible DCDT
 			let mut new_arg_buffer = ArgBuffer::new();
-			new_arg_buffer.push_argument_bytes(self.token.as_dcdt_identifier());
-			new_arg_buffer.push_argument_bytes(self.payment.to_bytes_be().as_slice());
+			new_arg_buffer.push_argument_bytes(self.payment_token.as_dcdt_identifier());
+			new_arg_buffer.push_argument_bytes(self.payment_amount.to_bytes_be().as_slice());
 			new_arg_buffer.push_argument_bytes(self.endpoint_name.as_slice());
 
 			ContractCall {
+				api: self.api,
 				to: self.to,
-				token: TokenIdentifier::rewa(),
-				payment: BigUint::zero(),
+				payment_token: TokenIdentifier::rewa(),
+				payment_amount: SA::AmountType::zero(),
+				payment_nonce: 0,
 				endpoint_name: BoxedBytes::from(DCDT_TRANSFER_STRING),
 				arg_buffer: new_arg_buffer.concat(self.arg_buffer),
 				_return_type: PhantomData,
 			}
 		} else {
-			self
+			// NFT
+			// `DCDTNFTTransfer` takes 4 arguments:
+			// arg0 - token identifier
+			// arg1 - nonce
+			// arg2 - quantity to transfer
+			// arg3 - destination address
+			let mut new_arg_buffer = ArgBuffer::new();
+			new_arg_buffer.push_argument_bytes(self.payment_token.as_dcdt_identifier());
+			new_arg_buffer.push_argument_bytes(
+				numbat_codec::top_encode_no_err(&self.payment_nonce).as_slice(),
+			);
+			new_arg_buffer.push_argument_bytes(self.payment_amount.to_bytes_be().as_slice());
+			new_arg_buffer.push_argument_bytes(self.to.as_bytes());
+			new_arg_buffer.push_argument_bytes(self.endpoint_name.as_slice());
+
+			// send to self, sender = receiver
+			let recipient_addr = self.api.get_sc_address();
+
+			ContractCall {
+				api: self.api,
+				to: recipient_addr,
+				payment_token: TokenIdentifier::rewa(),
+				payment_amount: SA::AmountType::zero(),
+				payment_nonce: 0,
+				endpoint_name: BoxedBytes::from(DCDT_NFT_TRANSFER_STRING),
+				arg_buffer: new_arg_buffer.concat(self.arg_buffer),
+				_return_type: PhantomData,
+			}
 		}
 	}
 
-	pub fn async_call(mut self) -> AsyncCall<BigUint> {
+	pub fn async_call(mut self) -> AsyncCall<SA> {
 		self = self.convert_to_dcdt_transfer_call();
 		AsyncCall {
+			api: self.api,
 			to: self.to,
-			rewa_payment: self.payment,
+			rewa_payment: self.payment_amount,
 			hex_data: HexCallDataSerializer::from_arg_buffer(
 				self.endpoint_name.as_slice(),
 				&self.arg_buffer,
@@ -93,67 +151,109 @@ where
 			callback_data: HexCallDataSerializer::new(&[]),
 		}
 	}
-
-	/// Produces an REWA (or no value) transfer-execute call, no callback.
-	/// Will always result in a `transferValueExecute` call.
-	pub fn transfer_rewa_execute(self) -> TransferRewaExecute<BigUint> {
-		TransferRewaExecute {
-			to: self.to,
-			rewa_payment: self.payment,
-			endpoint_name: self.endpoint_name,
-			arg_buffer: self.arg_buffer,
-			gas_limit: 0,
-		}
-	}
-
-	/// Produces an DCDT transfer-execute call, no callback.
-	/// Will always result in a `transferDCDTExecute` call.
-	pub fn transfer_dcdt_execute(self) -> TransferDcdtExecute<BigUint> {
-		TransferDcdtExecute {
-			to: self.to,
-			token_name: self.token.into_boxed_bytes(),
-			amount: self.payment,
-			endpoint_name: self.endpoint_name,
-			arg_buffer: self.arg_buffer,
-			gas_limit: 0,
-		}
-	}
-
-	/// Produces a transfer-execute call, no callback.
-	/// Will result in either a `transferValueExecute` or a `transferDCDTExecute` call, depending on input.
-	pub fn transfer_execute(self) -> TransferExecute<BigUint> {
-		TransferExecute {
-			to: self.to,
-			token: self.token,
-			amount: self.payment,
-			endpoint_name: self.endpoint_name,
-			arg_buffer: self.arg_buffer,
-			gas_limit: 0,
-		}
-	}
 }
 
-impl<BigUint, R> ContractCall<BigUint, R>
+impl<SA, R> ContractCall<SA, R>
 where
-	BigUint: BigUintApi,
+	SA: SendApi + 'static,
 	R: DynArg,
 {
 	/// Executes immediately, synchronously, and returns contract call result.
 	/// Only works if the target contract is in the same shard.
-	pub fn execute_on_dest_context<SA>(mut self, gas: u64, api: SA) -> R
-	where
-		SA: SendApi<BigUint>,
-	{
+	pub fn execute_on_dest_context(mut self, gas: u64) -> R {
 		self = self.convert_to_dcdt_transfer_call();
-		let raw_result = api.execute_on_dest_context_raw(
+		let raw_result = self.api.execute_on_dest_context_raw(
 			gas,
 			&self.to,
-			&self.payment,
+			&self.payment_amount,
 			self.endpoint_name.as_slice(),
 			&self.arg_buffer,
 		);
 
-		let mut loader = BytesArgLoader::new(raw_result.as_slice(), api);
+		let mut loader = BytesArgLoader::new(raw_result.as_slice(), self.api);
 		R::dyn_load(&mut loader, ArgId::from(&b"sync result"[..]))
+	}
+
+	/// Executes immediately, synchronously, and returns contract call result.
+	/// Only works if the target contract is in the same shard.
+	/// This is a workaround to handle nested sync calls.
+	/// Please do not use this method unless there is absolutely no other option.
+	/// Will be eliminated after some future Andes hook redesign.
+	/// `range_closure` takes the number of results before, the number of results after,
+	/// and is expected to return the start index (inclusive) and end index (exclusive).
+	pub fn execute_on_dest_context_custom_range<F>(mut self, gas: u64, range_closure: F) -> R
+	where
+		F: FnOnce(usize, usize) -> (usize, usize),
+	{
+		self = self.convert_to_dcdt_transfer_call();
+		let raw_result = self.api.execute_on_dest_context_raw_custom_result_range(
+			gas,
+			&self.to,
+			&self.payment_amount,
+			self.endpoint_name.as_slice(),
+			&self.arg_buffer,
+			range_closure,
+		);
+
+		let mut loader = BytesArgLoader::new(raw_result.as_slice(), self.api);
+		R::dyn_load(&mut loader, ArgId::from(&b"sync result"[..]))
+	}
+}
+
+impl<SA, R> ContractCall<SA, R>
+where
+	SA: SendApi + 'static,
+{
+	/// Executes immediately, synchronously.
+	/// The result (if any) is ignored.
+	/// Only works if the target contract is in the same shard.
+	pub fn execute_on_dest_context_ignore_result(mut self, gas: u64) {
+		self = self.convert_to_dcdt_transfer_call();
+		let _ = self.api.execute_on_dest_context_raw(
+			gas,
+			&self.to,
+			&self.payment_amount,
+			self.endpoint_name.as_slice(),
+			&self.arg_buffer,
+		);
+	}
+
+	/// Immediately launches a transfer-execute call.
+	/// This is similar to an async call, but there is no callback
+	/// and there can be more than one such call per transaction.
+	pub fn transfer_execute(self, gas_limit: u64) {
+		let result = if self.payment_token.is_rewa() {
+			self.api.direct_rewa_execute(
+				&self.to,
+				&self.payment_amount,
+				gas_limit,
+				self.endpoint_name.as_slice(),
+				&self.arg_buffer,
+			)
+		} else if self.payment_nonce == 0 {
+			// fungible DCDT
+			self.api.direct_dcdt_execute(
+				&self.to,
+				self.payment_token.as_dcdt_identifier(),
+				&self.payment_amount,
+				gas_limit,
+				self.endpoint_name.as_slice(),
+				&self.arg_buffer,
+			)
+		} else {
+			// non-fungible/semi-fungible DCDT
+			self.api.direct_dcdt_nft_execute(
+				&self.to,
+				self.payment_token.as_dcdt_identifier(),
+				self.payment_nonce,
+				&self.payment_amount,
+				gas_limit,
+				self.endpoint_name.as_slice(),
+				&self.arg_buffer,
+			)
+		};
+		if let Err(e) = result {
+			self.api.signal_error(e);
+		}
 	}
 }

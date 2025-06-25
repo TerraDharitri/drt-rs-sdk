@@ -9,7 +9,7 @@ const DCDT_TRANSFER_STRING: &[u8] = b"DCDTTransfer";
 const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &[u8] = b"acceptDcdtPayment";
 const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &[u8] = b"rejectDcdtPayment";
 
-#[numbat_wasm_derive::contract(FirstContractImpl)]
+#[numbat_wasm_derive::contract]
 pub trait FirstContract {
 	#[init]
 	fn init(&self, dcdt_token_name: TokenIdentifier, second_contract_address: Address) {
@@ -21,7 +21,7 @@ pub trait FirstContract {
 	#[endpoint(transferToSecondContractFull)]
 	fn transfer_to_second_contract_full(
 		&self,
-		#[payment] dcdt_value: BigUint,
+		#[payment] dcdt_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let expected_token_name = self.get_contract_dcdt_token_name();
@@ -44,7 +44,7 @@ pub trait FirstContract {
 	#[endpoint(transferToSecondContractHalf)]
 	fn transfer_to_second_contract_half(
 		&self,
-		#[payment] dcdt_value: BigUint,
+		#[payment] dcdt_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let expected_token_name = self.get_contract_dcdt_token_name();
@@ -54,7 +54,7 @@ pub trait FirstContract {
 
 		self.call_dcdt_second_contract(
 			&expected_token_name,
-			&(dcdt_value / BigUint::from(2u32)),
+			&(dcdt_value / Self::BigUint::from(2u32)),
 			&self.get_second_contract_address(),
 			SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT,
 			&[],
@@ -64,10 +64,10 @@ pub trait FirstContract {
 	}
 
 	#[payable("*")]
-	#[endpoint]
+	#[endpoint(transferToSecondContractRejected)]
 	fn transfer_to_second_contract_rejected(
 		&self,
-		#[payment] dcdt_value: BigUint,
+		#[payment] dcdt_value: Self::BigUint,
 		#[payment_token] actual_token_name: TokenIdentifier,
 	) -> SCResult<()> {
 		let expected_token_name = self.get_contract_dcdt_token_name();
@@ -77,7 +77,7 @@ pub trait FirstContract {
 
 		self.call_dcdt_second_contract(
 			&expected_token_name,
-			&(dcdt_value / BigUint::from(2u32)),
+			&dcdt_value,
 			&self.get_second_contract_address(),
 			SECOND_CONTRACT_REJECT_DCDT_PAYMENT,
 			&[],
@@ -86,10 +86,60 @@ pub trait FirstContract {
 		Ok(())
 	}
 
+	#[payable("*")]
+	#[endpoint(transferToSecondContractRejectedWithTransferAndExecute)]
+	fn transfer_to_second_contract_rejected_with_transfer_and_execute(
+		&self,
+		#[payment] dcdt_value: Self::BigUint,
+		#[payment_token] actual_token_name: TokenIdentifier,
+	) -> SCResult<()> {
+		let second_contract_address = self.get_second_contract_address();
+		let expected_token_name = self.get_contract_dcdt_token_name();
+
+		require!(dcdt_value > 0, "no dcdt transfered!");
+		require!(actual_token_name == expected_token_name, "Wrong dcdt token");
+
+		let _ = self.send().direct_dcdt_execute(
+			&second_contract_address,
+			expected_token_name.as_dcdt_identifier(),
+			&dcdt_value,
+			self.blockchain().get_gas_left(),
+			SECOND_CONTRACT_REJECT_DCDT_PAYMENT,
+			&ArgBuffer::new(),
+		);
+
+		Ok(())
+	}
+
+	#[payable("*")]
+	#[endpoint(transferToSecondContractFullWithTransferAndExecute)]
+	fn transfer_to_second_contract_full_with_transfer_and_execute(
+		&self,
+		#[payment] dcdt_value: Self::BigUint,
+		#[payment_token] actual_token_name: TokenIdentifier,
+	) -> SCResult<()> {
+		let second_contract_address = self.get_second_contract_address();
+		let expected_token_name = self.get_contract_dcdt_token_name();
+
+		require!(dcdt_value > 0, "no dcdt transfered!");
+		require!(actual_token_name == expected_token_name, "Wrong dcdt token");
+
+		let _ = self.send().direct_dcdt_execute(
+			&second_contract_address,
+			expected_token_name.as_dcdt_identifier(),
+			&dcdt_value,
+			self.blockchain().get_gas_left(),
+			SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT,
+			&ArgBuffer::new(),
+		);
+
+		Ok(())
+	}
+
 	fn call_dcdt_second_contract(
 		&self,
 		dcdt_token_name: &TokenIdentifier,
-		amount: &BigUint,
+		amount: &Self::BigUint,
 		to: &Address,
 		func_name: &[u8],
 		args: &[BoxedBytes],
@@ -103,7 +153,7 @@ pub trait FirstContract {
 		}
 
 		self.send()
-			.async_call_raw(&to, &BigUint::zero(), serializer.as_slice());
+			.async_call_raw(&to, &Self::BigUint::zero(), serializer.as_slice());
 	}
 
 	// storage

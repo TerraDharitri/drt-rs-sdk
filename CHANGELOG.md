@@ -4,9 +4,46 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
 
-## [numbat-wasm 0.14.0, denali 0.6.0, numbat-codec 0.0.5]
+## [numbat-wasm 0.16.0, denali 0.7.0, numbat-codec 0.5.3] - 2021-05-14
+### Major redesign of important framework components:
+- The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
+- Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
+- Each contract now generates its own callable proxy to ease calling it. Caller contracts do no longer need to define a call interface, they can import it from the crate of the contract they want to call. Callable proxies contain the methods from the main contract, as well as from all the modules. Note: calling a contract requires the caller to specify the Rust module where it resides.
+- We no longer have a separate syntax/parser/code generation for call proxies. They are just contracts with no implementations and annotated with `#[numbat_wasm_derive::proxy]` instead of `#[numbat_wasm_derive::contract]`.
+- BigUint and BigInt are now associated types instead of generics in all API traits. Contracts need to specify them as `Self::BigUint` instead of just `BigUint`. Although more verbose, this might be more intuitive for the developer.
+- `ContractCall`s, `AsyncCall`s and all other call & transfer result types now contain a reference to the Send API. This also means the `execute_on_dest_context` method no longer requires an api argument.
+- `execute_on_dest_context` can now deserialize the call results automatically and provide them to the calling contract. There is a mechanism in place to deconstruct non-serialized types, e.g. `SCResult<T>` becomes `T` and `AsyncCall<Self::BigUint>` becomes `()`. 
+- Callbacks and callback proxies needed to be adapted to the new system, but work similar to how they did in the past.
+- Contracts can define proxy getter methods using the `#[proxy]` annotation.
+- Callbacks can now have names, just like endpoints. This name gets saved in the callback closure in storage, but has no other impact on the contract. The reason I needed it was to help me with defining callback forwarders and avoiding some name collisions there. Callback forwarders are still needed for a little longer, until module callbacks are properly implemented.
+
+### New math hooks exposed from Andes:
+- `pow`, `log2`, `sqrt`
+- cryptography: elliptic curves
+
+### Denali
+- denali-rs syntax synchronized with denali-go (`sc:` syntax, new DCDT call value syntax, _no NFTs yet_).
+
+## [numbat-wasm 0.15.1] - 2021-04-30
+- Mitigating nested sync calls with Send API `execute_on_dest_context_raw_custom_result_range`
+
+## [numbat-wasm 0.15.0, numbat-codec 0.5.2] - 2021-04-19
+- ABI
+	- Constructor representation
+	- Simplified ABI syntax for tuples and fixed-size arrays
+- Final cleanup for the contract APIs: split off blockchain and crypto APIs
+- Small fixes in the send API
+- `TokenIdentifier` validation
+- Minor refactoring in the numbat-codec 
+
+## [numbat-wasm 0.14.2] - 2021-03-29
+- Fixed contract call/callback logs in denali-rs
+
+## [numbat-wasm 0.14.1] - 2021-03-25
+- Unified variadic arguments with respective variadic results
+
+## [numbat-wasm 0.14.0, denali 0.6.0, numbat-codec 0.5.1] - 2021-03-22
 - DCDT functionality:
 	- DCDT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCDT system smart contract proxy
@@ -152,7 +189,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [numbat-wasm 0.7.0, denali 0.0.5] - 2020-10-06
+## [numbat-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -178,14 +215,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [numbat-wasm 0.5.3, numbat-codec 0.0.5] - 2020-07-10
+## [numbat-wasm 0.5.3, numbat-codec 0.1.0] - 2020-07-10
 - Extracted numbat-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
 ## [numbat-wasm 0.5.2] - 2020-07-09
 - Queue type
 
-## [numbat-wasm 0.0.5] - 2020-07-02
+## [numbat-wasm 0.5.1] - 2020-07-02
 - `#[view]` attribute, same as `#[endpoint]`
 - `#[init]` attribute
 - `storage get mut` annotation + BorrowedMutStorage
@@ -250,7 +287,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [numbat-wasm 0.0.5] - 2020-02-05 
+## [numbat-wasm 0.1.0] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

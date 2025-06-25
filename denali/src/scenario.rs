@@ -223,12 +223,26 @@ fn interpret_dcdt_token_name(
 }
 
 #[derive(Debug)]
+pub struct TxDCDT {
+	pub dcdt_token_name: BytesValue,
+	pub dcdt_value: BigUintValue,
+}
+
+impl InterpretableFrom<TxDCDTRaw> for TxDCDT {
+	fn interpret_from(from: TxDCDTRaw, context: &InterpreterContext) -> Self {
+		TxDCDT {
+			dcdt_token_name: interpret_dcdt_token_name(from.token_identifier, context),
+			dcdt_value: BigUintValue::interpret_from(from.value, context),
+		}
+	}
+}
+
+#[derive(Debug)]
 pub struct TxCall {
 	pub from: AddressValue,
 	pub to: AddressValue,
 	pub call_value: BigUintValue,
-	pub dcdt_value: BigUintValue,
-	pub dcdt_token_name: BytesValue,
+	pub dcdt_value: Option<TxDCDT>,
 	pub function: String,
 	pub arguments: Vec<BytesValue>,
 	pub gas_limit: U64Value,
@@ -241,8 +255,9 @@ impl InterpretableFrom<TxCallRaw> for TxCall {
 			from: AddressValue::interpret_from(from.from, context),
 			to: AddressValue::interpret_from(from.to, context),
 			call_value: BigUintValue::interpret_from(from.value, context),
-			dcdt_value: BigUintValue::interpret_from(from.dcdt_value, context),
-			dcdt_token_name: interpret_dcdt_token_name(from.dcdt_token_name, context),
+			dcdt_value: from
+				.dcdt
+				.map(|dcdt_value| TxDCDT::interpret_from(dcdt_value, context)),
 			function: from.function,
 			arguments: from
 				.arguments

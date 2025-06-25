@@ -1,12 +1,12 @@
 use super::sc_error::SCError;
 use crate::abi::{OutputAbi, TypeAbi, TypeDescriptionContainer};
-use crate::api::{EndpointFinishApi, ErrorApi};
+use crate::api::EndpointFinishApi;
 use crate::EndpointResult;
 use crate::*;
 
 /// Default way to optionally return an error from a smart contract endpoint.
 #[must_use]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum SCResult<T> {
 	Ok(T),
 	Err(SCError),
@@ -53,13 +53,64 @@ impl<T> SCResult<T> {
 	}
 }
 
-impl<FA, T> EndpointResult<FA> for SCResult<T>
+/// Implementing the `Try` trait overloads the `?` operator.  #teja789
+// impl<T> core::ops::Try for SCResult<T> {
+// 	type Ok = T;
+// 	type Error = SCError;
+// 	fn into_result(self) -> Result<T, SCError> {
+// 		match self {
+// 			SCResult::Ok(t) => Ok(t),
+// 			SCResult::Err(e) => Err(e),
+// 		}
+// 	}
+// 	fn from_error(v: SCError) -> Self {
+// 		SCResult::Err(v)
+// 	}
+// 	fn from_ok(v: T) -> Self {
+// 		SCResult::Ok(v)
+// 	}
+// }                                                     #teja789
+
+use core::ops::{ControlFlow, FromResidual, Try};
+
+impl<T> Try for SCResult<T> {
+    type Output = T;
+    type Residual = SCResult<SCError>;
+
+    fn from_output(output: Self::Output) -> Self {
+        SCResult::Ok(output)
+    }
+
+    fn branch(self) -> ControlFlow<Self::Residual, Self::Output> {
+        match self {
+            SCResult::Ok(value) => ControlFlow::Continue(value),
+            SCResult::Err(error) => ControlFlow::Break(SCResult::Err(error)),
+        }
+    }
+}
+
+impl<T> FromResidual<SCResult<SCError>> for SCResult<T> {
+    fn from_residual(residual: SCResult<SCError>) -> Self {
+        match residual {
+            SCResult::Err(e) => SCResult::Err(e),
+            _ => panic!("Invalid conversion from residual to SCResult"),
+        }
+    }
+}
+
+impl<T> EndpointResult for SCResult<T>
 where
-	FA: EndpointFinishApi + ErrorApi + Clone + 'static,
-	T: EndpointResult<FA>,
+	T: EndpointResult,
 {
+	/// Error implies the transaction fails, so if there is a result,
+	/// it is of type `T`.
+	type DecodeAs = T::DecodeAs;
+
 	#[inline]
-	fn finish(&self, api: FA) {
+	fn finish<FA>(&self, api: FA)
+	where
+		FA: EndpointFinishApi + Clone + 'static,
+	{
 		match self {
 			SCResult::Ok(t) => {
 				t.finish(api);
@@ -94,6 +145,15 @@ impl<T> SCResult<T> {
 		match self {
 			SCResult::Ok(t) => t,
 			SCResult::Err(_) => panic!("called `SCResult::unwrap()`"),
+		}
+	}
+}
+
+impl<T> From<SCResult<T>> for Result<T, SCError> {
+	fn from(result: SCResult<T>) -> Self {
+		match result {
+			SCResult::Ok(ok) => Result::Ok(ok),
+			SCResult::Err(error) => Result::Err(error),
 		}
 	}
 }

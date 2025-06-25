@@ -4,6 +4,7 @@ use super::*;
 use numbat_wasm::types::*;
 use denali::*;
 use num_bigint::BigUint;
+use num_traits::Zero;
 use std::path::Path;
 
 const DCDT_TRANSFER_STRING: &[u8] = b"DCDTTransfer";
@@ -91,8 +92,18 @@ fn parse_execute_denali_steps(
 					from: tx.from.value.into(),
 					to: tx.to.value.into(),
 					call_value: tx.call_value.value.clone(),
-					dcdt_value: tx.dcdt_value.value.clone(),
-					dcdt_token_identifier: tx.dcdt_token_name.value.clone(),
+					dcdt_value: if let Some(dcdt) = &tx.dcdt_value {
+						// TODO: clean this up
+						dcdt.dcdt_value.value.clone()
+					} else {
+						BigUint::zero()
+					},
+					dcdt_token_identifier: if let Some(dcdt) = &tx.dcdt_value {
+						// TODO: clean this up
+						dcdt.dcdt_token_name.value.clone()
+					} else {
+						Vec::new()
+					},
 					func_name: tx.function.as_bytes().to_vec(),
 					args: tx
 						.arguments

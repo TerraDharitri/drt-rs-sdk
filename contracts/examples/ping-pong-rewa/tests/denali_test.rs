@@ -1,13 +1,10 @@
-extern crate ping_pong_rewa;
-use numbat_wasm::*;
 use numbat_wasm_debug::*;
-use ping_pong_rewa::*;
 
 fn contract_map() -> ContractMap<TxContext> {
 	let mut contract_map = ContractMap::new();
 	contract_map.register_contract(
 		"file:../output/ping-pong-rewa.wasm",
-		Box::new(|context| Box::new(PingPongImpl::new(context))),
+		Box::new(|context| Box::new(ping_pong_rewa::contract_obj(context))),
 	);
 	contract_map
 }

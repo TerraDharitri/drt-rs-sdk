@@ -307,7 +307,9 @@ impl numbat_wasm::abi::TypeAbi for AndesBigInt {
 	}
 }
 
-impl BigIntApi<AndesBigUint> for AndesBigInt {
+impl BigIntApi for AndesBigInt {
+	type BigUint = AndesBigUint;
+
 	fn abs_uint(&self) -> AndesBigUint {
 		unsafe {
 			let result = bigIntNew(0);

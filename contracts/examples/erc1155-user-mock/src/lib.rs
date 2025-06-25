@@ -2,7 +2,7 @@
 
 numbat_wasm::imports!();
 
-#[numbat_wasm_derive::contract(Erc1155UserMockImpl)]
+#[numbat_wasm_derive::contract]
 pub trait Erc1155UserMock {
 	#[init]
 	fn init(&self) {}
@@ -12,8 +12,8 @@ pub trait Erc1155UserMock {
 		&self,
 		_operator: Address,
 		_from: Address,
-		_type_id: BigUint,
-		_value: BigUint,
+		_type_id: Self::BigUint,
+		_value: Self::BigUint,
 		_data: &[u8],
 	) -> SCResult<()> {
 		Ok(())
@@ -24,8 +24,8 @@ pub trait Erc1155UserMock {
 		&self,
 		_operator: Address,
 		_from: Address,
-		_type_ids: Vec<BigUint>,
-		_values: Vec<BigUint>,
+		_type_ids: Vec<Self::BigUint>,
+		_values: Vec<Self::BigUint>,
 		_data: &[u8],
 	) -> SCResult<()> {
 		Ok(())

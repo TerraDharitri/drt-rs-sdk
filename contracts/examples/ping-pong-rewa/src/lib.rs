@@ -23,7 +23,7 @@ const PONG_ALL_LOW_GAS_LIMIT: u64 = 3_000_000;
 /// - `pong` can only be called after the contract expired (a certain duration has passed since activation).
 /// - `pongAll` can be used to send to all users to `ping`-ed. If it runs low on gas, it will interrupt itself.
 /// It can be continued anytime.
-#[numbat_wasm_derive::contract(PingPongImpl)]
+#[numbat_wasm_derive::contract]
 pub trait PingPong {
 	/// Necessary configuration when deploying:
 	/// `ping_amount` - the exact REWA amounf that needs to be sent when `ping`-ing.
@@ -33,14 +33,14 @@ pub trait PingPong {
 	#[init]
 	fn init(
 		&self,
-		ping_amount: &BigUint,
+		ping_amount: &Self::BigUint,
 		duration_in_seconds: u64,
 		opt_activation_timestamp: Option<u64>,
-		#[var_args] max_funds: OptionalArg<BigUint>,
+		#[var_args] max_funds: OptionalArg<Self::BigUint>,
 	) {
 		self.ping_amount().set(ping_amount);
 		let activation_timestamp =
-			opt_activation_timestamp.unwrap_or_else(|| self.get_block_timestamp());
+			opt_activation_timestamp.unwrap_or_else(|| self.blockchain().get_block_timestamp());
 		let deadline = activation_timestamp + duration_in_seconds;
 		self.deadline().set(&deadline);
 		self.activation_timestamp().set(&activation_timestamp);
@@ -53,15 +53,15 @@ pub trait PingPong {
 	#[endpoint]
 	fn ping(
 		&self,
-		#[payment] payment: &BigUint,
+		#[payment] payment: Self::BigUint,
 		#[var_args] _data: OptionalArg<BoxedBytes>,
 	) -> SCResult<()> {
 		require!(
-			payment == &self.ping_amount().get(),
+			payment == self.ping_amount().get(),
 			"the payment must match the fixed sum"
 		);
 
-		let block_timestamp = self.get_block_timestamp();
+		let block_timestamp = self.blockchain().get_block_timestamp();
 		require!(
 			self.activation_timestamp().get() <= block_timestamp,
 			"smart contract not active yet"
@@ -74,12 +74,12 @@ pub trait PingPong {
 
 		if let Some(max_funds) = self.max_funds().get() {
 			require!(
-				&self.get_sc_balance() + payment <= max_funds,
+				&self.blockchain().get_sc_balance() + &payment <= max_funds,
 				"smart contract full"
 			);
 		}
 
-		let caller = self.get_caller();
+		let caller = self.blockchain().get_caller();
 		let user_id = self.user_mapper().get_or_create_user(&caller);
 		let user_status = self.user_status(user_id).get();
 		match user_status {
@@ -123,11 +123,11 @@ pub trait PingPong {
 	#[endpoint]
 	fn pong(&self) -> SCResult<()> {
 		require!(
-			self.get_block_timestamp() >= self.deadline().get(),
+			self.blockchain().get_block_timestamp() >= self.deadline().get(),
 			"can't withdraw before deadline"
 		);
 
-		let caller = self.get_caller();
+		let caller = self.blockchain().get_caller();
 		let user_id = self.user_mapper().get_user_id(&caller);
 		self.pong_by_user_id(user_id)
 	}
@@ -140,7 +140,7 @@ pub trait PingPong {
 	#[endpoint(pongAll)]
 	fn pong_all(&self) -> SCResult<OperationCompletionStatus> {
 		require!(
-			self.get_block_timestamp() >= self.deadline().get(),
+			self.blockchain().get_block_timestamp() >= self.deadline().get(),
 			"can't withdraw before deadline"
 		);
 
@@ -154,7 +154,7 @@ pub trait PingPong {
 				return Ok(OperationCompletionStatus::Completed);
 			}
 
-			if self.get_gas_left() < PONG_ALL_LOW_GAS_LIMIT {
+			if self.blockchain().get_gas_left() < PONG_ALL_LOW_GAS_LIMIT {
 				self.pong_all_last_user().set(&pong_all_last_user);
 				return Ok(OperationCompletionStatus::InterruptedBeforeOutOfGas);
 			}
@@ -175,7 +175,7 @@ pub trait PingPong {
 
 	#[view(getPingAmount)]
 	#[storage_mapper("ping_amount")]
-	fn ping_amount(&self) -> SingleValueMapper<Self::Storage, BigUint>;
+	fn ping_amount(&self) -> SingleValueMapper<Self::Storage, Self::BigUint>;
 
 	#[view(getDeadline)]
 	#[storage_mapper("deadline")]
@@ -190,7 +190,7 @@ pub trait PingPong {
 	/// Optional funding cap.
 	#[view(getMaxFunds)]
 	#[storage_mapper("max_funds")]
-	fn max_funds(&self) -> SingleValueMapper<Self::Storage, Option<BigUint>>;
+	fn max_funds(&self) -> SingleValueMapper<Self::Storage, Option<Self::BigUint>>;
 
 	#[storage_mapper("user")]
 	fn user_mapper(&self) -> UserMapper<Self::Storage>;

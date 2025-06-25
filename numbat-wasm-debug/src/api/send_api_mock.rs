@@ -1,7 +1,7 @@
-use super::big_uint_api_mock::*;
+use super::{big_uint_api_mock::*, RustBigInt};
 use crate::async_data::AsyncCallTxData;
 use crate::{SendBalance, TxContext, TxOutput, TxPanic};
-use numbat_wasm::api::{ContractHookApi, SendApi, StorageReadApi, StorageWriteApi};
+use numbat_wasm::api::{BlockchainApi, ContractBase, SendApi, StorageReadApi, StorageWriteApi};
 use numbat_wasm::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata, TokenIdentifier};
 use num_bigint::BigUint;
 use num_traits::Zero;
@@ -49,7 +49,15 @@ impl TxContext {
 	}
 }
 
-impl SendApi<RustBigUint> for TxContext {
+impl SendApi for TxContext {
+	type AmountType = RustBigUint;
+	type ProxyBigInt = RustBigInt;
+	type ProxyStorage = Self;
+
+	fn get_sc_address(&self) -> Address {
+		BlockchainApi::get_sc_address(self)
+	}
+
 	fn direct_rewa(&self, to: &Address, amount: &RustBigUint, _data: &[u8]) {
 		if amount.value() > self.get_available_rewa_balance() {
 			std::panic::panic_any(TxPanic {
@@ -63,7 +71,7 @@ impl SendApi<RustBigUint> for TxContext {
 			recipient: to.clone(),
 			token: TokenIdentifier::rewa(),
 			amount: amount.value(),
-		})
+		});
 	}
 
 	fn direct_rewa_execute(
@@ -73,7 +81,7 @@ impl SendApi<RustBigUint> for TxContext {
 		_gas_limit: u64,
 		_function: &[u8],
 		_arg_buffer: &ArgBuffer,
-	) {
+	) -> Result<(), &'static [u8]> {
 		panic!("direct_rewa_execute not yet implemented")
 	}
 
@@ -85,7 +93,7 @@ impl SendApi<RustBigUint> for TxContext {
 		_gas: u64,
 		_function: &[u8],
 		_arg_buffer: &ArgBuffer,
-	) {
+	) -> Result<(), &'static [u8]> {
 		if amount.value() > self.get_available_dcdt_balance(token) {
 			std::panic::panic_any(TxPanic {
 				status: 10,
@@ -98,7 +106,8 @@ impl SendApi<RustBigUint> for TxContext {
 			recipient: to.clone(),
 			token: TokenIdentifier::from(token),
 			amount: amount.value(),
-		})
+		});
+		Ok(())
 	}
 
 	fn direct_dcdt_nft_execute(
@@ -110,7 +119,7 @@ impl SendApi<RustBigUint> for TxContext {
 		_gas_limit: u64,
 		_function: &[u8],
 		_arg_buffer: &ArgBuffer,
-	) {
+	) -> Result<(), &'static [u8]> {
 		panic!("direct_dcdt_nft_execute not implemented yet");
 	}
 
@@ -121,7 +130,7 @@ impl SendApi<RustBigUint> for TxContext {
 			to: to.clone(),
 			call_value: amount.value(),
 			call_data: data.to_vec(),
-			tx_hash: self.get_tx_hash(),
+			tx_hash: self.blockchain().get_tx_hash(),
 		});
 		std::panic::panic_any(tx_output)
 	}
@@ -148,6 +157,21 @@ impl SendApi<RustBigUint> for TxContext {
 		panic!("execute_on_dest_context_raw not implemented yet!");
 	}
 
+	fn execute_on_dest_context_raw_custom_result_range<F>(
+		&self,
+		_gas: u64,
+		_address: &Address,
+		_value: &RustBigUint,
+		_function: &[u8],
+		_arg_buffer: &ArgBuffer,
+		_range_closure: F,
+	) -> Vec<BoxedBytes>
+	where
+		F: FnOnce(usize, usize) -> (usize, usize),
+	{
+		panic!("execute_on_dest_context_raw_custom_result_range not implemented yet!");
+	}
+
 	fn execute_on_dest_context_by_caller_raw(
 		&self,
 		_gas: u64,
@@ -171,12 +195,12 @@ impl SendApi<RustBigUint> for TxContext {
 	}
 
 	fn storage_store_tx_hash_key(&self, data: &[u8]) {
-		let tx_hash = self.get_tx_hash();
+		let tx_hash = self.blockchain().get_tx_hash();
 		self.storage_store_slice_u8(tx_hash.as_bytes(), data);
 	}
 
 	fn storage_load_tx_hash_key(&self) -> BoxedBytes {
-		let tx_hash = self.get_tx_hash();
+		let tx_hash = self.blockchain().get_tx_hash();
 		self.storage_load_boxed_bytes(tx_hash.as_bytes())
 	}
 

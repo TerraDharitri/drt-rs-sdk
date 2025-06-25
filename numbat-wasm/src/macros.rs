@@ -2,7 +2,7 @@
 /// Would make more sense to be in numbat-wasm-derive, but Rust "cannot export macro_rules! macros from a `proc-macro` crate type currently".
 #[macro_export]
 macro_rules! contract_call {
-	($s:expr, $address:expr, $proxy_trait:ident) => {
+	($s:expr, $address:expr, $proxy_path:ident) => {
 		$proxy_trait::<Self::SendApi, BigInt, BigUint>::new($s.send(), $address)
 	};
 }
@@ -15,7 +15,11 @@ macro_rules! imports {
 		use core::ops::{AddAssign, DivAssign, MulAssign, RemAssign, SubAssign};
 		use core::ops::{BitAnd, BitOr, BitXor, Shl, Shr};
 		use core::ops::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
-		use numbat_wasm::api::{BigIntApi, BigUintApi, CallValueApi, ContractHookApi, SendApi};
+		use numbat_wasm::api::{
+			BigIntApi, BigUintApi, BlockchainApi, CallValueApi, ContractBase, CryptoApi,
+			ProxyObjApi, SendApi,
+		};
+		use numbat_wasm::api::{ErrorApi, LogApi}; // TODO: remove at some point, they shouldn't be public
 		use numbat_wasm::numbat_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode};
 		use numbat_wasm::err_msg;
 		use numbat_wasm::dcdt::*;
@@ -45,11 +49,15 @@ macro_rules! derive_imports {
 #[macro_export]
 macro_rules! sc_error {
 	($s:expr) => {
-		numbat_wasm::types::SCResult::Err(numbat_wasm::types::SCError::from($s.as_bytes()))
+		numbat_wasm::types::SCResult::Err(numbat_wasm::types::SCError::from($s.as_bytes())).into()
 	};
 }
 
-/// Equivalent of the ? operator for SCResult.
+/// Equivalent to the `?` operator for SCResult.
+#[deprecated(
+	since = "0.16.0",
+	note = "The `?` operator can now be used on `SCResult`, please use it instead."
+)]
 #[macro_export]
 macro_rules! sc_try {
 	($s:expr) => {
@@ -68,14 +76,15 @@ macro_rules! sc_try {
 ///
 /// ```rust
 /// # use numbat_wasm::*;
+/// # use numbat_wasm::api::BlockchainApi;
 /// # use numbat_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: numbat_wasm::api::ContractHookApi<BigInt, BigUint>
+/// # pub trait ExampleContract<BigInt, BigUint>: numbat_wasm::api::ContractBase
 /// # where
-/// #   BigInt: numbat_wasm::api::BigIntApi<BigUint> + 'static,
+/// #   BigInt: numbat_wasm::api::BigIntApi + 'static,
 /// #   BigUint: numbat_wasm::api::BigUintApi + 'static,
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
-///     require!(self.get_caller() == self.get_owner_address(), "Caller must be owner");
+///     require!(self.blockchain().get_caller() == self.blockchain().get_owner_address(), "Caller must be owner");
 ///     Ok(())
 /// }
 /// # }
@@ -95,10 +104,11 @@ macro_rules! require {
 ///
 /// ```rust
 /// # use numbat_wasm::*;
+/// # use numbat_wasm::api::BlockchainApi;
 /// # use numbat_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: numbat_wasm::api::ContractHookApi<BigInt, BigUint>
+/// # pub trait ExampleContract<BigInt, BigUint>: numbat_wasm::api::ContractBase
 /// # where
-/// #   BigInt: numbat_wasm::api::BigIntApi<BigUint> + 'static,
+/// #   BigInt: numbat_wasm::api::BigIntApi + 'static,
 /// #   BigUint: numbat_wasm::api::BigUintApi + 'static,
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
@@ -110,7 +120,7 @@ macro_rules! require {
 #[macro_export]
 macro_rules! only_owner {
 	($trait_self: expr, $error_msg:expr) => {
-		if ($trait_self.get_caller() != $trait_self.get_owner_address()) {
+		if ($trait_self.blockchain().get_caller() != $trait_self.blockchain().get_owner_address()) {
 			return sc_error!($error_msg);
 		}
 	};

@@ -9,7 +9,7 @@ numbat_wasm::imports!();
 /// The module deals with temporarily pausing contract operations.
 /// It provides a flag that contracts can use to check if owner decided to pause the entire contract.
 /// Use the features module for more granular on/off switches.
-#[numbat_wasm_derive::module(PauseModuleImpl)]
+#[numbat_wasm_derive::module]
 pub trait PauseModule {
 	#[view(isPaused)]
 	#[storage_get("pause_module:paused")]
@@ -25,7 +25,7 @@ pub trait PauseModule {
 	#[endpoint(pause)]
 	fn pause_endpoint(&self) -> SCResult<()> {
 		require!(
-			self.get_caller() == self.get_owner_address(),
+			self.blockchain().get_caller() == self.blockchain().get_owner_address(),
 			"only owner allowed to pause contract"
 		);
 
@@ -37,7 +37,7 @@ pub trait PauseModule {
 	#[endpoint(unpause)]
 	fn unpause_endpoint(&self) -> SCResult<()> {
 		require!(
-			self.get_caller() == self.get_owner_address(),
+			self.blockchain().get_caller() == self.blockchain().get_owner_address(),
 			"only owner allowed to unpause contract"
 		);
 

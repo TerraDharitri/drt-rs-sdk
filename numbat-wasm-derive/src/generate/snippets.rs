@@ -1,221 +1,337 @@
-pub fn big_int_where() -> proc_macro2::TokenStream {
+pub fn where_self_big_int() -> proc_macro2::TokenStream {
 	quote! {
 		where
-			BigUint: BigUintApi + 'static,
-			for<'a, 'b> &'a BigUint: Add<&'b BigUint, Output=BigUint>,
-			for<'a, 'b> &'a BigUint: Sub<&'b BigUint, Output=BigUint>,
-			for<'a, 'b> &'a BigUint: Mul<&'b BigUint, Output=BigUint>,
-			for<'a, 'b> &'a BigUint: Div<&'b BigUint, Output=BigUint>,
-			for<'a, 'b> &'a BigUint: Rem<&'b BigUint, Output=BigUint>,
-			for<'b> BigUint: AddAssign<&'b BigUint>,
-			for<'b> BigUint: SubAssign<&'b BigUint>,
-			for<'b> BigUint: MulAssign<&'b BigUint>,
-			for<'b> BigUint: DivAssign<&'b BigUint>,
-			for<'b> BigUint: RemAssign<&'b BigUint>,
-			for<'a, 'b> &'a BigUint: BitAnd<&'b BigUint, Output=BigUint>,
-			for<'a, 'b> &'a BigUint: BitOr<&'b BigUint, Output=BigUint>,
-			for<'a, 'b> &'a BigUint: BitXor<&'b BigUint, Output=BigUint>,
-			for<'b> BigUint: BitAndAssign<&'b BigUint>,
-			for<'b> BigUint: BitOrAssign<&'b BigUint>,
-			for<'b> BigUint: BitXorAssign<&'b BigUint>,
-			for<'a> &'a BigUint: Shr<usize, Output=BigUint>,
-			for<'a> &'a BigUint: Shl<usize, Output=BigUint>,
+			Self::BigUint: numbat_wasm::api::BigUintApi,
+			for<'a, 'b> &'a Self::BigUint: core::ops::Add<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'a, 'b> &'a Self::BigUint: core::ops::Sub<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'a, 'b> &'a Self::BigUint: core::ops::Mul<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'a, 'b> &'a Self::BigUint: core::ops::Div<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'a, 'b> &'a Self::BigUint: core::ops::Rem<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::AddAssign<&'b Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::SubAssign<&'b Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::MulAssign<&'b Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::DivAssign<&'b Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::RemAssign<&'b Self::BigUint>,
+			for<'a, 'b> &'a Self::BigUint: core::ops::BitAnd<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'a, 'b> &'a Self::BigUint: core::ops::BitOr<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'a, 'b> &'a Self::BigUint: core::ops::BitXor<&'b Self::BigUint, Output = Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::BitAndAssign<&'b Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::BitOrAssign<&'b Self::BigUint>,
+			for<'b> Self::BigUint: core::ops::BitXorAssign<&'b Self::BigUint>,
+			for<'a> &'a Self::BigUint: core::ops::Shr<usize, Output = Self::BigUint>,
+			for<'a> &'a Self::BigUint: core::ops::Shl<usize, Output = Self::BigUint>,
+			Self::BigInt: numbat_wasm::api::BigIntApi,
+			for<'a, 'b> &'a Self::BigInt: core::ops::Add<&'b Self::BigInt, Output = Self::BigInt>,
+			for<'a, 'b> &'a Self::BigInt: core::ops::Sub<&'b Self::BigInt, Output = Self::BigInt>,
+			for<'a, 'b> &'a Self::BigInt: core::ops::Mul<&'b Self::BigInt, Output = Self::BigInt>,
+			for<'a, 'b> &'a Self::BigInt: core::ops::Div<&'b Self::BigInt, Output = Self::BigInt>,
+			for<'a, 'b> &'a Self::BigInt: core::ops::Rem<&'b Self::BigInt, Output = Self::BigInt>,
+			for<'b> Self::BigInt: core::ops::AddAssign<&'b Self::BigInt>,
+			for<'b> Self::BigInt: core::ops::SubAssign<&'b Self::BigInt>,
+			for<'b> Self::BigInt: core::ops::MulAssign<&'b Self::BigInt>,
+			for<'b> Self::BigInt: core::ops::DivAssign<&'b Self::BigInt>,
+			for<'b> Self::BigInt: core::ops::RemAssign<&'b Self::BigInt>,
+	}
+}
 
-			BigInt: BigIntApi<BigUint> + 'static,
-			for<'a, 'b> &'a BigInt: Add<&'b BigInt, Output=BigInt>,
-			for<'a, 'b> &'a BigInt: Sub<&'b BigInt, Output=BigInt>,
-			for<'a, 'b> &'a BigInt: Mul<&'b BigInt, Output=BigInt>,
-			for<'a, 'b> &'a BigInt: Div<&'b BigInt, Output=BigInt>,
-			for<'a, 'b> &'a BigInt: Rem<&'b BigInt, Output=BigInt>,
-			for<'b> BigInt: AddAssign<&'b BigInt>,
-			for<'b> BigInt: SubAssign<&'b BigInt>,
-			for<'b> BigInt: MulAssign<&'b BigInt>,
-			for<'b> BigInt: DivAssign<&'b BigInt>,
-			for<'b> BigInt: RemAssign<&'b BigInt>,
+pub fn where_api_big_int() -> proc_macro2::TokenStream {
+	quote! {
+		where
+			A::BigUint: numbat_wasm::api::BigUintApi,
+			for<'a, 'b> &'a A::BigUint: core::ops::Add<&'b A::BigUint, Output = A::BigUint>,
+			for<'a, 'b> &'a A::BigUint: core::ops::Sub<&'b A::BigUint, Output = A::BigUint>,
+			for<'a, 'b> &'a A::BigUint: core::ops::Mul<&'b A::BigUint, Output = A::BigUint>,
+			for<'a, 'b> &'a A::BigUint: core::ops::Div<&'b A::BigUint, Output = A::BigUint>,
+			for<'a, 'b> &'a A::BigUint: core::ops::Rem<&'b A::BigUint, Output = A::BigUint>,
+			for<'b> A::BigUint: core::ops::AddAssign<&'b A::BigUint>,
+			for<'b> A::BigUint: core::ops::SubAssign<&'b A::BigUint>,
+			for<'b> A::BigUint: core::ops::MulAssign<&'b A::BigUint>,
+			for<'b> A::BigUint: core::ops::DivAssign<&'b A::BigUint>,
+			for<'b> A::BigUint: core::ops::RemAssign<&'b A::BigUint>,
+			for<'a, 'b> &'a A::BigUint: core::ops::BitAnd<&'b A::BigUint, Output = A::BigUint>,
+			for<'a, 'b> &'a A::BigUint: core::ops::BitOr<&'b A::BigUint, Output = A::BigUint>,
+			for<'a, 'b> &'a A::BigUint: core::ops::BitXor<&'b A::BigUint, Output = A::BigUint>,
+			for<'b> A::BigUint: core::ops::BitAndAssign<&'b A::BigUint>,
+			for<'b> A::BigUint: core::ops::BitOrAssign<&'b A::BigUint>,
+			for<'b> A::BigUint: core::ops::BitXorAssign<&'b A::BigUint>,
+			for<'a> &'a A::BigUint: core::ops::Shr<usize, Output = A::BigUint>,
+			for<'a> &'a A::BigUint: core::ops::Shl<usize, Output = A::BigUint>,
+			A::BigInt: numbat_wasm::api::BigIntApi,
+			for<'a, 'b> &'a A::BigInt: core::ops::Add<&'b A::BigInt, Output = A::BigInt>,
+			for<'a, 'b> &'a A::BigInt: core::ops::Sub<&'b A::BigInt, Output = A::BigInt>,
+			for<'a, 'b> &'a A::BigInt: core::ops::Mul<&'b A::BigInt, Output = A::BigInt>,
+			for<'a, 'b> &'a A::BigInt: core::ops::Div<&'b A::BigInt, Output = A::BigInt>,
+			for<'a, 'b> &'a A::BigInt: core::ops::Rem<&'b A::BigInt, Output = A::BigInt>,
+			for<'b> A::BigInt: core::ops::AddAssign<&'b A::BigInt>,
+			for<'b> A::BigInt: core::ops::SubAssign<&'b A::BigInt>,
+			for<'b> A::BigInt: core::ops::MulAssign<&'b A::BigInt>,
+			for<'b> A::BigInt: core::ops::DivAssign<&'b A::BigInt>,
+			for<'b> A::BigInt: core::ops::RemAssign<&'b A::BigInt>,
 	}
 }
 
 pub fn api_where() -> proc_macro2::TokenStream {
-	let bi_where = big_int_where();
+	let where_self_big_int = where_self_big_int();
 
 	quote! {
-	  #bi_where
-		T: numbat_wasm::api::ContractHookApi<BigInt, BigUint>
+	  #where_self_big_int
+		T: numbat_wasm::api::ContractBase
 		 + numbat_wasm::api::ErrorApi
-		 + numbat_wasm::api::CallValueApi<BigUint>
-		 + numbat_wasm::api::SendApi<BigUint>
+		 + numbat_wasm::api::BlockchainApi
+		 + numbat_wasm::api::CallValueApi
+		 + numbat_wasm::api::SendApi
 		 + numbat_wasm::api::EndpointArgumentApi
 		 + numbat_wasm::api::EndpointFinishApi
 		 + numbat_wasm::api::StorageReadApi
 		 + numbat_wasm::api::StorageWriteApi
+		 + numbat_wasm::api::CryptoApi
 		 + numbat_wasm::api::LogApi
 		 + Clone
 		 + 'static,
 	}
 }
 
-pub fn contract_trait_api_impl(contract_struct: &syn::Path) -> proc_macro2::TokenStream {
-	let api_where = api_where();
+pub fn contract_object_def() -> proc_macro2::TokenStream {
 	quote! {
-		impl <T, BigInt, BigUint> numbat_wasm::api::ContractHookApi<BigInt, BigUint> for #contract_struct<T, BigInt, BigUint>
-		#api_where
+		pub struct ContractObj<A: numbat_wasm::api::ContractBase> {
+			api: A,
+		}
+	}
+}
+
+pub fn impl_contract_base() -> proc_macro2::TokenStream {
+	quote! {
+		impl<A>numbat_wasm::api::ContractBase for ContractObj<A>
+		where
+			A:numbat_wasm::api::ContractBase
+				+ numbat_wasm::api::ErrorApi
+				+ numbat_wasm::api::EndpointArgumentApi
+				+ numbat_wasm::api::EndpointFinishApi
+				+ Clone
+				+ 'static,
 		{
-			type Storage = T::Storage;
-			type CallValue = T::CallValue;
-			type SendApi = T::SendApi;
+			type BigUint = A::BigUint;
+			type BigInt = A::BigInt;
+			type Storage = A::Storage;
+			type CallValue = A::CallValue;
+			type SendApi = A::SendApi;
+			type BlockchainApi = A::BlockchainApi;
+			type CryptoApi = A::CryptoApi;
+			type LogApi = A::LogApi;
+			type ErrorApi = A::ErrorApi;
 
 			#[inline]
 			fn get_storage_raw(&self) -> Self::Storage {
 				self.api.get_storage_raw()
 			}
-
 			#[inline]
 			fn call_value(&self) -> Self::CallValue {
 				self.api.call_value()
 			}
-
 			#[inline]
 			fn send(&self) -> Self::SendApi {
 				self.api.send()
 			}
-
 			#[inline]
-			fn get_sc_address(&self) -> Address {
-				self.api.get_sc_address()
+			fn blockchain(&self) -> Self::BlockchainApi {
+				self.api.blockchain()
 			}
-
 			#[inline]
-			fn get_owner_address(&self) -> Address {
-				self.api.get_owner_address()
+			fn crypto(&self) -> Self::CryptoApi {
+				self.api.crypto()
 			}
-
 			#[inline]
-			fn get_shard_of_address(&self, address: &Address) -> u32 {
-				self.api.get_shard_of_address(address)
+			fn log_api_raw(&self) -> Self::LogApi {
+				self.api.log_api_raw()
 			}
-
 			#[inline]
-			fn is_smart_contract(&self, address: &Address) -> bool {
-				self.api.is_smart_contract(address)
-			}
-
-			#[inline]
-			fn get_caller(&self) -> Address {
-				self.api.get_caller()
-			}
-
-			#[inline]
-			fn get_balance(&self, address: &Address) -> BigUint {
-				self.api.get_balance(address)
-			}
-
-			#[inline]
-			fn get_tx_hash(&self) -> H256 {
-				self.api.get_tx_hash()
-			}
-
-			#[inline]
-			fn get_gas_left(&self) -> u64 {
-				self.api.get_gas_left()
-			}
-
-			#[inline]
-			fn get_block_timestamp(&self) -> u64 {
-				self.api.get_block_timestamp()
-			}
-
-			#[inline]
-			fn get_block_nonce(&self) -> u64 {
-				self.api.get_block_nonce()
-			}
-
-			#[inline]
-			fn get_block_round(&self) -> u64 {
-				self.api.get_block_round()
-			}
-
-			#[inline]
-			fn get_block_epoch(&self) -> u64 {
-				self.api.get_block_epoch()
-			}
-
-			#[inline]
-			fn get_block_random_seed(&self) -> Box<[u8; 48]> {
-				self.api.get_block_random_seed()
-			}
-
-			#[inline]
-			fn get_prev_block_timestamp(&self) -> u64 {
-				self.api.get_prev_block_timestamp()
-			}
-
-			#[inline]
-			fn get_prev_block_nonce(&self) -> u64 {
-				self.api.get_prev_block_nonce()
-			}
-
-			#[inline]
-			fn get_prev_block_round(&self) -> u64 {
-				self.api.get_prev_block_round()
-			}
-
-			#[inline]
-			fn get_prev_block_epoch(&self) -> u64 {
-				self.api.get_prev_block_epoch()
-			}
-
-			#[inline]
-			fn get_prev_block_random_seed(&self) -> Box<[u8; 48]> {
-				self.api.get_prev_block_random_seed()
-			}
-
-			#[inline]
-			fn get_current_dcdt_nft_nonce(&self, address: &Address, token: &[u8]) -> u64 {
-				self.api.get_current_dcdt_nft_nonce(address, token)
-			}
-
-			#[inline]
-			fn get_dcdt_balance(&self, address: &Address, token: &[u8], nonce: u64) -> BigUint {
-				self.api.get_dcdt_balance(address, token, nonce)
-			}
-
-			#[inline]
-			fn get_dcdt_token_data(
-				&self,
-				address: &Address,
-				token: &[u8],
-				nonce: u64,
-			) -> DcdtTokenData<BigUint> {
-				self.api.get_dcdt_token_data(address, token, nonce)
+			fn error_api(&self) -> Self::ErrorApi {
+				self.api.error_api()
 			}
 		}
+	}
+}
 
-		impl <T, BigInt, BigUint> numbat_wasm::api::CryptoApi for #contract_struct<T, BigInt, BigUint>
-		#api_where
+pub fn new_contract_object_fn() -> proc_macro2::TokenStream {
+	let where_api_big_int = where_api_big_int();
+	quote! {
+		pub fn contract_obj<A>(api: A) -> ContractObj<A>
+		#where_api_big_int
+			A: numbat_wasm::api::ContractBase
+				+ numbat_wasm::api::ErrorApi
+				+ numbat_wasm::api::EndpointArgumentApi
+				+ numbat_wasm::api::EndpointFinishApi
+				+ Clone
+				+ 'static,
 		{
+			ContractObj { api }
+		}
+	}
+}
+
+pub fn impl_auto_impl() -> proc_macro2::TokenStream {
+	quote! {
+		impl<A> AutoImpl for ContractObj<A> where
+			A: numbat_wasm::api::ContractBase
+				+ numbat_wasm::api::ErrorApi
+				+ numbat_wasm::api::EndpointArgumentApi
+				+ numbat_wasm::api::EndpointFinishApi
+				+ Clone
+				+ 'static
+		{
+		}
+	}
+}
+pub fn impl_private_api() -> proc_macro2::TokenStream {
+	quote! {
+		impl<A> numbat_wasm::api::ContractPrivateApi for ContractObj<A>
+		where
+			A: numbat_wasm::api::ContractBase
+				+ numbat_wasm::api::ErrorApi
+				+ numbat_wasm::api::EndpointArgumentApi
+				+ numbat_wasm::api::EndpointFinishApi
+				+ Clone
+				+ 'static,
+		{
+			type ArgumentApi = A;
+			type FinishApi = A;
+
 			#[inline]
-			fn sha256(&self, data: &[u8]) -> H256 {
-				self.api.sha256(data)
+			fn argument_api(&self) -> Self::ArgumentApi {
+				self.api.clone()
 			}
 
 			#[inline]
-			fn keccak256(&self, data: &[u8]) -> H256 {
-				self.api.keccak256(data)
+			fn finish_api(&self) -> Self::FinishApi {
+				self.api.clone()
+			}
+		}
+	}
+}
+
+pub fn impl_endpoint_wrappers() -> proc_macro2::TokenStream {
+	let where_self_big_int = where_self_big_int();
+	quote! {
+		impl<A> EndpointWrappers for ContractObj<A>
+		#where_self_big_int
+			A: numbat_wasm::api::ContractBase
+				+ numbat_wasm::api::ErrorApi
+				+ numbat_wasm::api::EndpointArgumentApi
+				+ numbat_wasm::api::EndpointFinishApi
+				+ Clone
+				+ 'static,
+		{
+		}
+	}
+}
+
+pub fn impl_callable_contract() -> proc_macro2::TokenStream {
+	let where_api_big_int = where_api_big_int();
+	quote! {
+		impl<A> numbat_wasm::api::CallableContract<A> for ContractObj<A>
+		#where_api_big_int
+			A: numbat_wasm::api::ContractBase
+				+ numbat_wasm::api::ErrorApi
+				+ numbat_wasm::api::EndpointArgumentApi
+				+ numbat_wasm::api::EndpointFinishApi
+				+ Clone
+				+ 'static,
+		{
+			fn call(&self, fn_name: &[u8]) -> bool {
+				EndpointWrappers::call(self, fn_name)
+			}
+			fn into_api(self: Box<Self>) -> A {
+				self.api
+			}
+		}
+	}
+}
+
+pub fn proxy_object_def() -> proc_macro2::TokenStream {
+	quote! {
+		pub struct Proxy<SA>
+		where
+			SA: numbat_wasm::api::SendApi + 'static,
+		{
+			pub api: SA,
+			pub address: Address,
+			pub payment_token: numbat_wasm::types::TokenIdentifier,
+			pub payment_amount: SA::AmountType,
+			pub payment_nonce: u64,
+		}
+
+		impl<SA> numbat_wasm::api::ProxyObjApi for Proxy<SA>
+		where
+			SA: numbat_wasm::api::SendApi + 'static,
+		{
+			type BigUint = SA::AmountType;
+			type BigInt = SA::ProxyBigInt;
+			type Storage = SA::ProxyStorage;
+			type SendApi = SA;
+
+			fn new_proxy_obj(api: SA, address: Address) -> Self {
+				Proxy {
+					api,
+					address,
+					payment_token: numbat_wasm::types::TokenIdentifier::rewa(),
+					payment_amount: Self::BigUint::zero(),
+					payment_nonce: 0,
+				}
+			}
+
+			fn with_token_transfer(mut self, token: TokenIdentifier, payment: Self::BigUint) -> Self {
+				self.payment_token = token;
+				self.payment_amount = payment;
+				self
 			}
 
 			#[inline]
-			fn verify_bls(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-				self.api.verify_bls(key, message, signature)
+			fn with_nft_nonce(mut self, nonce: u64) -> Self {
+				self.payment_nonce = nonce;
+				self
 			}
 
 			#[inline]
-			fn verify_ed25519(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-				self.api.verify_ed25519(key, message, signature)
+			fn into_fields(self) -> (Self::SendApi, Address, TokenIdentifier, Self::BigUint, u64) {
+				(
+					self.api,
+					self.address,
+					self.payment_token,
+					self.payment_amount,
+					self.payment_nonce,
+				)
+			}
+		}
+	}
+}
+
+pub fn callback_proxy_object_def() -> proc_macro2::TokenStream {
+	quote! {
+		pub struct CallbackProxyObj<SA>
+		where
+			SA: numbat_wasm::api::SendApi + 'static,
+		{
+			pub api: SA,
+		}
+
+		impl<SA> numbat_wasm::api::CallbackProxyObjApi for CallbackProxyObj<SA>
+		where
+			SA: numbat_wasm::api::SendApi + 'static,
+		{
+			type BigUint = SA::AmountType;
+			type BigInt = SA::ProxyBigInt;
+			type Storage = SA::ProxyStorage;
+			type SendApi = SA;
+			type ErrorApi = SA;
+
+			fn new_cb_proxy_obj(api: SA) -> Self {
+				CallbackProxyObj {
+					api,
+				}
 			}
 
-			#[inline]
-			fn verify_secp256k1(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool {
-				self.api.verify_secp256k1(key, message, signature)
+			fn into_api(self) -> Self::ErrorApi {
+				self.api
 			}
 		}
 	}

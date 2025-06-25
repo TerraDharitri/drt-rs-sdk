@@ -1,5 +1,3 @@
-extern crate rewa_dcdt_swap;
-use rewa_dcdt_swap::*;
 use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
@@ -7,7 +5,7 @@ fn contract_map() -> ContractMap<TxContext> {
 	let mut contract_map = ContractMap::new();
 	contract_map.register_contract(
 		"file:../output/rewa-dcdt-swap.wasm",
-		Box::new(|context| Box::new(RewaDcdtSwapImpl::new(context))),
+		Box::new(|context| Box::new(rewa_dcdt_swap::contract_obj(context))),
 	);
 	contract_map
 }

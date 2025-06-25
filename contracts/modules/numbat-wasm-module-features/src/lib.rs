@@ -11,7 +11,7 @@ pub const FEATURE_ON: u8 = 1;
 pub const FEATURE_OFF: u8 = 2;
 
 /// Standard module for managing feature flags.
-#[numbat_wasm_derive::module(FeaturesModuleImpl)]
+#[numbat_wasm_derive::module]
 pub trait FeaturesModule {
 	#[storage_get("feat:")]
 	fn get_feature_flag(&self, feature_name: FeatureName) -> u8;
@@ -38,7 +38,7 @@ pub trait FeaturesModule {
 	#[endpoint(setFeatureFlag)]
 	fn set_feature_flag_endpoint(&self, feature_name: Vec<u8>, value: bool) -> SCResult<()> {
 		require!(
-			self.get_caller() == self.get_owner_address(),
+			self.blockchain().get_caller() == self.blockchain().get_owner_address(),
 			"only owner allowed to change features"
 		);
 
@@ -50,6 +50,9 @@ pub trait FeaturesModule {
 	}
 }
 
+numbat_wasm::derive_imports!();
+
+#[derive(TopEncode)]
 pub struct FeatureName<'a>(&'a [u8]);
 
 use numbat_wasm::numbat_codec::*;
@@ -76,6 +79,6 @@ impl<'a> NestedEncode for FeatureName<'a> {
 #[macro_export]
 macro_rules! feature_guard {
 	($feature_module: expr, $feature_name:expr, $default:expr) => {
-		sc_try!($feature_module.check_feature_on(&$feature_name[..], $default));
+		$feature_module.check_feature_on(&$feature_name[..], $default)?;
 	};
 }

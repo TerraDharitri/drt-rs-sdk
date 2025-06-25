@@ -1,7 +1,3 @@
-use numbat_wasm_debug::*;
-use factorial::*;
-
 fn main() {
-	let contract = FactorialImpl::new(TxContext::dummy());
-	print!("{}", abi_json::contract_abi(&contract));
+	numbat_wasm_debug::abi_json::print_abi::<factorial::AbiProvider>();
 }

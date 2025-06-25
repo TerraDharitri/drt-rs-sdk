@@ -1,0 +1,19 @@
+[package]
+name = "nft-storage-prepay-abi"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[dev-dependencies]
+
+[dependencies.nft-storage-prepay]
+path = ".."
+
+[dependencies.numbat-wasm]
+version = "0.0.7"
+path = "../../../../numbat-wasm"
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.7"
+path = "../../../../numbat-wasm-debug"

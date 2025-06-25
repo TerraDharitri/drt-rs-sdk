@@ -47,7 +47,7 @@ const CONTRACT_CODE: &[u8] = &[
 	0x75, 0x6d, 0x65, 0x6e, 0x74, 0x73,
 ];
 
-#[numbat_wasm_derive::contract(DeployTwoContractsImpl)]
+#[numbat_wasm_derive::contract]
 pub trait DeployTwoContracts {
 	#[init]
 	fn init(&self) {}
@@ -82,8 +82,8 @@ pub trait DeployTwoContracts {
 
 	fn deploy(&self) -> Address {
 		self.send().deploy_contract(
-			self.get_gas_left(),
-			&BigUint::zero(),
+			self.blockchain().get_gas_left(),
+			&Self::BigUint::zero(),
 			&BoxedBytes::from(CONTRACT_CODE),
 			CodeMetadata::DEFAULT,
 			&ArgBuffer::new(),

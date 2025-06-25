@@ -1,9 +1,3 @@
-extern crate erc1155;
-use erc1155::*;
-
-extern crate erc1155_marketplace;
-use erc1155_marketplace::*;
-
 use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
@@ -11,11 +5,11 @@ fn _contract_map() -> ContractMap<TxContext> {
 	let mut contract_map = ContractMap::new();
 	contract_map.register_contract(
 		"file:../output/erc1155-marketplace.wasm",
-		Box::new(|context| Box::new(Erc1155MarketplaceImpl::new(context))),
+		Box::new(|context| Box::new(erc1155_marketplace::contract_obj(context))),
 	);
 	contract_map.register_contract(
 		"file:../../erc1155/output/erc1155.wasm",
-		Box::new(|context| Box::new(Erc1155Impl::new(context))),
+		Box::new(|context| Box::new(erc1155::contract_obj(context))),
 	);
 
 	contract_map
@@ -50,7 +44,7 @@ fn bid_third_rewa_test() {
 
 #[test]
 fn end_auction_test() {
-	parse_execute_denali("/home/numbat/numbat-wasm-rs/contracts/examples/erc1155-marketplace/denali/end_auction.scen.json", &contract_map());
+	parse_execute_denali("/home/numbat/drt-rs-sdk/contracts/examples/erc1155-marketplace/denali/end_auction.scen.json", &contract_map());
 }
 
 */

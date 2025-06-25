@@ -15,8 +15,14 @@ use only_nested::*;
 ///
 /// Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,
 /// including Rust docs.
-#[numbat_wasm_derive::contract(AbiTesterImpl)]
+#[numbat_wasm_derive::contract]
 pub trait AbiTester {
+	/// Contract constructor.
+	#[init]
+	#[payable("REWA")]
+	fn init(&self, _constructor_arg_1: i32, _constructor_arg_2: OnlyShowsUpInConstructor) {}
+
+	/// Example endpoint docs.
 	#[endpoint]
 	#[output_name("single output")]
 	#[output_name("this one doesn't show up")]
@@ -42,13 +48,7 @@ pub trait AbiTester {
 	#[output_name("multi-too-few-1")]
 	#[output_name("multi-too-few-2")]
 	fn multi_result_4(&self) -> MultiResult4<i32, [u8; 3], BoxedBytes, OnlyShowsUpAsNested03> {
-		(
-			1,
-			[2; 3],
-			BoxedBytes::empty(),
-			OnlyShowsUpAsNested03 { something: () },
-		)
-			.into()
+		(1, [2; 3], BoxedBytes::empty(), OnlyShowsUpAsNested03()).into()
 	}
 
 	#[endpoint]
@@ -60,7 +60,7 @@ pub trait AbiTester {
 	}
 
 	#[endpoint]
-	fn multi_result_vec(&self) -> MultiResultVec<OnlyShowsUpAsNested05> {
+	fn multi_result_vec(&self) -> MultiResultVec<MultiResult3<OnlyShowsUpAsNested05, bool, ()>> {
 		MultiResultVec::new()
 	}
 
@@ -82,16 +82,24 @@ pub trait AbiTester {
 		(address, h256).into()
 	}
 
+	#[view]
+	#[storage_mapper("sample_storage_mapper")]
+	fn sample_storage_mapper(&self) -> SingleValueMapper<Self::Storage, OnlyShowsUpAsNested10>;
+
 	#[endpoint]
 	#[payable("REWA")]
-	fn payable_rewa(&self, #[payment] _payment: BigUint, #[payment_token] _token: TokenIdentifier) {
+	fn payable_rewa(
+		&self,
+		#[payment] _payment: Self::BigUint,
+		#[payment_token] _token: TokenIdentifier,
+	) {
 	}
 
 	#[endpoint]
 	#[payable("TOKEN-FOR-ABI")]
 	fn payable_some_token(
 		&self,
-		#[payment] _payment: BigUint,
+		#[payment] _payment: Self::BigUint,
 		#[payment_token] _token: TokenIdentifier,
 	) {
 	}
@@ -100,7 +108,7 @@ pub trait AbiTester {
 	#[payable("*")]
 	fn payable_any_token(
 		&self,
-		#[payment] _payment: BigUint,
+		#[payment] _payment: Self::BigUint,
 		#[payment_token] _token: TokenIdentifier,
 	) {
 	}

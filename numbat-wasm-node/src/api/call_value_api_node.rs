@@ -21,7 +21,9 @@ extern "C" {
 	fn getCallValueTokenName(callValueOffset: *const u8, resultOffset: *const u8) -> i32;
 }
 
-impl CallValueApi<AndesBigUint> for AndesApiImpl {
+impl CallValueApi for AndesApiImpl {
+	type AmountType = AndesBigUint;
+
 	#[inline]
 	fn check_not_payable(&self) {
 		unsafe {
@@ -62,8 +64,6 @@ impl CallValueApi<AndesBigUint> for AndesApiImpl {
 	}
 
 	fn dcdt_token_type(&self) -> DcdtTokenType {
-		unsafe {
-			(getDCDTTokenType() as u8).into()
-		}
+		unsafe { (getDCDTTokenType() as u8).into() }
 	}
 }

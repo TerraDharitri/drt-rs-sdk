@@ -11,7 +11,7 @@ numbat_wasm::imports!();
 /// Multi-signature smart contract implementation.
 /// Acts like a wallet that needs multiple signers for any action performed.
 /// See the readme file for more detailed documentation.
-#[numbat_wasm_derive::contract(MultisigImpl)]
+#[numbat_wasm_derive::contract]
 pub trait Multisig {
 	/// Minimum number of signatures needed to perform any action.
 	#[view(getQuorum)]
@@ -40,7 +40,7 @@ pub trait Multisig {
 	fn num_proposers(&self) -> SingleValueMapper<Self::Storage, usize>;
 
 	#[storage_mapper("action_data")]
-	fn action_mapper(&self) -> VecMapper<Self::Storage, Action<BigUint>>;
+	fn action_mapper(&self) -> VecMapper<Self::Storage, Action<Self::BigUint>>;
 
 	/// The index of the last proposed action.
 	/// 0 means that no action was ever proposed yet.
@@ -51,7 +51,7 @@ pub trait Multisig {
 
 	/// Serialized action data of an action with index.
 	#[view(getActionData)]
-	fn get_action_data(&self, action_id: usize) -> Action<BigUint> {
+	fn get_action_data(&self, action_id: usize) -> Action<Self::BigUint> {
 		self.action_mapper().get(action_id)
 	}
 
@@ -86,8 +86,8 @@ pub trait Multisig {
 	#[endpoint]
 	fn deposit(&self) {}
 
-	fn propose_action(&self, action: Action<BigUint>) -> SCResult<usize> {
-		let caller_address = self.get_caller();
+	fn propose_action(&self, action: Action<Self::BigUint>) -> SCResult<usize> {
+		let caller_address = self.blockchain().get_caller();
 		let caller_id = self.user_mapper().get_user_id(&caller_address);
 		let caller_role = self.get_user_id_to_role(caller_id);
 		require!(
@@ -111,7 +111,7 @@ pub trait Multisig {
 	/// - the serialized action data
 	/// - (number of signers followed by) list of signer addresses.
 	#[view(getPendingActionFullInfo)]
-	fn get_pending_action_full_info(&self) -> MultiResultVec<ActionFullInfo<BigUint>> {
+	fn get_pending_action_full_info(&self) -> MultiResultVec<ActionFullInfo<Self::BigUint>> {
 		let mut result = Vec::new();
 		let action_last_index = self.get_action_last_index();
 		let action_mapper = self.action_mapper();
@@ -157,7 +157,7 @@ pub trait Multisig {
 	fn propose_send_rewa(
 		&self,
 		to: Address,
-		amount: BigUint,
+		amount: Self::BigUint,
 		#[var_args] opt_data: OptionalArg<BoxedBytes>,
 	) -> SCResult<usize> {
 		let data = match opt_data {
@@ -170,7 +170,7 @@ pub trait Multisig {
 	#[endpoint(proposeSCDeploy)]
 	fn propose_sc_deploy(
 		&self,
-		amount: BigUint,
+		amount: Self::BigUint,
 		code: BoxedBytes,
 		upgradeable: bool,
 		payable: bool,
@@ -201,7 +201,7 @@ pub trait Multisig {
 	fn propose_sc_call(
 		&self,
 		to: Address,
-		rewa_payment: BigUint,
+		rewa_payment: Self::BigUint,
 		endpoint_name: BoxedBytes,
 		#[var_args] arguments: VarArgs<BoxedBytes>,
 	) -> SCResult<usize> {
@@ -273,7 +273,7 @@ pub trait Multisig {
 			"action does not exist"
 		);
 
-		let caller_address = self.get_caller();
+		let caller_address = self.blockchain().get_caller();
 		let caller_id = self.user_mapper().get_user_id(&caller_address);
 		let caller_role = self.get_user_id_to_role(caller_id);
 		require!(caller_role.can_sign(), "only board members can sign");
@@ -296,7 +296,7 @@ pub trait Multisig {
 			"action does not exist"
 		);
 
-		let caller_address = self.get_caller();
+		let caller_address = self.blockchain().get_caller();
 		let caller_id = self.user_mapper().get_user_id(&caller_address);
 		let caller_role = self.get_user_id_to_role(caller_id);
 		require!(caller_role.can_sign(), "only board members can un-sign");
@@ -401,8 +401,11 @@ pub trait Multisig {
 
 	/// Proposers and board members use this to launch signed actions.
 	#[endpoint(performAction)]
-	fn perform_action_endpoint(&self, action_id: usize) -> SCResult<PerformActionResult<BigUint>> {
-		let caller_address = self.get_caller();
+	fn perform_action_endpoint(
+		&self,
+		action_id: usize,
+	) -> SCResult<PerformActionResult<Self::SendApi>> {
+		let caller_address = self.blockchain().get_caller();
 		let caller_id = self.user_mapper().get_user_id(&caller_address);
 		let caller_role = self.get_user_id_to_role(caller_id);
 		require!(
@@ -417,7 +420,7 @@ pub trait Multisig {
 		self.perform_action(action_id)
 	}
 
-	fn perform_action(&self, action_id: usize) -> SCResult<PerformActionResult<BigUint>> {
+	fn perform_action(&self, action_id: usize) -> SCResult<PerformActionResult<Self::SendApi>> {
 		let action = self.action_mapper().get(action_id);
 
 		// clean up storage
@@ -463,16 +466,19 @@ pub trait Multisig {
 				self.quorum().set(&new_quorum);
 				Ok(PerformActionResult::Nothing)
 			},
-			Action::SendRewa { to, amount, data } => {
-				Ok(PerformActionResult::SendRewa(SendRewa { to, amount, data }))
-			},
+			Action::SendRewa { to, amount, data } => Ok(PerformActionResult::SendRewa(SendRewa {
+				api: self.send(),
+				to,
+				amount,
+				data,
+			})),
 			Action::SCDeploy {
 				amount,
 				code,
 				code_metadata,
 				arguments,
 			} => {
-				let gas_left = self.get_gas_left();
+				let gas_left = self.blockchain().get_gas_left();
 				let mut arg_buffer = ArgBuffer::new();
 				for arg in arguments {
 					arg_buffer.push_argument_bytes(arg.as_slice());
@@ -492,12 +498,9 @@ pub trait Multisig {
 				endpoint_name,
 				arguments,
 			} => {
-				let mut contract_call_raw = ContractCall::<BigUint, ()>::new(
-					to,
-					TokenIdentifier::rewa(),
-					rewa_payment,
-					endpoint_name,
-				);
+				let mut contract_call_raw =
+					ContractCall::<Self::SendApi, ()>::new(self.send(), to, endpoint_name)
+						.with_token_transfer(TokenIdentifier::rewa(), rewa_payment);
 				for arg in arguments {
 					contract_call_raw.push_argument_raw_bytes(arg.as_slice());
 				}
@@ -518,7 +521,7 @@ pub trait Multisig {
 	/// Otherwise this endpoint would be prone to abuse.
 	#[endpoint(discardAction)]
 	fn discard_action(&self, action_id: usize) -> SCResult<()> {
-		let caller_address = self.get_caller();
+		let caller_address = self.blockchain().get_caller();
 		let caller_id = self.user_mapper().get_user_id(&caller_address);
 		let caller_role = self.get_user_id_to_role(caller_id);
 		require!(

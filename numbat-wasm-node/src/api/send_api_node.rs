@@ -1,7 +1,7 @@
-use super::AndesBigUint;
+use super::{AndesBigInt, AndesBigUint};
 use crate::AndesApiImpl;
 use alloc::vec::Vec;
-use numbat_wasm::api::{ContractHookApi, SendApi, StorageReadApi, StorageWriteApi};
+use numbat_wasm::api::{BlockchainApi, SendApi, StorageReadApi, StorageWriteApi};
 use numbat_wasm::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata};
 
 extern "C" {
@@ -107,7 +107,16 @@ extern "C" {
 	fn getReturnData(result_index: i32, dataOffset: *const u8) -> i32;
 }
 
-impl SendApi<AndesBigUint> for AndesApiImpl {
+impl SendApi for AndesApiImpl {
+	type AmountType = AndesBigUint;
+	type ProxyBigInt = AndesBigInt;
+	type ProxyStorage = Self;
+
+	#[inline]
+	fn get_sc_address(&self) -> Address {
+		BlockchainApi::get_sc_address(self)
+	}
+
 	fn direct_rewa(&self, to: &Address, amount: &AndesBigUint, data: &[u8]) {
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
@@ -127,10 +136,10 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 		gas_limit: u64,
 		function: &[u8],
 		arg_buffer: &ArgBuffer,
-	) {
+	) -> Result<(), &'static [u8]> {
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
-			let _ = transferValueExecute(
+			let result = transferValueExecute(
 				to.as_ref().as_ptr(),
 				amount_bytes32_ptr,
 				gas_limit as i64,
@@ -140,6 +149,11 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 				arg_buffer.arg_lengths_bytes_ptr(),
 				arg_buffer.arg_data_ptr(),
 			);
+			if result == 0 {
+				Ok(())
+			} else {
+				Err(b"transferValueExecute failed")
+			}
 		}
 	}
 
@@ -151,10 +165,10 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 		gas_limit: u64,
 		function: &[u8],
 		arg_buffer: &ArgBuffer,
-	) {
+	) -> Result<(), &'static [u8]> {
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
-			let _ = transferDCDTExecute(
+			let result = transferDCDTExecute(
 				to.as_ref().as_ptr(),
 				token.as_ptr(),
 				token.len() as i32,
@@ -166,6 +180,11 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 				arg_buffer.arg_lengths_bytes_ptr(),
 				arg_buffer.arg_data_ptr(),
 			);
+			if result == 0 {
+				Ok(())
+			} else {
+				Err(b"transferDCDTExecute failed")
+			}
 		}
 	}
 
@@ -178,10 +197,10 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 		gas_limit: u64,
 		function: &[u8],
 		arg_buffer: &ArgBuffer,
-	) {
+	) -> Result<(), &'static [u8]> {
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
-			let _ = transferDCDTNFTExecute(
+			let result = transferDCDTNFTExecute(
 				to.as_ref().as_ptr(),
 				token.as_ptr(),
 				token.len() as i32,
@@ -194,6 +213,11 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 				arg_buffer.arg_lengths_bytes_ptr(),
 				arg_buffer.arg_data_ptr(),
 			);
+			if result == 0 {
+				Ok(())
+			} else {
+				Err(b"transferDCDTNFTExecute failed")
+			}
 		}
 	}
 
@@ -263,6 +287,42 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 		}
 	}
 
+	fn execute_on_dest_context_raw_custom_result_range<F>(
+		&self,
+		gas: u64,
+		address: &Address,
+		amount: &AndesBigUint,
+		function: &[u8],
+		arg_buffer: &ArgBuffer,
+		range_closure: F,
+	) -> Vec<BoxedBytes>
+	where
+		F: FnOnce(usize, usize) -> (usize, usize),
+	{
+		unsafe {
+			let num_return_data_before = getNumReturnData();
+
+			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
+			let _ = executeOnDestContext(
+				gas,
+				address.as_ref().as_ptr(),
+				amount_bytes32_ptr,
+				function.as_ptr(),
+				function.len() as i32,
+				arg_buffer.num_args() as i32,
+				arg_buffer.arg_lengths_bytes_ptr(),
+				arg_buffer.arg_data_ptr(),
+			);
+
+			let num_return_data_after = getNumReturnData();
+			let (result_start_index, result_end_index) = range_closure(
+				num_return_data_before as usize,
+				num_return_data_after as usize,
+			);
+			get_return_data_range(result_start_index as i32, result_end_index as i32)
+		}
+	}
+
 	fn execute_on_dest_context_by_caller_raw(
 		&self,
 		gas: u64,
@@ -326,7 +386,7 @@ impl SendApi<AndesBigUint> for AndesApiImpl {
 
 	fn call_local_dcdt_built_in_function(&self, gas: u64, function: &[u8], arg_buffer: &ArgBuffer) {
 		// account-level built-in function, so the destination address is the contract itself
-		let own_address = self.get_sc_address();
+		let own_address = BlockchainApi::get_sc_address(self);
 
 		let _ = self.execute_on_dest_context_raw(
 			gas,

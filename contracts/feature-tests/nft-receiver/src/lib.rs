@@ -2,7 +2,7 @@
 
 numbat_wasm::imports!();
 
-#[numbat_wasm_derive::contract(NftReceiverImpl)]
+#[numbat_wasm_derive::contract]
 pub trait NftReceiver {
 	#[init]
 	fn init(&self) {}

@@ -59,20 +59,26 @@ where
 
 	/// Syntactic sugar, to more compactly express a get, update and set in one line.
 	/// Takes whatever lies in storage, apples the given closure and saves the final value back to storage.
-	pub fn update<F: FnOnce(&mut T)>(&self, f: F) {
+	/// Propagates the return value of the given function.
+	pub fn update<R, F: FnOnce(&mut T) -> R>(&self, f: F) -> R {
 		let mut value = self.get();
-		f(&mut value);
+		let result = f(&mut value);
 		self.set(&value);
+		result
 	}
 }
 
-impl<SA, FA, T> EndpointResult<FA> for SingleValueMapper<SA, T>
+impl<SA, T> EndpointResult for SingleValueMapper<SA, T>
 where
 	SA: StorageReadApi + StorageWriteApi + ErrorApi + Clone + 'static,
-	FA: EndpointFinishApi + 'static,
-	T: TopEncode + TopDecode + EndpointResult<FA>,
+	T: TopEncode + TopDecode + EndpointResult,
 {
-	fn finish(&self, api: FA) {
+	type DecodeAs = T::DecodeAs;
+
+	fn finish<FA>(&self, api: FA)
+	where
+		FA: EndpointFinishApi + Clone + 'static,
+	{
 		self.get().finish(api);
 	}
 }
