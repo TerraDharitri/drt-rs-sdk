@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-wasm-adapter"
-version = "1.0.8"
+version = "1.0.14"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -27,5 +27,5 @@ ei-unmanaged-node = []
 wee_alloc = "0.4" 
 
 [dependencies.dharitri-sc]
-version = "=1.0.8"
+version = "=1.0.14"
 path = "../base"

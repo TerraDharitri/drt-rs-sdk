@@ -1,17 +1,21 @@
 use ruplacer::{Console, DirectoryPatcher, Query, Settings};
-use std::{fs, path::Path};
+use std::{
+    fs,
+    path::Path,
+    process::{self, Command},
+};
 use toml::Value;
 
 use crate::{
     cargo_toml_contents::{CARGO_TOML_DEPENDENCIES, CARGO_TOML_DEV_DEPENDENCIES},
-    folder_structure::{DirectoryType, RelevantDirectory, VersionReq, FRAMEWORK_CRATE_NAMES},
+    folder_structure::{
+        DirectoryType, RelevantDirectory, VersionReq, CARGO_TOML_FILE_NAME, FRAMEWORK_CRATE_NAMES,
+    },
     meta_all::call_contract_meta,
     CargoTomlContents,
 };
 
 use super::upgrade_print::*;
-
-const CARGO_TOML_FILE_NAME: &str = "Cargo.toml";
 
 /// Uses ruplacer.
 pub(crate) fn replace_in_files(sc_crate_path: &Path, file_type: &str, queries: &[Query]) {
@@ -190,4 +194,21 @@ pub fn re_generate_wasm_crate(dir: &RelevantDirectory) {
         &dir.path,
         &["abi".to_string(), "--no-abi-git-version".to_string()],
     );
+}
+
+pub fn cargo_check(dir: &RelevantDirectory) {
+    print_cargo_check(dir);
+
+    let result = Command::new("cargo")
+        .current_dir(&dir.path)
+        .args(["check", "--tests"])
+        .spawn()
+        .expect("failed to spawn cargo check process")
+        .wait()
+        .expect("cargo check was not running");
+
+    if !result.success() {
+        print_cargo_check_fail();
+        process::exit(1);
+    }
 }

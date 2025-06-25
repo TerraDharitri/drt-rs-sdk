@@ -60,7 +60,7 @@ pub fn default_execution(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, Blo
         tx_context = tx_context_modified;
         tx_result
     };
-
+    
     if let Some(tv_log) = transfer_value_log {
         tx_result.result_logs.insert(0, tv_log);
     }

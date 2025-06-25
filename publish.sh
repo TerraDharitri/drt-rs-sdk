@@ -58,58 +58,58 @@
 #
 
 cd sdk/core
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd sdk/scenario-format/
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/codec-derive
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/codec
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/derive
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/base
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/meta
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 ### depends on sc-meta and sc, but sc-scenario depends on it (at least for now)
 cd vm
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ..
 
 cd framework/scenario
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/snippets
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/wasm-adapter
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd contracts/modules
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd contracts/core/price-aggregator
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../../..
 
 cd contracts/core/wrewa-swap
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../../..

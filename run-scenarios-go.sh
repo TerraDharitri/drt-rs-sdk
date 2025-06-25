@@ -4,4 +4,4 @@
 
 ./build-wasm.sh
 
-cargo test --features denali-go-tests
+cargo test --features run-go-tests

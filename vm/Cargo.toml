@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-chain-vm"
-version = "1.0.8"
+version = "1.0.14"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -28,18 +28,18 @@ itertools = "0.10.3"
 bech32 = "0.9"
 
 [dependencies.dharitri-sc]
-version = "=1.0.8"
+version = "=1.0.14"
 path = "../framework/base"
 features = ["alloc", "num-bigint", "promises", "big-float"]
 
 [dependencies.dharitri-sc-meta]
-version = "=1.0.8"
+version = "=1.0.14"
 path = "../framework/meta"
 
 [dependencies.dharitri-chain-scenario-format]
-version = "1.0.8"
+version = "1.0.14"
 path = "../sdk/scenario-format"
 
 [dev-dependencies.dharitri-sc-meta] # only used in the sample_adder test
-version = "=1.0.8"
+version = "=1.0.14"
 path = "../framework/meta"

@@ -13,9 +13,9 @@ path = "../benchmark-common"
 
 
 [dependencies.dharitri-sc]
-version = "1.0.8"
+version = "1.0.14"
 path = "../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.0.8"
+version = "1.0.14"
 path = "../../../../framework/scenario"

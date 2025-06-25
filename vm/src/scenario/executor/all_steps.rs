@@ -5,7 +5,6 @@ use std::path::Path;
 
 pub fn parse_execute_denali_steps(steps_path: &Path, state: &mut BlockchainMock) {
     let scenario = crate::scenario::parse_scenario(steps_path);
-
     for step in scenario.steps.into_iter() {
         match step {
             Step::ExternalSteps(external_steps_step) => {
