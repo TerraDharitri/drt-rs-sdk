@@ -1,3 +1,3 @@
 fn main() {
-    numbat_wasm_debug::meta::perform::<dcdt_transfer_with_fee::AbiProvider>();
+    dharitri_sc_meta::cli_main::<dcdt_transfer_with_fee::AbiProvider>();
 }

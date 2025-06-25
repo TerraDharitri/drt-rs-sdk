@@ -8,15 +8,19 @@ publish = false
 [lib]
 path = "src/use_module.rs"
 
-[dependencies.numbat-wasm-modules]
-version = "0.0.19"
-path = "../../../numbat-wasm-modules"
+[dependencies.dharitri-sc-modules]
+version = "1.0.8"
+path = "../../../contracts/modules"
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../framework/base"
 features = [ "alloc" ]
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.0.8"
+path = "../../../framework/scenario"
+
+[dev-dependencies.dharitri-sc-meta]
+version = "1.0.8"
+path = "../../../framework/meta"

@@ -1,24 +1,20 @@
 [package]
 name = "proxy-pause"
 version = "0.0.0"
-authors = [ "contact@dharitri.org",]
+authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
 [lib]
 path = "src/proxy_pause.rs"
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../framework/base"
 
-[dependencies.numbat-wasm-modules]
-version = "0.0.19"
-path = "../../../numbat-wasm-modules"
-
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.0.8"
+path = "../../../framework/scenario"
 
 [dev-dependencies.use-module]
 path = "../../feature-tests/use-module"

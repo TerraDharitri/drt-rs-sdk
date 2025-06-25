@@ -1,7 +1,7 @@
 [package]
-name = "numbat-sc-price-aggregator-wasm"
+name = "dharitri-sc-price-aggregator-wasm"
 version = "0.0.0"
-authors = [ "contact@dharitri.org",]
+authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
@@ -15,17 +15,12 @@ lto = true
 debug = false
 panic = "abort"
 
-[dependencies.numbat-sc-price-aggregator]
+[dependencies.dharitri-sc-price-aggregator]
 path = ".."
 
-[dependencies.numbat-wasm-node]
-version = "0.0.19"
-path = "../../../../numbat-wasm-node"
-
-[dependencies.numbat-wasm-output]
-version = "0.0.19"
-path = "../../../../numbat-wasm-output"
-features = ["wasm-output-mode"]
+[dependencies.dharitri-sc-wasm-adapter]
+version = "1.0.8"
+path = "../../../../framework/wasm-adapter"
 
 [workspace]
 members = ["."]

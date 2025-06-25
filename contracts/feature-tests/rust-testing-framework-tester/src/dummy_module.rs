@@ -1,6 +1,6 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait DummyModule {
     fn some_function(&self) -> BigUint {
         BigUint::zero()

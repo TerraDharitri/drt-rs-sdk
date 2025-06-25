@@ -1,5 +1,5 @@
-use numbat_wasm::{
-    numbat_codec::multi_types::OptionalValue,
+use dharitri_sc::{
+    codec::multi_types::OptionalValue,
     dcdt::DCDTSystemSmartContractProxy,
     types::{
         heap::{Address, BoxedBytes},
@@ -7,7 +7,7 @@ use numbat_wasm::{
         ManagedBuffer, ManagedByteArray, ManagedOption, ManagedType, ManagedVec, TokenIdentifier,
     },
 };
-use numbat_wasm_debug::{
+use dharitri_chain_vm::{
     api::DebugHandle,
     num_bigint::{BigInt as RustBigInt, BigUint as RustBigUint},
     DebugApi,

@@ -1,6 +1,6 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait BigFloatMethods {
     #[endpoint]
     fn new_from_parts_big_float(

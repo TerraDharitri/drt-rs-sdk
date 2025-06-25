@@ -1,11 +1,11 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait TransferRoleFeatures:
-    numbat_wasm_modules::transfer_role_proxy::TransferRoleProxyModule
+    dharitri_sc_modules::transfer_role_proxy::TransferRoleProxyModule
 {
     #[init]
     fn init(&self, whitelist: MultiValueEncoded<ManagedAddress>) {

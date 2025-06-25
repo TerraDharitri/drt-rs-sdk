@@ -1,11 +1,11 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 pub mod auction;
 use auction::*;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait KittyAuction {
     #[init]
     fn init(

@@ -1,4 +1,4 @@
-ALICE="/home/numbat/numbat-sdk/drtpy/testnet/wallets/users/alice.pem"
+ALICE="/home/numbat/dharitri-sdk/testwallets/latest/users/alice.pem"
 ADDRESS=$(drtpy data load --key=address-testnet)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)
 PROXY=http://localhost:7950

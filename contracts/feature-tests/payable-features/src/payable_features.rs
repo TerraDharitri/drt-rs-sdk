@@ -1,11 +1,11 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Contract that only tests the call value features,
 /// i.e. the framework/Andes functionality for accepting REWA and DCDT payments.
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait PayableFeatures {
     #[init]
     fn init(&self) {}

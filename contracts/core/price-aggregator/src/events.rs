@@ -1,5 +1,5 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 use crate::price_aggregator_data::{TimestampedPrice, TokenPair};
 
@@ -12,7 +12,7 @@ pub struct NewRoundEvent<M: ManagedTypeApi> {
     epoch: u64,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait EventsModule {
     fn emit_new_round_event(
         &self,

@@ -1,7 +1,7 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 /// All crypto functions provided by Andes exposed here.
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait CryptoFeatures {
     #[endpoint]
     #[allow(deprecated)]

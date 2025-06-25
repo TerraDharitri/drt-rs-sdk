@@ -1,7 +1,7 @@
 #![no_std]
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Status {
@@ -10,7 +10,7 @@ pub enum Status {
     Failed,
 }
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Crowdfunding {
     #[init]
     fn init(&self, target: BigUint, deadline: u64, token_identifier: RewaOrDcdtTokenIdentifier) {

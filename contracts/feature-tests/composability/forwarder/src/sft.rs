@@ -1,8 +1,8 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 use super::storage;
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait ForwarderSftModule: storage::ForwarderStorageModule {
     #[payable("REWA")]
     #[endpoint]

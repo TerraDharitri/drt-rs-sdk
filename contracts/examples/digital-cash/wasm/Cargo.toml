@@ -23,11 +23,6 @@ panic = "abort"
 [dependencies.digital-cash]
 path = ".."
 
-[dependencies.numbat-wasm-node]
-version = "0.0.19"
-path = "../../../../numbat-wasm-node"
-
-[dependencies.numbat-wasm-output]
-version = "0.0.19"
-features = ["wasm-output-mode"]
-path = "../../../../numbat-wasm-output"
+[dependencies.dharitri-sc-wasm-adapter]
+version = "1.0.8"
+path = "../../../../framework/wasm-adapter"

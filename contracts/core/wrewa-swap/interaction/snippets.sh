@@ -1,8 +1,8 @@
-ALICE="/home/numbat/numbat-sdk/drtpy/testnet/wallets/users/alice.pem"
-BOB="/home/numbat/numbat-sdk/drtpy/testnet/wallets/users/bob.pem"
+ALICE="/home/numbat/dharitri-sdk/testwallets/latest/users/alice.pem"
+BOB="/home/numbat/dharitri-sdk/testwallets/latest/users/bob.pem"
 ADDRESS=$(drtpy data load --key=address-testnet-rewa-dcdt-swap)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)
-PROXY=https://testnet-gateway.dharitri.org
+PROXY=https://testnet-gateway.numbat.com
 CHAIN_ID=T
 
 DCDT_SYSTEM_SC_ADDRESS=drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2
@@ -81,7 +81,7 @@ unwrapRewaBob() {
 getWrappedRewaTokenIdentifier() {
     local QUERY_OUTPUT=$(drtpy --verbose contract query ${ADDRESS} --function="getWrappedRewaTokenId" --proxy=${PROXY})
     TOKEN_IDENTIFIER=0x$(jq -r '.[0] .hex' <<< "${QUERY_OUTPUT}")
-    echo "Wrapped REWA token identifier: ${TOKEN_IDENTIFIER}"
+    echo "Wrapped rEWA token identifier: ${TOKEN_IDENTIFIER}"
 }
 
 getLockedRewaBalance() {

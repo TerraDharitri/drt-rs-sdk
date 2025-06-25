@@ -1,8 +1,8 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait ProxyTestSecond {
     #[storage_set("last_payment")]
     fn set_last_payment(&self, last_payment: &BigUint);

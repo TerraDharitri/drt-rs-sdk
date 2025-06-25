@@ -7,10 +7,10 @@ publish = false
 [dependencies.child]
 path = ".."
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../../../../framework/base"
 
-[dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../../../../numbat-wasm-debug"
+[dependencies.dharitri-sc-meta]
+version = "1.0.8"
+path = "../../../../../../framework/meta"

@@ -3,21 +3,18 @@ name = "drtpy-snippet-generator"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
 edition = "2021"
+publish = false
 
 [[bin]]
 name = "drtpy-snippet-generator"
 path = "src/drtpy_snippet_generator.rs"
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../numbat-wasm"
-
-[dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../numbat-wasm-debug"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../framework/base"
 
 [dependencies]
-bech32 = "0.8.1"
+bech32 = "0.9"
 num-bigint = "0.4.2"
 num-traits = "0.2"
 hex = "0.4"

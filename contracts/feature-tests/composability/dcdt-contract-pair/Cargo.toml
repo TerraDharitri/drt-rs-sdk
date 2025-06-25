@@ -5,20 +5,16 @@ authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
-[lib]
-path = "src/lib.rs"
-
-
-[dependencies.first-contract]
+[dev-dependencies.first-contract]
 path = "first-contract"
 
-[dependencies.second-contract]
+[dev-dependencies.second-contract]
 path = "second-contract"
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../../numbat-wasm"
+[dev-dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../../framework/base"
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.0.8"
+path = "../../../../framework/scenario"

@@ -1,3 +1,3 @@
 fn main() {
-    numbat_wasm_debug::meta::perform::<ping_pong_rewa::AbiProvider>();
+    dharitri_sc_meta::cli_main::<ping_pong_rewa::AbiProvider>();
 }

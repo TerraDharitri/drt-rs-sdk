@@ -19,11 +19,11 @@ python3 ./interaction/playground.py --pem=./testnet/wallets/users/alice.pem --pr
 Deploy & interact with contract:
 
 ```
-python3 ./interaction/playground.py --pem=my.pem --proxy=https://testnet-gateway.dharitri.org
+python3 ./interaction/playground.py --pem=my.pem --proxy=https://testnet-gateway.numbat.com
 ```
 
 Interact with existing contract:
 
 ```
-python3 ./interaction/playground.py --pem=my.pem --proxy=https://testnet-gateway.dharitri.org --contract=drt1...
+python3 ./interaction/playground.py --pem=my.pem --proxy=https://testnet-gateway.numbat.com --contract=drt1...
 ```

@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use numbat_interact_snippets::numbat_wasm::numbat_codec::test_util::top_encode_to_vec_u8_or_panic;
+use dharitri_sc_snippets::dharitri_sc::codec::test_util::top_encode_to_vec_u8_or_panic;
 
 use super::*;
 

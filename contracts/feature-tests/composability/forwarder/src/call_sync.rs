@@ -1,8 +1,8 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 const PERCENTAGE_TOTAL: u64 = 10_000; // 100%
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait ForwarderSyncCallModule {
     #[proxy]
     fn vault_proxy(&self) -> vault::Proxy<Self::Api>;

@@ -1,8 +1,52 @@
 # Change Log
 
-There are several crates in this repo, this changelog will keep track of all of them.
+This file contains a centralizes a trace of all published crate versions, with their changes in short.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## Versioning the crates
+
+The `drt-rs-sdk` repo contains many crates, grouped into several families. Crates in these families always have the same version with one another.
+
+For brevity, the changelog will only mention a short version of their name.
+
+They are:
+- `dharitri-sc`, in short `sc`, the smart contract framework, 6 crates + 3 for contracts/modules:
+	- `dharitri-sc`
+    - `dharitri-sc-derive`
+    - `dharitri-sc-meta`
+    - `dharitri-sc-scenario`
+    - `dharitri-sc-snippets`
+    - `dharitri-sc-wasm-adapter`
+    - `dharitri-sc-modules` - *standard contract modules*
+	- `dharitri-sc-price-aggregator` - *core contract*
+	- `dharitri-sc-wrewa-swap` - *core contract*
+- `dharitri-sc-codec`, in short `codec`, the serializer/deserializer, 2 crates:
+	- `dharitri-sc-codec`
+	- `dharitri-sc-codec-derive`
+- `dharitri-chain-vm`, in short `vm`, a Rust VM implementation, 1 crate.
+- `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
+- `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
+
+## [sc 1.0.8, vm 1.0.8] - 2023-01-19
+- `dharitri-sc-meta` improvements:
+	- `all` command that allows calling all contract meta crates in a folder;
+	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
+- Cleaned up dependencies.
+
+## [sc 0.39.1, codec 1.0.8, vm 1.0.8, scenario-format 1.0.8, sdk 1.0.8] - 2023-01-18
+- `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
+- Many depedencies updates across the repo.
+- Updated readme files.
+
+## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
+- All crates were renamed, in line with the Dharitri brand.
+- New crate: `dharitri-chain-vm`, extracted from the old debug crate.
+- New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
+- A `ScenarioWorld` facade, for contract tests.
+- The multi-contract build system.
+- The meta crate supports `twiggy` post-processing, this is a tool to analyze contract size and investigate bloat in the binaries.
+- Dropped crate: `numbat-wasm-output`. There is no equivalent crate, its job was passed to the individual `wasm` crates.
+- `ManagedVec` supports sorting and deduplication.
+- `migrateUserName` builtin function mock.
 
 ## [numbat-wasm 0.38.0, numbat-codec 0.16.0, denali 0.18.0] - 2022-12-15
 - `ContractCall` refactor. Building a contract call comes with harder compile-time constraints. This also reduces compiled code size.
@@ -299,7 +343,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Improved preprocessor substitutions: hidden generics for most managed types
 - Build info in ABI - rustc version, framework version, crate version
 
-## [numbat-wasm 0.19.1] - 2021-09-17
+## [numbat-wasm 1.0.8] - 2021-09-17
 - Legacy Send API implementation fix
 
 ## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
@@ -358,7 +402,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.17.2] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
-## [numbat-wasm 0.17.1] - 2021-06-04
+## [numbat-wasm 1.0.8] - 2021-06-04
 - `legacy-nft-transfer` feature for interacting with older versions of Andes
 
 ## [numbat-wasm 0.17.0] - 2021-05-28
@@ -570,7 +614,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [numbat-wasm 0.6.0, numbat-codec 0.1.2] - 2020-08-25
+## [numbat-wasm 0.6.0, numbat-codec 1.0.8] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework
@@ -579,7 +623,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [numbat-wasm 0.5.4, numbat-codec 0.1.1] - 2020-07-18
+## [numbat-wasm 0.5.4, numbat-codec 1.0.8] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -652,7 +696,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [numbat-wasm 0.1.1] - 2020-02-27
+## [numbat-wasm 1.0.8] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [numbat-wasm 0.1.0] - 2020-02-05 

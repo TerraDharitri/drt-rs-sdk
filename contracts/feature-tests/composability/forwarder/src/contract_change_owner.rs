@@ -1,6 +1,6 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait ChangeOwnerModule {
     #[proxy]
     fn vault_proxy(&self) -> vault::Proxy<Self::Api>;

@@ -1,9 +1,9 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::contract]
-pub trait RewaDcdtSwap: numbat_wasm_modules::pause::PauseModule {
+#[dharitri_sc::contract]
+pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
     #[init]
     fn init(&self, wrapped_rewa_token_id: TokenIdentifier) {
         self.wrapped_rewa_token_id().set(&wrapped_rewa_token_id);
@@ -48,7 +48,7 @@ pub trait RewaDcdtSwap: numbat_wasm_modules::pause::PauseModule {
         self.send()
             .dcdt_local_burn(&wrapped_rewa_token_id, 0, &payment_amount);
 
-        // 1 wrapped REWA = 1 REWA, so we pay back the same amount
+        // 1 wrapped rEWA = 1 rEWA, so we pay back the same amount
         let caller = self.blockchain().get_caller();
         self.send().direct_rewa(&caller, &payment_amount);
     }

@@ -1,9 +1,9 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 use core::marker::PhantomData;
 
-use numbat_wasm_modules::token_merge::{
+use dharitri_sc_modules::token_merge::{
     custom_merged_token_attributes::{
         AllMergeScTraits, DefaultMergedAttributesWrapper, MergedTokenAttributesCreator,
     },
@@ -16,12 +16,12 @@ pub struct CustomAttributes {
     pub second: u64,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait TokenMergeModImpl:
-    numbat_wasm_modules::pause::PauseModule
-    + numbat_wasm_modules::token_merge::TokenMergeModule
-    + numbat_wasm_modules::token_merge::merged_token_setup::MergedTokenSetupModule
-    + numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    dharitri_sc_modules::pause::PauseModule
+    + dharitri_sc_modules::token_merge::TokenMergeModule
+    + dharitri_sc_modules::token_merge::merged_token_setup::MergedTokenSetupModule
+    + dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[payable("*")]
     #[endpoint(mergeTokens)]

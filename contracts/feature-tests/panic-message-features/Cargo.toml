@@ -8,10 +8,10 @@ publish = false
 [lib]
 path = "src/panic_features.rs"
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../framework/base"
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.0.8"
+path = "../../../framework/scenario"

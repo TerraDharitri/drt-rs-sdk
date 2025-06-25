@@ -1,16 +1,16 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-use numbat_wasm::types::String;
+use dharitri_sc::types::String;
 
 /// Legacy, deprecated macros. Will b removed once they get removed.
 ///
 /// Error conversions should be moved to corresponding new formatter-based error tests.
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait MacroFeaturesLegacy {
     #[allow(deprecated)]
     #[view]
     fn only_owner_legacy(&self) -> SCResult<()> {
-        numbat_wasm::only_owner!(self, "Custom only owner message");
+        dharitri_sc::only_owner!(self, "Custom only owner message");
         Ok(())
     }
 

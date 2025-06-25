@@ -8,6 +8,6 @@ publish = false
 [dependencies.erc1155-marketplace]
 path = ".."
 
-[dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../../../numbat-wasm-debug"
+[dependencies.dharitri-sc-meta]
+version = "1.0.8"
+path = "../../../../../framework/meta"

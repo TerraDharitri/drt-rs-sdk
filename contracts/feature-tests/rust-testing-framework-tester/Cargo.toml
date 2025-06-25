@@ -5,20 +5,20 @@ authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../framework/base"
 features = [ "alloc" ]
 
-[dependencies.adder]
+[dev-dependencies.adder]
 path = "../../examples/adder"
 
-[dependencies.basic-features]
+[dev-dependencies.basic-features]
 path = "../../feature-tests/basic-features"
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.0.8"
+path = "../../../framework/scenario"
 
 [dev-dependencies]
 num-bigint = "0.4.2"

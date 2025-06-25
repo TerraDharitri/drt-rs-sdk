@@ -1,16 +1,16 @@
 [package]
-name = "numbat-sc-price-aggregator-meta"
+name = "dharitri-sc-price-aggregator-meta"
 version = "0.0.0"
 edition = "2021"
 publish = false
 
-[dependencies.numbat-sc-price-aggregator]
+[dependencies.dharitri-sc-price-aggregator]
 path = ".."
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../../framework/base"
 
-[dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../../numbat-wasm-debug"
+[dependencies.dharitri-sc-meta]
+version = "1.0.8"
+path = "../../../../framework/meta"

@@ -34,9 +34,9 @@ pub const NFT_TRANSFER_FUNC_NAME: &str = "DCDTNFTTransfer";
 pub const MULTI_TRANSFER_FUNC_NAME: &str = "MultiDCDTNFTTransfer";
 
 // default proxies
-pub const TESTNET_PROXY: &str = "https://testnet-gateway.dharitri.org";
-pub const DEVNET_PROXY: &str = "https://devnet-gateway.dharitri.org";
-pub const MAINNET_PROXY: &str = "https://gateway.dharitri.org";
+pub const TESTNET_PROXY: &str = "https://testnet-gateway.numbat.com";
+pub const DEVNET_PROXY: &str = "https://devnet-gateway.numbat.com";
+pub const MAINNET_PROXY: &str = "https://gateway.numbat.com";
 
 // default chain IDs
 pub const TESTNET_CHAIN_ID: &str = "T";

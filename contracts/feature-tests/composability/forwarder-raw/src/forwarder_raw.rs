@@ -1,11 +1,11 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Test contract for investigating async calls.
 /// TODO: split into modules
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait ForwarderRaw {
     #[init]
     fn init(&self) {}

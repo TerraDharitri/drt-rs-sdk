@@ -8,17 +8,17 @@ publish = false
 [lib]
 path = "src/basic_features_main.rs"
 
-[dependencies.numbat-wasm]
-version = "0.0.19"
-path = "../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.0.8"
+path = "../../../framework/base"
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.19"
-path = "../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.0.8"
+path = "../../../framework/scenario"
 
-[dependencies.numbat-wasm-modules]
-version = "0.0.19"
-path = "../../../numbat-wasm-modules"
+[dependencies.dharitri-sc-modules]
+version = "1.0.8"
+path = "../../../contracts/modules"
 
 [dev-dependencies.dcdt-system-sc-mock]
 path = "../dcdt-system-sc-mock"

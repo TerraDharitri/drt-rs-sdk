@@ -14,9 +14,7 @@ done
 # not wasm, but worth cleaning from time to time
 
 cargo clean
-cd numbat-wasm-node
-cargo clean
 cd ..
-cd numbat-wasm-output
+cd framework/wasm-output
 cargo clean
-cd ..
+cd ../..

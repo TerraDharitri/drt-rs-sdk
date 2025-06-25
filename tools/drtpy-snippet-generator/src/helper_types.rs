@@ -1,5 +1,5 @@
 use bech32::FromBase32;
-use numbat_wasm::types::heap::Address;
+use dharitri_sc::types::heap::Address;
 
 use crate::constants::*;
 

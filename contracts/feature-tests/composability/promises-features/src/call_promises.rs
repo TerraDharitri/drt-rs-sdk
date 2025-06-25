@@ -1,5 +1,5 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct CallbackData<M: ManagedTypeApi> {
@@ -10,7 +10,7 @@ pub struct CallbackData<M: ManagedTypeApi> {
     args: ManagedVec<M, ManagedBuffer<M>>,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait CallPromisesModule {
     #[proxy]
     fn vault_proxy(&self) -> vault::Proxy<Self::Api>;

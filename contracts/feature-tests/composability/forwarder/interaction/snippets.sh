@@ -9,7 +9,7 @@ VAULT_ADDRESS_HEX="0x$(drtpy wallet bech32 --decode ${VAULT_ADDRESS_BECH32})"
 
 ECHO_ARGS_FUNC_NAME=echo_args_async
 
-PROXY=https://testnet-api.dharitri.org
+PROXY=https://testnet-api.numbat.com
 CHAIN_ID=T
 
 deployForwarder() {

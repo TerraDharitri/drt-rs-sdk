@@ -1,5 +1,5 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct RgbColor {
@@ -8,9 +8,9 @@ pub struct RgbColor {
     b: u8,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait NonFungibleTokenMapperFeatures:
-    numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[payable("REWA")]
     #[endpoint]

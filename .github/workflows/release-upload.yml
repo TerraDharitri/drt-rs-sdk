@@ -18,7 +18,7 @@ jobs:
       - name: Install drtpy
         run: |
           source .github/workflows/env
-          pip3 install drtpy
+          pip3 install dharitri-sdk-cli
       - name: Install wasm-opt
         run: |
           drtpy deps install nodejs

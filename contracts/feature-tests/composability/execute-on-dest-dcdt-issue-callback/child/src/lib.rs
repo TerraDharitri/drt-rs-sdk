@@ -1,10 +1,10 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 const REWA_DECIMALS: usize = 18;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Child {
     #[init]
     fn init(&self) {}

@@ -13,8 +13,8 @@
             "gitVersion": "<git version here>"
         },
         "framework": {
-            "name": "numbat-wasm",
-            "version": "0.38.0"
+            "name": "dharitri-sc",
+            "version": "1.0.8"
         }
     },
     "docs": [

@@ -1,13 +1,13 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-use numbat_wasm::numbat_codec::Empty;
+use dharitri_sc::codec::Empty;
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 /// General test contract.
 /// Used especially for investigating async calls and contract interaction in general.
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Vault {
     #[init]
     fn init(&self, opt_arg_to_echo: OptionalValue<ManagedBuffer>) -> OptionalValue<ManagedBuffer> {

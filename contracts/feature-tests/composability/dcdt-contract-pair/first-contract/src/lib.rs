@@ -1,12 +1,12 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 const DCDT_TRANSFER_STRING: &[u8] = b"DCDTTransfer";
 const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &[u8] = b"acceptDcdtPayment";
 const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &[u8] = b"rejectDcdtPayment";
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait FirstContract {
     #[init]
     fn init(

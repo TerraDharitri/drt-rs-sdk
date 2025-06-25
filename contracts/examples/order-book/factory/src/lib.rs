@@ -1,7 +1,7 @@
 #![no_std]
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, Clone)]
 pub struct TokenIdPair<M: ManagedTypeApi> {
@@ -9,7 +9,7 @@ pub struct TokenIdPair<M: ManagedTypeApi> {
     second_token_id: TokenIdentifier<M>,
 }
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Factory {
     #[init]
     fn init(&self, pair_template_address: ManagedAddress) {
