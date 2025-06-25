@@ -19,8 +19,7 @@ pub fn format_receiver_args_macro(input: proc_macro::TokenStream) -> proc_macro:
         lit.to_string()
     } else {
         panic!(
-            "Formatting requires that the first argument is a string. Found: {}",
-            format_string_token
+            "Formatting requires that the first argument is a string. Found: {format_string_token}"
         );
     };
 
@@ -28,9 +27,7 @@ pub fn format_receiver_args_macro(input: proc_macro::TokenStream) -> proc_macro:
     let num_placeholders = count_args(&format_str_parts);
     assert!(
         num_placeholders == num_arguments,
-        "Number of placeholders ({}) does not match number of arguments ({}).",
-        num_placeholders,
-        num_arguments
+        "Number of placeholders ({num_placeholders}) does not match number of arguments ({num_arguments})."
     );
 
     format_str_parts.into_iter().map(|part| {
@@ -38,19 +35,31 @@ pub fn format_receiver_args_macro(input: proc_macro::TokenStream) -> proc_macro:
             FormatPartType::StaticAscii(ascii_string) => {
                 let str_as_bytes = byte_str_literal(ascii_string.as_bytes());
                 quote! (
-                    numbat_wasm::formatter::FormatReceiver::push_static_ascii(&mut $accumulator_expr, $str_as_bytes);
+                    numbat_wasm::formatter::FormatBuffer::append_ascii(&mut $accumulator_expr, $str_as_bytes);
                 )
             },
-            FormatPartType::Ascii => {
+            FormatPartType::Display => {
                 let arg_expr = tokens_iter.next().unwrap();
                 quote! (
-                    numbat_wasm::formatter::FormatReceiver::push_top_encode_bytes(&mut $accumulator_expr, &$arg_expr);
+                    numbat_wasm::formatter::FormatBuffer::append_display(&mut $accumulator_expr, &$arg_expr);
                 )
             },
-            FormatPartType::Hex => {
+            FormatPartType::LowerHex => {
                 let arg_expr = tokens_iter.next().unwrap();
                 quote! (
-                    numbat_wasm::formatter::FormatReceiver::push_top_encode_hex(&mut $accumulator_expr, &$arg_expr);
+                    numbat_wasm::formatter::FormatBuffer::append_lower_hex(&mut $accumulator_expr, &$arg_expr);
+                )
+            },
+            FormatPartType::Codec => {
+                let arg_expr = tokens_iter.next().unwrap();
+                quote! (
+                    numbat_wasm::formatter::FormatBuffer::append_codec(&mut $accumulator_expr, &$arg_expr);
+                )
+            },
+            FormatPartType::Bytes => {
+                let arg_expr = tokens_iter.next().unwrap();
+                quote! (
+                    numbat_wasm::formatter::FormatBuffer::append_binary(&mut $accumulator_expr, &$arg_expr);
                 )
             },
         }

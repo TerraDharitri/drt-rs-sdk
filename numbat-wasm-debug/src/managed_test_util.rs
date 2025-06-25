@@ -1,7 +1,7 @@
 use numbat_wasm::{
     contract_base::ManagedSerializer,
     numbat_codec::{test_util::check_top_encode, TopDecode, TopEncode},
-    types::{BoxedBytes, ManagedBuffer},
+    types::{heap::BoxedBytes, ManagedBuffer},
 };
 
 use core::fmt::Debug;

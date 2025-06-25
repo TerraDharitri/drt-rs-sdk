@@ -1,5 +1,3 @@
-use numbat_wasm::numbat_codec::TopEncode;
-
 numbat_wasm::imports!();
 
 /// Standard smart contract module for managing a single DCDT.
@@ -29,14 +27,14 @@ pub trait DcdtModule {
     #[endpoint(issueToken)]
     fn issue_token(
         &self,
-        #[payment_amount] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         token_type: DcdtTokenType,
-        #[var_args] opt_num_decimals: OptionalValue<usize>,
+        opt_num_decimals: OptionalValue<usize>,
     ) {
         require!(self.token_id().is_empty(), "Token already issued");
 
+        let issue_cost = self.call_value().rewa_value();
         let num_decimals = match opt_num_decimals {
             OptionalValue::Some(d) => d,
             OptionalValue::None => 0,
@@ -67,8 +65,7 @@ pub trait DcdtModule {
                 let initial_caller = self.blockchain().get_owner_address();
                 let rewa_returned = self.call_value().rewa_value();
                 if rewa_returned > 0u32 {
-                    self.send()
-                        .direct_rewa(&initial_caller, &rewa_returned, &[]);
+                    self.send().direct_rewa(&initial_caller, &rewa_returned);
                 }
             },
         }
@@ -87,7 +84,7 @@ pub trait DcdtModule {
     fn nft_create<T: TopEncode>(&self, amount: &BigUint, attributes: &T) -> u64 {
         let token_id = self.token_id().get();
         let empty_buffer = ManagedBuffer::new();
-        let empty_vec = ManagedVec::from_raw_handle(empty_buffer.get_raw_handle());
+        let empty_vec = ManagedVec::from_handle(empty_buffer.get_handle());
 
         self.send().dcdt_nft_create(
             &token_id,

@@ -25,15 +25,15 @@ pub trait NftMinter: nft_module::NftModule {
         royalties: BigUint,
         uri: ManagedBuffer,
         selling_price: BigUint,
-        #[var_args] opt_token_used_as_payment: OptionalValue<TokenIdentifier>,
-        #[var_args] opt_token_used_as_payment_nonce: OptionalValue<u64>,
+        opt_token_used_as_payment: OptionalValue<TokenIdentifier>,
+        opt_token_used_as_payment_nonce: OptionalValue<u64>,
     ) {
         let token_used_as_payment = match opt_token_used_as_payment {
-            OptionalValue::Some(token) => token,
-            OptionalValue::None => TokenIdentifier::rewa(),
+            OptionalValue::Some(token) => RewaOrDcdtTokenIdentifier::dcdt(token),
+            OptionalValue::None => RewaOrDcdtTokenIdentifier::rewa(),
         };
         require!(
-            token_used_as_payment.is_rewa() || token_used_as_payment.is_valid_dcdt_identifier(),
+            token_used_as_payment.is_valid(),
             "Invalid token_used_as_payment arg, not a valid token ID"
         );
 

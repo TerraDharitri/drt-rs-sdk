@@ -1,7 +1,7 @@
 #[macro_export]
 macro_rules! rust_biguint {
     ($value:expr) => {{
-        num_bigint::BigUint::from($value as u64)
+        numbat_wasm_debug::num_bigint::BigUint::from($value as u64)
     }};
 }
 
@@ -30,6 +30,21 @@ macro_rules! managed_address {
 macro_rules! managed_token_id {
     ($bytes:expr) => {{
         numbat_wasm::types::TokenIdentifier::from_dcdt_bytes($bytes)
+    }};
+}
+
+#[macro_export]
+macro_rules! managed_token_id_wrapped {
+    ($bytes:expr) => {{
+        let ___dcdt_token_id___ = numbat_wasm::types::TokenIdentifier::from_dcdt_bytes($bytes);
+        numbat_wasm::types::RewaOrDcdtTokenIdentifier::dcdt(___dcdt_token_id___)
+    }};
+}
+
+#[macro_export]
+macro_rules! managed_rewa_token_id {
+    () => {{
+        numbat_wasm::types::RewaOrDcdtTokenIdentifier::rewa()
     }};
 }
 

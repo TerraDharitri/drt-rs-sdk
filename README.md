@@ -1,10 +1,10 @@
-# numbat-wasm-rs
+# drt-rs-sdk
 
 Rust smart contract library designed for Numbat's VM. Also provides a debugging mode with mocks.
 
 # Examples
 
-For examples on how to use the Numbat WASM framework, see https://github.com/TerraDharitri/numbat-wasm-rs/tree/master/contracts/examples
+For examples on how to use the Numbat WASM framework, see https://github.com/TerraDharitri/drt-rs-sdk/tree/master/contracts/examples
 
 # IDE
 
@@ -27,7 +27,7 @@ rustup target add wasm32-unknown-unknown
 
 # Debugging
 
-Step-by-step debugging of smart contracts is possible in VSCode. To do this, it is required to have a separate debug crate and to have tasks.json and launch.json in .vscode properly configured. See https://github.com/TerraDharitri/numbat-wasm-rs/tree/master/contracts/examples for examples on how to set this up. 
+Step-by-step debugging of smart contracts is possible in VSCode. To do this, it is required to have a separate debug crate and to have tasks.json and launch.json in .vscode properly configured. See https://github.com/TerraDharitri/drt-rs-sdk/tree/master/contracts/examples for examples on how to set this up. 
 
 # Advanced
 

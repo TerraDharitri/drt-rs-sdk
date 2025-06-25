@@ -1,14 +1,15 @@
-use crate::{rust_biguint, tx_mock::TxInputDCDT};
+use crate::{num_bigint, tx_mock::TxTokenTransfer};
 use numbat_wasm::{
     numbat_codec::{top_encode_to_vec_u8_or_panic, TopEncode},
-    types::Address,
+    types::heap::Address,
 };
+use num_traits::Zero;
 
 pub struct ScCallDenali {
     pub(crate) from: Address,
     pub(crate) to: Address,
     pub(crate) rewa_value: num_bigint::BigUint,
-    pub(crate) dcdt: Vec<TxInputDCDT>,
+    pub(crate) dcdt: Vec<TxTokenTransfer>,
     pub(crate) function: String,
     pub(crate) arguments: Vec<Vec<u8>>,
     pub(crate) gas_limit: u64,
@@ -20,7 +21,7 @@ impl ScCallDenali {
         ScCallDenali {
             from: from.clone(),
             to: to.clone(),
-            rewa_value: rust_biguint!(0),
+            rewa_value: num_bigint::BigUint::zero(),
             dcdt: Vec::new(),
             function: function.to_owned(),
             arguments: Vec::new(),
@@ -39,7 +40,7 @@ impl ScCallDenali {
         nonce: u64,
         dcdt_value: &num_bigint::BigUint,
     ) {
-        self.dcdt.push(TxInputDCDT {
+        self.dcdt.push(TxTokenTransfer {
             token_identifier: token_id.to_vec(),
             nonce,
             value: dcdt_value.clone(),

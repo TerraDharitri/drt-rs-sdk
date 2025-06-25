@@ -96,8 +96,13 @@ fn forw_raw_sync_same_context_rewa_go() {
 }
 
 #[test]
-fn forw_raw_transf_exec_rewa_go() {
-    numbat_wasm_debug::denali_go("denali/forw_raw_transf_exec_rewa.scen.json");
+fn forw_raw_transf_exec_accept_rewa_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_transf_exec_accept_rewa.scen.json");
+}
+
+#[test]
+fn forw_raw_transf_exec_reject_rewa_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_transf_exec_reject_rewa.scen.json");
 }
 
 #[test]
@@ -113,11 +118,6 @@ fn forwarder_builtin_nft_burn_go() {
 #[test]
 fn forwarder_builtin_nft_create_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_create.scen.json");
-}
-
-#[test]
-fn forwarder_builtin_nft_create_by_caller_go() {
-    numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_create_by_caller.scen.json");
 }
 
 #[test]
@@ -236,6 +236,13 @@ fn forwarder_call_transf_exec_accept_dcdt_twice_go() {
 }
 
 #[test]
+fn forwarder_call_transf_exec_accept_multi_transfer_go() {
+    numbat_wasm_debug::denali_go(
+        "denali/forwarder_call_transf_exec_accept_multi_transfer.scen.json",
+    );
+}
+
+#[test]
 fn forwarder_call_transf_exec_accept_nft_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_call_transf_exec_accept_nft.scen.json");
 }
@@ -253,8 +260,15 @@ fn forwarder_call_transf_exec_accept_sft_twice_go() {
 }
 
 #[test]
-fn forwarder_call_transf_exec_multi_transfer_dcdt_go() {
-    numbat_wasm_debug::denali_go("denali/forwarder_call_transf_exec_multi_transfer_dcdt.scen.json");
+fn forwarder_call_transf_exec_reject_multi_transfer_go() {
+    numbat_wasm_debug::denali_go(
+        "denali/forwarder_call_transf_exec_reject_multi_transfer.scen.json",
+    );
+}
+
+#[test]
+fn forwarder_call_transf_exec_reject_nft_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_call_transf_exec_reject_nft.scen.json");
 }
 
 #[test]
@@ -275,6 +289,11 @@ fn forwarder_contract_upgrade_go() {
 #[test]
 fn forwarder_get_dcdt_local_roles_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_get_dcdt_local_roles.scen.json");
+}
+
+#[test]
+fn forwarder_get_dcdt_token_data_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_get_dcdt_token_data.scen.json");
 }
 
 #[test]
@@ -348,11 +367,6 @@ fn forwarder_sync_echo_go() {
 }
 
 #[test]
-fn forwarder_sync_echo_range_go() {
-    numbat_wasm_debug::denali_go("denali/forwarder_sync_echo_range.scen.json");
-}
-
-#[test]
 fn forwarder_tranfer_dcdt_with_fees_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_tranfer_dcdt_with_fees.scen.json");
 }
@@ -361,6 +375,16 @@ fn forwarder_tranfer_dcdt_with_fees_go() {
 fn forwarder_validate_token_identifier_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_validate_token_identifier.scen.json");
 }
+
+// #[test]
+// fn promises_multi_transfer_go() {
+//     numbat_wasm_debug::denali_go("denali-promises/promises_multi_transfer.scen.json");
+// }
+
+// #[test]
+// fn promises_single_transfer_go() {
+//     numbat_wasm_debug::denali_go("denali-promises/promises_single_transfer.scen.json");
+// }
 
 #[test]
 fn proxy_test_init_go() {

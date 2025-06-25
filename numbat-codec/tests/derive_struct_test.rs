@@ -6,7 +6,7 @@ use numbat_codec::test_util::{check_dep_encode_decode, check_top_encode_decode};
 // to test, run the following command in numbat-codec folder:
 // cargo expand --test derive_struct_test > expanded.rs
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Clone, Debug)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Clone, Debug)]
 pub struct Struct {
     pub int: u16,
     pub seq: Vec<u8>,
@@ -36,5 +36,5 @@ fn struct_named_fields_test() {
 	];
 
     check_top_encode_decode(s.clone(), bytes_1);
-    check_dep_encode_decode(s.clone(), bytes_1);
+    check_dep_encode_decode(s, bytes_1);
 }

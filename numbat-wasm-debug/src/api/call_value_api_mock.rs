@@ -1,16 +1,17 @@
-use crate::{tx_mock::TxPanic, DebugApi};
+use crate::{num_bigint, tx_mock::TxPanic, DebugApi};
 use numbat_wasm::{
-    api::{CallValueApi, CallValueApiImpl, Handle},
+    api::{CallValueApi, CallValueApiImpl},
     err_msg,
-    types::{BigUint, DcdtTokenType, ManagedType},
+    types::DcdtTokenType,
 };
+use num_traits::Zero;
 
 impl DebugApi {
     fn fail_if_more_than_one_dcdt_transfer(&self) {
         if self.dcdt_num_transfers() > 1 {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::TOO_MANY_DCDT_TRANSFERS.to_vec(),
+                message: err_msg::TOO_MANY_DCDT_TRANSFERS.to_string(),
             });
         }
     }
@@ -26,35 +27,47 @@ impl CallValueApi for DebugApi {
 
 impl CallValueApiImpl for DebugApi {
     fn check_not_payable(&self) {
-        if BigUint::<DebugApi>::from_raw_handle(self.rewa_value()) > 0u32 {
+        if self.input_ref().rewa_value > num_bigint::BigUint::zero() {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::NON_PAYABLE_FUNC_REWA.to_vec(),
+                message: err_msg::NON_PAYABLE_FUNC_REWA.to_string(),
             });
         }
         if self.dcdt_num_transfers() > 0 {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::NON_PAYABLE_FUNC_DCDT.to_vec(),
+                message: err_msg::NON_PAYABLE_FUNC_DCDT.to_string(),
             });
         }
     }
 
     #[inline]
-    fn rewa_value(&self) -> Handle {
-        self.insert_new_big_uint(self.input_ref().rewa_value.clone())
+    fn load_rewa_value(&self, dest: Self::BigIntHandle) {
+        self.set_big_uint(dest, self.input_ref().received_rewa().clone())
     }
 
     #[inline]
-    fn dcdt_value(&self) -> Handle {
+    fn load_single_dcdt_value(&self, dest: Self::BigIntHandle) {
         self.fail_if_more_than_one_dcdt_transfer();
-        self.dcdt_value_by_index(0)
+        if let Some(dcdt_value) = self.input_ref().received_dcdt().get(0) {
+            self.set_big_uint(dest, dcdt_value.value.clone());
+        } else {
+            std::panic::panic_any(TxPanic {
+                status: 10,
+                message: err_msg::DCDT_INVALID_TOKEN_INDEX.to_string(),
+            });
+        }
     }
 
     #[inline]
-    fn token(&self) -> Handle {
+    fn token(&self) -> Option<Self::ManagedBufferHandle> {
         self.fail_if_more_than_one_dcdt_transfer();
-        self.token_by_index(0)
+
+        if self.dcdt_num_transfers() > 0 {
+            Some(self.token_by_index(0))
+        } else {
+            None
+        }
     }
 
     #[inline]
@@ -71,41 +84,41 @@ impl CallValueApiImpl for DebugApi {
 
     #[inline]
     fn dcdt_num_transfers(&self) -> usize {
-        self.input_ref().dcdt_values.len()
+        self.input_ref().received_dcdt().len()
     }
 
     #[inline]
-    fn dcdt_value_by_index(&self, index: usize) -> Handle {
-        if let Some(dcdt_value) = self.input_ref().dcdt_values.get(index) {
+    fn dcdt_value_by_index(&self, index: usize) -> Self::BigIntHandle {
+        if let Some(dcdt_value) = self.input_ref().received_dcdt().get(index) {
             self.insert_new_big_uint(dcdt_value.value.clone())
         } else {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::DCDT_INVALID_TOKEN_INDEX.to_vec(),
+                message: err_msg::DCDT_INVALID_TOKEN_INDEX.to_string(),
             });
         }
     }
 
     #[inline]
-    fn token_by_index(&self, index: usize) -> Handle {
-        if let Some(dcdt_value) = self.input_ref().dcdt_values.get(index) {
+    fn token_by_index(&self, index: usize) -> Self::ManagedBufferHandle {
+        if let Some(dcdt_value) = self.input_ref().received_dcdt().get(index) {
             self.insert_new_managed_buffer(dcdt_value.token_identifier.clone())
         } else {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::DCDT_INVALID_TOKEN_INDEX.to_vec(),
+                message: err_msg::DCDT_INVALID_TOKEN_INDEX.to_string(),
             });
         }
     }
 
     #[inline]
     fn dcdt_token_nonce_by_index(&self, index: usize) -> u64 {
-        if let Some(dcdt_value) = self.input_ref().dcdt_values.get(index) {
+        if let Some(dcdt_value) = self.input_ref().received_dcdt().get(index) {
             dcdt_value.nonce
         } else {
             std::panic::panic_any(TxPanic {
                 status: 10,
-                message: err_msg::DCDT_INVALID_TOKEN_INDEX.to_vec(),
+                message: err_msg::DCDT_INVALID_TOKEN_INDEX.to_string(),
             });
         }
     }

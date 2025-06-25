@@ -12,9 +12,23 @@ pub struct RgbColor {
 pub trait NonFungibleTokenMapperFeatures:
     numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
+    #[payable("REWA")]
+    #[endpoint]
+    fn issue_and_set_all_roles_meta(&self, token_ticker: ManagedBuffer) {
+        let payment = self.call_value().rewa_value();
+        self.non_fungible_token_mapper().issue_and_set_all_roles(
+            DcdtTokenType::Meta,
+            payment,
+            ManagedBuffer::new(),
+            token_ticker,
+            0,
+            None,
+        );
+    }
+
     #[endpoint]
     fn mapper_nft_set_token_id(&self, token_id: TokenIdentifier) {
-        self.non_fungible_token_mapper().set_token_id(&token_id);
+        self.non_fungible_token_mapper().set_token_id(token_id);
     }
 
     #[endpoint]
@@ -78,5 +92,5 @@ pub trait NonFungibleTokenMapperFeatures:
 
     #[view(getNonFungibleTokenId)]
     #[storage_mapper("nonFungibleTokenMapper")]
-    fn non_fungible_token_mapper(&self) -> NonFungibleTokenMapper<Self::Api>;
+    fn non_fungible_token_mapper(&self) -> NonFungibleTokenMapper;
 }

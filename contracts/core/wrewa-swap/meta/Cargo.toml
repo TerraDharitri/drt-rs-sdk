@@ -1,0 +1,19 @@
+[package]
+name = "numbat-sc-wrewa-swap-meta"
+version = "0.0.0"
+authors = [ "contact@dharitri.org",]
+edition = "2021"
+publish = false
+
+[dev-dependencies]
+
+[dependencies.numbat-sc-wrewa-swap]
+path = ".."
+
+[dependencies.numbat-wasm]
+version = "0.0.19"
+path = "../../../../numbat-wasm"
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.19"
+path = "../../../../numbat-wasm-debug"

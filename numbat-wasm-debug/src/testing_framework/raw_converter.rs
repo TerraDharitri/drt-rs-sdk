@@ -1,12 +1,15 @@
 use std::collections::BTreeMap;
 
-use crate::world_mock::{AccountData, BlockInfo, DcdtData};
-use numbat_wasm::types::Address;
+use crate::{
+    num_bigint,
+    world_mock::{AccountData, BlockInfo, DcdtData},
+};
+use numbat_wasm::types::heap::Address;
 use denali::serde_raw::{
     AccountRaw, BlockInfoRaw, CheckAccountRaw, CheckAccountsRaw, CheckBytesValueRaw,
     CheckDcdtDataRaw, CheckDcdtInstanceRaw, CheckDcdtInstancesRaw, CheckDcdtMapContentsRaw,
     CheckDcdtMapRaw, CheckDcdtRaw, CheckLogsRaw, CheckStorageDetailsRaw, CheckStorageRaw,
-    CheckValueListRaw, DcdtFullRaw, DcdtRaw, InstanceRaw, TxCallRaw, TxDCDTRaw, TxExpectRaw,
+    CheckValueListRaw, DcdtFullRaw, DcdtInstanceRaw, DcdtRaw, TxCallRaw, TxDCDTRaw, TxExpectRaw,
     TxQueryRaw, ValueSubTree,
 };
 use num_traits::Zero;
@@ -17,6 +20,7 @@ pub(crate) const STAR_STR: &str = "*";
 
 pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
     let balance_raw = Some(rust_biguint_as_raw(&acc.rewa_balance));
+    let developer_rewards_raw = Some(rust_biguint_as_raw(&acc.developer_rewards));
     let code_raw = acc
         .contract_path
         .clone()
@@ -47,6 +51,7 @@ pub(crate) fn account_as_raw(acc: &AccountData) -> AccountRaw {
         owner: acc.contract_owner.as_ref().map(address_as_raw),
         storage: storage_raw,
         username: None, // TODO: Add if needed
+        developer_rewards: developer_rewards_raw,
     }
 }
 
@@ -65,7 +70,7 @@ pub(crate) fn dcdt_data_as_raw(dcdt: &DcdtData) -> DcdtRaw {
 
     let mut instances_raw = Vec::new();
     for inst in dcdt.instances.get_instances().values() {
-        let inst_raw = InstanceRaw {
+        let inst_raw = DcdtInstanceRaw {
             attributes: Some(bytes_as_raw(&inst.metadata.attributes)),
             balance: Some(rust_biguint_as_raw(&inst.balance)),
             creator: inst.metadata.creator.as_ref().map(address_as_raw),
@@ -243,6 +248,7 @@ pub(crate) fn account_as_check_state_raw(acc: &AccountData) -> CheckAccountsRaw 
             contents: all_check_dcdt_raw,
         }),
         owner: CheckBytesValueRaw::Star, // TODO: Add owner check?
+        developer_rewards: CheckBytesValueRaw::Equal(rust_biguint_as_raw(&acc.developer_rewards)),
         storage: CheckStorageRaw::Equal(check_storage_raw),
         code: CheckBytesValueRaw::Star,
         async_call_data: CheckBytesValueRaw::Unspecified,
@@ -272,7 +278,7 @@ pub(crate) fn opt_raw_value_to_check_raw(raw_value: &Option<ValueSubTree>) -> Ch
 pub(crate) fn bytes_to_denali_string_or_hex(bytes: &[u8]) -> String {
     let conversion_result = String::from_utf8(bytes.to_vec());
     match conversion_result {
-        core::result::Result::Ok(bytes_as_str) => format!("str:{}", bytes_as_str),
+        core::result::Result::Ok(bytes_as_str) => format!("str:{bytes_as_str}"),
         core::result::Result::Err(_) => bytes_to_hex(bytes),
     }
 }

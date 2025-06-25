@@ -11,7 +11,7 @@ use cmd_builder::*;
 use constants::*;
 use helper_types::*;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum PrintOption {
     DrtpySnippet,
     TxData,
@@ -310,7 +310,7 @@ impl DrtpySnippetGenerator {
             tx_data += &arg_as_hex;
         }
 
-        println!("{}", tx_data);
+        println!("{tx_data}");
     }
 
     fn handle_common_non_query_steps(&self, cmd_builder: &mut CmdBuilder) {

@@ -2,12 +2,12 @@
 name = "queue-repeat-meta"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies.queue-repeat]
 path = ".."
 
 [dependencies.numbat-wasm-debug]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm-debug"

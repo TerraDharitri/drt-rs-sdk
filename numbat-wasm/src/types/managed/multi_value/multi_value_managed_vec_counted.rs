@@ -1,9 +1,8 @@
 use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer},
+    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::ManagedTypeApi,
     types::{ManagedVec, ManagedVecItem},
 };
-use alloc::string::String;
 use numbat_codec::{
     DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti, TopDecodeMultiInput, TopEncodeMulti,
     TopEncodeMultiOutput,
@@ -11,7 +10,7 @@ use numbat_codec::{
 
 /// Argument or result that is made up of the argument count, followed by the arguments themselves.
 /// Think of it as a `VarArgs` preceded by the count.
-/// Unlike `ManagedMultiValue` it deserializes eagerly.
+/// Unlike `MultiValueManagedVec` it deserializes eagerly.
 #[derive(Clone, Default)]
 pub struct MultiValueManagedVecCounted<M, T>
 where
@@ -95,8 +94,6 @@ where
     M: ManagedTypeApi,
     T: ManagedVecItem + TopEncodeMulti,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -134,8 +131,8 @@ where
     M: ManagedTypeApi,
     T: ManagedVecItem + TypeAbi,
 {
-    fn type_name() -> String {
-        let mut repr = String::from("counted-variadic<");
+    fn type_name() -> TypeName {
+        let mut repr = TypeName::from("counted-variadic<");
         repr.push_str(T::type_name().as_str());
         repr.push('>');
         repr

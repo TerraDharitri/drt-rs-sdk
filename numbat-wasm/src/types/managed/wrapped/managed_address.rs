@@ -1,16 +1,15 @@
 use core::convert::{TryFrom, TryInto};
 
 use crate::{
-    abi::TypeAbi,
-    api::{Handle, ManagedTypeApi},
-    hex_util::encode_bytes_as_hex,
-    types::{Address, ManagedBuffer, ManagedByteArray, ManagedType},
+    abi::{TypeAbi, TypeName},
+    api::ManagedTypeApi,
+    formatter::{hex_util::encode_bytes_as_hex, FormatByteReceiver, SCLowerHex},
+    types::{heap::Address, ManagedBuffer, ManagedByteArray, ManagedType},
 };
-use alloc::string::String;
 use numbat_codec::{
-    DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput,
-    NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
-    TryStaticCast,
+    CodecFrom, CodecFromSelf, DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
+    NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
+    TopEncodeOutput, TryStaticCast,
 };
 
 #[repr(transparent)]
@@ -97,6 +96,16 @@ where
     }
 }
 
+impl<M> From<[u8; 32]> for ManagedAddress<M>
+where
+    M: ManagedTypeApi,
+{
+    #[inline]
+    fn from(bytes: [u8; 32]) -> Self {
+        Self::new_from_bytes(&bytes)
+    }
+}
+
 impl<M> From<ManagedByteArray<M, 32>> for ManagedAddress<M>
 where
     M: ManagedTypeApi,
@@ -122,19 +131,20 @@ impl<M> ManagedType<M> for ManagedAddress<M>
 where
     M: ManagedTypeApi,
 {
+    type OwnHandle = M::ManagedBufferHandle;
+
     #[inline]
-    fn from_raw_handle(handle: Handle) -> Self {
+    fn from_handle(handle: M::ManagedBufferHandle) -> Self {
         ManagedAddress {
-            bytes: ManagedByteArray::from_raw_handle(handle),
+            bytes: ManagedByteArray::from_handle(handle),
         }
     }
 
-    #[doc(hidden)]
-    fn get_raw_handle(&self) -> Handle {
-        self.bytes.get_raw_handle()
+    fn get_handle(&self) -> M::ManagedBufferHandle {
+        self.bytes.get_handle()
     }
 
-    fn transmute_from_handle_ref(handle_ref: &Handle) -> &Self {
+    fn transmute_from_handle_ref(handle_ref: &M::ManagedBufferHandle) -> &Self {
         unsafe { core::mem::transmute(handle_ref) }
     }
 }
@@ -229,8 +239,14 @@ where
     M: ManagedTypeApi,
 {
     /// `"Address"` instead of `"array32<u8>"`.
-    fn type_name() -> String {
+    fn type_name() -> TypeName {
         Address::type_name()
+    }
+}
+
+impl<M: ManagedTypeApi> SCLowerHex for ManagedAddress<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        SCLowerHex::fmt(&self.bytes, f)
     }
 }
 
@@ -242,3 +258,19 @@ impl<M: ManagedTypeApi> core::fmt::Debug for ManagedAddress<M> {
             .finish()
     }
 }
+
+impl<M> CodecFromSelf for ManagedAddress<M> where M: ManagedTypeApi {}
+
+impl<M> CodecFrom<[u8; 32]> for ManagedAddress<M> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<Address> for ManagedAddress<M> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<&Address> for ManagedAddress<M> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<ManagedAddress<M>> for Address where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+impl<M> CodecFrom<&ManagedAddress<M>> for Address where M: ManagedTypeApi {}

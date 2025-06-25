@@ -19,7 +19,6 @@ struct TopDecodeInput;
 struct TopEncodeOutput;
 struct NestedDecodeInput;
 struct NestedEncodeOutput;
-struct NestedEncodeNoErr;
 
 // Making sure derive explicitly only works with core::result::Result
 // and doesn't get tricked by other enums with the same name.
@@ -34,9 +33,8 @@ use crate::Result::{Err, Ok};
 
 // Also adding all public functions exposed by numbat-codec.
 // They are not used in the derive, but just to make sure:
-fn bytes_to_number() {}
-fn top_encode_number_to_output() {}
-fn using_encoded_number() {}
+fn top_encode_number() {}
+fn universal_decode_number() {}
 fn dep_decode_from_byte_slice() {}
 fn dep_encode_to_vec() {}
 fn top_decode_from_nested_or_handle_err() {}
@@ -46,7 +44,7 @@ fn top_encode_to_vec_u8() {}
 fn boxed_slice_into_vec() {}
 fn vec_into_boxed_slice() {}
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Clone, Debug)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Clone, Debug)]
 pub struct Struct {
     pub int: u16,
     pub seq: Vec<u8>,
@@ -55,10 +53,10 @@ pub struct Struct {
     pub uint_64: u64,
 }
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Clone, Debug)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Clone, Debug)]
 struct TupleStruct(u8, u16, u32);
 
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Debug)]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Eq, Clone, Debug)]
 enum DayOfWeek {
     Monday,
     Tuesday,
@@ -69,7 +67,7 @@ enum DayOfWeek {
     Sunday,
 }
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Clone, Debug)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Clone, Debug)]
 enum EnumWithEverything {
     Quit,
     Today(DayOfWeek),
@@ -87,7 +85,7 @@ trait SimpleTrait {
     fn simple_function(&self);
 }
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Clone, Debug)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Clone, Debug)]
 struct StructWithNamedFieldsWithGeneric<ST: SimpleTrait>
 where
     ST: numbat_codec::NestedEncode

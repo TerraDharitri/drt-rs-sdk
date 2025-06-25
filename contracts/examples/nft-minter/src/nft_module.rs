@@ -1,14 +1,12 @@
 numbat_wasm::imports!();
 numbat_wasm::derive_imports!();
 
-use numbat_wasm::numbat_codec::TopEncode;
-
 const NFT_AMOUNT: u32 = 1;
 const ROYALTIES_MAX: u32 = 10_000;
 
 #[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct PriceTag<M: ManagedTypeApi> {
-    pub token: TokenIdentifier<M>,
+    pub token: RewaOrDcdtTokenIdentifier<M>,
     pub nonce: u64,
     pub amount: BigUint<M>,
 }
@@ -34,6 +32,7 @@ pub trait NftModule {
                     can_freeze: true,
                     can_wipe: true,
                     can_pause: true,
+                    can_transfer_create_role: true,
                     can_change_owner: false,
                     can_upgrade: false,
                     can_add_special_roles: true,
@@ -65,7 +64,7 @@ pub trait NftModule {
     #[payable("*")]
     #[endpoint(buyNft)]
     fn buy_nft(&self, nft_nonce: u64) {
-        let payment: DcdtTokenPayment<Self::Api> = self.call_value().payment();
+        let payment = self.call_value().rewa_or_single_dcdt();
 
         self.require_token_issued();
         require!(
@@ -91,12 +90,11 @@ pub trait NftModule {
 
         let nft_token_id = self.nft_token_id().get();
         let caller = self.blockchain().get_caller();
-        self.send().direct(
+        self.send().direct_dcdt(
             &caller,
             &nft_token_id,
             nft_nonce,
             &BigUint::from(NFT_AMOUNT),
-            &[],
         );
 
         let owner = self.blockchain().get_owner_address();
@@ -105,7 +103,6 @@ pub trait NftModule {
             &payment.token_identifier,
             payment.token_nonce,
             &payment.amount,
-            &[],
         );
     }
 
@@ -116,7 +113,7 @@ pub trait NftModule {
     fn get_nft_price(
         &self,
         nft_nonce: u64,
-    ) -> OptionalValue<MultiValue3<TokenIdentifier, u64, BigUint>> {
+    ) -> OptionalValue<MultiValue3<RewaOrDcdtTokenIdentifier, u64, BigUint>> {
         if self.price_tag(nft_nonce).is_empty() {
             // NFT was already sold
             OptionalValue::None
@@ -130,17 +127,20 @@ pub trait NftModule {
     // callbacks
 
     #[callback]
-    fn issue_callback(&self, #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>) {
+    fn issue_callback(
+        &self,
+        #[call_result] result: ManagedAsyncCallResult<RewaOrDcdtTokenIdentifier>,
+    ) {
         match result {
             ManagedAsyncCallResult::Ok(token_id) => {
-                self.nft_token_id().set(&token_id);
+                self.nft_token_id().set(&token_id.unwrap_dcdt());
             },
             ManagedAsyncCallResult::Err(_) => {
                 let caller = self.blockchain().get_owner_address();
-                let (returned_tokens, token_id) = self.call_value().payment_token_pair();
-                if token_id.is_rewa() && returned_tokens > 0 {
+                let returned = self.call_value().rewa_or_single_dcdt();
+                if returned.token_identifier.is_rewa() && returned.amount > 0 {
                     self.send()
-                        .direct(&caller, &token_id, 0, &returned_tokens, &[]);
+                        .direct(&caller, &returned.token_identifier, 0, &returned.amount);
                 }
             },
         }
@@ -156,7 +156,7 @@ pub trait NftModule {
         attributes: T,
         uri: ManagedBuffer,
         selling_price: BigUint,
-        token_used_as_payment: TokenIdentifier,
+        token_used_as_payment: RewaOrDcdtTokenIdentifier,
         token_used_as_payment_nonce: u64,
     ) -> u64 {
         self.require_token_issued();
@@ -169,9 +169,7 @@ pub trait NftModule {
             sc_panic!("Attributes encode error: {}", err.message_bytes());
         }
 
-        let attributes_sha256 = self
-            .crypto()
-            .sha256_legacy_managed::<1000>(&serialized_attributes);
+        let attributes_sha256 = self.crypto().sha256(&serialized_attributes);
         let attributes_hash = attributes_sha256.as_managed_buffer();
         let uris = ManagedVec::from_single_item(uri);
         let nft_nonce = self.send().dcdt_nft_create(

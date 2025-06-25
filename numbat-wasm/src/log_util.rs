@@ -1,4 +1,4 @@
-use numbat_codec::TopEncode;
+use numbat_codec::{TopEncode, TopEncodeMulti};
 
 use crate::{
     api::{ErrorApi, LogApi, LogApiImpl, ManagedTypeApi},
@@ -19,14 +19,12 @@ where
 pub fn serialize_event_topic<A, T>(accumulator: &mut ManagedVec<A, ManagedBuffer<A>>, topic: T)
 where
     A: ErrorApi + ManagedTypeApi,
-    T: TopEncode,
+    T: TopEncodeMulti,
 {
-    let mut topic_buffer = ManagedBuffer::new();
-    let Ok(()) = topic.top_encode_or_handle_err(
-        &mut topic_buffer,
+    let Ok(()) = topic.multi_encode_or_handle_err(
+        accumulator,
         ExitCodecErrorHandler::<A>::from(err_msg::LOG_TOPIC_ENCODE_ERROR),
     );
-    accumulator.push(topic_buffer);
 }
 
 pub fn serialize_log_data<T, A>(data: T) -> ManagedBuffer<A>
@@ -46,5 +44,5 @@ pub fn write_log<A>(topics: &ManagedVec<A, ManagedBuffer<A>>, data: &ManagedBuff
 where
     A: LogApi + ManagedTypeApi,
 {
-    A::log_api_impl().managed_write_log(topics.get_raw_handle(), data.get_raw_handle());
+    A::log_api_impl().managed_write_log(topics.get_handle(), data.get_handle());
 }

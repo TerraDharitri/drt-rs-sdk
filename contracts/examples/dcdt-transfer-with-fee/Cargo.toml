@@ -1,0 +1,17 @@
+[package]
+name = "dcdt-transfer-with-fee"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/dcdt_transfer_with_fee.rs"
+
+[dependencies.numbat-wasm]
+version = "0.0.19"
+path = "../../../numbat-wasm"
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.19"
+path = "../../../numbat-wasm-debug"

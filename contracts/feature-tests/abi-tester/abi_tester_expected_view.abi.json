@@ -9,11 +9,12 @@
         },
         "contractCrate": {
             "name": "abi-tester",
-            "version": "0.0.0"
+            "version": "0.0.0",
+            "gitVersion": "<git version here>"
         },
         "framework": {
             "name": "numbat-wasm",
-            "version": "0.0.17"
+            "version": "0.38.0"
         }
     },
     "docs": [
@@ -24,12 +25,78 @@
         "including Rust docs."
     ],
     "name": "AbiTester",
+    "constructor": {
+        "docs": [
+            "The external view init prepares a contract that looks in another contract's storage.",
+            "It takes a single argument, the other contract's address",
+            "You won't find this constructors' definition in the contract, it gets injected automatically by the framework. See `numbat_wasm::external_view_contract`."
+        ],
+        "inputs": [
+            {
+                "name": "target_contract_address",
+                "type": "Address"
+            }
+        ],
+        "outputs": []
+    },
     "endpoints": [
         {
             "name": "external_view",
-            "mutability": "readonly",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": [],
+            "labels": [
+                "test-external-view"
+            ]
+        },
+        {
+            "name": "payable_any_token",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
             "inputs": [],
             "outputs": []
+        },
+        {
+            "name": "label_a",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": [],
+            "labels": [
+                "label1"
+            ]
+        }
+    ],
+    "events": [
+        {
+            "identifier": "payable-event",
+            "inputs": [
+                {
+                    "name": "token",
+                    "type": "TokenIdentifier",
+                    "indexed": true
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
+            ]
+        },
+        {
+            "identifier": "address-h256-event",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address",
+                    "indexed": true
+                },
+                {
+                    "name": "h256",
+                    "type": "H256",
+                    "indexed": true
+                }
+            ]
         }
     ],
     "hasCallback": false,
@@ -184,6 +251,10 @@
                 {
                     "name": "NftUpdateAttributes",
                     "discriminant": 7
+                },
+                {
+                    "name": "Transfer",
+                    "discriminant": 8
                 }
             ]
         },
@@ -231,10 +302,6 @@
         "DcdtTokenPayment": {
             "type": "struct",
             "fields": [
-                {
-                    "name": "token_type",
-                    "type": "DcdtTokenType"
-                },
                 {
                     "name": "token_identifier",
                     "type": "TokenIdentifier"

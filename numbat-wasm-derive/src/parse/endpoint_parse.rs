@@ -1,12 +1,13 @@
 use crate::model::{
-    CallbackMetadata, EndpointLocationMetadata, EndpointMetadata, EndpointMutabilityMetadata,
-    InitMetadata, Method, PublicRole,
+    CallbackMetadata, EndpointMetadata, EndpointMutabilityMetadata, InitMetadata, Method,
+    PublicRole,
 };
 
 use super::{
     attributes::{
-        is_callback_raw, is_init, is_only_owner, CallbackAttribute, EndpointAttribute,
-        ExternalViewAttribute, OutputNameAttribute, ViewAttribute,
+        is_callback_raw, is_init, is_only_admin, is_only_owner, is_only_user_account,
+        CallbackAttribute, EndpointAttribute, ExternalViewAttribute, LabelAttribute,
+        OutputNameAttribute, PromisesCallbackAttribute, ViewAttribute,
     },
     MethodAttributesPass1,
 };
@@ -44,6 +45,28 @@ pub fn process_only_owner_attribute(
     is_only_owner
 }
 
+pub fn process_only_admin_attribute(
+    attr: &syn::Attribute,
+    pass_1_data: &mut MethodAttributesPass1,
+) -> bool {
+    let is_only_admin = is_only_admin(attr);
+    if is_only_admin {
+        pass_1_data.only_admin = true;
+    }
+    is_only_admin
+}
+
+pub fn process_only_user_account_attribute(
+    attr: &syn::Attribute,
+    pass_1_data: &mut MethodAttributesPass1,
+) -> bool {
+    let is_only_user_account = is_only_user_account(attr);
+    if is_only_user_account {
+        pass_1_data.only_user_account = true;
+    }
+    is_only_user_account
+}
+
 pub fn process_endpoint_attribute(
     attr: &syn::Attribute,
     pass_1_data: &MethodAttributesPass1,
@@ -60,8 +83,9 @@ pub fn process_endpoint_attribute(
                 public_name: endpoint_ident,
                 payable: pass_1_data.payable.clone(),
                 only_owner: pass_1_data.only_owner,
+                only_admin: pass_1_data.only_admin,
+                only_user_account: pass_1_data.only_user_account,
                 mutability: EndpointMutabilityMetadata::Mutable,
-                location: EndpointLocationMetadata::MainContract,
             });
         })
         .is_some()
@@ -83,8 +107,9 @@ pub fn process_view_attribute(
                 public_name: view_ident,
                 payable: pass_1_data.payable.clone(),
                 only_owner: pass_1_data.only_owner,
+                only_admin: pass_1_data.only_admin,
+                only_user_account: pass_1_data.only_user_account,
                 mutability: EndpointMutabilityMetadata::Readonly,
-                location: EndpointLocationMetadata::MainContract,
             });
         })
         .is_some()
@@ -106,8 +131,9 @@ pub fn process_external_view_attribute(
                 public_name: view_ident,
                 payable: pass_1_data.payable.clone(),
                 only_owner: pass_1_data.only_owner,
+                only_admin: pass_1_data.only_admin,
+                only_user_account: pass_1_data.only_user_account,
                 mutability: EndpointMutabilityMetadata::Readonly,
-                location: EndpointLocationMetadata::ViewContract,
             });
         })
         .is_some()
@@ -138,10 +164,33 @@ pub fn process_callback_attribute(attr: &syn::Attribute, method: &mut Method) ->
         .is_some()
 }
 
+pub fn process_promises_callback_attribute(attr: &syn::Attribute, method: &mut Method) -> bool {
+    PromisesCallbackAttribute::parse(attr)
+        .map(|callback_attr| {
+            check_single_role(&*method);
+            let callback_ident = match callback_attr.callback_name {
+                Some(ident) => ident,
+                None => method.name.clone(),
+            };
+            method.public_role = PublicRole::CallbackPromise(CallbackMetadata {
+                callback_name: callback_ident,
+            });
+        })
+        .is_some()
+}
+
 pub fn process_output_names_attribute(attr: &syn::Attribute, method: &mut Method) -> bool {
     OutputNameAttribute::parse(attr)
         .map(|output_name_attr| {
             method.output_names.push(output_name_attr.output_name);
+        })
+        .is_some()
+}
+
+pub fn process_label_names_attribute(attr: &syn::Attribute, method: &mut Method) -> bool {
+    LabelAttribute::parse(attr)
+        .map(|label_attr| {
+            method.label_names.push(label_attr.label);
         })
         .is_some()
 }

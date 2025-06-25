@@ -1,12 +1,12 @@
 [package]
 name = "random"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2018"
+authors = [ "contact@dharitri.org",]
+edition = "2021"
 
 [lib]
 path = "src/lib.rs"
 
 [dependencies.numbat-wasm]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm"

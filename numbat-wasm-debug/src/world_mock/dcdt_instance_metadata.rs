@@ -1,4 +1,4 @@
-use numbat_wasm::types::Address;
+use numbat_wasm::types::heap::Address;
 
 /// Holds the data for a Numbat standard digital token transaction
 #[derive(Clone, Default, Debug)]

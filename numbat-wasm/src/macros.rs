@@ -11,26 +11,30 @@ macro_rules! imports {
             SubAssign,
         };
         use numbat_wasm::{
+            abi::TypeAbi,
             api::{
-                BigIntApi, BlockchainApi, BlockchainApiImpl, CallValueApi, CallValueApiImpl,
-                CryptoApi, CryptoApiImpl, EllipticCurveApi, ErrorApi, ErrorApiImpl, LogApi,
-                LogApiImpl, ManagedTypeApi, PrintApi, PrintApiImpl, SendApi, SendApiImpl,
+                BigFloatApi, BigIntApi, BlockchainApi, BlockchainApiImpl, CallValueApi,
+                CallValueApiImpl, CryptoApi, CryptoApiImpl, EllipticCurveApi, ErrorApi,
+                ErrorApiImpl, LogApi, LogApiImpl, ManagedTypeApi, PrintApi, PrintApiImpl, SendApi,
+                SendApiImpl,
             },
             arrayvec::ArrayVec,
             contract_base::{ContractBase, ProxyObjBase},
-            numbat_codec::{multi_types::*, DecodeError, NestedDecode, NestedEncode, TopDecode},
+            numbat_codec::{
+                multi_types::*, DecodeError, IntoMultiValue, NestedDecode, NestedEncode, TopDecode,
+                TopEncode,
+            },
             err_msg,
             dcdt::*,
             io::*,
             non_zero_usize,
             non_zero_util::*,
-            require, require_old, sc_error, sc_panic, sc_print,
+            require, require_old, sc_error, sc_format, sc_panic, sc_print,
             storage::mappers::*,
             types::{
                 SCResult::{Err, Ok},
                 *,
             },
-            Box, Vec,
         };
     };
 }
@@ -114,7 +118,7 @@ macro_rules! sc_panic {
 /// }
 ///
 /// fn only_accept_negative(&self, x: i32) {
-///     require!(x < 0, "only negative values accepted, {:x} is not negative", x);
+///     require!(x < 0, "only negative values accepted, {} is not negative", x);
 /// }
 ///
 /// fn only_accept_zero(&self, x: i32, message: &ManagedBuffer<Self::Api>) {
@@ -135,9 +139,25 @@ macro_rules! require {
 macro_rules! sc_print {
     ($msg:tt, $($arg:expr),* $(,)?) => {{
         let mut ___buffer___ =
-            numbat_wasm::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
+            <<Self::Api as numbat_wasm::api::PrintApi>::PrintApiImpl as numbat_wasm::api::PrintApiImpl>::Buffer::default();
         numbat_wasm::derive::format_receiver_args!(___buffer___, $msg, $($arg),*);
-        <Self::Api as numbat_wasm::api::PrintApi>::print_api_impl().print_managed_buffer(___buffer___.into_managed_buffer().get_raw_handle());
+        <<Self::Api as numbat_wasm::api::PrintApi>::PrintApiImpl as numbat_wasm::api::PrintApiImpl>::print_buffer(
+            &<Self::Api as numbat_wasm::api::PrintApi>::print_api_impl(),
+            ___buffer___,
+        );
+    }};
+}
+
+#[macro_export]
+macro_rules! sc_format {
+    ($msg:tt, $($arg:expr),+ $(,)?) => {{
+        let mut ___buffer___ =
+            numbat_wasm::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
+        numbat_wasm::derive::format_receiver_args!(___buffer___, $msg, $($arg),+);
+        ___buffer___.into_managed_buffer()
+    }};
+    ($msg:expr $(,)?) => {{
+        numbat_wasm::types::ManagedBuffer::new_from_bytes($msg.as_bytes())
     }};
 }
 
@@ -191,10 +211,6 @@ macro_rules! only_owner {
 #[macro_export]
 macro_rules! non_zero_usize {
     ($input: expr, $error_msg:expr) => {
-        if let Some(nz) = NonZeroUsize::new($input) {
-            nz
-        } else {
-            return sc_error!($error_msg);
-        }
+        NonZeroUsize::new($input).unwrap_or_else(|| sc_panic!($error_msg))
     };
 }

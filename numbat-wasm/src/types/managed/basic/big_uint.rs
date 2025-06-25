@@ -1,37 +1,39 @@
-use core::marker::PhantomData;
+use core::convert::TryInto;
 
 use crate::{
-    api::{BigIntApi, Handle, ManagedBufferApi, ManagedTypeApi, ManagedTypeApiImpl},
-    hex_util::encode_bytes_as_hex,
-    types::{BoxedBytes, ManagedBuffer, ManagedType},
+    abi::TypeName,
+    api::{
+        const_handles, use_raw_handle, BigIntApi, HandleConstraints, ManagedBufferApi,
+        ManagedTypeApi, ManagedTypeApiImpl, RawHandle, StaticVarApiImpl,
+    },
+    formatter::{hex_util::encode_bytes_as_hex, FormatByteReceiver, SCDisplay},
+    types::{heap::BoxedBytes, ManagedBuffer, ManagedType},
 };
-use alloc::string::String;
 use numbat_codec::{
-    DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode,
-    NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput, TryStaticCast,
+    CodecFrom, CodecFromSelf, DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
+    NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
+    TopEncodeOutput, TryStaticCast,
 };
+
+use super::cast_to_i64::cast_to_i64;
 
 #[repr(transparent)]
 pub struct BigUint<M: ManagedTypeApi> {
-    pub(crate) handle: Handle,
-    _phantom: PhantomData<M>,
+    pub(crate) handle: M::BigIntHandle,
 }
 
 impl<M: ManagedTypeApi> ManagedType<M> for BigUint<M> {
-    #[doc(hidden)]
-    fn from_raw_handle(handle: Handle) -> Self {
-        BigUint {
-            handle,
-            _phantom: PhantomData,
-        }
+    type OwnHandle = M::BigIntHandle;
+
+    fn from_handle(handle: M::BigIntHandle) -> Self {
+        BigUint { handle }
     }
 
-    #[doc(hidden)]
-    fn get_raw_handle(&self) -> Handle {
-        self.handle
+    fn get_handle(&self) -> M::BigIntHandle {
+        self.handle.clone()
     }
 
-    fn transmute_from_handle_ref(handle_ref: &Handle) -> &Self {
+    fn transmute_from_handle_ref(handle_ref: &M::BigIntHandle) -> &Self {
         unsafe { core::mem::transmute(handle_ref) }
     }
 }
@@ -50,14 +52,36 @@ impl<M: ManagedTypeApi> From<&ManagedBuffer<M>> for BigUint<M> {
     }
 }
 
+impl<M: ManagedTypeApi> BigUint<M> {
+    pub(crate) fn set_value<T>(handle: M::BigIntHandle, value: T)
+    where
+        T: TryInto<i64> + num_traits::Unsigned,
+    {
+        M::managed_type_impl().bi_set_int64(handle, cast_to_i64::<M, _>(value));
+    }
+
+    pub(crate) fn make_temp<T>(handle: RawHandle, value: T) -> M::BigIntHandle
+    where
+        T: TryInto<i64> + num_traits::Unsigned,
+    {
+        let temp: M::BigIntHandle = use_raw_handle(handle);
+        Self::set_value(temp.clone(), value);
+        temp
+    }
+}
+
 macro_rules! big_uint_conv_num {
     ($num_ty:ty) => {
         impl<M: ManagedTypeApi> From<$num_ty> for BigUint<M> {
             #[inline]
             fn from(value: $num_ty) -> Self {
-                BigUint::from_raw_handle(M::managed_type_impl().bi_new(value as i64))
+                let handle: M::BigIntHandle = M::static_var_api_impl().next_handle();
+                Self::set_value(handle.clone(), value);
+                BigUint::from_handle(handle)
             }
         }
+
+        impl<M: ManagedTypeApi> CodecFrom<$num_ty> for BigUint<M> {}
     };
 }
 
@@ -66,6 +90,32 @@ big_uint_conv_num! {u32}
 big_uint_conv_num! {usize}
 big_uint_conv_num! {u16}
 big_uint_conv_num! {u8}
+
+impl<M> CodecFromSelf for BigUint<M> where M: ManagedTypeApi {}
+
+#[cfg(feature = "num-bigint")]
+impl<M: ManagedTypeApi> CodecFrom<numbat_codec::num_bigint::BigUint> for BigUint<M> {}
+#[cfg(feature = "num-bigint")]
+impl<M: ManagedTypeApi> CodecFrom<BigUint<M>> for numbat_codec::num_bigint::BigUint {}
+
+#[cfg(feature = "num-bigint")]
+impl<M: ManagedTypeApi> From<&numbat_codec::num_bigint::BigUint> for BigUint<M> {
+    fn from(alloc_big_uint: &numbat_codec::num_bigint::BigUint) -> Self {
+        BigUint::from_bytes_be(alloc_big_uint.to_bytes_be().as_slice())
+    }
+}
+#[cfg(feature = "num-bigint")]
+impl<M: ManagedTypeApi> From<numbat_codec::num_bigint::BigUint> for BigUint<M> {
+    fn from(alloc_big_uint: numbat_codec::num_bigint::BigUint) -> Self {
+        BigUint::from(&alloc_big_uint)
+    }
+}
+#[cfg(feature = "num-bigint")]
+impl<M: ManagedTypeApi> BigUint<M> {
+    pub fn to_alloc(&self) -> numbat_codec::num_bigint::BigUint {
+        numbat_codec::num_bigint::BigUint::from_bytes_be(self.to_bytes_be().as_slice())
+    }
+}
 
 impl<M: ManagedTypeApi> Default for BigUint<M> {
     #[inline]
@@ -78,48 +128,56 @@ impl<M: ManagedTypeApi> Default for BigUint<M> {
 impl<M: ManagedTypeApi> BigUint<M> {
     #[inline]
     pub fn zero() -> Self {
-        BigUint::from_raw_handle(M::managed_type_impl().bi_new_zero())
+        let handle: M::BigIntHandle = M::static_var_api_impl().next_handle();
+        M::managed_type_impl().bi_set_int64(handle.clone(), 0);
+        BigUint::from_handle(handle)
     }
 
     #[inline]
     pub fn to_u64(&self) -> Option<u64> {
         let api = M::managed_type_impl();
-        api.bi_to_i64(self.handle).map(|bi| bi as u64)
+        api.bi_to_i64(self.handle.clone()).map(|bi| bi as u64)
+    }
+
+    #[inline]
+    pub fn overwrite_u64(&self, value: u64) {
+        Self::set_value(self.handle.clone(), value);
     }
 
     #[inline]
     pub fn from_bytes_be(bytes: &[u8]) -> Self {
         let api = M::managed_type_impl();
-        let handle = api.bi_new(0);
-        api.bi_set_unsigned_bytes(handle, bytes);
-        BigUint {
-            handle,
-            _phantom: PhantomData,
-        }
+        let result_handle: M::BigIntHandle = M::static_var_api_impl().next_handle();
+        api.bi_set_unsigned_bytes(result_handle.clone(), bytes);
+        BigUint::from_handle(result_handle)
     }
 
     #[inline]
     pub fn to_bytes_be(&self) -> BoxedBytes {
         let api = M::managed_type_impl();
-        api.bi_get_unsigned_bytes(self.handle)
+        api.bi_get_unsigned_bytes(self.handle.clone())
     }
 
     #[inline]
     pub fn from_bytes_be_buffer(managed_buffer: &ManagedBuffer<M>) -> Self {
-        BigUint::from_raw_handle(
-            M::managed_type_impl().mb_to_big_int_unsigned(managed_buffer.handle),
-        )
+        let handle: M::BigIntHandle = M::static_var_api_impl().next_handle();
+        M::managed_type_impl()
+            .mb_to_big_int_unsigned(managed_buffer.handle.clone(), handle.clone());
+        BigUint::from_handle(handle)
     }
 
     #[inline]
     pub fn to_bytes_be_buffer(&self) -> ManagedBuffer<M> {
-        ManagedBuffer::from_raw_handle(M::managed_type_impl().mb_from_big_int_unsigned(self.handle))
+        let mb_handle: M::ManagedBufferHandle = M::static_var_api_impl().next_handle();
+        M::managed_type_impl().mb_from_big_int_unsigned(self.handle.clone(), mb_handle.clone());
+        ManagedBuffer::from_handle(mb_handle)
     }
 
     pub fn copy_to_array_big_endian_pad_right(&self, target: &mut [u8; 32]) {
         let api = M::managed_type_impl();
-        let mb_handle = api.mb_from_big_int_unsigned(self.handle);
-        api.mb_copy_to_slice_pad_right(mb_handle, &mut target[..]);
+        let mbuf_temp_1: M::ManagedBufferHandle = use_raw_handle(const_handles::MBUF_TEMPORARY_1);
+        api.mb_from_big_int_unsigned(self.handle.clone(), mbuf_temp_1.clone());
+        api.mb_copy_to_slice_pad_right(mbuf_temp_1, &mut target[..]);
     }
 }
 
@@ -128,42 +186,37 @@ impl<M: ManagedTypeApi> BigUint<M> {
     #[must_use]
     pub fn sqrt(&self) -> Self {
         let api = M::managed_type_impl();
-        let handle = api.bi_new_zero();
-        api.bi_sqrt(handle, self.handle);
-        BigUint {
-            handle,
-            _phantom: PhantomData,
-        }
+        let result_handle: M::BigIntHandle = M::static_var_api_impl().next_handle();
+        api.bi_sqrt(result_handle.clone(), self.handle.clone());
+        BigUint::from_handle(result_handle)
     }
 
     #[must_use]
     pub fn pow(&self, exp: u32) -> Self {
-        let api = M::managed_type_impl();
-        let handle = api.bi_new_zero();
-        let exp_handle = api.bi_new(exp as i64);
-        api.bi_pow(handle, self.handle, exp_handle);
-        BigUint {
-            handle,
-            _phantom: PhantomData,
-        }
+        let result_handle: M::BigIntHandle = M::static_var_api_impl().next_handle();
+        let big_int_temp_1 = BigUint::<M>::make_temp(const_handles::BIG_INT_TEMPORARY_1, exp);
+        M::managed_type_impl().bi_pow(result_handle.clone(), self.handle.clone(), big_int_temp_1);
+        BigUint::from_handle(result_handle)
     }
 
     #[inline]
     pub fn log2(&self) -> u32 {
         let api = M::managed_type_impl();
-        api.bi_log2(self.handle)
+        api.bi_log2(self.handle.clone())
     }
 }
 
 impl<M: ManagedTypeApi> Clone for BigUint<M> {
     fn clone(&self) -> Self {
         let api = M::managed_type_impl();
-        let clone_handle = api.bi_new_zero();
-        api.bi_add(clone_handle, clone_handle, self.handle);
-        BigUint {
-            handle: clone_handle,
-            _phantom: PhantomData,
-        }
+        let clone_handle: M::BigIntHandle = M::static_var_api_impl().next_handle();
+        api.bi_set_int64(clone_handle.clone(), 0);
+        api.bi_add(
+            clone_handle.clone(),
+            clone_handle.clone(),
+            self.handle.clone(),
+        );
+        BigUint::from_handle(clone_handle)
     }
 }
 
@@ -226,15 +279,25 @@ impl<M: ManagedTypeApi> TopDecode for BigUint<M> {
 }
 
 impl<M: ManagedTypeApi> crate::abi::TypeAbi for BigUint<M> {
-    fn type_name() -> String {
-        String::from("BigUint")
+    fn type_name() -> TypeName {
+        TypeName::from("BigUint")
+    }
+}
+
+impl<M: ManagedTypeApi> SCDisplay for BigUint<M> {
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        let str_handle: M::ManagedBufferHandle = use_raw_handle(const_handles::MBUF_TEMPORARY_1);
+        M::managed_type_impl().bi_to_string(self.handle.clone(), str_handle.clone());
+        f.append_managed_buffer(&ManagedBuffer::from_handle(
+            str_handle.cast_or_signal_error::<M, _>(),
+        ));
     }
 }
 
 impl<M: ManagedTypeApi> core::fmt::Debug for BigUint<M> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("BigUint")
-            .field("handle", &self.handle)
+            .field("handle", &self.handle.clone())
             .field(
                 "hex-value-be",
                 &encode_bytes_as_hex(self.to_bytes_be().as_slice()),

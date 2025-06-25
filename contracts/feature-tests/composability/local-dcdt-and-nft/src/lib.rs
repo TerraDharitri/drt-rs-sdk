@@ -22,11 +22,11 @@ pub trait LocalDcdtAndDcdtNft {
     #[endpoint(issueFungibleToken)]
     fn issue_fungible_token(
         &self,
-        #[payment] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -67,12 +67,8 @@ pub trait LocalDcdtAndDcdtNft {
 
     #[payable("REWA")]
     #[endpoint(nftIssue)]
-    fn nft_issue(
-        &self,
-        #[payment] issue_cost: BigUint,
-        token_display_name: ManagedBuffer,
-        token_ticker: ManagedBuffer,
-    ) {
+    fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -85,6 +81,7 @@ pub trait LocalDcdtAndDcdtNft {
                     can_freeze: true,
                     can_wipe: true,
                     can_pause: true,
+                    can_transfer_create_role: true,
                     can_change_owner: true,
                     can_upgrade: true,
                     can_add_special_roles: true,
@@ -140,10 +137,9 @@ pub trait LocalDcdtAndDcdtNft {
         token_identifier: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
-        data: ManagedBuffer,
     ) {
         self.send()
-            .transfer_dcdt_via_async_call(&to, &token_identifier, nonce, &amount, data);
+            .transfer_dcdt_via_async_call(to, token_identifier, nonce, amount);
     }
 
     #[endpoint]
@@ -154,14 +150,14 @@ pub trait LocalDcdtAndDcdtNft {
         nonce: u64,
         amount: BigUint,
         function: ManagedBuffer,
-        #[var_args] arguments: MultiValueVec<ManagedBuffer>,
+        arguments: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new_empty();
-        for arg in arguments.into_vec() {
+        let mut arg_buffer = ManagedArgBuffer::new();
+        for arg in arguments.into_iter() {
             arg_buffer.push_arg_raw(arg);
         }
 
-        let _ = Self::Api::send_api_impl().direct_dcdt_nft_execute(
+        let _ = self.send_raw().transfer_dcdt_nft_execute(
             &to,
             &token_identifier,
             nonce,
@@ -176,12 +172,8 @@ pub trait LocalDcdtAndDcdtNft {
 
     #[payable("REWA")]
     #[endpoint(sftIssue)]
-    fn sft_issue(
-        &self,
-        #[payment] issue_cost: BigUint,
-        token_display_name: ManagedBuffer,
-        token_ticker: ManagedBuffer,
-    ) {
+    fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -194,6 +186,7 @@ pub trait LocalDcdtAndDcdtNft {
                     can_freeze: true,
                     can_wipe: true,
                     can_pause: true,
+                    can_transfer_create_role: true,
                     can_change_owner: true,
                     can_upgrade: true,
                     can_add_special_roles: true,
@@ -211,7 +204,7 @@ pub trait LocalDcdtAndDcdtNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: MultiValueEncoded<DcdtLocalRole>,
+        roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
         self.send()
             .dcdt_system_sc_proxy()
@@ -226,7 +219,7 @@ pub trait LocalDcdtAndDcdtNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: MultiValueEncoded<DcdtLocalRole>,
+        roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
         self.send()
             .dcdt_system_sc_proxy()
@@ -234,6 +227,21 @@ pub trait LocalDcdtAndDcdtNft {
             .async_call()
             .with_callback(self.callbacks().change_roles_callback())
             .call_and_exit()
+    }
+
+    #[endpoint(controlChanges)]
+    fn control_changes(&self, token: TokenIdentifier) {
+        let property_arguments = TokenPropertyArguments {
+            can_freeze: Some(true),
+            can_burn: Some(true),
+            ..Default::default()
+        };
+
+        self.send()
+            .dcdt_system_sc_proxy()
+            .control_changes(&token, &property_arguments)
+            .async_call()
+            .call_and_exit();
     }
 
     // views
@@ -265,21 +273,21 @@ pub trait LocalDcdtAndDcdtNft {
     fn dcdt_issue_callback(
         &self,
         caller: &ManagedAddress,
-        #[payment_token] token_identifier: TokenIdentifier,
-        #[payment] returned_tokens: BigUint,
         #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
+        let (token_identifier, returned_tokens) = self.call_value().rewa_or_single_fungible_dcdt();
         // callback is called with DCDTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
             ManagedAsyncCallResult::Ok(()) => {
-                self.last_issued_token().set(&token_identifier);
+                self.last_issued_token()
+                    .set(&token_identifier.unwrap_dcdt());
                 self.last_error_message().clear();
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens, &[]);
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);
@@ -300,9 +308,10 @@ pub trait LocalDcdtAndDcdtNft {
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
-                let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
+                let (token_identifier, returned_tokens) =
+                    self.call_value().rewa_or_single_fungible_dcdt();
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens, &[]);
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);

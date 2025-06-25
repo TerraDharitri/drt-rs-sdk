@@ -1,7 +1,8 @@
 use core::marker::PhantomData;
 
 use numbat_codec::{
-    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput,
+    multi_encode_iter_or_handle_err, CodecFrom, EncodeErrorHandler, TopEncodeMulti,
+    TopEncodeMultiOutput,
 };
 
 use super::StorageMapper;
@@ -9,7 +10,7 @@ use crate::{
     abi::{TypeAbi, TypeName},
     api::StorageMapperApi,
     storage::{storage_get, storage_get_len, storage_set, StorageKey},
-    types::{ManagedAddress, ManagedType, ManagedVec, MultiResultVec},
+    types::{ManagedAddress, ManagedType, ManagedVec, MultiValueEncoded},
 };
 
 const ADDRESS_TO_ID_SUFFIX: &[u8] = b"_address_to_id";
@@ -127,10 +128,9 @@ where
     pub fn get_or_create_user(&self, address: &ManagedAddress<SA>) -> usize {
         let mut user_id = self.get_user_id(address);
         if user_id == 0 {
-            let mut user_count = self.get_user_count();
-            user_count += 1;
-            self.set_user_count(user_count);
-            user_id = user_count;
+            let next_user_count = self.get_user_count() + 1;
+            self.set_user_count(next_user_count);
+            user_id = next_user_count;
             self.set_user_id(address, user_id);
             self.set_user_address(user_id, address);
         }
@@ -149,15 +149,15 @@ where
     {
         let mut user_count = self.get_user_count();
         for address in address_iter {
-            let mut user_id = self.get_user_id(&address);
+            let user_id = self.get_user_id(&address);
             if user_id > 0 {
                 user_id_lambda(user_id, false);
             } else {
                 user_count += 1;
-                user_id = user_count;
-                self.set_user_id(&address, user_id);
-                self.set_user_address(user_id, &address);
-                user_id_lambda(user_id, true);
+                let new_user_id = user_count;
+                self.set_user_id(&address, new_user_id);
+                self.set_user_address(new_user_id, &address);
+                user_id_lambda(new_user_id, true);
             }
         }
         self.set_user_count(user_count);
@@ -181,8 +181,6 @@ impl<SA> TopEncodeMulti for UserMapper<SA>
 where
     SA: StorageMapperApi,
 {
-    type DecodeAs = MultiResultVec<ManagedAddress<SA>>;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -193,13 +191,18 @@ where
     }
 }
 
+impl<SA> CodecFrom<UserMapper<SA>> for MultiValueEncoded<SA, ManagedAddress<SA>> where
+    SA: StorageMapperApi
+{
+}
+
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA> TypeAbi for UserMapper<SA>
 where
     SA: StorageMapperApi,
 {
     fn type_name() -> TypeName {
-        crate::types::MultiResultVec::<ManagedAddress<SA>>::type_name()
+        crate::abi::type_name_variadic::<ManagedAddress<SA>>()
     }
 
     fn is_variadic() -> bool {

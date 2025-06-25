@@ -3,7 +3,7 @@ use numbat_wasm_debug::*;
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/dcdt-system-sc-mock");
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:output/dcdt-system-sc-mock.wasm",
         dcdt_system_sc_mock::ContractBuilder,
     );

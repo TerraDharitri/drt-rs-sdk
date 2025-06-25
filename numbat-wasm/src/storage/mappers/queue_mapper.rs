@@ -5,13 +5,13 @@ use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::StorageMapperApi,
     storage::{storage_get, storage_set, StorageKey},
-    types::{ManagedType, MultiResultVec},
+    types::{ManagedType, MultiValueEncoded},
 };
 use alloc::vec::Vec;
 use numbat_codec::{
     numbat_codec_derive::{TopDecode, TopDecodeOrDefault, TopEncode, TopEncodeOrDefault},
-    multi_encode_iter_or_handle_err, DecodeDefault, EncodeDefault, EncodeErrorHandler, TopDecode,
-    TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+    multi_encode_iter_or_handle_err, CodecFrom, DecodeDefault, EncodeDefault, EncodeErrorHandler,
+    TopDecode, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 const NULL_ENTRY: u32 = 0;
@@ -19,13 +19,13 @@ const INFO_IDENTIFIER: &[u8] = b".info";
 const NODE_IDENTIFIER: &[u8] = b".node_links";
 const VALUE_IDENTIFIER: &[u8] = b".value";
 
-#[derive(TopEncode, TopDecode, PartialEq, Clone, Copy)]
+#[derive(TopEncode, TopDecode, PartialEq, Eq, Clone, Copy)]
 pub struct Node {
     pub previous: u32,
     pub next: u32,
 }
 
-#[derive(TopEncodeOrDefault, TopDecodeOrDefault, PartialEq, Clone, Copy)]
+#[derive(TopEncodeOrDefault, TopDecodeOrDefault, PartialEq, Eq, Clone, Copy)]
 pub struct QueueMapperInfo {
     pub len: u32,
     pub front: u32,
@@ -148,7 +148,7 @@ where
         storage_set(
             self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
                 .as_ref(),
-            &(),
+            &numbat_codec::Empty,
         );
     }
 
@@ -178,7 +178,7 @@ where
         storage_set(
             self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
                 .as_ref(),
-            &(),
+            &numbat_codec::Empty,
         )
     }
 
@@ -454,8 +454,6 @@ where
     SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
-    type DecodeAs = MultiResultVec<T>;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -465,6 +463,13 @@ where
     }
 }
 
+impl<SA, T> CodecFrom<QueueMapper<SA, T>> for MultiValueEncoded<SA, T>
+where
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
+{
+}
+
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA, T> TypeAbi for QueueMapper<SA, T>
 where
@@ -472,7 +477,7 @@ where
     T: TopEncode + TopDecode + TypeAbi,
 {
     fn type_name() -> TypeName {
-        crate::types::MultiResultVec::<T>::type_name()
+        crate::abi::type_name_variadic::<T>()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {

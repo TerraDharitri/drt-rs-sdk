@@ -1,9 +1,11 @@
-pub const NON_PAYABLE_FUNC_REWA: &[u8] = b"function does not accept REWA payment";
-pub const NON_PAYABLE_FUNC_DCDT: &[u8] = b"function does not accept DCDT payment";
-pub const BAD_TOKEN_PROVIDED: &[u8] = b"bad call value token provided";
-pub const SINGLE_DCDT_EXPECTED: &[u8] = b"function expects single DCDT payment";
-pub const TOO_MANY_DCDT_TRANSFERS: &[u8] = b"too many DCDT transfers";
-pub const DCDT_INVALID_TOKEN_INDEX: &[u8] = b"invalid token index";
+pub const NON_PAYABLE_FUNC_REWA: &str = "function does not accept REWA payment";
+pub const NON_PAYABLE_FUNC_DCDT: &str = "function does not accept DCDT payment";
+pub const BAD_TOKEN_PROVIDED: &str = "bad call value token provided";
+pub const SINGLE_DCDT_EXPECTED: &str = "function expects single DCDT payment";
+pub const TOO_MANY_DCDT_TRANSFERS: &str = "too many DCDT transfers";
+pub const DCDT_INVALID_TOKEN_INDEX: &str = "invalid token index";
+pub const INCORRECT_NUM_DCDT_TRANSFERS: &str = "incorrect number of DCDT transfers";
+pub static FUNGIBLE_TOKEN_EXPECTED_ERR_MSG: &str = "fungible DCDT token expected";
 
 pub const ARG_WRONG_NUMBER: &str = "wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &[u8] = b"wrong number of arguments provided to async call";
@@ -25,13 +27,22 @@ pub const STORAGE_VALUE_EXCEEDS_BUFFER: &[u8] = b"storage value exceeds buffer";
 pub const FINISH_ENCODE_ERROR: &[u8] = b"endpoint result encode error: ";
 pub const SERIALIZER_DECODE_ERROR: &[u8] = b"serializer decode error: ";
 pub const SERIALIZER_ENCODE_ERROR: &[u8] = b"serializer encode error: ";
+pub const FORMATTER_ENCODE_ERROR: &[u8] = b"formatter encode error: ";
 pub const LOG_TOPIC_ENCODE_ERROR: &[u8] = b"log topic encode error: ";
 pub const LOG_DATA_ENCODE_ERROR: &[u8] = b"log data encode error: ";
 pub const CONTRACT_CALL_ENCODE_ERROR: &[u8] = b"contract call encode error: ";
 
 pub const VALUE_EXCEEDS_SLICE: &[u8] = b"value exceeds target slice";
+pub const CAST_TO_I64_ERROR: &[u8] = b"cast to i64 error";
 pub const BIG_UINT_EXCEEDS_SLICE: &[u8] = b"big uint as_bytes exceed target slice";
 pub const BIG_UINT_SUB_NEGATIVE: &[u8] = b"cannot subtract because result would be negative";
+pub const DIVISION_BY_0: &str = "division by 0";
+pub const BAD_BOUNDS_LOWER: &str = "bad bounds (lower)";
+
+pub const EXPONENT_IS_POSITIVE: &str = "exponent must be negative";
+pub const NUMBER_IS_NOT_NORMAL: &[u8] =
+    b"number is not normal. It is either infinite, NaN or subnormal";
+pub const CANNOT_COMPARE_VALUES: &[u8] = b"values are not comparable";
 
 pub const DESERIALIZATION_INVALID_BYTE: &str = "call data deserialization error: not a valid byte";
 pub const DESERIALIZATION_NOT_32_BYTES: &str =
@@ -43,5 +54,12 @@ pub const DESERIALIZATION_ARG_OUT_OF_RANGE: &str =
 
 pub const CALLBACK_BAD_FUNC: &[u8] = b"no callback function with that name exists in contract";
 
+pub const RECIPIENT_ADDRESS_NOT_SET: &str = "recipient address not set";
+pub static ONLY_OWNER_CALLER: &[u8] = b"Endpoint can only be called by owner";
+pub static ONLY_USER_ACCOUNT_CALLER: &[u8] = b"Endpoint can only be called by user accounts";
+
 pub const STORAGE_NOT_I64: &[u8] = b"storage not i64";
 pub const STORAGE_NOT_32_BYTES: &[u8] = b"32 bytes of data expected in storage at key";
+
+/// Mirrors the error message from the VM.
+pub const ERROR_SIGNALLED_BY_SMARTCONTRACT: &str = "error signalled by smartcontract";

@@ -1,6 +1,8 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
+use numbat_wasm::numbat_codec::Empty;
+
 numbat_wasm::imports!();
 
 /// General test contract.
@@ -8,25 +10,25 @@ numbat_wasm::imports!();
 #[numbat_wasm::contract]
 pub trait Vault {
     #[init]
-    fn init(
-        &self,
-        #[var_args] opt_arg_to_echo: OptionalValue<ManagedBuffer>,
-    ) -> OptionalValue<ManagedBuffer> {
+    fn init(&self, opt_arg_to_echo: OptionalValue<ManagedBuffer>) -> OptionalValue<ManagedBuffer> {
         opt_arg_to_echo
-    }
-
-    #[payable("*")]
-    #[endpoint]
-    fn just_accept_funds(&self) {
-        self.call_counts(b"accept_funds").update(|c| *c += 1);
     }
 
     #[endpoint]
     fn echo_arguments(
         &self,
-        #[var_args] args: MultiValueEncoded<ManagedBuffer>,
+        args: MultiValueEncoded<ManagedBuffer>,
     ) -> MultiValueEncoded<ManagedBuffer> {
-        self.call_counts(b"echo_arguments").update(|c| *c += 1);
+        self.call_counts(ManagedBuffer::from(b"echo_arguments"))
+            .update(|c| *c += 1);
+        args
+    }
+
+    #[endpoint]
+    fn echo_arguments_without_storage(
+        &self,
+        args: MultiValueEncoded<ManagedBuffer>,
+    ) -> MultiValueEncoded<ManagedBuffer> {
         args
     }
 
@@ -35,95 +37,47 @@ pub trait Vault {
         self.blockchain().get_caller()
     }
 
-    #[payable("*")]
-    #[endpoint]
-    fn accept_funds(
-        &self,
-        #[payment_token] token: TokenIdentifier,
-        #[payment_nonce] nonce: u64,
-        #[payment_amount] payment: BigUint,
-    ) {
-        let token_type = self.call_value().dcdt_token_type();
-
-        self.accept_funds_event(&token, token_type.as_type_name(), &payment, nonce);
-
-        self.call_counts(b"accept_funds").update(|c| *c += 1);
+    fn dcdt_transfers_multi(&self) -> MultiValueEncoded<DcdtTokenPaymentMultiValue> {
+        self.call_value().all_dcdt_transfers().into_multi_value()
     }
 
     #[payable("*")]
     #[endpoint]
-    fn accept_funds_multi_transfer(&self) {
-        let payments = self.call_value().all_dcdt_transfers();
+    fn accept_funds(&self) {
+        let dcdt_transfers_multi = self.dcdt_transfers_multi();
+        self.accept_funds_event(&self.call_value().rewa_value(), &dcdt_transfers_multi);
 
-        for payment in payments.into_iter() {
-            self.accept_funds_event(
-                &payment.token_identifier,
-                payment.token_type.as_type_name(),
-                &payment.amount,
-                payment.token_nonce,
-            );
-        }
-
-        self.call_counts(b"accept_funds_multi_transfer")
+        self.call_counts(ManagedBuffer::from(b"accept_funds"))
             .update(|c| *c += 1);
-    }
-
-    #[payable("*")]
-    #[endpoint]
-    fn accept_multi_funds_echo(
-        &self,
-    ) -> MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>> {
-        let payments = self.call_value().all_dcdt_transfers();
-        let mut result = MultiValueEncoded::new();
-
-        for payment in payments.into_iter() {
-            result.push(
-                (
-                    payment.token_identifier,
-                    payment.token_nonce,
-                    payment.amount,
-                )
-                    .into(),
-            );
-        }
-
-        result
     }
 
     #[payable("*")]
     #[endpoint]
     fn accept_funds_echo_payment(
         &self,
-        #[payment_token] token_identifier: TokenIdentifier,
-        #[payment_amount] token_payment: BigUint,
-        #[payment_nonce] token_nonce: u64,
-    ) -> MultiValue4<TokenIdentifier, ManagedBuffer, BigUint, u64> {
-        let token_type = self.call_value().dcdt_token_type();
+    ) -> MultiValue2<BigUint, MultiValueEncoded<DcdtTokenPaymentMultiValue>> {
+        let rewa_value = self.call_value().rewa_value();
+        let dcdt_transfers_multi = self.dcdt_transfers_multi();
+        self.accept_funds_event(&rewa_value, &dcdt_transfers_multi);
 
-        self.accept_funds_event(
-            &token_identifier,
-            token_type.as_type_name(),
-            &token_payment,
-            token_nonce,
-        );
-
-        self.call_counts(b"accept_funds_echo_payment")
+        self.call_counts(ManagedBuffer::from(b"accept_funds_echo_payment"))
             .update(|c| *c += 1);
 
-        (
-            token_identifier,
-            token_type.as_type_name().into(),
-            token_payment,
-            token_nonce,
-        )
-            .into()
+        (rewa_value, dcdt_transfers_multi).into()
     }
 
     #[payable("*")]
     #[endpoint]
-    fn reject_funds(&self, #[payment_token] token: TokenIdentifier, #[payment] payment: BigUint) {
-        self.reject_funds_event(&token, &payment);
-        sc_panic!("reject_funds")
+    fn accept_funds_single_dcdt_transfer(&self) {
+        let _ = self.call_value().single_dcdt();
+    }
+
+    #[payable("*")]
+    #[endpoint]
+    fn reject_funds(&self) {
+        let dcdt_transfers_multi = self.dcdt_transfers_multi();
+        self.reject_funds_event(&self.call_value().rewa_value(), &dcdt_transfers_multi);
+        sc_panic!("reject_funds");
     }
 
     #[payable("*")]
@@ -133,51 +87,40 @@ pub trait Vault {
         #[payment_multi] _payments: ManagedVec<DcdtTokenPayment<Self::Api>>,
         token: TokenIdentifier,
         amount: BigUint,
-        #[var_args] opt_receive_func: OptionalValue<ManagedBuffer>,
+        opt_receive_func: OptionalValue<ManagedBuffer>,
     ) {
         let caller = self.blockchain().get_caller();
         let func_name = opt_receive_func.into_option().unwrap_or_default();
 
-        Self::Api::send_api_impl()
-            .direct_dcdt_execute(
+        self.send_raw()
+            .transfer_dcdt_execute(
                 &caller,
                 &token,
                 &amount,
                 50_000_000,
                 &func_name,
-                &ManagedArgBuffer::new_empty(),
+                &ManagedArgBuffer::new(),
             )
             .unwrap_or_else(|_| sc_panic!("DCDT transfer failed"));
     }
 
     #[endpoint]
-    fn retrieve_funds(
-        &self,
-        token: TokenIdentifier,
-        nonce: u64,
-        amount: BigUint,
-        #[var_args] return_message: OptionalValue<ManagedBuffer>,
-    ) {
+    fn retrieve_funds(&self, token: RewaOrDcdtTokenIdentifier, nonce: u64, amount: BigUint) {
         self.retrieve_funds_event(&token, nonce, &amount);
-
         let caller = self.blockchain().get_caller();
-        let data = match return_message {
-            OptionalValue::Some(data) => data,
-            OptionalValue::None => ManagedBuffer::new(),
-        };
 
-        if token.is_rewa() {
-            self.send().direct_rewa(&caller, &amount, data);
-        } else {
+        if let Some(dcdt_token_id) = token.into_dcdt_option() {
             self.send()
-                .transfer_dcdt_via_async_call(&caller, &token, nonce, &amount, data);
+                .transfer_dcdt_via_async_call(caller, dcdt_token_id, nonce, amount);
+        } else {
+            self.send().direct_rewa(&caller, &amount);
         }
     }
 
     #[endpoint]
     fn retrieve_multi_funds_async(
         &self,
-        #[var_args] token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
+        token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
         let caller = self.blockchain().get_caller();
         let mut all_payments = ManagedVec::new();
@@ -185,16 +128,11 @@ pub trait Vault {
         for multi_arg in token_payments.into_iter() {
             let (token_id, nonce, amount) = multi_arg.into_tuple();
 
-            all_payments.push(DcdtTokenPayment {
-                token_identifier: token_id,
-                token_nonce: nonce,
-                amount,
-                token_type: DcdtTokenType::Invalid,
-            });
+            all_payments.push(DcdtTokenPayment::new(token_id, nonce, amount));
         }
 
         self.send()
-            .transfer_multiple_dcdt_via_async_call(&caller, &all_payments, b"");
+            .transfer_multiple_dcdt_via_async_call(caller, all_payments);
     }
 
     #[payable("*")]
@@ -221,42 +159,40 @@ pub trait Vault {
                 &ManagedBuffer::new(),
                 &BigUint::zero(),
                 &ManagedBuffer::new(),
-                &(),
+                &Empty,
                 &uris,
             );
 
-            new_tokens.push(DcdtTokenPayment {
-                token_identifier: payment.token_identifier,
-                token_nonce: new_token_nonce,
-                amount: payment.amount,
-                token_type: DcdtTokenType::Invalid, // ignored
-            });
+            new_tokens.push(DcdtTokenPayment::new(
+                payment.token_identifier,
+                new_token_nonce,
+                payment.amount,
+            ));
         }
 
-        self.send().transfer_multiple_dcdt_via_async_call(
-            &self.blockchain().get_caller(),
-            &new_tokens,
-            &[],
-        );
+        self.send()
+            .transfer_multiple_dcdt_via_async_call(self.blockchain().get_caller(), new_tokens);
     }
 
     /// TODO: invert token_payment and token_nonce, for consistency.
     #[event("accept_funds")]
     fn accept_funds_event(
         &self,
-        #[indexed] token_identifier: &TokenIdentifier,
-        #[indexed] token_type: &[u8],
-        #[indexed] token_payment: &BigUint,
-        #[indexed] token_nonce: u64,
+        #[indexed] rewa_value: &BigUint,
+        #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
     );
 
     #[event("reject_funds")]
-    fn reject_funds_event(&self, #[indexed] token: &TokenIdentifier, #[indexed] payment: &BigUint);
+    fn reject_funds_event(
+        &self,
+        #[indexed] rewa_value: &BigUint,
+        #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
+    );
 
     #[event("retrieve_funds")]
     fn retrieve_funds_event(
         &self,
-        #[indexed] token: &TokenIdentifier,
+        #[indexed] token: &RewaOrDcdtTokenIdentifier,
         #[indexed] nonce: u64,
         #[indexed] amount: &BigUint,
     );
@@ -270,5 +206,5 @@ pub trait Vault {
     /// this additional counter has the role of showing that storage also gets saved correctly.
     #[view]
     #[storage_mapper("call_counts")]
-    fn call_counts(&self, endpoint: &[u8]) -> SingleValueMapper<usize>;
+    fn call_counts(&self, endpoint: ManagedBuffer) -> SingleValueMapper<usize>;
 }

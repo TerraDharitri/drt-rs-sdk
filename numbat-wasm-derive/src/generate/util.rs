@@ -11,7 +11,11 @@ pub fn generate_call_method_name(method_ident: &proc_macro2::Ident) -> proc_macr
 }
 
 pub fn generate_endpoints_mod_alias(index: usize) -> proc_macro2::Ident {
-    syn::Ident::new(&format!("__endpoints_{}__", index), Span::call_site())
+    syn::Ident::new(&format!("__endpoints_{index}__"), Span::call_site())
+}
+
+pub fn generate_proxy_type_generic(index: usize) -> proc_macro2::Ident {
+    syn::Ident::new(&format!("Arg{index}"), Span::call_site())
 }
 
 pub fn array_literal(bytes: &[u8]) -> proc_macro2::TokenStream {
@@ -33,15 +37,22 @@ pub fn byte_str_slice_literal(bytes: &[u8]) -> proc_macro2::TokenStream {
     quote! { &#lit[..] }
 }
 
+#[allow(unused)]
 pub fn ident_str_literal(ident: &syn::Ident) -> proc_macro2::TokenStream {
     byte_str_slice_literal(ident.to_string().as_bytes())
 }
 
+pub fn pat_string(pat: &syn::Pat) -> String {
+    quote::ToTokens::to_token_stream(pat).to_string()
+}
+
+#[allow(unused)]
 pub fn pat_literal(pat: &syn::Pat) -> proc_macro2::TokenStream {
-    let pat_str = quote::ToTokens::to_token_stream(pat).to_string();
+    let pat_str = pat_string(pat);
     byte_str_slice_literal(pat_str.as_bytes())
 }
 
+#[allow(unused)]
 pub fn arg_id_literal(pat: &syn::Pat) -> proc_macro2::TokenStream {
     let arg_name_literal = pat_literal(pat);
     quote! { ArgId::from(#arg_name_literal) }

@@ -24,12 +24,8 @@ pub trait DnsModule {
     #[payable("REWA")]
     #[only_owner]
     #[endpoint(dnsRegister)]
-    fn dns_register(
-        &self,
-        dns_address: ManagedAddress,
-        name: ManagedBuffer,
-        #[payment] payment: BigUint,
-    ) {
+    fn dns_register(&self, dns_address: ManagedAddress, name: ManagedBuffer) {
+        let payment = self.call_value().rewa_value();
         self.dns_proxy(dns_address)
             .register(&name)
             .with_rewa_transfer(payment)

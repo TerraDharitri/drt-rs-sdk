@@ -21,12 +21,63 @@
                 "address:an_account": {
                     "nonce": "0",
                     "balance": "0"
+                },
+                "0x233300000000000000000000000000000002333000000000000000000002ffff": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "code": "file:../../dcdt-system-sc-mock/output/dcdt-system-sc-mock.wasm"
                 }
             }
         },
         {
             "step": "scCall",
-            "txId": "mapper-nft-set-token-id",
+            "id": "issue-and-set-all-roles-meta",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "issue_and_set_all_roles_meta",
+                "arguments": [
+                    "str:TICKER"
+                ],
+                "gasLimit": "100,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "str:TICKER-000000"
+                ],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "reset the token ID so we can set it again",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "dcdt": {
+                        "str:TICKER-000000": {
+                            "roles": [
+                                "DCDTRoleNFTCreate",
+                                "DCDTRoleNFTAddQuantity",
+                                "DCDTRoleNFTBurn"
+                            ]
+                        }
+                    },
+                    "storage": {
+                        "str:nonFungibleTokenMapper": ""
+                    },
+                    "code": "file:../output/basic-features.wasm"
+                }
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "mapper-nft-set-token-id",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -47,7 +98,7 @@
         },
         {
             "step": "scCall",
-            "txId": "mapper-nft-create",
+            "id": "mapper-nft-create",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -61,7 +112,7 @@
             },
             "expect": {
                 "out": [
-                    "1", "u8:2|nested:str:TICKER-000000|u64:1|biguint:1000"
+                    "nested:str:TICKER-000000|u64:1|biguint:1000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -71,7 +122,7 @@
         },
         {
             "step": "scCall",
-            "txId": "mapper-nft-create-and-send",
+            "id": "mapper-nft-create-and-send",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -86,7 +137,7 @@
             },
             "expect": {
                 "out": [
-                    "2", "u8:2|nested:str:TICKER-000000|u64:2|biguint:2000"
+                    "nested:str:TICKER-000000|u64:2|biguint:2000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -109,12 +160,12 @@
                                     "attributes": "u8:1|u8:2|u8:3"
                                 }
                             ],
+                            "lastNonce": "2",
                             "roles": [
                                 "DCDTRoleNFTCreate",
                                 "DCDTRoleNFTAddQuantity",
                                 "DCDTRoleNFTBurn"
-                            ],
-                            "lastNonce": "2"
+                            ]
                         }
                     },
                     "code": "file:../output/basic-features.wasm"
@@ -133,12 +184,13 @@
                             ]
                         }
                     }
-                }
+                },
+                "+": ""
             }
         },
         {
             "step": "scCall",
-            "txId": "mapper-nft-add-quantity",
+            "id": "mapper-nft-add-quantity",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -152,7 +204,7 @@
             },
             "expect": {
                 "out": [
-                    "u8:2|nested:str:TICKER-000000|u64:1|biguint:5000"
+                    "nested:str:TICKER-000000|u64:1|biguint:5000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -162,7 +214,7 @@
         },
         {
             "step": "scCall",
-            "txId": "mapper-nft-add-quantity-and-send",
+            "id": "mapper-nft-add-quantity-and-send",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -177,7 +229,7 @@
             },
             "expect": {
                 "out": [
-                    "u8:2|nested:str:TICKER-000000|u64:1|biguint:7000"
+                    "nested:str:TICKER-000000|u64:1|biguint:7000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -200,12 +252,12 @@
                                     "attributes": "u8:1|u8:2|u8:3"
                                 }
                             ],
+                            "lastNonce": "2",
                             "roles": [
                                 "DCDTRoleNFTCreate",
                                 "DCDTRoleNFTAddQuantity",
                                 "DCDTRoleNFTBurn"
-                            ],
-                            "lastNonce": "2"
+                            ]
                         }
                     },
                     "code": "file:../output/basic-features.wasm"
@@ -229,12 +281,13 @@
                             ]
                         }
                     }
-                }
+                },
+                "+": ""
             }
         },
         {
             "step": "scCall",
-            "txId": "mapper-nft-burn",
+            "id": "mapper-nft-burn",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -269,12 +322,12 @@
                                     "attributes": "u8:1|u8:2|u8:3"
                                 }
                             ],
+                            "lastNonce": "2",
                             "roles": [
                                 "DCDTRoleNFTCreate",
                                 "DCDTRoleNFTAddQuantity",
                                 "DCDTRoleNFTBurn"
-                            ],
-                            "lastNonce": "2"
+                            ]
                         }
                     },
                     "code": "file:../output/basic-features.wasm"
@@ -298,12 +351,13 @@
                             ]
                         }
                     }
-                }
+                },
+                "+": ""
             }
         },
         {
             "step": "scQuery",
-            "txId": "mapper-nft-get-balance",
+            "id": "mapper-nft-get-balance",
             "tx": {
                 "to": "sc:basic-features",
                 "function": "mapper_nft_get_balance",
@@ -321,7 +375,7 @@
         },
         {
             "step": "scQuery",
-            "txId": "mapper-nft-get-attributes",
+            "id": "mapper-nft-get-attributes",
             "tx": {
                 "to": "sc:basic-features",
                 "function": "mapper_get_token_attributes",
@@ -339,7 +393,7 @@
         },
         {
             "step": "scQuery",
-            "txId": "mapper-nft-token-id",
+            "id": "mapper-nft-token-id",
             "tx": {
                 "to": "sc:basic-features",
                 "function": "getNonFungibleTokenId",

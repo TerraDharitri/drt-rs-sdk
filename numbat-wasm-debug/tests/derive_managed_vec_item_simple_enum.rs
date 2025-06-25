@@ -1,5 +1,3 @@
-#![feature(generic_associated_types)]
-
 use numbat_wasm::{
     derive::ManagedVecItem,
     numbat_codec,
@@ -10,7 +8,7 @@ use numbat_wasm::{
 // cargo expand --test derive_managed_vec_item_simple_enum > expanded.rs
 
 #[derive(
-    ManagedVecItem, NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Clone, Debug,
+    ManagedVecItem, NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Clone, Debug,
 )]
 enum SimpleEnum {
     Variant1,
@@ -18,6 +16,7 @@ enum SimpleEnum {
 }
 
 #[test]
+#[allow(clippy::assertions_on_constants)]
 fn enum_static() {
     assert_eq!(
         <SimpleEnum as numbat_wasm::types::ManagedVecItem>::PAYLOAD_SIZE,

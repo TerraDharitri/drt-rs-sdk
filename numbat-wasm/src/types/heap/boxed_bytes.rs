@@ -1,8 +1,7 @@
-use crate::abi::TypeAbi;
+use crate::abi::{TypeAbi, TypeName};
 use alloc::{
     alloc::{alloc, alloc_zeroed, realloc, Layout},
     boxed::Box,
-    string::String,
     vec::Vec,
 };
 use numbat_codec::*;
@@ -71,12 +70,12 @@ impl BoxedBytes {
 
     #[inline]
     pub fn as_slice(&self) -> &[u8] {
-        &*self.0
+        &self.0
     }
 
     #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [u8] {
-        &mut *self.0
+        &mut self.0
     }
 
     /// Create new instance by concatenating several byte slices.
@@ -140,7 +139,7 @@ impl BoxedBytes {
 impl AsRef<[u8]> for BoxedBytes {
     #[inline]
     fn as_ref(&self) -> &[u8] {
-        &*self.0
+        &self.0
     }
 }
 
@@ -240,7 +239,7 @@ impl TopDecode for BoxedBytes {
 }
 
 impl TypeAbi for BoxedBytes {
-    fn type_name() -> String {
+    fn type_name() -> TypeName {
         "bytes".into()
     }
 }

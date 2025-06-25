@@ -1,7 +1,10 @@
 use core::marker::PhantomData;
 
 use crate::{
-    api::{ErrorApi, ErrorApiImpl, ManagedTypeApi, StorageReadApi, StorageReadApiImpl},
+    api::{
+        const_handles, use_raw_handle, ErrorApi, ErrorApiImpl, ManagedBufferApi, ManagedTypeApi,
+        StaticVarApiImpl, StorageReadApi, StorageReadApiImpl,
+    },
     err_msg,
     types::{
         BigInt, BigUint, ManagedBuffer, ManagedBufferNestedDecodeInput, ManagedRef, ManagedType,
@@ -29,9 +32,10 @@ where
     }
 
     fn to_managed_buffer(&self) -> ManagedBuffer<A> {
-        let mbuf_handle = A::storage_read_api_impl()
-            .storage_load_managed_buffer_raw(self.key.buffer.get_raw_handle());
-        ManagedBuffer::from_raw_handle(mbuf_handle)
+        let mbuf_handle: A::ManagedBufferHandle = A::static_var_api_impl().next_handle();
+        A::storage_read_api_impl()
+            .storage_load_managed_buffer_raw(self.key.buffer.get_handle(), mbuf_handle.clone());
+        ManagedBuffer::from_handle(mbuf_handle)
     }
 
     fn to_big_uint(&self) -> BigUint<A> {
@@ -43,7 +47,10 @@ where
     }
 
     fn load_len_managed_buffer(&self) -> usize {
-        A::storage_read_api_impl().storage_load_managed_buffer_len(self.key.buffer.get_raw_handle())
+        let value_handle: A::ManagedBufferHandle = use_raw_handle(const_handles::MBUF_TEMPORARY_1);
+        A::storage_read_api_impl()
+            .storage_load_managed_buffer_raw(self.key.buffer.get_handle(), value_handle.clone());
+        A::managed_type_impl().mb_len(value_handle)
     }
 }
 
@@ -59,23 +66,19 @@ where
 
     fn into_boxed_slice_u8(self) -> Box<[u8]> {
         let key_bytes = self.key.to_boxed_bytes();
-        A::storage_read_api_impl()
-            .storage_load_boxed_bytes(key_bytes.as_slice())
-            .into_box()
+        A::storage_read_api_impl().storage_load_to_heap(key_bytes.as_slice())
     }
 
-    fn into_u64(self) -> u64 {
-        let mb = self.to_managed_buffer();
-        if let Some(num) = mb.parse_as_u64() {
-            num
-        } else {
-            StorageGetErrorHandler::<A>::default().handle_error(DecodeError::INPUT_TOO_LONG)
-        }
-    }
-
-    fn into_i64(self) -> i64 {
-        let key_bytes = self.key.to_boxed_bytes();
-        A::storage_read_api_impl().storage_load_i64(key_bytes.as_slice())
+    #[inline]
+    fn into_max_size_buffer<H, const MAX_LEN: usize>(
+        self,
+        buffer: &mut [u8; MAX_LEN],
+        h: H,
+    ) -> Result<&[u8], H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
+        self.to_managed_buffer().into_max_size_buffer(buffer, h)
     }
 
     #[inline]
@@ -123,14 +126,15 @@ pub fn storage_get_len<A>(key: ManagedRef<'_, A, StorageKey<A>>) -> usize
 where
     A: StorageReadApi + ManagedTypeApi + ErrorApi,
 {
-    A::storage_read_api_impl().storage_load_managed_buffer_len(key.get_raw_handle())
+    let input = StorageGetInput::new(key);
+    input.load_len_managed_buffer()
 }
 
 /// Will immediately end the execution when encountering the first decode error, via `signal_error`.
 /// Because its handled error type is the never type, when compiled,
 /// the codec will return the value directly, without wrapping it in a Result.
 #[derive(Clone)]
-struct StorageGetErrorHandler<M>
+pub(crate) struct StorageGetErrorHandler<M>
 where
     M: ManagedTypeApi + ErrorApi,
 {
@@ -159,6 +163,6 @@ where
     fn handle_error(&self, err: DecodeError) -> Self::HandledErr {
         let mut message_buffer = ManagedBuffer::<M>::new_from_bytes(err_msg::STORAGE_DECODE_ERROR);
         message_buffer.append_bytes(err.message_bytes());
-        M::error_api_impl().signal_error_from_buffer(message_buffer.get_raw_handle())
+        M::error_api_impl().signal_error_from_buffer(message_buffer.get_handle())
     }
 }

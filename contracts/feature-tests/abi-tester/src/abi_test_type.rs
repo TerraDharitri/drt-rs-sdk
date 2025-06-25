@@ -1,8 +1,7 @@
 use crate::only_nested::*;
 use numbat_wasm::{
     api::ManagedTypeApi,
-    types::{BigUint, ManagedBuffer},
-    Box,
+    types::{BigUint, Box, ManagedBuffer},
 };
 numbat_wasm::derive_imports!();
 

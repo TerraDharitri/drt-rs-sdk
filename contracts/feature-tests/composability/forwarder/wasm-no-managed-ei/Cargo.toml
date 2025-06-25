@@ -2,7 +2,7 @@
 name = "forwarder-wasm"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
@@ -17,18 +17,15 @@ panic = "abort"
 
 [dependencies.forwarder]
 path = ".."
+features = ["ei-unmanaged"]
 
 [dependencies.numbat-wasm-node]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm-node"
-features = [
-    "unmanaged-ei",
-    "vm-validate-token-identifier",
-    "vm-dcdt-local-roles",
-]
+features = ["ei-unmanaged-node"]
 
 [dependencies.numbat-wasm-output]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm-output"
 features = ["wasm-output-mode"]
 

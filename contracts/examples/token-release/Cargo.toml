@@ -1,18 +1,18 @@
 [package]
 name = "token-release"
 version = "0.0.1"
-authors = ["contact@dharitri.org"]
-edition = "2018"
+authors = [ "contact@dharitri.org",]
+edition = "2021"
 publish = false
 
 [lib]
 path = "src/token_release.rs"
 
 [dependencies.numbat-wasm]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../numbat-wasm"
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../numbat-wasm-debug"
 

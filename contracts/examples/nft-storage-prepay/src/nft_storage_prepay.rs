@@ -33,6 +33,7 @@ pub trait NftStoragePrepay {
             .update(|reserved| *reserved += storage_cost);
     }
 
+    #[only_owner]
     #[endpoint]
     fn claim(&self) {
         let total_reserved = self.total_reserved().get();
@@ -41,7 +42,7 @@ pub trait NftStoragePrepay {
         self.total_reserved().clear();
 
         let owner = self.blockchain().get_caller();
-        self.send().direct_rewa(&owner, &total_reserved, &[]);
+        self.send().direct_rewa(&owner, &total_reserved);
     }
 
     // endpoints
@@ -56,7 +57,7 @@ pub trait NftStoragePrepay {
 
     /// defaults to max amount
     #[endpoint(withdraw)]
-    fn withdraw(&self, #[var_args] opt_amount: OptionalValue<BigUint>) {
+    fn withdraw(&self, opt_amount: OptionalValue<BigUint>) {
         let caller = self.blockchain().get_caller();
         let mut user_deposit = self.deposit(&caller).get();
         let amount = match opt_amount {
@@ -69,7 +70,7 @@ pub trait NftStoragePrepay {
         user_deposit -= &amount;
         self.deposit(&caller).set(&user_deposit);
 
-        self.send().direct_rewa(&caller, &amount, &[]);
+        self.send().direct_rewa(&caller, &amount);
     }
 
     // views

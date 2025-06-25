@@ -1,8 +1,11 @@
 use alloc::boxed::Box;
 
 use crate::{
-    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedTypeApi},
-    types::{Address, BigUint, DcdtTokenData, ManagedAddress, TokenIdentifier, H256},
+    api::{BlockchainApi, BlockchainApiImpl, ManagedTypeApi},
+    types::{
+        heap::{Address, H256},
+        DcdtTokenData, ManagedAddress, TokenIdentifier,
+    },
 };
 
 use super::UncallableApi;
@@ -36,7 +39,7 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn get_balance_legacy(&self, _address: &Address) -> Handle {
+    fn load_balance_legacy(&self, _dest: Self::BigIntHandle, _address: &Address) {
         unreachable!()
     }
 
@@ -92,24 +95,25 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn get_current_dcdt_nft_nonce<M: ManagedTypeApi>(
+    fn get_current_dcdt_nft_nonce(
         &self,
-        _address: &ManagedAddress<M>,
-        _token: &TokenIdentifier<M>,
+        _address_handle: Self::ManagedBufferHandle,
+        _token_id_handle: Self::ManagedBufferHandle,
     ) -> u64 {
         unreachable!()
     }
 
-    fn get_dcdt_balance<M: ManagedTypeApi>(
+    fn load_dcdt_balance(
         &self,
-        _address: &ManagedAddress<M>,
-        _token: &TokenIdentifier<M>,
+        _address_handle: Self::ManagedBufferHandle,
+        _token_id_handle: Self::ManagedBufferHandle,
         _nonce: u64,
-    ) -> BigUint<M> {
+        _dest: Self::BigIntHandle,
+    ) {
         unreachable!()
     }
 
-    fn get_dcdt_token_data<M: ManagedTypeApi>(
+    fn load_dcdt_token_data<M: ManagedTypeApi>(
         &self,
         _address: &ManagedAddress<M>,
         _token: &TokenIdentifier<M>,
@@ -118,9 +122,35 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
-    fn get_dcdt_local_roles<M: ManagedTypeApi>(
+    fn load_dcdt_token_data_unmanaged<M: ManagedTypeApi>(
         &self,
-        _token_id: &TokenIdentifier<M>,
+        _address: &ManagedAddress<M>,
+        _token: &TokenIdentifier<M>,
+        _nonce: u64,
+    ) -> DcdtTokenData<M> {
+        unreachable!()
+    }
+
+    fn check_dcdt_frozen(
+        &self,
+        _address_handle: Self::ManagedBufferHandle,
+        _token_id_handle: Self::ManagedBufferHandle,
+        _nonce: u64,
+    ) -> bool {
+        unreachable!()
+    }
+
+    fn check_dcdt_paused(&self, _token_id_handle: Self::ManagedBufferHandle) -> bool {
+        unreachable!()
+    }
+
+    fn check_dcdt_limited_transfer(&self, _token_id_handle: Self::ManagedBufferHandle) -> bool {
+        unreachable!()
+    }
+
+    fn load_dcdt_local_roles(
+        &self,
+        _token_id_handle: Self::ManagedBufferHandle,
     ) -> crate::types::DcdtLocalRoleFlags {
         unreachable!()
     }

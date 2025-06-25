@@ -2,20 +2,21 @@
 name = "use-module"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
 path = "src/use_module.rs"
 
 [dependencies.numbat-wasm-modules]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../numbat-wasm-modules"
 
 [dependencies.numbat-wasm]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../numbat-wasm"
+features = [ "alloc" ]
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../numbat-wasm-debug"

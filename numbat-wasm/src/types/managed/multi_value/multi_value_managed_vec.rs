@@ -1,8 +1,8 @@
 use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer},
+    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::ManagedTypeApi,
+    types::ManagedType,
 };
-use alloc::string::String;
 use numbat_codec::{
     DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti, TopDecodeMultiInput, TopEncodeMulti,
     TopEncodeMultiOutput, Vec,
@@ -33,6 +33,27 @@ where
     #[inline]
     fn from(managed_vec: ManagedVec<M, T>) -> Self {
         MultiValueManagedVec(managed_vec)
+    }
+}
+
+impl<M, T> ManagedType<M> for MultiValueManagedVec<M, T>
+where
+    M: ManagedTypeApi,
+    T: ManagedVecItem,
+{
+    type OwnHandle = M::ManagedBufferHandle;
+
+    #[inline]
+    fn from_handle(handle: M::ManagedBufferHandle) -> Self {
+        Self(ManagedVec::from_handle(handle))
+    }
+
+    fn get_handle(&self) -> M::ManagedBufferHandle {
+        self.0.get_handle()
+    }
+
+    fn transmute_from_handle_ref(handle_ref: &M::ManagedBufferHandle) -> &Self {
+        unsafe { core::mem::transmute(handle_ref) }
     }
 }
 
@@ -98,6 +119,7 @@ where
         self.0
     }
 
+    #[cfg(feature = "alloc")]
     pub fn with_self_as_vec<F>(&mut self, f: F)
     where
         F: FnOnce(&mut Vec<T>),
@@ -125,13 +147,11 @@ where
     }
 }
 
-impl<M, T> TopEncodeMulti for MultiValueManagedVec<M, T>
+impl<M, T> TopEncodeMulti for &MultiValueManagedVec<M, T>
 where
     M: ManagedTypeApi,
     T: ManagedVecItem + TopEncodeMulti,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -141,6 +161,20 @@ where
             elem.multi_encode_or_handle_err(output, h)?;
         }
         Ok(())
+    }
+}
+
+impl<M, T> TopEncodeMulti for MultiValueManagedVec<M, T>
+where
+    M: ManagedTypeApi,
+    T: ManagedVecItem + TopEncodeMulti,
+{
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
+    where
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
+    {
+        (&self).multi_encode_or_handle_err(output, h)
     }
 }
 
@@ -167,8 +201,8 @@ where
     M: ManagedTypeApi,
     T: ManagedVecItem,
 {
-    fn type_name() -> String {
-        let mut repr = String::from("variadic<");
+    fn type_name() -> TypeName {
+        let mut repr = TypeName::from("variadic<");
         repr.push_str(T::type_name().as_str());
         repr.push('>');
         repr

@@ -1,6 +1,6 @@
 use crate::{
-    DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti, TopDecodeMultiInput, TopEncodeMulti,
-    TopEncodeMultiOutput,
+    CodecFrom, CodecFromSelf, DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti,
+    TopDecodeMultiInput, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 /// A smart contract argument or result that can be missing.
@@ -33,14 +33,20 @@ impl<T> OptionalValue<T> {
             OptionalValue::None => None,
         }
     }
+
+    pub fn is_some(&self) -> bool {
+        matches!(self, OptionalValue::Some(_))
+    }
+
+    pub fn is_none(&self) -> bool {
+        !self.is_some()
+    }
 }
 
 impl<T> TopEncodeMulti for OptionalValue<T>
 where
     T: TopEncodeMulti,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -70,4 +76,21 @@ where
             Ok(OptionalValue::None)
         }
     }
+}
+
+impl<T> !CodecFromSelf for OptionalValue<T> {}
+
+impl<T, U> CodecFrom<OptionalValue<U>> for OptionalValue<T>
+where
+    T: TopEncodeMulti + TopDecodeMulti,
+    U: CodecFrom<T>,
+    OptionalValue<U>: TopEncodeMulti,
+{
+}
+
+impl<T, U> CodecFrom<U> for OptionalValue<T>
+where
+    T: TopEncodeMulti + TopDecodeMulti,
+    U: CodecFrom<T> + CodecFromSelf + TopEncodeMulti + TopDecodeMulti,
+{
 }

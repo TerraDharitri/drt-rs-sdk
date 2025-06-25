@@ -1,9 +1,15 @@
-use crate::{abi::TypeAbi, api::ManagedTypeApi, types::ManagedBuffer};
-use alloc::string::String;
+use crate::{
+    abi::{TypeAbi, TypeName},
+    api::ManagedTypeApi,
+    types::ManagedBuffer,
+};
 use numbat_codec::{
     DecodeErrorHandler, EncodeErrorHandler, TopDecodeMulti, TopDecodeMultiInput, TopEncodeMulti,
     TopEncodeMultiOutput,
 };
+
+const SAME_SHARD_SUCCESS_CODE: u32 = 0;
+const CROSS_SHARD_SUCCESS_CODE: u32 = 0x00006f6b; // "ok"
 
 pub struct ManagedAsyncCallError<M>
 where
@@ -47,7 +53,7 @@ where
         H: DecodeErrorHandler,
     {
         let err_code: u32 = input.next_value(h)?;
-        if err_code == 0 {
+        if err_code == SAME_SHARD_SUCCESS_CODE || err_code == CROSS_SHARD_SUCCESS_CODE {
             Ok(Self::Ok(T::multi_decode_or_handle_err(input, h)?))
         } else {
             let err_msg = if input.has_next() {
@@ -68,8 +74,6 @@ where
     M: ManagedTypeApi,
     T: TopEncodeMulti,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -98,8 +102,8 @@ where
     M: ManagedTypeApi,
     T: TypeAbi,
 {
-    fn type_name() -> String {
-        let mut repr = String::from("AsyncCallResult<");
+    fn type_name() -> TypeName {
+        let mut repr = TypeName::from("AsyncCallResult<");
         repr.push_str(T::type_name().as_str());
         repr.push('>');
         repr

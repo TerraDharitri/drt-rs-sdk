@@ -3,7 +3,7 @@ use numbat_codec::{EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput, Try
 
 use crate::{
     api::{EndpointFinishApi, ErrorApi, ErrorApiImpl, ManagedTypeApi},
-    types::{BoxedBytes, ManagedBuffer, ManagedType},
+    types::{heap::BoxedBytes, ManagedBuffer, ManagedType},
 };
 
 use super::SCError;
@@ -22,7 +22,7 @@ where
     M: ManagedTypeApi + ErrorApi,
 {
     fn finish_err<FA: EndpointFinishApi>(&self) -> ! {
-        M::error_api_impl().signal_error_from_buffer(self.buffer.get_raw_handle())
+        M::error_api_impl().signal_error_from_buffer(self.buffer.get_handle())
     }
 }
 
@@ -53,7 +53,7 @@ where
 
     #[inline]
     pub fn exit_now(&self) -> ! {
-        M::error_api_impl().signal_error_from_buffer(self.buffer.get_raw_handle())
+        M::error_api_impl().signal_error_from_buffer(self.buffer.get_handle())
     }
 }
 
@@ -121,8 +121,6 @@ impl<M> TopEncodeMulti for ManagedSCError<M>
 where
     M: ManagedTypeApi + ErrorApi,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,

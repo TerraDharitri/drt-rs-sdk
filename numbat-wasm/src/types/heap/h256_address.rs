@@ -1,11 +1,17 @@
 use super::h256::H256;
-use crate::{abi::TypeAbi, types::BoxedBytes};
-use alloc::{boxed::Box, string::String, vec::Vec};
+use crate::{
+    abi::{TypeAbi, TypeName},
+    types::heap::BoxedBytes,
+};
+use alloc::{boxed::Box, vec::Vec};
 use core::fmt::Debug;
 
 /// An Address is just a H256 with a different name.
 /// Has a different ABI name than H256.
-#[derive(Hash, Eq, PartialEq, Clone, Debug)]
+///
+/// Note: we are currently using ManagedAddress in contracts.
+/// While this also works, its use in contracts is discouraged.
+#[derive(Hash, PartialEq, Eq, Clone, Debug)]
 pub struct Address(H256);
 
 impl From<H256> for Address {
@@ -188,7 +194,7 @@ impl TopDecode for Address {
 }
 
 impl TypeAbi for Address {
-    fn type_name() -> String {
+    fn type_name() -> TypeName {
         "Address".into()
     }
 }

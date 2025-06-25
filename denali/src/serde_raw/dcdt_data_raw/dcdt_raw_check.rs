@@ -1,4 +1,5 @@
 use super::*;
+use crate::serde_raw::ValueSubTree;
 use serde::{
     de::{self, Deserializer, MapAccess, Visitor},
     ser::Serializer,
@@ -7,7 +8,7 @@ use serde::{
 use std::fmt;
 
 pub enum CheckDcdtRaw {
-    Short(String),
+    Short(ValueSubTree),
     Full(CheckDcdtDataRaw),
 }
 
@@ -45,7 +46,7 @@ impl<'de> Visitor<'de> for CheckDcdtRawVisitor {
     where
         E: de::Error,
     {
-        Ok(CheckDcdtRaw::Short(value.to_string()))
+        Ok(CheckDcdtRaw::Short(ValueSubTree::Str(value.to_string())))
     }
 
     fn visit_map<M>(self, map: M) -> Result<Self::Value, M::Error>

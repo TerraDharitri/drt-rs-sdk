@@ -4,17 +4,18 @@ use super::DcdtLocalRoleFlags;
 use crate as numbat_wasm;
 use crate::{derive::TypeAbi, types::ManagedVecItem};
 
-const DCDT_ROLE_NONE: &[u8] = &[];
-const DCDT_ROLE_LOCAL_MINT: &[u8] = b"DCDTRoleLocalMint";
-const DCDT_ROLE_LOCAL_BURN: &[u8] = b"DCDTRoleLocalBurn";
-const DCDT_ROLE_NFT_CREATE: &[u8] = b"DCDTRoleNFTCreate";
-const DCDT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCDTRoleNFTAddQuantity";
-const DCDT_ROLE_NFT_BURN: &[u8] = b"DCDTRoleNFTBurn";
-const DCDT_ROLE_NFT_ADD_URI: &[u8] = b"DCDTRoleNFTAddURI";
-const DCDT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCDTRoleNFTUpdateAttributes";
+static DCDT_ROLE_NONE: &[u8] = &[];
+static DCDT_ROLE_LOCAL_MINT: &[u8] = b"DCDTRoleLocalMint";
+static DCDT_ROLE_LOCAL_BURN: &[u8] = b"DCDTRoleLocalBurn";
+static DCDT_ROLE_NFT_CREATE: &[u8] = b"DCDTRoleNFTCreate";
+static DCDT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCDTRoleNFTAddQuantity";
+static DCDT_ROLE_NFT_BURN: &[u8] = b"DCDTRoleNFTBurn";
+static DCDT_ROLE_NFT_ADD_URI: &[u8] = b"DCDTRoleNFTAddURI";
+static DCDT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCDTRoleNFTUpdateAttributes";
+static DCDT_ROLE_TRANSFER: &[u8] = b"DCDTTransferRole";
 
 #[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug, Copy,
+    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug, Copy,
 )]
 pub enum DcdtLocalRole {
     None,
@@ -25,10 +26,11 @@ pub enum DcdtLocalRole {
     NftBurn,
     NftAddUri,
     NftUpdateAttributes,
+    Transfer,
 }
 
 impl DcdtLocalRole {
-    pub fn as_u8(&self) -> u8 {
+    pub fn as_u16(&self) -> u16 {
         match self {
             Self::None => 0,
             Self::Mint => 1,
@@ -38,6 +40,7 @@ impl DcdtLocalRole {
             Self::NftBurn => 5,
             Self::NftAddUri => 6,
             Self::NftUpdateAttributes => 7,
+            Self::Transfer => 8,
         }
     }
 
@@ -51,6 +54,7 @@ impl DcdtLocalRole {
             Self::NftBurn => DCDT_ROLE_NFT_BURN,
             Self::NftAddUri => DCDT_ROLE_NFT_ADD_URI,
             Self::NftUpdateAttributes => DCDT_ROLE_NFT_UPDATE_ATTRIBUTES,
+            Self::Transfer => DCDT_ROLE_TRANSFER,
         }
     }
 
@@ -64,13 +68,14 @@ impl DcdtLocalRole {
             Self::NftBurn => DcdtLocalRoleFlags::NFT_BURN,
             Self::NftAddUri => DcdtLocalRoleFlags::NFT_ADD_URI,
             Self::NftUpdateAttributes => DcdtLocalRoleFlags::NFT_UPDATE_ATTRIBUTES,
+            Self::Transfer => DcdtLocalRoleFlags::TRANSFER,
         }
     }
 }
 
 // TODO: can be done with macros, but I didn't find a public library that does it and is no_std
 // we can implement it, it's easy
-const ALL_ROLES: [DcdtLocalRole; 7] = [
+const ALL_ROLES: [DcdtLocalRole; 8] = [
     DcdtLocalRole::Mint,
     DcdtLocalRole::Burn,
     DcdtLocalRole::NftCreate,
@@ -78,6 +83,7 @@ const ALL_ROLES: [DcdtLocalRole; 7] = [
     DcdtLocalRole::NftBurn,
     DcdtLocalRole::NftAddUri,
     DcdtLocalRole::NftUpdateAttributes,
+    DcdtLocalRole::Transfer,
 ];
 
 impl DcdtLocalRole {
@@ -86,15 +92,18 @@ impl DcdtLocalRole {
     }
 }
 
-impl From<u8> for DcdtLocalRole {
+impl From<u16> for DcdtLocalRole {
     #[inline]
-    fn from(value: u8) -> Self {
+    fn from(value: u16) -> Self {
         match value {
             1 => Self::Mint,
             2 => Self::Burn,
             3 => Self::NftCreate,
             4 => Self::NftAddQuantity,
             5 => Self::NftBurn,
+            6 => Self::NftAddUri,
+            7 => Self::NftUpdateAttributes,
+            8 => Self::Transfer,
             _ => Self::None,
         }
     }
@@ -113,6 +122,12 @@ impl<'a> From<&'a [u8]> for DcdtLocalRole {
             Self::NftAddQuantity
         } else if byte_slice == DCDT_ROLE_NFT_BURN {
             Self::NftBurn
+        } else if byte_slice == DCDT_ROLE_NFT_ADD_URI {
+            Self::NftAddUri
+        } else if byte_slice == DCDT_ROLE_NFT_UPDATE_ATTRIBUTES {
+            Self::NftUpdateAttributes
+        } else if byte_slice == DCDT_ROLE_TRANSFER {
+            Self::Transfer
         } else {
             Self::None
         }
@@ -125,7 +140,7 @@ impl ManagedVecItem for DcdtLocalRole {
     type Ref<'a> = Self;
 
     fn from_byte_reader<Reader: FnMut(&mut [u8])>(reader: Reader) -> Self {
-        u8::from_byte_reader(reader).into()
+        u16::from_byte_reader(reader).into()
     }
 
     unsafe fn from_byte_reader_as_borrow<'a, Reader: FnMut(&mut [u8])>(
@@ -135,6 +150,6 @@ impl ManagedVecItem for DcdtLocalRole {
     }
 
     fn to_byte_writer<R, Writer: FnMut(&[u8]) -> R>(&self, writer: Writer) -> R {
-        <u8 as ManagedVecItem>::to_byte_writer(&self.as_u8(), writer)
+        <u16 as ManagedVecItem>::to_byte_writer(&self.as_u16(), writer)
     }
 }

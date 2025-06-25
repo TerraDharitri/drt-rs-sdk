@@ -35,7 +35,7 @@ pub trait PingPong {
         ping_amount: &BigUint,
         duration_in_seconds: u64,
         opt_activation_timestamp: Option<u64>,
-        #[var_args] max_funds: OptionalValue<BigUint>,
+        max_funds: OptionalValue<BigUint>,
     ) {
         self.ping_amount().set(ping_amount);
         let activation_timestamp =
@@ -50,7 +50,7 @@ pub trait PingPong {
     /// Optional `_data` argument is ignored.
     #[payable("REWA")]
     #[endpoint]
-    fn ping(&self, #[var_args] _data: OptionalValue<ManagedBuffer>) {
+    fn ping(&self, _data: IgnoreValue) {
         let payment = self.call_value().rewa_value();
 
         require!(
@@ -73,7 +73,7 @@ pub trait PingPong {
             require!(
                 &self
                     .blockchain()
-                    .get_sc_balance(&TokenIdentifier::rewa(), 0)
+                    .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
                     + &payment
                     <= max_funds,
                 "smart contract full"
@@ -104,7 +104,7 @@ pub trait PingPong {
                 self.user_status(user_id).set(UserStatus::Withdrawn);
                 if let Some(user_address) = self.user_mapper().get_user_address(user_id) {
                     self.send()
-                        .direct_rewa(&user_address, &self.ping_amount().get(), b"pong");
+                        .direct_rewa(&user_address, &self.ping_amount().get());
                     Result::Ok(())
                 } else {
                     Result::Err("unknown user")

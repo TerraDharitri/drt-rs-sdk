@@ -1,7 +1,7 @@
 [package]
 name = "numbat-wasm-node"
-version = "0.0.17"
-edition = "2018"
+version = "0.0.19"
+edition = "2021"
 
 authors = ["contact@dharitri.org"]
 license = "GPL-3.0-only"
@@ -14,10 +14,10 @@ keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools::ffi"]
 
 [features]
-unmanaged-ei = []
 vm-validate-token-identifier = []
 vm-dcdt-local-roles = []
+ei-unmanaged-node = []
 
 [dependencies.numbat-wasm]
-version = "=0.0.17"
+version = "=0.0.19"
 path = "../numbat-wasm"

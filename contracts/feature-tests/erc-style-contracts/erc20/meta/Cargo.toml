@@ -2,12 +2,12 @@
 name = "erc20-meta"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies.erc20]
 path = ".."
 
 [dependencies.numbat-wasm-debug]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm-debug"

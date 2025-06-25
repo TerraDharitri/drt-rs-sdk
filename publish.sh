@@ -28,8 +28,7 @@
 # The branch doesn't need to be published for the following steps to work.
 # 
 # 5. Run this script, `./publish.sh`.
-# You can comment out the crates you are not publishing. Nothing happens if you do not,
-# you will just receive a message that they are already published.
+# You can comment out the crates you are not publishing. The script will stop otherwise when it cannot publish them.
 # 
 # 6. Search for `numbat` on `crates.io` and check that the new versions appear for all crates.
 # If any of the crates was not published, check what went wrong and try again.
@@ -53,45 +52,49 @@
 #
 
 cd numbat-codec-derive
-cargo publish --allow-dirty 
+cargo publish || return 1
 cd ..
 
-sleep 20
-
 cd numbat-codec
-cargo publish --allow-dirty 
+cargo publish || return 1
+cd ..
+
+cd numbat-wasm-derive
+cargo publish || return 1
+cd ..
+
+cd numbat-wasm
+cargo publish || return 1
 cd ..
 
 cd denali
-cargo publish --allow-dirty 
+cargo publish || return 1
 cd ..
-
-sleep 20
-
-cd numbat-wasm-derive
-cargo publish --allow-dirty 
-cd ..
-
-sleep 20
-
-cd numbat-wasm
-cargo publish --allow-dirty 
-cd ..
-
-sleep 20
 
 cd numbat-wasm-node
-cargo publish --allow-dirty 
+cargo publish || return 1
 cd ..
 
 cd numbat-wasm-debug
-cargo publish --allow-dirty 
+cargo publish || return 1
 cd ..
 
 cd numbat-wasm-output
-cargo publish --allow-dirty 
+cargo publish || return 1
 cd ..
 
 cd numbat-wasm-modules
-cargo publish --allow-dirty 
+cargo publish || return 1
+cd ..
+
+cd contracts/core/price-aggregator
+cargo publish || return 1
+cd ../../..
+
+cd contracts/core/wrewa-swap
+cargo publish || return 1
+cd ../../..
+
+cd numbat-interact-snippets
+cargo publish || return 1
 cd ..

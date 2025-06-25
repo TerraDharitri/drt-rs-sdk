@@ -1,4 +1,9 @@
 #[test]
+fn big_int_from_i64_go() {
+    numbat_wasm_debug::denali_go("denali/big_int_from_i64.scen.json");
+}
+
+#[test]
 fn big_int_to_i64_go() {
     numbat_wasm_debug::denali_go("denali/big_int_to_i64.scen.json");
 }
@@ -9,8 +14,18 @@ fn big_num_conversions_go() {
 }
 
 #[test]
+fn big_uint_eq_u64_go() {
+    numbat_wasm_debug::denali_go("denali/big_uint_eq_u64.scen.json");
+}
+
+#[test]
 fn big_uint_sqrt_go() {
     numbat_wasm_debug::denali_go("denali/big_uint_sqrt.scen.json");
+}
+
+#[test]
+fn big_uint_from_u64_go() {
+    numbat_wasm_debug::denali_go("denali/big_uint_from_u64.scen.json");
 }
 
 #[test]
@@ -21,11 +36,6 @@ fn big_uint_to_u64_go() {
 #[test]
 fn block_info_go() {
     numbat_wasm_debug::denali_go("denali/block_info.scen.json");
-}
-
-#[test]
-fn boxed_bytes_zeros_go() {
-    numbat_wasm_debug::denali_go("denali/boxed_bytes_zeros.scen.json");
 }
 
 #[test]
@@ -43,15 +53,14 @@ fn crypto_elliptic_curves_go() {
     numbat_wasm_debug::denali_go("denali/crypto_elliptic_curves.scen.json");
 }
 
-// TODO: enable after new VM release is out.
-// #[test]
-// fn crypto_keccak256_go() {
-//     numbat_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
-// }
+#[test]
+fn crypto_keccak256_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
+}
 
 #[test]
-fn crypto_keccak256_legacy_go() {
-    numbat_wasm_debug::denali_go("denali/crypto_keccak256_legacy.scen.json");
+fn crypto_keccak256_legacy_managed_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_keccak256_legacy_managed.scen.json");
 }
 
 #[test]
@@ -59,20 +68,24 @@ fn crypto_ripemd160_go() {
     numbat_wasm_debug::denali_go("denali/crypto_ripemd160.scen.json");
 }
 
-// TODO: enable after new VM release is out.
-// #[test]
-// fn crypto_sha256_go() {
-//     numbat_wasm_debug::denali_go("denali/crypto_sha256.scen.json");
-// }
-
 #[test]
-fn crypto_sha256_legacy_go() {
-    numbat_wasm_debug::denali_go("denali/crypto_sha256_legacy.scen.json");
+fn crypto_sha256_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_sha256.scen.json");
 }
 
 #[test]
-fn crypto_verify_funcs_go() {
-    numbat_wasm_debug::denali_go("denali/crypto_verify_funcs.scen.json");
+fn crypto_verify_bls_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_verify_bls.scen.json");
+}
+
+#[test]
+fn crypto_verify_ed25519_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_verify_ed25519.scen.json");
+}
+
+#[test]
+fn crypto_verify_secp256k1_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_verify_secp256k1.scen.json");
 }
 
 #[test]
@@ -83,16 +96,6 @@ fn echo_array_u8_go() {
 #[test]
 fn echo_arrayvec_go() {
     numbat_wasm_debug::denali_go("denali/echo_arrayvec.scen.json");
-}
-
-#[test]
-fn echo_async_result_empty_go() {
-    numbat_wasm_debug::denali_go("denali/echo_async_result_empty.scen.json");
-}
-
-#[test]
-fn echo_async_result_empty_managed_go() {
-    numbat_wasm_debug::denali_go("denali/echo_async_result_empty_managed.scen.json");
 }
 
 #[test]
@@ -111,11 +114,6 @@ fn echo_big_uint_go() {
 }
 
 #[test]
-fn echo_boxed_bytes_go() {
-    numbat_wasm_debug::denali_go("denali/echo_boxed_bytes.scen.json");
-}
-
-#[test]
 fn echo_i32_go() {
     numbat_wasm_debug::denali_go("denali/echo_i32.scen.json");
 }
@@ -131,6 +129,11 @@ fn echo_ignore_go() {
 }
 
 #[test]
+fn echo_managed_async_result_empty_go() {
+    numbat_wasm_debug::denali_go("denali/echo_managed_async_result_empty.scen.json");
+}
+
+#[test]
 fn echo_managed_bytes_go() {
     numbat_wasm_debug::denali_go("denali/echo_managed_bytes.scen.json");
 }
@@ -141,33 +144,13 @@ fn echo_managed_vec_go() {
 }
 
 #[test]
+fn echo_multi_value_tuples_go() {
+    numbat_wasm_debug::denali_go("denali/echo_multi_value_tuples.scen.json");
+}
+
+#[test]
 fn echo_nothing_go() {
     numbat_wasm_debug::denali_go("denali/echo_nothing.scen.json");
-}
-
-#[test]
-fn echo_ser_ex_1_go() {
-    numbat_wasm_debug::denali_go("denali/echo_ser_ex_1.scen.json");
-}
-
-#[test]
-fn echo_slice_u8_go() {
-    numbat_wasm_debug::denali_go("denali/echo_slice_u8.scen.json");
-}
-
-#[test]
-fn echo_str_go() {
-    numbat_wasm_debug::denali_go("denali/echo_str.scen.json");
-}
-
-#[test]
-fn echo_str_box_go() {
-    numbat_wasm_debug::denali_go("denali/echo_str_box.scen.json");
-}
-
-#[test]
-fn echo_string_go() {
-    numbat_wasm_debug::denali_go("denali/echo_string.scen.json");
 }
 
 #[test]
@@ -186,11 +169,6 @@ fn echo_usize_go() {
 }
 
 #[test]
-fn echo_varags_tuples_go() {
-    numbat_wasm_debug::denali_go("denali/echo_varags_tuples.scen.json");
-}
-
-#[test]
 fn echo_varargs_managed_eager_go() {
     numbat_wasm_debug::denali_go("denali/echo_varargs_managed_eager.scen.json");
 }
@@ -206,18 +184,8 @@ fn echo_varargs_u32_go() {
 }
 
 #[test]
-fn echo_vec_u8_go() {
-    numbat_wasm_debug::denali_go("denali/echo_vec_u8.scen.json");
-}
-
-#[test]
 fn events_go() {
     numbat_wasm_debug::denali_go("denali/events.scen.json");
-}
-
-#[test]
-fn events_legacy_go() {
-    numbat_wasm_debug::denali_go("denali/events_legacy.scen.json");
 }
 
 #[test]
@@ -241,13 +209,13 @@ fn managed_address_managed_buffer_go() {
 }
 
 #[test]
-fn managed_buffer_concat_1_go() {
-    numbat_wasm_debug::denali_go("denali/managed_buffer_concat_1.scen.json");
+fn managed_buffer_concat_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_concat.scen.json");
 }
 
 #[test]
-fn managed_buffer_concat_2_go() {
-    numbat_wasm_debug::denali_go("denali/managed_buffer_concat_2.scen.json");
+fn managed_buffer_copy_slice_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_copy_slice.scen.json");
 }
 
 #[test]
@@ -256,23 +224,8 @@ fn managed_buffer_eq_go() {
 }
 
 #[test]
-fn managed_buffer_overwrite_go() {
-    numbat_wasm_debug::denali_go("denali/managed_buffer_overwrite.scen.json");
-}
-
-#[test]
 fn managed_buffer_set_random_go() {
     numbat_wasm_debug::denali_go("denali/managed_buffer_set_random.scen.json");
-}
-
-#[test]
-fn managed_buffer_slice_1_go() {
-    numbat_wasm_debug::denali_go("denali/managed_buffer_slice_1.scen.json");
-}
-
-#[test]
-fn managed_buffer_slice_2_go() {
-    numbat_wasm_debug::denali_go("denali/managed_buffer_slice_2.scen.json");
 }
 
 #[test]
@@ -286,8 +239,18 @@ fn managed_vec_biguint_push_go() {
 }
 
 #[test]
+fn managed_vec_array_push_go() {
+    numbat_wasm_debug::denali_go("denali/managed_vec_array_push.scen.json");
+}
+
+#[test]
 fn only_owner_go() {
     numbat_wasm_debug::denali_go("denali/only_owner.scen.json");
+}
+
+#[test]
+fn only_user_account_go() {
+    numbat_wasm_debug::denali_go("denali/only_user_account.scen.json");
 }
 
 #[test]
@@ -311,13 +274,8 @@ fn sc_properties_go() {
 }
 
 #[test]
-fn sc_result_go() {
-    numbat_wasm_debug::denali_go("denali/sc_result.scen.json");
-}
-
-#[test]
-fn storage_addr_go() {
-    numbat_wasm_debug::denali_go("denali/storage_addr.scen.json");
+fn storage_raw_api_features_go() {
+    numbat_wasm_debug::denali_go("denali/storage_raw_api_features.scen.json");
 }
 
 #[test]
@@ -353,6 +311,11 @@ fn storage_i64_bad_go() {
 #[test]
 fn storage_load_from_address_go() {
     numbat_wasm_debug::denali_go("denali/storage_load_from_address.scen.json");
+}
+
+#[test]
+fn storage_managed_address_go() {
+    numbat_wasm_debug::denali_go("denali/storage_managed_address.scen.json");
 }
 
 #[test]
@@ -426,8 +389,8 @@ fn storage_mapper_whitelist_go() {
 }
 
 #[test]
-fn storage_opt_addr_go() {
-    numbat_wasm_debug::denali_go("denali/storage_opt_addr.scen.json");
+fn storage_opt_managed_addr_go() {
+    numbat_wasm_debug::denali_go("denali/storage_opt_managed_addr.scen.json");
 }
 
 #[test]
@@ -456,11 +419,11 @@ fn storage_usize_bad_go() {
 }
 
 #[test]
-fn storage_vec_u8_go() {
-    numbat_wasm_debug::denali_go("denali/storage_vec_u8.scen.json");
+fn struct_eq_go() {
+    numbat_wasm_debug::denali_go("denali/struct_eq.scen.json");
 }
 
 #[test]
-fn struct_eq_go() {
-    numbat_wasm_debug::denali_go("denali/struct_eq.scen.json");
+fn storage_mapper_unique_id_go() {
+    numbat_wasm_debug::denali_go("denali/storage_mapper_unique_id.scen.json");
 }

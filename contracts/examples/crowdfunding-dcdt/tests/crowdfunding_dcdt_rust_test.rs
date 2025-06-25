@@ -1,5 +1,5 @@
 use crowdfunding_dcdt::*;
-use numbat_wasm::types::Address;
+use numbat_wasm::types::{Address, RewaOrDcdtTokenIdentifier};
 use numbat_wasm_debug::{
     managed_address, managed_biguint, managed_token_id, rust_biguint, testing_framework::*,
     DebugApi,
@@ -7,7 +7,7 @@ use numbat_wasm_debug::{
 
 const CF_TOKEN_ID: &[u8] = b"CROWD-123456";
 const CF_DEADLINE: u64 = 7 * 24 * 60 * 60; // 1 week in seconds
-const WASM_PATH: &'static str = "output/crowdfunding-dcdt.wasm";
+const WASM_PATH: &str = "output/crowdfunding-dcdt.wasm";
 
 struct CrowdfundingSetup<CrowdfundingObjBuilder>
 where
@@ -47,7 +47,11 @@ where
             let target = managed_biguint!(2_000);
             let token_id = managed_token_id!(CF_TOKEN_ID);
 
-            sc.init(target, CF_DEADLINE, token_id);
+            sc.init(
+                target,
+                CF_DEADLINE,
+                RewaOrDcdtTokenIdentifier::dcdt(token_id),
+            );
         })
         .assert_ok();
 

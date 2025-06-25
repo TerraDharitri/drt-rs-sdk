@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(generic_associated_types)]
 
 numbat_wasm::imports!();
 
@@ -61,7 +60,7 @@ pub trait AbiTester {
     fn var_args(
         &self,
         _simple_arg: u32,
-        #[var_args] _var_args: MultiValueVec<MultiValue2<OnlyShowsUpAsNested04, i32>>,
+        _var_args: MultiValueVec<MultiValue2<OnlyShowsUpAsNested04, i32>>,
     ) {
     }
 
@@ -71,12 +70,7 @@ pub trait AbiTester {
     }
 
     #[endpoint]
-    fn optional_arg(
-        &self,
-        _simple_arg: u32,
-        #[var_args] _opt_args: OptionalValue<OnlyShowsUpAsNested06>,
-    ) {
-    }
+    fn optional_arg(&self, _simple_arg: u32, _opt_args: OptionalValue<OnlyShowsUpAsNested06>) {}
 
     #[endpoint]
     fn optional_result(&self) -> OptionalValue<OnlyShowsUpAsNested07> {
@@ -85,6 +79,7 @@ pub trait AbiTester {
 
     #[endpoint]
     fn address_vs_h256(&self, address: Address, h256: H256) -> MultiValue2<Address, H256> {
+        self.address_h256_event(&address, &h256);
         (address, h256).into()
     }
 
@@ -157,27 +152,35 @@ pub trait AbiTester {
 
     #[endpoint]
     #[payable("REWA")]
-    fn payable_rewa(&self, #[payment] _payment: BigUint, #[payment_token] _token: TokenIdentifier) {
-    }
+    fn payable_rewa(&self) {}
 
     #[endpoint]
     #[payable("TOKEN-FOR-ABI")]
-    fn payable_some_token(
-        &self,
-        #[payment] _payment: BigUint,
-        #[payment_token] _token: TokenIdentifier,
-    ) {
+    fn payable_some_token(&self) {
+        let (token, payment) = self.call_value().single_fungible_dcdt();
+        self.payable_event(&token, &payment);
     }
 
     #[endpoint]
     #[payable("*")]
-    fn payable_any_token(
-        &self,
-        #[payment] _payment: BigUint,
-        #[payment_token] _token: TokenIdentifier,
-    ) {
-    }
+    fn payable_any_token(&self) {}
 
-    #[external_view]
+    #[endpoint]
+    #[label("test-external-view")]
     fn external_view(&self) {}
+
+    #[event("payable-event")]
+    fn payable_event(&self, #[indexed] token: &TokenIdentifier, amount: &BigUint);
+
+    #[event("address-h256-event")]
+    fn address_h256_event(&self, #[indexed] address: &Address, #[indexed] h256: &H256);
+
+    #[endpoint]
+    #[label("label1")]
+    fn label_a(&self) {}
+
+    #[endpoint]
+    #[label("label1")]
+    #[label("label2")]
+    fn label_b(&self) {}
 }

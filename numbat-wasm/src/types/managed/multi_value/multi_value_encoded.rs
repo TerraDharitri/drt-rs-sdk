@@ -1,17 +1,15 @@
 use crate::{
-    abi::{TypeAbi, TypeDescriptionContainer},
+    abi::{TypeAbi, TypeDescriptionContainer, TypeName},
     api::{ErrorApi, ManagedTypeApi},
     contract_base::{ExitCodecErrorHandler, ManagedSerializer},
     err_msg,
-    types::{
-        ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, ManagedVecItem, MultiResultVec,
-    },
+    types::{ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, ManagedVecItem},
 };
-use alloc::string::String;
-use core::marker::PhantomData;
+use core::{iter::FromIterator, marker::PhantomData};
 use numbat_codec::{
-    try_cast_execute_or_else, DecodeErrorHandler, EncodeErrorHandler, TopDecode, TopDecodeMulti,
-    TopDecodeMultiInput, TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
+    try_cast_execute_or_else, CodecFromSelf, DecodeErrorHandler, EncodeErrorHandler, TopDecode,
+    TopDecodeMulti, TopDecodeMultiInput, TopDecodeMultiLength, TopEncode, TopEncodeMulti,
+    TopEncodeMultiOutput,
 };
 
 /// A multi-value container, that keeps raw values as ManagedBuffer
@@ -25,7 +23,7 @@ use numbat_codec::{
 ///
 /// Since it can contain multi-values, the number of actual items it contains cannot be determined without fully decoding.
 ///
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug, PartialEq)]
 pub struct MultiValueEncoded<M, T>
 where
     M: ManagedTypeApi,
@@ -113,7 +111,7 @@ where
     M: ManagedTypeApi,
 {
     pub fn to_arg_buffer(&self) -> ManagedArgBuffer<M> {
-        ManagedArgBuffer::from_raw_handle(self.raw_buffers.get_raw_handle())
+        ManagedArgBuffer::from_handle(self.raw_buffers.get_handle())
     }
 }
 
@@ -148,12 +146,12 @@ where
 impl<M, T> MultiValueEncoded<M, T>
 where
     M: ManagedTypeApi + ErrorApi,
-    T: TopEncode + TopDecode,
+    T: TopDecodeMultiLength,
 {
-    /// Number of items. Only available for single-encode items.
+    /// Number of items. Only available for multi-encode items.
     #[inline]
     pub fn len(&self) -> usize {
-        self.raw_len()
+        self.raw_len() / T::get_len()
     }
 }
 
@@ -172,13 +170,11 @@ where
     }
 }
 
-impl<M, T> TopEncodeMulti for MultiValueEncoded<M, T>
+impl<M, T> TopEncodeMulti for &MultiValueEncoded<M, T>
 where
     M: ManagedTypeApi + ErrorApi,
     T: TopEncodeMulti,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,
@@ -188,6 +184,20 @@ where
             elem.multi_encode_or_handle_err(output, h)?;
         }
         Ok(())
+    }
+}
+
+impl<M, T> TopEncodeMulti for MultiValueEncoded<M, T>
+where
+    M: ManagedTypeApi + ErrorApi,
+    T: TopEncodeMulti,
+{
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
+    where
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
+    {
+        (&self).multi_encode_or_handle_err(output, h)
     }
 }
 
@@ -217,8 +227,8 @@ where
     M: ManagedTypeApi,
     T: TypeAbi,
 {
-    fn type_name() -> String {
-        MultiResultVec::<T>::type_name()
+    fn type_name() -> TypeName {
+        crate::abi::type_name_variadic::<T>()
     }
 
     fn provide_type_descriptions<TDC: TypeDescriptionContainer>(accumulator: &mut TDC) {
@@ -227,5 +237,40 @@ where
 
     fn is_variadic() -> bool {
         true
+    }
+}
+
+impl<M, T> CodecFromSelf for MultiValueEncoded<M, T> where M: ManagedTypeApi {}
+
+#[cfg(feature = "alloc")]
+use numbat_codec::{multi_types::MultiValueVec, CodecFrom};
+
+#[cfg(feature = "alloc")]
+impl<M, T, U> CodecFrom<MultiValueVec<T>> for MultiValueEncoded<M, U>
+where
+    M: ManagedTypeApi + ErrorApi,
+    T: TopEncodeMulti,
+    U: CodecFrom<T>,
+{
+}
+
+#[cfg(feature = "alloc")]
+impl<M, T, U> CodecFrom<MultiValueEncoded<M, T>> for MultiValueVec<U>
+where
+    M: ManagedTypeApi + ErrorApi,
+    T: TopEncodeMulti,
+    U: CodecFrom<T>,
+{
+}
+
+impl<M, V> FromIterator<V> for MultiValueEncoded<M, V>
+where
+    M: ManagedTypeApi,
+    V: TopEncodeMulti,
+{
+    fn from_iter<T: IntoIterator<Item = V>>(iter: T) -> Self {
+        let mut result: MultiValueEncoded<M, V> = MultiValueEncoded::new();
+        iter.into_iter().for_each(|f| result.push(f));
+        result
     }
 }

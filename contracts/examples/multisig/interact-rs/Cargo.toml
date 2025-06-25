@@ -1,0 +1,21 @@
+[package]
+name = "multisig-interact"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "multisig-interact"
+path = "src/multisig_interact.rs"
+
+[dependencies.multisig]
+path = ".."
+
+[dependencies.numbat-wasm-modules]
+version = "0.0.19"
+path = "../../../../numbat-wasm-modules"
+
+[dependencies.numbat-interact-snippets]
+version = "0.0.19"
+path = "../../../../numbat-interact-snippets"

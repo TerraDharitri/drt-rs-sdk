@@ -5,7 +5,7 @@ Non-Fungible Tokens have amounts of either 0 or 1, and variable nonce. They are 
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let drtjs = await require('@terradharitri/drtjs');
+let drtjs = await require('@numbatnetwork/drtjs');
 let { drtSys, Rewa, wallets: { alice, bob, carol } } = await drtjs.setupInteractive("local-testnet");
 
 // Issue a new non-fungible token

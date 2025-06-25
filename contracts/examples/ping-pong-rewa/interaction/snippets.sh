@@ -1,5 +1,5 @@
 PEM_FILE="./ping-pong.pem"
-PING_PONG_CONTRACT="./numbat-wasm-rs/contracts/examples/ping-pong-rewa"
+PING_PONG_CONTRACT="./drt-rs-sdk/contracts/examples/ping-pong-rewa"
 
 PROXY_ARGUMENT="--proxy=https://devnet-api.dharitri.org"
 CHAIN_ARGUMENT="--chain=D"
@@ -27,8 +27,8 @@ deploy_ping_pong() {
         --arguments $FIXED_SUM $DURATION $BEGINNING $MAX_FUNDS --send \
         || return)
 
-    local RESULT_ADDRESS=$(drtpy data parse --file="$OUTFILE" --expression="data['emitted_tx']['address']")
-    local RESULT_TRANSACTION=$(drtpy data parse --file="$OUTFILE" --expression="data['emitted_tx']['hash']")
+    local RESULT_ADDRESS=$(drtpy data parse --file="$OUTFILE" --expression="data['contractAddress']")
+    local RESULT_TRANSACTION=$(drtpy data parse --file="$OUTFILE" --expression="data['emittedTransactionHash']")
 
     echo ""
     echo "Deployed contract with:"

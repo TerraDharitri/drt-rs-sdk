@@ -1,17 +1,17 @@
 [package]
 name = "order-book-factory"
 version = "0.0.0"
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
 path = "src/lib.rs"
 
 [dependencies.numbat-wasm]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../numbat-wasm"
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../numbat-wasm-debug"
 

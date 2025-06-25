@@ -4,27 +4,31 @@ fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/composability");
 
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:forwarder/output/forwarder.wasm",
         forwarder::ContractBuilder,
     );
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:forwarder-raw/output/forwarder-raw.wasm",
         forwarder_raw::ContractBuilder,
     );
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
+        "file:promises-features/output/promises-features.wasm",
+        promises_features::ContractBuilder,
+    );
+    blockchain.register_contract(
         "file:proxy-test-first/output/proxy-test-first.wasm",
         proxy_test_first::ContractBuilder,
     );
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:proxy-test-second/output/proxy-test-second.wasm",
         proxy_test_second::ContractBuilder,
     );
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:recursive-caller/output/recursive-caller.wasm",
         recursive_caller::ContractBuilder,
     );
-    blockchain.register_contract_builder("file:vault/output/vault.wasm", vault::ContractBuilder);
+    blockchain.register_contract("file:vault/output/vault.wasm", vault::ContractBuilder);
     blockchain
 }
 
@@ -43,13 +47,13 @@ fn forw_raw_async_echo_rs() {
     numbat_wasm_debug::denali_rs("denali/forw_raw_async_echo.scen.json", world());
 }
 
-// #[test]
-// fn forw_raw_async_send_and_retrieve_multi_transfer_funds_rs() {
-//     numbat_wasm_debug::denali_rs(
-//         "denali/forw_raw_async_send_and_retrieve_multi_transfer_funds.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forw_raw_async_send_and_retrieve_multi_transfer_funds_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/forw_raw_async_send_and_retrieve_multi_transfer_funds.scen.json",
+        world(),
+    );
+}
 
 #[test]
 fn forw_raw_builtin_nft_local_mint_via_async_call_rs() {
@@ -67,13 +71,13 @@ fn forw_raw_builtin_nft_local_mint_via_sync_call_rs() {
     );
 }
 
-// #[test]
-// fn forw_raw_call_async_retrieve_multi_transfer_rs() {
-//     numbat_wasm_debug::denali_rs(
-//         "denali/forw_raw_call_async_retrieve_multi_transfer.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forw_raw_call_async_retrieve_multi_transfer_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/forw_raw_call_async_retrieve_multi_transfer.scen.json",
+        world(),
+    );
+}
 
 #[test]
 fn forw_raw_contract_deploy_rs() {
@@ -110,10 +114,10 @@ fn forw_raw_sync_echo_rs() {
     numbat_wasm_debug::denali_rs("denali/forw_raw_sync_echo.scen.json", world());
 }
 
-// #[test]
-// fn forw_raw_sync_echo_caller_rs() {
-//     numbat_wasm_debug::denali_rs("denali/forw_raw_sync_echo_caller.scen.json", world());
-// }
+#[test]
+fn forw_raw_sync_echo_caller_rs() {
+    numbat_wasm_debug::denali_rs("denali/forw_raw_sync_echo_caller.scen.json", world());
+}
 
 #[test]
 fn forw_raw_sync_rewa_rs() {
@@ -136,8 +140,13 @@ fn forw_raw_sync_rewa_rs() {
 // }
 
 #[test]
-fn forw_raw_transf_exec_rewa_rs() {
-    numbat_wasm_debug::denali_rs("denali/forw_raw_transf_exec_rewa.scen.json", world());
+fn forw_raw_transf_exec_accept_rewa_rs() {
+    numbat_wasm_debug::denali_rs("denali/forw_raw_transf_exec_accept_rewa.scen.json", world());
+}
+
+#[test]
+fn forw_raw_transf_exec_reject_rewa_rs() {
+    numbat_wasm_debug::denali_rs("denali/forw_raw_transf_exec_reject_rewa.scen.json", world());
 }
 
 #[test]
@@ -157,14 +166,6 @@ fn forwarder_builtin_nft_burn_rs() {
 fn forwarder_builtin_nft_create_rs() {
     numbat_wasm_debug::denali_rs("denali/forwarder_builtin_nft_create.scen.json", world());
 }
-
-// #[test]
-// fn forwarder_builtin_nft_create_by_caller_rs() {
-//     numbat_wasm_debug::denali_rs(
-//         "denali/forwarder_builtin_nft_create_by_caller.scen.json",
-//         world(),
-//     );
-// }
 
 #[test]
 fn forwarder_builtin_nft_local_burn_rs() {
@@ -199,29 +200,29 @@ fn forwarder_call_async_multi_transfer_rs() {
     );
 }
 
-// #[test]
-// fn forwarder_call_async_retrieve_rewa_rs() {
-//     numbat_wasm_debug::denali_rs(
-//         "denali/forwarder_call_async_retrieve_rewa.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forwarder_call_async_retrieve_rewa_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/forwarder_call_async_retrieve_rewa.scen.json",
+        world(),
+    );
+}
 
-// #[test]
-// fn forwarder_call_async_retrieve_dcdt_rs() {
-//     numbat_wasm_debug::denali_rs(
-//         "denali/forwarder_call_async_retrieve_dcdt.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forwarder_call_async_retrieve_dcdt_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/forwarder_call_async_retrieve_dcdt.scen.json",
+        world(),
+    );
+}
 
-// #[test]
-// fn forwarder_call_async_retrieve_nft_rs() {
-//     numbat_wasm_debug::denali_rs(
-//         "denali/forwarder_call_async_retrieve_nft.scen.json",
-//         world(),
-//     );
-// }
+#[test]
+fn forwarder_call_async_retrieve_nft_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/forwarder_call_async_retrieve_nft.scen.json",
+        world(),
+    );
+}
 
 #[test]
 fn forwarder_call_sync_accept_rewa_rs() {
@@ -324,6 +325,14 @@ fn forwarder_call_transf_exec_accept_dcdt_twice_rs() {
 }
 
 #[test]
+fn forwarder_call_transf_exec_accept_multi_transfer_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/forwarder_call_transf_exec_accept_multi_transfer.scen.json",
+        world(),
+    );
+}
+
+#[test]
 fn forwarder_call_transf_exec_accept_nft_rs() {
     numbat_wasm_debug::denali_rs(
         "denali/forwarder_call_transf_exec_accept_nft.scen.json",
@@ -348,9 +357,17 @@ fn forwarder_call_transf_exec_accept_sft_twice_rs() {
 }
 
 #[test]
-fn forwarder_call_transf_exec_multi_transfer_dcdt_rs() {
+fn forwarder_call_transf_exec_reject_multi_transfer_rs() {
     numbat_wasm_debug::denali_rs(
-        "denali/forwarder_call_transf_exec_multi_transfer_dcdt.scen.json",
+        "denali/forwarder_call_transf_exec_reject_multi_transfer.scen.json",
+        world(),
+    );
+}
+
+#[test]
+fn forwarder_call_transf_exec_reject_nft_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/forwarder_call_transf_exec_reject_nft.scen.json",
         world(),
     );
 }
@@ -373,6 +390,11 @@ fn forwarder_contract_upgrade_rs() {
 #[test]
 fn forwarder_get_dcdt_local_roles_rs() {
     numbat_wasm_debug::denali_rs("denali/forwarder_get_dcdt_local_roles.scen.json", world());
+}
+
+#[test]
+fn forwarder_get_dcdt_token_data_rs() {
+    numbat_wasm_debug::denali_rs("denali/forwarder_get_dcdt_token_data.scen.json", world());
 }
 
 #[test]
@@ -455,11 +477,6 @@ fn forwarder_sync_echo_rs() {
 }
 
 #[test]
-fn forwarder_sync_echo_range_rs() {
-    numbat_wasm_debug::denali_rs("denali/forwarder_sync_echo_range.scen.json", world());
-}
-
-#[test]
 fn forwarder_tranfer_dcdt_with_fees_rs() {
     numbat_wasm_debug::denali_rs("denali/forwarder_tranfer_dcdt_with_fees.scen.json", world());
 }
@@ -471,6 +488,16 @@ fn forwarder_validate_token_identifier_rs() {
         world(),
     );
 }
+
+#[test]
+fn promises_multi_transfer_rs() {
+    numbat_wasm_debug::denali_rs("denali-promises/promises_multi_transfer.scen.json", world());
+}
+
+// #[test]
+// fn promises_single_transfer_rs() {
+//     numbat_wasm_debug::denali_rs("denali-promises/promises_single_transfer.scen.json", world());
+// }
 
 #[test]
 fn proxy_test_init_rs() {

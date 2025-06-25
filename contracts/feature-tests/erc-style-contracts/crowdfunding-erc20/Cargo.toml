@@ -2,7 +2,7 @@
 name = "crowdfunding-erc20"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
@@ -12,10 +12,10 @@ path = "src/crowdfunding_erc20.rs"
 path = "../erc20"
 
 [dependencies.numbat-wasm]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../numbat-wasm"
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../numbat-wasm-debug"
 

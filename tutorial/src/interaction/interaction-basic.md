@@ -4,7 +4,7 @@
 
 The following examples rely on having a [local testnet](https://docs.dharitri.org/developers/setup-local-testnet/) up and running.
 
-# Installing @terradharitri/drtjs globally
+# Installing @numbatnetwork/drtjs globally
 
 ```bash
 cd ./code/numbat-sdk-drtjs
@@ -17,7 +17,7 @@ By exporting `NODE_PATH`, the node terminal should have access to `drtjs`.
 Open a terminal and enter the following:
 
 ```bash
-cd ./code/numbat-wasm-rs
+cd ./code/drt-rs-sdk
 export NODE_PATH=$HOME/.nvm/versions/node/$(node --version)/lib/node_modules
 node --experimental-repl-await
 ```

@@ -14,8 +14,8 @@ pub trait KittyOwnership {
     fn init(
         &self,
         birth_fee: BigUint,
-        #[var_args] opt_gene_science_contract_address: OptionalValue<ManagedAddress>,
-        #[var_args] opt_kitty_auction_contract_address: OptionalValue<ManagedAddress>,
+        opt_gene_science_contract_address: OptionalValue<ManagedAddress>,
+        opt_kitty_auction_contract_address: OptionalValue<ManagedAddress>,
     ) {
         self.birth_fee().set(birth_fee);
 
@@ -49,9 +49,9 @@ pub trait KittyOwnership {
         let caller = self.blockchain().get_caller();
         let rewa_balance = self
             .blockchain()
-            .get_sc_balance(&TokenIdentifier::rewa(), 0);
+            .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0);
 
-        self.send().direct_rewa(&caller, &rewa_balance, b"claim");
+        self.send().direct_rewa(&caller, &rewa_balance);
     }
 
     // views/endpoints - ERC721 required
@@ -394,7 +394,7 @@ pub trait KittyOwnership {
 
         total_kitties += 1;
         self.total_kitties().set(total_kitties);
-        self.kitty_by_id(new_kitty_id).set(&kitty);
+        self.kitty_by_id(new_kitty_id).set(kitty);
 
         self.perform_transfer(&ManagedAddress::zero(), owner, new_kitty_id);
 
@@ -568,8 +568,7 @@ pub trait KittyOwnership {
 
                 // send birth fee to caller
                 let fee = self.birth_fee().get();
-                self.send()
-                    .direct_rewa(&original_caller, &fee, b"birth fee");
+                self.send().direct_rewa(&original_caller, &fee);
             },
             ManagedAsyncCallResult::Err(_) => {
                 // this can only fail if the kitty_genes contract address is invalid

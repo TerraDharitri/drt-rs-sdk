@@ -6,12 +6,8 @@ use super::storage;
 pub trait ForwarderSftModule: storage::ForwarderStorageModule {
     #[payable("REWA")]
     #[endpoint]
-    fn sft_issue(
-        &self,
-        #[payment] issue_cost: BigUint,
-        token_display_name: ManagedBuffer,
-        token_ticker: ManagedBuffer,
-    ) {
+    fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -24,6 +20,7 @@ pub trait ForwarderSftModule: storage::ForwarderStorageModule {
                     can_freeze: true,
                     can_wipe: true,
                     can_pause: true,
+                    can_transfer_create_role: true,
                     can_change_owner: true,
                     can_upgrade: true,
                     can_add_special_roles: true,
@@ -47,9 +44,10 @@ pub trait ForwarderSftModule: storage::ForwarderStorageModule {
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
-                let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
+                let (token_identifier, returned_tokens) =
+                    self.call_value().rewa_or_single_fungible_dcdt();
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens, &[]);
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);

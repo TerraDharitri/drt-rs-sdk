@@ -1,5 +1,5 @@
-use numbat_wasm::types::Address;
-use num_bigint::BigUint;
+use crate::num_bigint::BigUint;
+use numbat_wasm::types::heap::Address;
 
 use crate::{tx_mock::TxPanic, world_mock::DcdtInstanceMetadata};
 
@@ -8,10 +8,12 @@ use super::TxCache;
 impl TxCache {
     pub fn subtract_rewa_balance(&self, address: &Address, call_value: &BigUint) {
         self.with_account_mut(address, |account| {
-            assert!(
-                &account.rewa_balance >= call_value,
-                "failed transfer (insufficient funds)"
-            );
+            if call_value > &account.rewa_balance {
+                std::panic::panic_any(TxPanic {
+                    status: 10,
+                    message: "failed transfer (insufficient funds)".to_string(),
+                });
+            }
             account.rewa_balance -= call_value;
         })
     }
@@ -97,6 +99,6 @@ impl TxCache {
 fn panic_insufficient_funds() -> ! {
     std::panic::panic_any(TxPanic {
         status: 10,
-        message: b"insufficient funds".to_vec(),
+        message: "insufficient funds".to_string(),
     });
 }

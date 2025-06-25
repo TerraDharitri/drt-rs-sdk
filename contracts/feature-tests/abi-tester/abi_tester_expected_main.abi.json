@@ -9,11 +9,12 @@
         },
         "contractCrate": {
             "name": "abi-tester",
-            "version": "0.0.0"
+            "version": "0.0.0",
+            "gitVersion": "<git version here>"
         },
         "framework": {
             "name": "numbat-wasm",
-            "version": "0.0.17"
+            "version": "0.38.0"
         }
     },
     "docs": [
@@ -390,6 +391,37 @@
             "outputs": []
         }
     ],
+    "events": [
+        {
+            "identifier": "payable-event",
+            "inputs": [
+                {
+                    "name": "token",
+                    "type": "TokenIdentifier",
+                    "indexed": true
+                },
+                {
+                    "name": "amount",
+                    "type": "BigUint"
+                }
+            ]
+        },
+        {
+            "identifier": "address-h256-event",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address",
+                    "indexed": true
+                },
+                {
+                    "name": "h256",
+                    "type": "H256",
+                    "indexed": true
+                }
+            ]
+        }
+    ],
     "hasCallback": false,
     "types": {
         "AbiEnum": {
@@ -542,6 +574,10 @@
                 {
                     "name": "NftUpdateAttributes",
                     "discriminant": 7
+                },
+                {
+                    "name": "Transfer",
+                    "discriminant": 8
                 }
             ]
         },
@@ -589,10 +625,6 @@
         "DcdtTokenPayment": {
             "type": "struct",
             "fields": [
-                {
-                    "name": "token_type",
-                    "type": "DcdtTokenType"
-                },
                 {
                     "name": "token_identifier",
                     "type": "TokenIdentifier"

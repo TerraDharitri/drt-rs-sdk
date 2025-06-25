@@ -15,8 +15,8 @@ deploy() {
           --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${REWA_TOKEN_ID} \
           --outfile="deploy-devnet.interaction.json" --send || return
 
-    TRANSACTION=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['contractAddress']")
 
     drtpy data store --key=address-devnet --value=${ADDRESS}
     drtpy data store --key=deployTransaction-devnet --value=${TRANSACTION}
@@ -32,7 +32,7 @@ deploySimulate() {
           --outfile="simulate-devnet.interaction.json" --simulate || return
 
     TRANSACTION=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['hash']")
-    ADDRESS=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['emitted_tx']['address']")
+    ADDRESS=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['contractAddress']")
     RETCODE=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['returnCode']")
     RETMSG=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['returnMessage']")
 

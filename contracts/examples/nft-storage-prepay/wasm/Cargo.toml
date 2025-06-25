@@ -1,8 +1,8 @@
 [package]
 name = "nft-storage-prepay-wasm"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2018"
+authors = [ "contact@dharitri.org",]
+edition = "2021"
 publish = false
 
 [lib]
@@ -24,10 +24,10 @@ panic = "abort"
 path = ".."
 
 [dependencies.numbat-wasm-node]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../numbat-wasm-node"
 
 [dependencies.numbat-wasm-output]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../numbat-wasm-output"
 features = ["wasm-output-mode"]

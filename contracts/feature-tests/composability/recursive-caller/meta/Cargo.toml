@@ -1,12 +1,12 @@
 [package]
 name = "recursive-caller-meta"
 version = "0.0.0"
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies.recursive-caller]
 path = ".."
 
 [dependencies.numbat-wasm-debug]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm-debug"

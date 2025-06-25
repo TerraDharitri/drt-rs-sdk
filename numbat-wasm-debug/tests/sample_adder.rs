@@ -47,6 +47,11 @@ mod module_1 {
         fn callback(&self) {}
     }
 
+    impl<A> AutoImpl for numbat_wasm::contract_base::UniversalContractObj<A> where
+        A: numbat_wasm::api::VMApi
+    {
+    }
+
     pub trait EndpointWrappers: VersionModule + numbat_wasm::contract_base::ContractBase {
         #[inline]
         fn call_version(&self) {
@@ -56,17 +61,17 @@ mod module_1 {
         }
 
         fn call_some_async(&self) {
-            let result = self.some_async();
-            numbat_wasm::io::finish_multi::<Self::Api, _>(&result)
+            self.some_async();
+            numbat_wasm::io::finish_multi::<Self::Api, _>(&())
         }
 
-        fn call(&self, fn_name: &[u8]) -> bool {
+        fn call(&self, fn_name: &str) -> bool {
             if match fn_name {
-                b"callBack" => {
+                "callBack" => {
                     self.callback();
                     return true;
                 },
-                b"version" => {
+                "version" => {
                     self.call_version();
                     true
                 },
@@ -77,6 +82,12 @@ mod module_1 {
             false
         }
     }
+
+    impl<A> EndpointWrappers for numbat_wasm::contract_base::UniversalContractObj<A> where
+        A: numbat_wasm::api::VMApi
+    {
+    }
+
     pub struct AbiProvider {}
 
     impl numbat_wasm::contract_base::ContractAbiProvider for AbiProvider {
@@ -89,18 +100,10 @@ mod module_1 {
 
     pub trait ProxyTrait: numbat_wasm::contract_base::ProxyObjBase + Sized {
         fn version(
-            self,
-        ) -> ContractCall<
-            Self::Api,
-            <BigInt<Self::Api> as numbat_wasm::numbat_codec::TopEncodeMulti>::DecodeAs,
-        > {
-            let ___address___ = self.into_fields();
-            let mut ___contract_call___ = numbat_wasm::types::new_contract_call(
-                ___address___,
-                &b"version"[..],
-                ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new(),
-            );
-            ___contract_call___
+            &mut self,
+        ) -> numbat_wasm::types::ContractCallNoPayment<Self::Api, BigInt<Self::Api>> {
+            let ___address___ = self.extract_address();
+            numbat_wasm::types::ContractCallNoPayment::new(___address___, "version")
         }
     }
 }
@@ -157,62 +160,59 @@ mod sample_adder {
         }
     }
 
+    impl<A> AutoImpl for numbat_wasm::contract_base::UniversalContractObj<A> where
+        A: numbat_wasm::api::VMApi
+    {
+    }
+
     pub trait EndpointWrappers:
         Adder + numbat_wasm::contract_base::ContractBase + super::module_1::EndpointWrappers
     {
         #[inline]
         fn call_get_sum(&self) {
+            <Self::Api as numbat_wasm::api::VMApi>::init_static();
             numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
-            numbat_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
-                &<Self::Api as numbat_wasm::api::EndpointArgumentApi>::argument_api_impl(),
-                0i32,
-            );
+            let () = numbat_wasm::io::load_endpoint_args::<Self::Api, ()>(());
             let result = self.get_sum();
             numbat_wasm::io::finish_multi::<Self::Api, _>(&result);
         }
         #[inline]
         fn call_init(&self) {
+            <Self::Api as numbat_wasm::api::VMApi>::init_static();
             numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
-            numbat_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
-                &<Self::Api as numbat_wasm::api::EndpointArgumentApi>::argument_api_impl(),
-                1i32,
-            );
-            let initial_value = numbat_wasm::load_single_arg::<Self::Api, BigInt<Self::Api>>(
-                0i32,
-                ArgId::from(&b"initial_value"[..]),
-            );
+            let (initial_value, ()) = numbat_wasm::io::load_endpoint_args::<
+                Self::Api,
+                (numbat_wasm::types::BigInt<Self::Api>, ()),
+            >(("initial_value", ()));
             self.init(&initial_value);
         }
         #[inline]
         fn call_add(&self) {
+            <Self::Api as numbat_wasm::api::VMApi>::init_static();
             numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
-            numbat_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
-                &<Self::Api as numbat_wasm::api::EndpointArgumentApi>::argument_api_impl(),
-                1i32,
-            );
-            let value = numbat_wasm::load_single_arg::<Self::Api, BigInt<Self::Api>>(
-                0i32,
-                ArgId::from(&b"value"[..]),
-            );
+            let (value, ()) = numbat_wasm::io::load_endpoint_args::<
+                Self::Api,
+                (numbat_wasm::types::BigInt<Self::Api>, ()),
+            >(("value", ()));
             let result = self.add(value);
             numbat_wasm::io::finish_multi::<Self::Api, _>(&result);
         }
 
-        fn call(&self, fn_name: &[u8]) -> bool {
+        fn call(&self, fn_name: &str) -> bool {
             if match fn_name {
-                b"callBack" => {
+                "callBack" => {
                     Adder::callback(self);
                     return true;
                 },
-                [103u8, 101u8, 116u8, 83u8, 117u8, 109u8] => {
+                "getSum" => {
                     self.call_get_sum();
                     true
                 },
-                [105u8, 110u8, 105u8, 116u8] => {
+                "init" => {
                     self.call_init();
                     true
                 },
-                [97u8, 100u8, 100u8] => {
+                "add" => {
                     self.call_add();
                     true
                 },
@@ -227,37 +227,28 @@ mod sample_adder {
         }
     }
 
+    impl<A> EndpointWrappers for numbat_wasm::contract_base::UniversalContractObj<A> where
+        A: numbat_wasm::api::VMApi
+    {
+    }
+
     pub trait ProxyTrait:
         numbat_wasm::contract_base::ProxyObjBase + super::module_1::ProxyTrait
     {
         fn get_sum(
-            self,
-        ) -> numbat_wasm::types::ContractCall<
-            Self::Api,
-            <BigInt<Self::Api> as numbat_wasm::numbat_codec::TopEncodeMulti>::DecodeAs,
-        > {
-            let ___address___ = self.into_fields();
-            let mut ___contract_call___ = numbat_wasm::types::new_contract_call(
-                ___address___,
-                &b"get_sum"[..],
-                ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new(),
-            );
-            ___contract_call___
+            &mut self,
+        ) -> numbat_wasm::types::ContractCallNoPayment<Self::Api, BigInt<Self::Api>> {
+            let ___address___ = self.extract_address();
+            numbat_wasm::types::ContractCallNoPayment::new(___address___, "get_sum")
         }
         fn add(
-            self,
+            &mut self,
             amount: &BigInt<Self::Api>,
-        ) -> ContractCall<
-            Self::Api,
-            <SCResult<()> as numbat_wasm::numbat_codec::TopEncodeMulti>::DecodeAs,
-        > {
-            let ___address___ = self.into_fields();
-            let mut ___contract_call___ = numbat_wasm::types::new_contract_call(
-                ___address___,
-                &b"add"[..],
-                ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new(),
-            );
-            ___contract_call___.push_endpoint_arg(amount);
+        ) -> numbat_wasm::types::ContractCallNoPayment<Self::Api, ()> {
+            let ___address___ = self.extract_address();
+            let mut ___contract_call___ =
+                numbat_wasm::types::ContractCallNoPayment::new(___address___, "add");
+            numbat_wasm::types::ContractCall::proxy_arg(&mut ___contract_call___, amount);
             ___contract_call___
         }
     }
@@ -294,14 +285,11 @@ mod sample_adder {
     where
         A: numbat_wasm::api::VMApi,
     {
-        fn call(&self, fn_name: &[u8]) -> bool {
-            EndpointWrappers::call(self, fn_name)
-        }
-
-        fn clone_obj(&self) -> numbat_wasm::Box<dyn numbat_wasm::contract_base::CallableContract> {
-            numbat_wasm::Box::new(ContractObj::<A> {
-                _phantom: core::marker::PhantomData,
-            })
+        fn call(&self, fn_name: &str) -> bool {
+            EndpointWrappers::call(
+                &numbat_wasm::contract_base::UniversalContractObj::<A>::new(),
+                fn_name,
+            )
         }
     }
 
@@ -310,8 +298,9 @@ mod sample_adder {
     impl numbat_wasm::contract_base::CallableContractBuilder for ContractBuilder {
         fn new_contract_obj<A: numbat_wasm::api::VMApi>(
             &self,
-        ) -> numbat_wasm::Box<dyn numbat_wasm::contract_base::CallableContract> {
-            numbat_wasm::Box::new(ContractObj::<A> {
+        ) -> numbat_wasm::types::heap::Box<dyn numbat_wasm::contract_base::CallableContract>
+        {
+            numbat_wasm::types::heap::Box::new(ContractObj::<A> {
                 _phantom: core::marker::PhantomData,
             })
         }
@@ -340,7 +329,7 @@ mod sample_adder {
     where
         A: numbat_wasm::api::VMApi + 'static,
     {
-        pub address: numbat_wasm::types::ManagedAddress<A>,
+        pub address: numbat_wasm::types::ManagedOption<A, numbat_wasm::types::ManagedAddress<A>>,
     }
 
     impl<A> numbat_wasm::contract_base::ProxyObjBase for Proxy<A>
@@ -350,20 +339,29 @@ mod sample_adder {
         type Api = A;
 
         fn new_proxy_obj() -> Self {
-            let zero_address = ManagedAddress::zero();
             Proxy {
-                address: zero_address,
+                address: numbat_wasm::types::ManagedOption::none(),
             }
         }
 
-        fn contract(mut self, address: ManagedAddress<Self::Api>) -> Self {
-            self.address = address;
+        fn contract(mut self, address: numbat_wasm::types::ManagedAddress<Self::Api>) -> Self {
+            self.address = numbat_wasm::types::ManagedOption::some(address);
             self
         }
 
-        #[inline]
-        fn into_fields(self) -> ManagedAddress<Self::Api> {
-            self.address
+        fn extract_opt_address(
+            &mut self,
+        ) -> numbat_wasm::types::ManagedOption<
+            Self::Api,
+            numbat_wasm::types::ManagedAddress<Self::Api>,
+        > {
+            core::mem::replace(&mut self.address, numbat_wasm::types::ManagedOption::none())
+        }
+
+        fn extract_address(&mut self) -> numbat_wasm::types::ManagedAddress<Self::Api> {
+            let address =
+                core::mem::replace(&mut self.address, numbat_wasm::types::ManagedOption::none());
+            address.unwrap_or_sc_panic(numbat_wasm::err_msg::RECIPIENT_ADDRESS_NOT_SET)
         }
     }
 
@@ -394,7 +392,7 @@ mod sample_adder {
     pub trait CallbackProxy: numbat_wasm::contract_base::CallbackProxyObjBase + Sized {
         fn my_callback(self, caller: &Address) -> numbat_wasm::types::CallbackClosure<Self::Api> {
             let mut ___callback_call___ =
-                numbat_wasm::types::new_callback_call::<Self::Api>(&b"my_callback"[..]);
+                numbat_wasm::types::new_callback_call::<Self::Api>("my_callback");
             ___callback_call___.push_endpoint_arg(caller);
             ___callback_call___
         }
@@ -425,11 +423,11 @@ fn test_add() {
     let _ = adder.add_version();
     assert_eq!(BigInt::from(111), adder.get_sum());
 
-    assert!(!adder.call(b"invalid_endpoint"));
+    assert!(!adder.call("invalid_endpoint"));
 
-    assert!(adder.call(b"version"));
+    assert!(adder.call("version"));
 
-    let own_proxy =
+    let mut own_proxy =
         sample_adder::Proxy::<DebugApi>::new_proxy_obj().contract(ManagedAddress::zero());
     let _ = own_proxy.get_sum();
 
@@ -438,7 +436,7 @@ fn test_add() {
 
 fn world() -> numbat_wasm_debug::BlockchainMock {
     let mut blockchain = numbat_wasm_debug::BlockchainMock::new();
-    blockchain.register_contract_builder(
+    blockchain.register_contract(
         "file:../contracts/examples/adder/output/adder.wasm",
         sample_adder::ContractBuilder,
     );

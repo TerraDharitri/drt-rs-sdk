@@ -18,7 +18,8 @@ mod dns_mock {
 
         #[payable("REWA")]
         #[endpoint]
-        fn register(&self, name: BoxedBytes, #[payment] _payment: BigUint) {
+        fn register(&self, name: BoxedBytes) {
+            let _payment = self.call_value().rewa_value();
             let address = self.blockchain().get_caller();
             self.user_builtin_proxy(address)
                 .set_user_name(&name)
@@ -32,12 +33,22 @@ use numbat_wasm_debug::*;
 
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
-    blockchain
-        .register_contract_builder("file:output/use-module.wasm", use_module::ContractBuilder);
+    blockchain.register_contract("file:output/use-module.wasm", use_module::ContractBuilder);
 
-    blockchain.register_contract_builder("file:test-wasm/dns.wasm", dns_mock::ContractBuilder);
+    blockchain.register_contract(
+        "file:test-wasm/numbat-wasm-sc-dns.wasm",
+        dns_mock::ContractBuilder,
+    );
 
     blockchain
+}
+
+#[test]
+fn use_module_claim_developer_rewards_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/use_module_claim_developer_rewards.scen.json",
+        world(),
+    );
 }
 
 #[test]
@@ -56,6 +67,16 @@ fn use_module_internal_rs() {
 }
 
 #[test]
+fn use_module_only_owner_rs() {
+    numbat_wasm_debug::denali_rs("denali/use_module_only_owner.scen.json", world());
+}
+
+#[test]
+fn use_module_only_admin_rs() {
+    numbat_wasm_debug::denali_rs("denali/use_module_only_admin.scen.json", world());
+}
+
+#[test]
 fn use_module_no_endpoint_rs() {
     numbat_wasm_debug::denali_rs("denali/use_module_no_endpoint.scen.json", world());
 }
@@ -65,41 +86,11 @@ fn use_module_pause_rs() {
     numbat_wasm_debug::denali_rs("denali/use_module_pause.scen.json", world());
 }
 
-// Governance module tests
-
-#[test]
-fn cancel_defeated_proposal_rs() {
-    numbat_wasm_debug::denali_rs(
-        "denali/use_module_governance/cancel_defeated_proposal.scen.json",
-        world(),
-    );
-}
-
-#[test]
-fn change_configuration_rs() {
-    numbat_wasm_debug::denali_rs(
-        "denali/use_module_governance/change_configuration.scen.json",
-        world(),
-    );
-}
-
-#[test]
-fn init_rs() {
-    numbat_wasm_debug::denali_rs("denali/use_module_governance/init.scen.json", world());
-}
-
-#[test]
-fn invalid_proposals_rs() {
-    numbat_wasm_debug::denali_rs(
-        "denali/use_module_governance/invalid_proposals.scen.json",
-        world(),
-    );
-}
-
-#[test]
-fn withdraw_governance_tokens_rs() {
-    numbat_wasm_debug::denali_rs(
-        "denali/use_module_governance/withdraw_governance_tokens.scen.json",
-        world(),
-    );
-}
+// Will not work in denali-rs, since there is no gas usage
+// #[test]
+// fn use_module_ongoing_operation_rs() {
+//     numbat_wasm_debug::denali_rs(
+//         "denali/use_module_ongoing_operation_example.scen.json",
+//         world(),
+//     );
+// }

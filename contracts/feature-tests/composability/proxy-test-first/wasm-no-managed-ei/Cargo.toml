@@ -2,7 +2,7 @@
 name = "proxy-test-first-wasm"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
@@ -17,16 +17,17 @@ panic = "abort"
 
 [dependencies.proxy-test-first]
 path = ".."
+features = ["ei-unmanaged"]
 
 [dependencies.numbat-wasm-node]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm-node"
-features=["unmanaged-ei"]
+features = ["ei-unmanaged-node"]
 
 [dependencies.numbat-wasm-output]
-version = "0.0.17"
+version = "0.0.19"
 path = "../../../../../numbat-wasm-output"
-features=["wasm-output-mode"]
+features = ["wasm-output-mode"]
 
 [workspace]
 members = ["."]

@@ -4,7 +4,136 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [numbat-wasm 0.0.17] - 2022-03-01
+## [numbat-wasm 0.38.0, numbat-codec 0.16.0, denali 0.18.0] - 2022-12-15
+- `ContractCall` refactor. Building a contract call comes with harder compile-time constraints. This also reduces compiled code size.
+- `ContractBase` supertrait can be now stated explicitly for contract and module traits.
+- Debugger:
+	- Callback payment is now set correctly.
+	- Function names are represented internally as strings instead of bytes, which aids debugging.
+- Removed the `ei-1-2` feature, which was guarding the newer VM functions. These functions are in the mainnet, so this feature is no longer needed.
+- New utility functions: `self.send().dcdt_local_burn_multi(...`, `self.blockchain().get_token_attributes(...)`.
+- Updated all crates to Rust 2021.
+
+## [numbat-wasm 0.37.0, numbat-codec 0.15.0] - 2022-12-09
+- Multi-contract build system:
+	- build system refactor;
+	- `multicontract.toml` config system with labels,
+	- eliminated monomorphization issue that was bloating some contracts;
+	- build post-processing: `wasm2wat`, imports via `wasm-objdump`.
+- Support for the new async call system (promises):
+	- new APIs;
+	- a new flavor of callbacks (`#[promises-callback]`);
+	- callback optimizations.
+- `numbat-codec` refactor: removed `TopEncodeNoErr`, `NestedEncodeNoErr` and `TypeInfo`
+- System SC proxy: added support for `controlChanges` endpoint and transfer create role (from community).
+- Module updates:
+	- `MergedTokenInstances` module;
+	- Governance module improvements;
+	- `set_if_empty` for FungibleTokenMapper and NonFungibleTokenMapper.
+- `IntoMultiValue` trait.
+- Storage mapper improvements:
+	- Storage mappers can read from another contract.
+	- `BiDiMapper` improvements;
+	- Fixed missing substitution rules for `FungibleTokenMapper`, `NonFungibleTokenMapper`, `UniqueIdMapper`, `BiDiMapper`, `WhitelistMapper`, `RandomnessSource`;
+	- Added `take` and `replace` methods for `SingleValueMapper`;
+	- Implemented `Extend` trait for `UnorderedSetMapper`.
+
+## [numbat-wasm 0.36.1] - 2022-11-01
+- Deprecated `ContractCall` `execute_on_dest_context_ignore_result` method, since it is currently redundant.
+
+## [numbat-wasm 0.36.0, numbat-codec 0.14.0] - 2022-10-13
+- `DcdtTokenPayment` legacy decode: objects encoded by older versions of the framework can now also be decoded, if flag `dcdt-token-payment-legacy-decode` is active.
+- Codec `NestedDecodeInput` new  `peek_into` method.
+- `FungibleTokenMapper` caches the token identifier.
+
+## [numbat-wasm 0.35.0, numbat-codec 0.13.0, denali 0.17.0] - 2022-09-20
+- Rust interactor snippet generator.
+- Added some missing substitution rules in the contract preprocessor.
+- Allow single zero byte when top-decoding Option::None.
+- Ongoing operations module.
+- Claim developer rewards module.
+- `FromIterator` trait for `ManagedVec`.
+- Denali `"id"` accepted as synonym to `"txId"`.
+
+## [numbat-wasm 0.34.1] - 2022-07-19
+- `#[only_admin]` annotation
+- Safer BigUint/BigInt conversions
+- Added and published `price-aggregator` and `wrewa-swap` core contracts.
+
+## [numbat-wasm 0.34.0, numbat-codec 0.12.0, denali 0.16.0, numbat-interact-snippets 0.1.0] - 2022-07-08
+- Major refactor of the denali-rs infrastructure.
+	- High-level Denali objects moved to numbat-wasm-debug;
+	- The `denali` crate no longer depends on `numbat-wasm-debug` (as originally intended and implemented);
+	- Typed denali contract call objects, for better call syntax.
+	- More syntactic sugar for writing denali calls.
+- The first version of numbat-interact-snippets, which can be used to write short blockchain interactor programs.
+	- The syntax relies on contract proxies to easily build calls.
+	- Some of the infrastructure is shared with Denali.
+	- There is an example of such a interactor for the multisig contract.
+- Refactor of managed type handles in all API traits. Eliminated undefined behavior when using the same handle in multiple contexts.
+- Transfer role proxy module.
+- NFT merge module.
+- `#[only_user_account]` annotation. Only user accounts can call these endpoints.
+- ABI - fixed missing event logs from modules.
+
+## [numbat-wasm 0.33.1, denali 0.15.1] - 2022-06-24
+- CodecSelf for BigInt
+
+## [numbat-wasm 0.33.0, denali 0.15.0] - 2022-06-20
+- Removed the data field for direct REWA & DCDT transfers.
+- Testing and debugging environment aligned with VM version 1.4.53.
+- Call value and token data infrastructure additional cleanup.
+
+## [numbat-wasm 0.32.0, denali 0.14.0] - 2022-06-03
+- VM new functionality added as part of the environment interface 1.2:
+	- Fully managed functionality for elliptic curves (no allocator);
+	- Fully managed cryptographic functions (no allocator);
+	- More efficient printing of big ints and hex;
+	- Functionality available by adding the `ei-1-2` flag to contracts.
+- `BigFloat` functionality. Since the functionality is not yet deployed on mainnet, use flag `big-float` to use.
+- Major refactoring of the call value mechanism:
+	- `TokenIdentifier` now only refers to DCDT, for mixed REWA+DCDT we have `RewaOrDcdtTokenIdentifier`.
+	- `DcdtTokenPayment` now only refers to DCDT, for mixed REWA+DCDT we have `RewaOrDcdtTokenPayment`.
+	- Compact version for multi-transfer: `let [payment_a, payment_b, payment_c] = self.call_value().multi_dcdt();`.
+	- Explicit `single_dcdt` vs. `single_fungible_dcdt` vs. `rewa_or_single_dcdt` vs. `rewa_or_single_fungible_dcdt`.
+	- Payment arguments are still supported, although discouraged. They always assume the REWA+DCDT scenario.
+- `ManagedOption` provides some minor optimization for specific use-cases. Mostly for use in the framework.
+- Cleanup in the callback mechanism and in the `SendApi`.
+- `SparseArray` implementation.
+- `UniqueIdMapper` - efficient storage mapper for holding unique values.
+- The ABI also contains events.
+- New standard module: `StakingModule`.
+
+
+## [numbat-wasm 0.31.1, denali 0.13.1] - 2022-05-04
+- Bugfix - formatter single char issue.
+
+## [numbat-wasm 0.31.0, numbat-codec 0.11.0, denali 0.13.0] - 2022-05-02
+- Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
+- Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
+- `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
+- Generated smart contract proxies use the `CodecFrom`/`CodecInto` traits to accept a wider range of types.
+- Denali Rust testing framework v2, which uses contract proxies for composing calls and is capable of building and exporting denali scenarios.
+- Managed type handle management system in the contract, to reduce the number of API calls to the VM. General VM API refactor.
+- Eliminated `#[var_args]` annotation. The framework can now distinguish between single-values and multi-values solely based on type.
+- Contract cleans up return data after performing synchronous calls. Getting return data by range is no longer needed and the respective methods have been removed.
+- Fixed behavior of blockchain API `get_dcdt_token_data`.
+- Git tag/commit info in ABI (fixed & reintroduced).
+
+## [numbat-wasm 0.30.0, numbat-codec 0.10.0] - 2022-03-17
+- Feature flags in `numbat-wasm`:
+	- `alloc` allows contracts to use the heap allocator. It is not a hard restriction, there is still access to the implementations of the heap-allocated types, but they are not imported. Some methods are only available with this flag.
+	- `ei-1-1` allows contracts to use VM endpoints that are not yet available on the mainnet.
+- Fixes with async calls, smart contract deploy & upgrade.
+- Refactoring regarding small number types in the API.
+- Rust testing framework: Allow checking NFT balance without also checking attributes.
+- View for `MapMapper`.
+
+## [numbat-wasm 0.29.3] - 2022-03-03
+- `ManagedVec` backwards compatible implementation for `set`.
+- Implemented `ManagedVecItem` for `Option<T>`.
+
+## [numbat-wasm 0.29.2] - 2022-03-01
 - Disabled git tag/commit info in ABI due to issue in standard modules.
 
 ## [numbat-wasm 0.29.0] - 2022-03-01
@@ -16,7 +145,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Feature `cb_closure_managed_deser` replaced by `cb_closure_unmanaged_deser`, managed implementation is now the default.
 - Git tag/commit info in ABI.
 
-## [numbat-wasm 0.28.0, numbat-codec 0.0.17, denali 0.12.0] - 2022-02-22
+## [numbat-wasm 0.28.0, numbat-codec 0.9.0, denali 0.12.0] - 2022-02-22
 - Major numbat-codec refactor:
 	- Redesigned the error handling for single value encoding
 	- Introduced multi-value encoding, which replaces the previous endpoint argument and result mechanisms
@@ -173,7 +302,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.0.17] - 2021-09-10
+## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Andes minimum version is `v1.4.10`.
 	- Redesigned parts of the numbat-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -410,7 +539,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [numbat-wasm 0.0.17, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from numbat-wasm 0.8.0.
@@ -428,7 +557,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [numbat-wasm 0.7.0, denali 0.0.17] - 2020-10-06
+## [numbat-wasm 0.7.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -454,7 +583,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [numbat-wasm 0.5.3, numbat-codec 0.0.17] - 2020-07-10
+## [numbat-wasm 0.5.3, numbat-codec 0.1.0] - 2020-07-10
 - Extracted numbat-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -526,7 +655,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [numbat-wasm 0.0.17] - 2020-02-05 
+## [numbat-wasm 0.1.0] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

@@ -26,8 +26,8 @@ where
 
     fn set_managed_buffer(&self, managed_buffer: &ManagedBuffer<A>) {
         A::storage_write_api_impl().storage_store_managed_buffer_raw(
-            self.key.buffer.get_raw_handle(),
-            managed_buffer.handle,
+            self.key.buffer.get_handle(),
+            managed_buffer.handle.clone(),
         );
     }
 }
@@ -40,18 +40,6 @@ where
 
     fn set_slice_u8(self, bytes: &[u8]) {
         self.set_managed_buffer(&bytes.into())
-    }
-
-    fn set_u64(self, value: u64) {
-        using_encoded_number(value, 64, false, true, |bytes| {
-            self.set_managed_buffer(&bytes.into())
-        });
-    }
-
-    fn set_i64(self, value: i64) {
-        using_encoded_number(value as u64, 64, true, true, |bytes| {
-            self.set_managed_buffer(&bytes.into())
-        });
     }
 
     #[inline]
@@ -106,5 +94,5 @@ pub fn storage_clear<A>(key: ManagedRef<'_, A, StorageKey<A>>)
 where
     A: StorageWriteApi + ManagedTypeApi + ErrorApi,
 {
-    A::storage_write_api_impl().storage_store_managed_buffer_clear(key.get_raw_handle());
+    A::storage_write_api_impl().storage_store_managed_buffer_clear(key.get_handle());
 }

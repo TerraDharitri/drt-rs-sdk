@@ -7,12 +7,21 @@ use core::iter::FromIterator;
 
 /// Structure that allows taking a variable number of arguments
 /// or returning a variable number of results in a smart contract endpoint.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct MultiValueVec<T>(pub Vec<T>);
 
 impl<T> From<Vec<T>> for MultiValueVec<T> {
     fn from(v: Vec<T>) -> Self {
         MultiValueVec(v)
+    }
+}
+
+impl<T, const N: usize> From<[T; N]> for MultiValueVec<T>
+where
+    T: Clone,
+{
+    fn from(arr: [T; N]) -> Self {
+        MultiValueVec(arr[..].to_vec())
     }
 }
 
@@ -66,8 +75,6 @@ impl<T> TopEncodeMulti for MultiValueVec<T>
 where
     T: TopEncodeMulti,
 {
-    type DecodeAs = Self;
-
     fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
         O: TopEncodeMultiOutput,

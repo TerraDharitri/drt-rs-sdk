@@ -3,14 +3,14 @@
 # copies wasm & denali files to the Andes test folder
 # expects 1 argument: the path to the Andes repo root
 
-VM_REPO_PATH=$1
+VM_REPO_PATH=${1:?"Missing VM repo path!"}
 
 build_and_copy() {
    contract_path=$1
    contract_name=${contract_path##*/}
    vm_contract_path=$2
 
-   drtpy --verbose contract build $contract_path || return 1
+   drtpy --verbose contract build --skip-eei-checks $contract_path || return 1
    mkdir -p $vm_contract_path/output
    cp $contract_path/output/$contract_name.wasm \
       $vm_contract_path/output/$contract_name.wasm
@@ -27,19 +27,24 @@ build_and_copy() {
 build_and_copy ./contracts/examples/adder $VM_REPO_PATH/test/adder
 build_and_copy ./contracts/examples/crowdfunding-dcdt $VM_REPO_PATH/test/crowdfunding-dcdt
 build_and_copy ./contracts/examples/digital-cash $VM_REPO_PATH/test/digital-cash
+build_and_copy ./contracts/examples/factorial $VM_REPO_PATH/test/factorial
 build_and_copy ./contracts/examples/ping-pong-rewa $VM_REPO_PATH/test/ping-pong-rewa
-build_and_copy ./contracts/examples/multisig $VM_REPO_PATH/test/multisig
+build_and_copy ./contracts/experimental/multisig-external-view $VM_REPO_PATH/test/multisig
 build_and_copy ./contracts/examples/rewa-dcdt-swap $VM_REPO_PATH/test/rewa-dcdt-swap
+build_and_copy ./contracts/feature-tests/alloc-features $VM_REPO_PATH/test/features/alloc-features
 build_and_copy ./contracts/feature-tests/basic-features $VM_REPO_PATH/test/features/basic-features
+build_and_copy ./contracts/feature-tests/big-float-features $VM_REPO_PATH/test/features/big-float-features
 build_and_copy ./contracts/feature-tests/erc-style-contracts/erc20 $VM_REPO_PATH/test/erc20-rust
+build_and_copy ./contracts/feature-tests/formatted-message-features $VM_REPO_PATH/test/features/formatted-message-features
 build_and_copy ./contracts/feature-tests/payable-features $VM_REPO_PATH/test/features/payable-features
+build_and_copy ./contracts/feature-tests/dcdt-system-sc-mock $VM_REPO_PATH/test/features/dcdt-system-sc-mock
 
 build_and_copy_composability() {
    contract=$1
    contract_with_underscores="${contract//-/_}"
 
    # with managed-ei
-   drtpy --verbose contract build ./contracts/feature-tests/composability/$contract || return 1
+   drtpy --verbose contract build --skip-eei-checks ./contracts/feature-tests/composability/$contract || return 1
    cp -R contracts/feature-tests/composability/$contract/output/${contract}.wasm \
       $VM_REPO_PATH/test/features/composability/$contract/output/${contract}.wasm
 
@@ -63,13 +68,18 @@ build_and_copy_composability forwarder-raw
 build_and_copy_composability proxy-test-first
 build_and_copy_composability proxy-test-second
 build_and_copy_composability recursive-caller
-
-drtpy --verbose contract build ./contracts/feature-tests/composability/vault || return 1
+build_and_copy_composability promises-features
+drtpy --verbose contract build --skip-eei-checks ./contracts/feature-tests/composability/vault || return 1
 cp -R contracts/feature-tests/composability/vault/output/vault.wasm \
    $VM_REPO_PATH/test/features/composability/vault/output/vault.wasm
 
+rm -f $VM_REPO_PATH/test/features/composability/denali/*
 cp -R contracts/feature-tests/composability/denali \
    $VM_REPO_PATH/test/features/composability
+cp -R contracts/feature-tests/composability/denali-promises \
+   $VM_REPO_PATH/test/features/composability
+
+mkdir -p $VM_REPO_PATH/test/features/composability/denali-legacy
 rm -f $VM_REPO_PATH/test/features/composability/denali-legacy/*
 mmv -c 'contracts/feature-tests/composability/denali/*.scen.json' \
    $VM_REPO_PATH/test/features/composability/denali-legacy/l_'#1.scen.json'

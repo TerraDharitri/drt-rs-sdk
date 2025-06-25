@@ -30,14 +30,13 @@
                             ]
                         }
                     },
-                    "storage": {},
                     "code": "file:../../dcdt-system-sc-mock/output/dcdt-system-sc-mock.wasm"
                 }
             }
         },
         {
             "step": "scCall",
-            "txId": "issue-default-callback-non-zero-initial-supply",
+            "id": "issue-default-callback-non-zero-initial-supply",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -46,7 +45,7 @@
                     "str:TICKER",
                     "1000"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -103,7 +102,7 @@
             "step": "setState",
             "comment": "reset the token ID so we can issue again",
             "accounts": {
-            "sc:basic-features": {
+                "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
@@ -118,7 +117,7 @@
         },
         {
             "step": "scCall",
-            "txId": "issue-default-callback-zero-initial-supply",
+            "id": "issue-default-callback-zero-initial-supply",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -127,7 +126,7 @@
                     "str:TICKER",
                     "0"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -186,7 +185,7 @@
             "step": "setState",
             "comment": "reset the token ID so we can issue again",
             "accounts": {
-            "sc:basic-features": {
+                "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
@@ -201,7 +200,7 @@
         },
         {
             "step": "scCall",
-            "txId": "issue-custom-callback-non-zero-initial-supply",
+            "id": "issue-custom-callback-non-zero-initial-supply",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -210,7 +209,7 @@
                     "str:TICKER",
                     "2000"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -268,7 +267,7 @@
             "step": "setState",
             "comment": "reset the token ID so we can issue again",
             "accounts": {
-            "sc:basic-features": {
+                "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
@@ -284,7 +283,7 @@
         },
         {
             "step": "scCall",
-            "txId": "issue-custom-callback-initial-supply",
+            "id": "issue-custom-callback-initial-supply",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -293,7 +292,7 @@
                     "str:TICKER",
                     "0"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -353,7 +352,7 @@
             "step": "setState",
             "comment": "set balance",
             "accounts": {
-            "sc:basic-features": {
+                "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
@@ -368,13 +367,13 @@
         },
         {
             "step": "scCall",
-            "txId": "simulate-set-local-roles",
+            "id": "simulate-set-local-roles",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "set_local_roles_fungible",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -400,19 +399,24 @@
                     },
                     "code": "file:../output/basic-features.wasm"
                 },
-                "+": {}
+                "+": ""
             }
         },
         {
             "step": "setState",
             "comment": "actually set roles",
             "accounts": {
-            "sc:basic-features": {
+                "sc:basic-features": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
                         "str:TICKER-333333": {
-                            "balance": "3000",
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "3000"
+                                }
+                            ],
                             "roles": [
                                 "DCDTRoleLocalMint",
                                 "DCDTRoleLocalBurn"
@@ -429,7 +433,7 @@
         },
         {
             "step": "scCall",
-            "txId": "mint-fungible",
+            "id": "mint-fungible",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -437,12 +441,12 @@
                 "arguments": [
                     "1000"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [
-                    "u8:0|nested:str:TICKER-333333|u64:0|biguint:1000"
+                    "nested:str:TICKER-333333|u64:0|biguint:1000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -458,7 +462,12 @@
                     "balance": "0",
                     "dcdt": {
                         "str:TICKER-333333": {
-                            "balance": "4000",
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "4000"
+                                }
+                            ],
                             "roles": [
                                 "DCDTRoleLocalMint",
                                 "DCDTRoleLocalBurn"
@@ -471,12 +480,12 @@
                     },
                     "code": "file:../output/basic-features.wasm"
                 },
-                "+": {}
+                "+": ""
             }
         },
         {
             "step": "scCall",
-            "txId": "mint-and-send-fungible",
+            "id": "mint-and-send-fungible",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -485,12 +494,12 @@
                     "address:an_account",
                     "2000"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [
-                    "u8:0|nested:str:TICKER-333333|u64:0|biguint:2000"
+                    "nested:str:TICKER-333333|u64:0|biguint:2000"
                 ],
                 "status": "",
                 "logs": "*",
@@ -513,7 +522,12 @@
                     "balance": "0",
                     "dcdt": {
                         "str:TICKER-333333": {
-                            "balance": "4000",
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "4000"
+                                }
+                            ],
                             "roles": [
                                 "DCDTRoleLocalMint",
                                 "DCDTRoleLocalBurn"
@@ -526,12 +540,12 @@
                     },
                     "code": "file:../output/basic-features.wasm"
                 },
-                "+": {}
+                "+": ""
             }
         },
         {
             "step": "scCall",
-            "txId": "burn-fungible",
+            "id": "burn-fungible",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -539,7 +553,7 @@
                 "arguments": [
                     "1000"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -558,7 +572,12 @@
                     "balance": "0",
                     "dcdt": {
                         "str:TICKER-333333": {
-                            "balance": "3000",
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "3000"
+                                }
+                            ],
                             "roles": [
                                 "DCDTRoleLocalMint",
                                 "DCDTRoleLocalBurn"
@@ -571,18 +590,18 @@
                     },
                     "code": "file:../output/basic-features.wasm"
                 },
-                "+": {}
+                "+": ""
             }
         },
         {
             "step": "scCall",
-            "txId": "get-balance-fungible-non-zero",
+            "id": "get-balance-fungible-non-zero",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "get_balance_fungible",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -597,7 +616,7 @@
         },
         {
             "step": "scCall",
-            "txId": "burn-all-fungible",
+            "id": "burn-all-fungible",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -605,7 +624,7 @@
                 "arguments": [
                     "3000"
                 ],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -618,13 +637,13 @@
         },
         {
             "step": "scCall",
-            "txId": "get-balance-fungible-zero",
+            "id": "get-balance-fungible-zero",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "get_balance_fungible",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -639,7 +658,7 @@
         },
         {
             "step": "scCall",
-            "txId": "require-same-fungible-token-success",
+            "id": "require-same-fungible-token-success",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -651,7 +670,7 @@
                 ],
                 "function": "require_same_token_fungible",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -664,20 +683,20 @@
         },
         {
             "step": "scCall",
-            "txId": "require-same-fungible-token-failed",
+            "id": "require-same-fungible-token-failed",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "rewaValue": "100",
                 "function": "require_same_token_fungible",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "4",
-                "message": "str:Invalid payment token",
+                "message": "str:incorrect number of DCDT transfers",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -685,7 +704,7 @@
         },
         {
             "step": "scCall",
-            "txId": "require-all-same-fungible-token-success",
+            "id": "require-all-same-fungible-token-success",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
@@ -705,7 +724,7 @@
                 ],
                 "function": "require_all_same_token_fungible",
                 "arguments": [],
-                "gasLimit": "50,000,000",
+                "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -718,7 +737,7 @@
         },
         {
             "step": "scQuery",
-            "txId": "get-fungible-token-id",
+            "id": "get-fungible-token-id",
             "tx": {
                 "to": "sc:basic-features",
                 "function": "getFungibleTokenId",
@@ -731,6 +750,47 @@
                 "status": "0",
                 "message": "",
                 "logs": "*"
+            }
+        },
+        {
+            "step": "setState",
+            "comment": "reset the token ID so we can issue again",
+            "accounts": {
+                "sc:basic-features": {
+                    "nonce": "0",
+                    "balance": "0",
+                    "dcdt": {
+                        "str:TICKER-000000": "1000",
+                        "str:TICKER-222222": "2000"
+                    },
+                    "storage": {
+                        "str:fungibleTokenMapper": ""
+                    },
+                    "code": "file:../output/basic-features.wasm"
+                }
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "issue-and-set-all-roles-fungible",
+            "tx": {
+                "from": "address:an_account",
+                "to": "sc:basic-features",
+                "function": "issue_and_set_all_roles_fungible",
+                "arguments": [
+                    "str:TICKER"
+                ],
+                "gasLimit": "100,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [
+                    "str:TICKER-444444"
+                ],
+                "status": "",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
             }
         }
     ]

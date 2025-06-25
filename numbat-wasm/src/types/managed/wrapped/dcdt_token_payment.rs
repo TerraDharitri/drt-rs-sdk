@@ -1,50 +1,146 @@
 use crate::{
     api::ManagedTypeApi,
-    types::{BigUint, DcdtTokenType, ManagedVecItem, TokenIdentifier},
+    types::{BigUint, DcdtTokenPaymentMultiValue, DcdtTokenType, ManagedVecItem, TokenIdentifier},
 };
 
-use numbat_codec::numbat_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
-
-use crate as numbat_wasm; // needed by the TypeAbi generated code
+use crate as numbat_wasm; // needed by the codec and TypeAbi generated code
 use crate::derive::TypeAbi;
+use numbat_codec::{
+    numbat_codec_derive::{NestedEncode, TopEncode},
+    IntoMultiValue, NestedDecode, TopDecode,
+};
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug)]
+#[derive(TopEncode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug)]
 pub struct DcdtTokenPayment<M: ManagedTypeApi> {
-    pub token_type: DcdtTokenType,
     pub token_identifier: TokenIdentifier<M>,
     pub token_nonce: u64,
     pub amount: BigUint<M>,
 }
 
 impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
-    pub fn no_payment() -> Self {
+    #[inline]
+    pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
         DcdtTokenPayment {
-            token_type: DcdtTokenType::Invalid,
-            token_identifier: TokenIdentifier::rewa(),
-            token_nonce: 0,
-            amount: BigUint::zero(),
+            token_identifier,
+            token_nonce,
+            amount,
         }
     }
 
-    pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
-        let token_type = if amount != 0 && token_identifier.is_dcdt() {
-            if token_nonce == 0 {
+    pub fn token_type(&self) -> DcdtTokenType {
+        if self.amount != 0 {
+            if self.token_nonce == 0 {
                 DcdtTokenType::Fungible
-            } else if amount == 1u64 {
+            } else if self.amount == 1u64 {
                 DcdtTokenType::NonFungible
             } else {
                 DcdtTokenType::SemiFungible
             }
         } else {
             DcdtTokenType::Invalid
-        };
-
-        DcdtTokenPayment {
-            token_type,
-            token_identifier,
-            token_nonce,
-            amount,
         }
+    }
+
+    #[inline]
+    pub fn into_tuple(self) -> (TokenIdentifier<M>, u64, BigUint<M>) {
+        (self.token_identifier, self.token_nonce, self.amount)
+    }
+}
+
+impl<M: ManagedTypeApi> From<(TokenIdentifier<M>, u64, BigUint<M>)> for DcdtTokenPayment<M> {
+    #[inline]
+    fn from(value: (TokenIdentifier<M>, u64, BigUint<M>)) -> Self {
+        let (token_identifier, token_nonce, amount) = value;
+        Self::new(token_identifier, token_nonce, amount)
+    }
+}
+
+impl<M: ManagedTypeApi> TopDecode for DcdtTokenPayment<M> {
+    fn top_decode_or_handle_err<I, H>(top_input: I, h: H) -> Result<Self, H::HandledErr>
+    where
+        I: numbat_codec::TopDecodeInput,
+        H: numbat_codec::DecodeErrorHandler,
+    {
+        let mut nested_buffer = top_input.into_nested_buffer();
+        let result = Self::dep_decode_or_handle_err(&mut nested_buffer, h)?;
+        if !numbat_codec::NestedDecodeInput::is_depleted(&nested_buffer) {
+            return Err(h.handle_error(numbat_codec::DecodeError::INPUT_TOO_LONG));
+        }
+        Ok(result)
+    }
+}
+
+impl<M: ManagedTypeApi> NestedDecode for DcdtTokenPayment<M> {
+    #[cfg(not(feature = "dcdt-token-payment-legacy-decode"))]
+    fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
+    where
+        I: numbat_codec::NestedDecodeInput,
+        H: numbat_codec::DecodeErrorHandler,
+    {
+        Self::regular_dep_decode_or_handle_err(input, h)
+    }
+
+    #[cfg(feature = "dcdt-token-payment-legacy-decode")]
+    fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
+    where
+        I: numbat_codec::NestedDecodeInput,
+        H: numbat_codec::DecodeErrorHandler,
+    {
+        Self::backwards_compatible_dep_decode_or_handle_err(input, h)
+    }
+}
+
+impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
+    #[doc(hidden)]
+    pub fn regular_dep_decode_or_handle_err<I, H>(
+        input: &mut I,
+        h: H,
+    ) -> Result<Self, H::HandledErr>
+    where
+        I: numbat_codec::NestedDecodeInput,
+        H: numbat_codec::DecodeErrorHandler,
+    {
+        Ok(DcdtTokenPayment {
+            token_identifier: TokenIdentifier::<M>::dep_decode_or_handle_err(input, h)?,
+            token_nonce: <u64>::dep_decode_or_handle_err(input, h)?,
+            amount: BigUint::<M>::dep_decode_or_handle_err(input, h)?,
+        })
+    }
+
+    /// Deserializer version that accepts bytes encoded with an older version of the code.
+    /// It uses some assumptions about the possible values of the token identifier to figure it out.
+    ///
+    /// More specifically:
+    /// - The old encoding added an extra first byte, indicating the token type.
+    /// - Token identifiers cannot be empty and cannot be very long ...
+    /// - ... therefore if the bytes are shifted by 1, we should get an invalid token identifier length.
+    ///
+    /// Even more specifically:
+    /// - having the first byte > 0 can only be explained by an older encoding
+    /// - having the las byte zero can only mean 2 things:
+    ///     - the token identifier is empty - but this is invalid
+    ///     - we are reading an older encoding and the las token identifier length byte is the 5th instead of the 4th.
+    ///
+    /// **Please do not call directly in contracts, use it via the `dcdt-token-payment-legacy-decode` feature flag instead.**
+    ///
+    /// It is only publicly exposed for testing.
+    pub fn backwards_compatible_dep_decode_or_handle_err<I, H>(
+        input: &mut I,
+        h: H,
+    ) -> Result<Self, H::HandledErr>
+    where
+        I: numbat_codec::NestedDecodeInput,
+        H: numbat_codec::DecodeErrorHandler,
+    {
+        let mut first_four_bytes = [0u8; 4];
+        input.peek_into(&mut first_four_bytes[..], h)?;
+        // old encoding detection, see method description for explanation
+        let old_encoding = first_four_bytes[3] == 0 || first_four_bytes[0] > 0;
+        if old_encoding {
+            // clear legacy token type field, 1 byte
+            let _ = input.read_byte(h)?;
+        }
+        Self::regular_dep_decode_or_handle_err(input, h)
     }
 }
 
@@ -70,6 +166,15 @@ where
     });
 }
 
+impl<M: ManagedTypeApi> IntoMultiValue for DcdtTokenPayment<M> {
+    type MultiValue = DcdtTokenPaymentMultiValue<M>;
+
+    #[inline]
+    fn into_multi_value(self) -> Self::MultiValue {
+        self.into()
+    }
+}
+
 impl<M: ManagedTypeApi> ManagedVecItem for DcdtTokenPayment<M> {
     const PAYLOAD_SIZE: usize = 16;
     const SKIPS_RESERIALIZATION: bool = false;
@@ -84,14 +189,7 @@ impl<M: ManagedTypeApi> ManagedVecItem for DcdtTokenPayment<M> {
         let token_nonce = managed_vec_item_from_slice(&arr, &mut index);
         let amount = managed_vec_item_from_slice(&arr, &mut index);
 
-        let token_type = if token_nonce > 0 {
-            DcdtTokenType::SemiFungible
-        } else {
-            DcdtTokenType::Fungible
-        };
-
         DcdtTokenPayment {
-            token_type,
             token_identifier,
             token_nonce,
             amount,

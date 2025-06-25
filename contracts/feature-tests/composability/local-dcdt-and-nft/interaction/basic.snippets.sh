@@ -20,8 +20,8 @@ SEMI_FUNGIBLE_IDENTIFIER=0x53454d4946554e472d306535626538 # Manually update afte
 deploy() {
     drtpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} --gas-limit=100000000 --send --outfile="deploy-testnet.interaction.json" --proxy=${PROXY} --chain=${CHAIN_ID} || return
 
-    TRANSACTION=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['contractAddress']")
 
     drtpy data store --key=address-testnet --value=${ADDRESS}
     drtpy data store --key=deployTransaction-testnet --value=${TRANSACTION}

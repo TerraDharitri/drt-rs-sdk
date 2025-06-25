@@ -33,18 +33,28 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("*")]
+    fn payment_array_3(&self) -> MultiValue3<DcdtTokenPayment, DcdtTokenPayment, DcdtTokenPayment> {
+        let [payment_a, payment_b, payment_c] = self.call_value().multi_dcdt();
+        (payment_a, payment_b, payment_c).into()
+    }
+
+    #[endpoint]
+    #[payable("*")]
     fn payable_any_1(
         &self,
-        #[payment] payment: BigUint,
-        #[payment_token] token: TokenIdentifier,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+        #[payment_amount] payment: BigUint,
+        #[payment_token] token: RewaOrDcdtTokenIdentifier,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
         (payment, token).into()
     }
 
     #[endpoint]
     #[payable("*")]
-    fn payable_any_2(&self, #[payment] payment: BigUint) -> MultiValue2<BigUint, TokenIdentifier> {
-        let token = self.call_value().token();
+    fn payable_any_2(
+        &self,
+        #[payment] payment: BigUint,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
+        let token = self.call_value().rewa_or_single_dcdt().token_identifier;
         (payment, token).into()
     }
 
@@ -52,32 +62,36 @@ pub trait PayableFeatures {
     #[payable("*")]
     fn payable_any_3(
         &self,
-        #[payment_token] token: TokenIdentifier,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
-        let (payment, _) = self.call_value().payment_token_pair();
-        (payment, token).into()
+        #[payment_token] token: RewaOrDcdtTokenIdentifier,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
+        let payment = self.call_value().rewa_or_single_dcdt();
+        (payment.amount, token).into()
     }
 
     #[endpoint]
     #[payable("*")]
-    fn payable_any_4(&self) -> MultiValue2<BigUint, TokenIdentifier> {
-        self.call_value().payment_token_pair().into()
+    fn payable_any_4(&self) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
+        let payment = self.call_value().rewa_or_single_dcdt();
+        (payment.amount, payment.token_identifier).into()
     }
 
     #[endpoint]
     #[payable("REWA")]
     fn payable_rewa_1(
         &self,
-        #[payment_token] token: TokenIdentifier,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+        #[payment_token] token: RewaOrDcdtTokenIdentifier,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
         let payment = self.call_value().rewa_value();
         (payment, token).into()
     }
 
     #[endpoint]
     #[payable("REWA")]
-    fn payable_rewa_2(&self, #[payment] payment: BigUint) -> MultiValue2<BigUint, TokenIdentifier> {
-        let token = self.call_value().token();
+    fn payable_rewa_2(
+        &self,
+        #[payment] payment: BigUint,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
+        let token = self.call_value().rewa_or_single_dcdt().token_identifier;
         (payment, token).into()
     }
 
@@ -85,17 +99,17 @@ pub trait PayableFeatures {
     #[payable("REWA")]
     fn payable_rewa_3(
         &self,
-        #[payment_token] token: TokenIdentifier,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+        #[payment_token] token: RewaOrDcdtTokenIdentifier,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
         let payment = self.call_value().rewa_value();
         (payment, token).into()
     }
 
     #[endpoint]
     #[payable("REWA")]
-    fn payable_rewa_4(&self) -> MultiValue2<BigUint, TokenIdentifier> {
+    fn payable_rewa_4(&self) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
         let payment = self.call_value().rewa_value();
-        let token = self.call_value().token();
+        let token = self.call_value().rewa_or_single_dcdt().token_identifier;
         (payment, token).into()
     }
 
@@ -104,8 +118,8 @@ pub trait PayableFeatures {
     fn payable_token_1(
         &self,
         #[payment] payment: BigUint,
-        #[payment_token] token: TokenIdentifier,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+        #[payment_token] token: RewaOrDcdtTokenIdentifier,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
         (payment, token).into()
     }
 
@@ -115,7 +129,7 @@ pub trait PayableFeatures {
         &self,
         #[payment] payment: BigUint,
     ) -> MultiValue2<BigUint, TokenIdentifier> {
-        let token = self.call_value().token();
+        let token = self.call_value().single_dcdt().token_identifier;
         (payment, token).into()
     }
 
@@ -123,17 +137,17 @@ pub trait PayableFeatures {
     #[payable("PAYABLE-FEATURES-TOKEN")]
     fn payable_token_3(
         &self,
-        #[payment_token] token: TokenIdentifier,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
-        let payment = self.call_value().dcdt_value();
-        (payment, token).into()
+        #[payment_token] token: RewaOrDcdtTokenIdentifier,
+    ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
+        let payment = self.call_value().single_dcdt();
+        (payment.amount, token).into()
     }
 
     #[endpoint]
     #[payable("PAYABLE-FEATURES-TOKEN")]
     fn payable_token_4(&self) -> MultiValue2<BigUint, TokenIdentifier> {
-        let payment = self.call_value().dcdt_value();
-        let token = self.call_value().token();
+        let payment = self.call_value().single_dcdt().amount;
+        let token = self.call_value().single_dcdt().token_identifier;
         (payment, token).into()
     }
 }

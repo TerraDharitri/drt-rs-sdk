@@ -5,13 +5,14 @@ numbat_wasm::imports!();
 #[numbat_wasm::contract]
 pub trait SecondContract {
     #[init]
-    fn init(&self, dcdt_token_identifier: TokenIdentifier) {
+    fn init(&self, dcdt_token_identifier: RewaOrDcdtTokenIdentifier) {
         self.set_contract_dcdt_token_identifier(&dcdt_token_identifier);
     }
 
     #[payable("*")]
     #[endpoint(acceptDcdtPayment)]
-    fn accept_dcdt_payment(&self, #[payment_token] actual_token_identifier: TokenIdentifier) {
+    fn accept_dcdt_payment(&self) {
+        let actual_token_identifier = self.call_value().rewa_or_single_dcdt().token_identifier;
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
         require!(
             actual_token_identifier == expected_token_identifier,
@@ -28,9 +29,9 @@ pub trait SecondContract {
     // storage
 
     #[storage_set("dcdtTokenName")]
-    fn set_contract_dcdt_token_identifier(&self, dcdt_token_identifier: &TokenIdentifier);
+    fn set_contract_dcdt_token_identifier(&self, dcdt_token_identifier: &RewaOrDcdtTokenIdentifier);
 
     #[view(getdcdtTokenName)]
     #[storage_get("dcdtTokenName")]
-    fn get_contract_dcdt_token_identifier(&self) -> TokenIdentifier;
+    fn get_contract_dcdt_token_identifier(&self) -> RewaOrDcdtTokenIdentifier;
 }

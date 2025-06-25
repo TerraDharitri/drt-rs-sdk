@@ -6,8 +6,8 @@ use hex_literal::hex;
 use crate::{
     api::{CallTypeApi, SendApi},
     types::{
-        Address, BigUint, ContractCall, DcdtLocalRole, DcdtTokenType, ManagedAddress,
-        ManagedBuffer, TokenIdentifier,
+        BigUint, ContractCall, ContractCallNoPayment, ContractCallWithRewa, DcdtLocalRole,
+        DcdtTokenType, ManagedAddress, ManagedBuffer, TokenIdentifier,
     },
 };
 
@@ -16,11 +16,11 @@ use crate::{
 pub const DCDT_SYSTEM_SC_ADDRESS_ARRAY: [u8; 32] =
     hex!("233300000000000000000000000000000002333000000000000000000002ffff");
 
-const ISSUE_FUNGIBLE_ENDPOINT_NAME: &[u8] = b"issue";
-const ISSUE_NON_FUNGIBLE_ENDPOINT_NAME: &[u8] = b"issueNonFungible";
-const ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME: &[u8] = b"issueSemiFungible";
-const REGISTER_META_DCDT_ENDPOINT_NAME: &[u8] = b"registerMetaDCDT";
-const ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME: &[u8] = b"registerAndSetAllRoles";
+const ISSUE_FUNGIBLE_ENDPOINT_NAME: &str = "issue";
+const ISSUE_NON_FUNGIBLE_ENDPOINT_NAME: &str = "issueNonFungible";
+const ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME: &str = "issueSemiFungible";
+const REGISTER_META_DCDT_ENDPOINT_NAME: &str = "registerMetaDCDT";
+const ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME: &str = "registerAndSetAllRoles";
 
 /// Proxy for the DCDT system smart contract.
 /// Unlike other contract proxies, this one has a fixed address,
@@ -58,14 +58,25 @@ where
         token_ticker: &ManagedBuffer<SA>,
         initial_supply: &BigUint<SA>,
         properties: FungibleTokenProperties,
-    ) -> ContractCall<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         self.issue(
             issue_cost,
             DcdtTokenType::Fungible,
             token_display_name,
             token_ticker,
             initial_supply,
-            properties,
+            TokenProperties {
+                num_decimals: properties.num_decimals,
+                can_freeze: properties.can_freeze,
+                can_wipe: properties.can_wipe,
+                can_pause: properties.can_pause,
+                can_transfer_create_role: false,
+                can_mint: properties.can_mint,
+                can_burn: properties.can_burn,
+                can_change_owner: properties.can_change_owner,
+                can_upgrade: properties.can_upgrade,
+                can_add_special_roles: properties.can_add_special_roles,
+            },
         )
     }
 
@@ -77,7 +88,7 @@ where
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: NonFungibleTokenProperties,
-    ) -> ContractCall<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let zero = BigUint::zero();
         self.issue(
             issue_cost,
@@ -90,6 +101,7 @@ where
                 can_freeze: properties.can_freeze,
                 can_wipe: properties.can_wipe,
                 can_pause: properties.can_pause,
+                can_transfer_create_role: properties.can_transfer_create_role,
                 can_mint: false,
                 can_burn: false,
                 can_change_owner: properties.can_change_owner,
@@ -107,7 +119,7 @@ where
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: SemiFungibleTokenProperties,
-    ) -> ContractCall<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let zero = BigUint::zero();
         self.issue(
             issue_cost,
@@ -120,6 +132,7 @@ where
                 can_freeze: properties.can_freeze,
                 can_wipe: properties.can_wipe,
                 can_pause: properties.can_pause,
+                can_transfer_create_role: properties.can_transfer_create_role,
                 can_mint: false,
                 can_burn: false,
                 can_change_owner: properties.can_change_owner,
@@ -137,7 +150,7 @@ where
         token_display_name: &ManagedBuffer<SA>,
         token_ticker: &ManagedBuffer<SA>,
         properties: MetaTokenProperties,
-    ) -> ContractCall<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let zero = BigUint::zero();
         self.issue(
             issue_cost,
@@ -150,6 +163,7 @@ where
                 can_freeze: properties.can_freeze,
                 can_wipe: properties.can_wipe,
                 can_pause: properties.can_pause,
+                can_transfer_create_role: properties.can_transfer_create_role,
                 can_mint: false,
                 can_burn: false,
                 can_change_owner: properties.can_change_owner,
@@ -166,27 +180,27 @@ where
         token_ticker: ManagedBuffer<SA>,
         token_type: DcdtTokenType,
         num_decimals: usize,
-    ) -> ContractCall<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let dcdt_system_sc_address = self.dcdt_system_sc_address();
 
-        let mut contract_call = ContractCall::new(
+        let mut contract_call = ContractCallWithRewa::new(
             dcdt_system_sc_address,
-            ManagedBuffer::new_from_bytes(ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME),
-        )
-        .with_rewa_transfer(issue_cost);
+            ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME,
+            issue_cost,
+        );
 
-        contract_call.push_endpoint_arg(&token_display_name);
-        contract_call.push_endpoint_arg(&token_ticker);
+        contract_call.proxy_arg(&token_display_name);
+        contract_call.proxy_arg(&token_ticker);
 
         let token_type_name = match token_type {
-            DcdtTokenType::Fungible => &b"FNG"[..],
-            DcdtTokenType::NonFungible => &b"NFT"[..],
-            DcdtTokenType::SemiFungible => &b"SFT"[..],
-            DcdtTokenType::Meta => &b"META"[..],
-            DcdtTokenType::Invalid => &[],
+            DcdtTokenType::Fungible => "FNG",
+            DcdtTokenType::NonFungible => "NFT",
+            DcdtTokenType::SemiFungible => "SFT",
+            DcdtTokenType::Meta => "META",
+            DcdtTokenType::Invalid => "",
         };
-        contract_call.push_endpoint_arg(&token_type_name);
-        contract_call.push_endpoint_arg(&num_decimals);
+        contract_call.proxy_arg(&token_type_name);
+        contract_call.proxy_arg(&num_decimals);
 
         contract_call
     }
@@ -200,7 +214,7 @@ where
         token_ticker: &ManagedBuffer<SA>,
         initial_supply: &BigUint<SA>,
         properties: TokenProperties,
-    ) -> ContractCall<SA, ()> {
+    ) -> ContractCallWithRewa<SA, ()> {
         let dcdt_system_sc_address = self.dcdt_system_sc_address();
 
         let endpoint_name = match token_type {
@@ -208,49 +222,40 @@ where
             DcdtTokenType::NonFungible => ISSUE_NON_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::SemiFungible => ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::Meta => REGISTER_META_DCDT_ENDPOINT_NAME,
-            DcdtTokenType::Invalid => &[],
+            DcdtTokenType::Invalid => "",
         };
 
-        let mut contract_call = ContractCall::new(
-            dcdt_system_sc_address,
-            ManagedBuffer::new_from_bytes(endpoint_name),
-        )
-        .with_rewa_transfer(issue_cost);
+        let mut contract_call =
+            ContractCallWithRewa::new(dcdt_system_sc_address, endpoint_name, issue_cost);
 
-        contract_call.push_endpoint_arg(token_display_name);
-        contract_call.push_endpoint_arg(token_ticker);
+        contract_call.proxy_arg(token_display_name);
+        contract_call.proxy_arg(token_ticker);
 
         if token_type == DcdtTokenType::Fungible {
-            contract_call.push_endpoint_arg(initial_supply);
-            contract_call.push_endpoint_arg(&properties.num_decimals);
+            contract_call.proxy_arg(initial_supply);
+            contract_call.proxy_arg(&properties.num_decimals);
         } else if token_type == DcdtTokenType::Meta {
-            contract_call.push_endpoint_arg(&properties.num_decimals);
+            contract_call.proxy_arg(&properties.num_decimals);
         }
 
-        set_token_property(&mut contract_call, &b"canFreeze"[..], properties.can_freeze);
-        set_token_property(&mut contract_call, &b"canWipe"[..], properties.can_wipe);
-        set_token_property(&mut contract_call, &b"canPause"[..], properties.can_pause);
+        let mut token_prop_args = TokenPropertyArguments {
+            can_freeze: Some(properties.can_freeze),
+            can_wipe: Some(properties.can_wipe),
+            can_pause: Some(properties.can_pause),
+            can_change_owner: Some(properties.can_change_owner),
+            can_upgrade: Some(properties.can_upgrade),
+            can_add_special_roles: Some(properties.can_add_special_roles),
+            ..TokenPropertyArguments::default()
+        };
 
         if token_type == DcdtTokenType::Fungible {
-            set_token_property(&mut contract_call, &b"canMint"[..], properties.can_mint);
-            set_token_property(&mut contract_call, &b"canBurn"[..], properties.can_burn);
+            token_prop_args.can_mint = Some(properties.can_mint);
+            token_prop_args.can_burn = Some(properties.can_burn);
+        } else {
+            token_prop_args.can_transfer_create_role = Some(properties.can_transfer_create_role);
         }
 
-        set_token_property(
-            &mut contract_call,
-            &b"canChangeOwner"[..],
-            properties.can_change_owner,
-        );
-        set_token_property(
-            &mut contract_call,
-            &b"canUpgrade"[..],
-            properties.can_upgrade,
-        );
-        set_token_property(
-            &mut contract_call,
-            &b"canAddSpecialRoles"[..],
-            properties.can_add_special_roles,
-        );
+        append_token_property_arguments(&mut contract_call, &token_prop_args);
 
         contract_call
     }
@@ -262,11 +267,11 @@ where
         self,
         token_identifier: &TokenIdentifier<SA>,
         amount: &BigUint<SA>,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"mint");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("mint");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(amount);
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(amount);
 
         contract_call
     }
@@ -277,30 +282,30 @@ where
         self,
         token_identifier: &TokenIdentifier<SA>,
         amount: &BigUint<SA>,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"DCDTBurn");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("DCDTBurn");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(amount);
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(amount);
 
         contract_call
     }
 
     /// The manager of an DCDT token may choose to suspend all transactions of the token,
     /// except minting, freezing/unfreezing and wiping.
-    pub fn pause(self, token_identifier: &TokenIdentifier<SA>) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"pause");
+    pub fn pause(self, token_identifier: &TokenIdentifier<SA>) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("pause");
 
-        contract_call.push_endpoint_arg(token_identifier);
+        contract_call.proxy_arg(token_identifier);
 
         contract_call
     }
 
     /// The reverse operation of `pause`.
-    pub fn unpause(self, token_identifier: &TokenIdentifier<SA>) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"unPause");
+    pub fn unpause(self, token_identifier: &TokenIdentifier<SA>) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("unPause");
 
-        contract_call.push_endpoint_arg(token_identifier);
+        contract_call.proxy_arg(token_identifier);
 
         contract_call
     }
@@ -312,11 +317,11 @@ where
         self,
         token_identifier: &TokenIdentifier<SA>,
         address: &ManagedAddress<SA>,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"freeze");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("freeze");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(address);
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(address);
 
         contract_call
     }
@@ -326,11 +331,11 @@ where
         self,
         token_identifier: &TokenIdentifier<SA>,
         address: &ManagedAddress<SA>,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"unFreeze");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("unFreeze");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(address);
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(address);
 
         contract_call
     }
@@ -343,11 +348,11 @@ where
         self,
         token_identifier: &TokenIdentifier<SA>,
         address: &ManagedAddress<SA>,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"wipe");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("wipe");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(address);
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(address);
 
         contract_call
     }
@@ -358,11 +363,11 @@ where
         self,
         token_identifier: &TokenIdentifier<SA>,
         num_decimals: usize,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"changeSFTToMetaDCDT");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("changeSFTToMetaDCDT");
 
-        contract_call.push_endpoint_arg(&token_identifier);
-        contract_call.push_endpoint_arg(&num_decimals);
+        contract_call.proxy_arg(&token_identifier);
+        contract_call.proxy_arg(&num_decimals);
 
         contract_call
     }
@@ -376,14 +381,14 @@ where
         address: &ManagedAddress<SA>,
         token_identifier: &TokenIdentifier<SA>,
         roles_iter: RoleIter,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"setSpecialRole");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("setSpecialRole");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(address);
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(address);
         for role in roles_iter {
             if role != DcdtLocalRole::None {
-                contract_call.push_argument_raw_bytes(role.as_role_name());
+                contract_call.push_raw_argument(role.as_role_name());
             }
         }
 
@@ -399,14 +404,14 @@ where
         address: &ManagedAddress<SA>,
         token_identifier: &TokenIdentifier<SA>,
         roles_iter: RoleIter,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"unSetSpecialRole");
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("unSetSpecialRole");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_endpoint_arg(address);
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(address);
         for role in roles_iter {
             if role != DcdtLocalRole::None {
-                contract_call.push_argument_raw_bytes(role.as_role_name());
+                contract_call.push_raw_argument(role.as_role_name());
             }
         }
 
@@ -416,12 +421,12 @@ where
     pub fn transfer_ownership(
         self,
         token_identifier: &TokenIdentifier<SA>,
-        new_owner: &Address,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"transferOwnership");
+        new_owner: &ManagedAddress<SA>,
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("transferOwnership");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_argument_raw_bytes(new_owner.as_bytes());
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(new_owner);
 
         contract_call
     }
@@ -429,15 +434,26 @@ where
     pub fn transfer_nft_create_role(
         self,
         token_identifier: &TokenIdentifier<SA>,
-        old_creator: &Address,
-        new_creator: &Address,
-    ) -> ContractCall<SA, ()> {
-        let mut contract_call = self.dcdt_system_sc_call_no_args(b"transferNFTCreateRole");
+        old_creator: &ManagedAddress<SA>,
+        new_creator: &ManagedAddress<SA>,
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("transferNFTCreateRole");
 
-        contract_call.push_endpoint_arg(token_identifier);
-        contract_call.push_argument_raw_bytes(old_creator.as_bytes());
-        contract_call.push_argument_raw_bytes(new_creator.as_bytes());
+        contract_call.proxy_arg(token_identifier);
+        contract_call.proxy_arg(old_creator);
+        contract_call.proxy_arg(new_creator);
 
+        contract_call
+    }
+
+    pub fn control_changes(
+        self,
+        token_identifier: &TokenIdentifier<SA>,
+        property_arguments: &TokenPropertyArguments,
+    ) -> ContractCallNoPayment<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args("controlChanges");
+        contract_call.proxy_arg(token_identifier);
+        append_token_property_arguments(&mut contract_call, property_arguments);
         contract_call
     }
 
@@ -445,30 +461,79 @@ where
         ManagedAddress::new_from_bytes(&DCDT_SYSTEM_SC_ADDRESS_ARRAY)
     }
 
-    fn dcdt_system_sc_call_no_args(self, endpoint_name: &[u8]) -> ContractCall<SA, ()> {
+    fn dcdt_system_sc_call_no_args(
+        self,
+        endpoint_name: &'static str,
+    ) -> ContractCallNoPayment<SA, ()> {
         let dcdt_system_sc_address = self.dcdt_system_sc_address();
-        ContractCall::new(
-            dcdt_system_sc_address,
-            ManagedBuffer::new_from_bytes(endpoint_name),
-        )
+        ContractCallNoPayment::new(dcdt_system_sc_address, endpoint_name)
     }
 }
 
-const TRUE_BYTES: &[u8] = b"true";
-const FALSE_BYTES: &[u8] = b"false";
+const TRUE_STR: &str = "true";
+const FALSE_STR: &str = "false";
 
-fn bool_name_bytes(b: bool) -> &'static [u8] {
+fn bool_name_bytes(b: bool) -> &'static str {
     if b {
-        TRUE_BYTES
+        TRUE_STR
     } else {
-        FALSE_BYTES
+        FALSE_STR
     }
 }
 
-fn set_token_property<SA, R>(contract_call: &mut ContractCall<SA, R>, name: &[u8], value: bool)
+fn set_token_property<SA, CC>(contract_call: &mut CC, name: &str, value: bool)
 where
     SA: CallTypeApi + 'static,
+    CC: ContractCall<SA>,
 {
-    contract_call.push_argument_raw_bytes(name);
-    contract_call.push_argument_raw_bytes(bool_name_bytes(value));
+    contract_call.push_raw_argument(name);
+    contract_call.push_raw_argument(bool_name_bytes(value));
+}
+
+fn append_token_property_arguments<SA, CC>(
+    contract_call: &mut CC,
+    token_prop_args: &TokenPropertyArguments,
+) where
+    SA: CallTypeApi + 'static,
+    CC: ContractCall<SA>,
+{
+    if let Some(can_freeze) = token_prop_args.can_freeze {
+        set_token_property(contract_call, "canFreeze", can_freeze);
+    }
+
+    if let Some(can_wipe) = token_prop_args.can_wipe {
+        set_token_property(contract_call, "canWipe", can_wipe);
+    }
+
+    if let Some(can_pause) = token_prop_args.can_pause {
+        set_token_property(contract_call, "canPause", can_pause);
+    }
+
+    if let Some(can_transfer_create_role) = token_prop_args.can_transfer_create_role {
+        set_token_property(
+            contract_call,
+            "canTransferNFTCreateRole",
+            can_transfer_create_role,
+        );
+    }
+
+    if let Some(can_mint) = token_prop_args.can_mint {
+        set_token_property(contract_call, "canMint", can_mint);
+    }
+
+    if let Some(can_burn) = token_prop_args.can_burn {
+        set_token_property(contract_call, "canBurn", can_burn);
+    }
+
+    if let Some(can_change_owner) = token_prop_args.can_change_owner {
+        set_token_property(contract_call, "canChangeOwner", can_change_owner);
+    }
+
+    if let Some(can_upgrade) = token_prop_args.can_upgrade {
+        set_token_property(contract_call, "canUpgrade", can_upgrade);
+    }
+
+    if let Some(can_add_special_roles) = token_prop_args.can_add_special_roles {
+        set_token_property(contract_call, "canAddSpecialRoles", can_add_special_roles);
+    }
 }

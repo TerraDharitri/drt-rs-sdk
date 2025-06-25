@@ -1,4 +1,4 @@
-use numbat_wasm::types::Address;
+use numbat_wasm::types::heap::Address;
 
 use crate::world_mock::{AccountData, BlockchainMock};
 

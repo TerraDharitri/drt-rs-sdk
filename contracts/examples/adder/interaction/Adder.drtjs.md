@@ -3,7 +3,7 @@
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let drtjs = await require('@terradharitri/drtjs');
+let drtjs = await require('@numbatnetwork/drtjs');
 let { drtSys, wallets: { alice } } = await drtjs.setupInteractive("local-testnet");
 
 let adder = await drtSys.loadWrapper("contracts/examples/adder");

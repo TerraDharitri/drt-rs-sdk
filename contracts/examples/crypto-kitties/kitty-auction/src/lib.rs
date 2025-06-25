@@ -13,7 +13,7 @@ pub trait KittyAuction {
         gen_zero_kitty_starting_price: BigUint,
         gen_zero_kitty_ending_price: BigUint,
         gen_zero_kitty_auction_duration: u64,
-        #[var_args] opt_kitty_ownership_contract_address: OptionalValue<ManagedAddress>,
+        opt_kitty_ownership_contract_address: OptionalValue<ManagedAddress>,
     ) {
         self.gen_zero_kitty_starting_price()
             .set(gen_zero_kitty_starting_price);
@@ -184,7 +184,7 @@ pub trait KittyAuction {
         // refund losing bid
         if !auction.current_winner.is_zero() {
             self.send()
-                .direct_rewa(&auction.current_winner, &auction.current_bid, b"bid refund");
+                .direct_rewa(&auction.current_winner, &auction.current_bid);
         }
 
         // update auction bid and winner
@@ -356,11 +356,8 @@ pub trait KittyAuction {
                 if auction.kitty_owner != self.blockchain().get_sc_address()
                     && !auction.current_winner.is_zero()
                 {
-                    self.send().direct_rewa(
-                        &auction.kitty_owner,
-                        &auction.current_bid,
-                        b"sold kitty",
-                    );
+                    self.send()
+                        .direct_rewa(&auction.kitty_owner, &auction.current_bid);
                 }
             },
             ManagedAsyncCallResult::Err(_) => {

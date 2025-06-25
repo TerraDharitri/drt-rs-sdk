@@ -10,7 +10,7 @@ use crate as numbat_wasm; // needed by the TypeAbi generated code
 use crate::derive::TypeAbi;
 
 // Note: In the current implementation, SemiFungible is never returned
-#[derive(Clone, PartialEq, Debug, TypeAbi)]
+#[derive(Clone, PartialEq, Eq, Debug, TypeAbi)]
 pub enum DcdtTokenType {
     Fungible,
     NonFungible,
@@ -24,7 +24,7 @@ impl DcdtTokenType {
         if token_nonce == 0 {
             DcdtTokenType::Fungible
         } else {
-            DcdtTokenType::SemiFungible
+            DcdtTokenType::NonFungible
         }
     }
 

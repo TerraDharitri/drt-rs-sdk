@@ -1,15 +1,27 @@
 use core::marker::PhantomData;
 
-use numbat_codec::{EncodeErrorHandler, TopEncodeMultiOutput, TryStaticCast};
+use numbat_codec::{EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput, TryStaticCast};
 
 use crate::{
     api::{EndpointFinishApi, EndpointFinishApiImpl, ManagedTypeApi},
+    contract_base::ExitCodecErrorHandler,
     numbat_codec::{EncodeError, TopEncode, TopEncodeOutput},
+    err_msg,
     types::{
         BigInt, BigUint, ManagedBuffer, ManagedBufferCachedBuilder, ManagedSCError, ManagedType,
         SCError, StaticSCError,
     },
 };
+
+pub fn finish_multi<FA, T>(item: &T)
+where
+    FA: ManagedTypeApi + EndpointFinishApi,
+    T: TopEncodeMulti,
+{
+    let h = ExitCodecErrorHandler::<FA>::from(err_msg::FINISH_ENCODE_ERROR);
+    let mut output = ApiOutputAdapter::<FA>::default();
+    let Ok(()) = item.multi_encode_or_handle_err(&mut output, h);
+}
 
 #[derive(Clone)]
 pub struct ApiOutputAdapter<FA>
@@ -68,13 +80,13 @@ where
         H: EncodeErrorHandler,
     {
         if let Some(managed_buffer) = value.try_cast_ref::<ManagedBuffer<FA>>() {
-            FA::finish_api_impl().finish_managed_buffer_raw(managed_buffer.handle);
+            FA::finish_api_impl().finish_managed_buffer_raw(managed_buffer.handle.clone());
             Ok(())
         } else if let Some(big_uint) = value.try_cast_ref::<BigUint<FA>>() {
-            FA::finish_api_impl().finish_big_uint_raw(big_uint.handle);
+            FA::finish_api_impl().finish_big_uint_raw(big_uint.handle.clone());
             Ok(())
         } else if let Some(big_int) = value.try_cast_ref::<BigInt<FA>>() {
-            FA::finish_api_impl().finish_big_int_raw(big_int.handle);
+            FA::finish_api_impl().finish_big_int_raw(big_int.handle.clone());
             Ok(())
         } else {
             Err(h.handle_error(EncodeError::UNSUPPORTED_OPERATION))
@@ -86,7 +98,7 @@ where
     }
 
     fn finalize_nested_encode(self, nb: Self::NestedBuffer) {
-        FA::finish_api_impl().finish_managed_buffer_raw(nb.into_managed_buffer().get_raw_handle());
+        FA::finish_api_impl().finish_managed_buffer_raw(nb.into_managed_buffer().get_handle());
     }
 }
 

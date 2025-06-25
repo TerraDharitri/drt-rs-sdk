@@ -5,7 +5,7 @@ Fungible Tokens have variable amounts, but always have nonce 0. They may be deno
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let drtjs = await require('@terradharitri/drtjs');
+let drtjs = await require('@numbatnetwork/drtjs');
 let { drtSys, wallets: { alice, bob, carol } } = await drtjs.setupInteractive("local-testnet");
 
 // Issue a new fungible token

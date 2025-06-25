@@ -1,5 +1,8 @@
-use crate::{abi::TypeAbi, types::BoxedBytes};
-use alloc::{boxed::Box, string::String, vec::Vec};
+use crate::{
+    abi::{TypeAbi, TypeName},
+    types::heap::BoxedBytes,
+};
+use alloc::{boxed::Box, vec::Vec};
 use core::fmt::Debug;
 
 const ERR_BAD_H256_LENGTH: &str = "bad H256 length";
@@ -7,7 +10,7 @@ const ZERO_32: &[u8] = &[0u8; 32];
 
 /// Type that holds 32 bytes of data.
 /// Data is kept on the heap to keep wasm size low and avoid copies.
-#[derive(Hash, Eq, PartialEq, Clone, Debug)]
+#[derive(Hash, PartialEq, Eq, Clone, Debug)]
 pub struct H256(Box<[u8; 32]>);
 
 impl From<[u8; 32]> for H256 {
@@ -222,7 +225,7 @@ impl TopDecode for H256 {
 }
 
 impl TypeAbi for H256 {
-    fn type_name() -> String {
+    fn type_name() -> TypeName {
         "H256".into()
     }
 }

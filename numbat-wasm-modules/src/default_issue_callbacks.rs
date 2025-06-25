@@ -31,7 +31,7 @@ pub trait DefaultIssueCallbacksModule {
     ) {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
-                let token_id = self.call_value().token();
+                let token_id = self.call_value().single_dcdt().token_identifier;
                 let mapper =
                     SingleValueMapper::<Self::Api, TokenIdentifier>::new(storage_key.into());
                 mapper.set(&token_id);
@@ -45,8 +45,7 @@ pub trait DefaultIssueCallbacksModule {
     fn return_failed_issue_funds(&self, initial_caller: ManagedAddress) {
         let rewa_returned = self.call_value().rewa_value();
         if rewa_returned > 0u32 {
-            self.send()
-                .direct_rewa(&initial_caller, &rewa_returned, &[]);
+            self.send().direct_rewa(&initial_caller, &rewa_returned);
         }
     }
 }

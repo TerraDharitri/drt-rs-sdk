@@ -5,7 +5,7 @@ Semi-Fungible Tokens have variable amounts, and variable nonce. They are not den
 First [set up a node terminal](../../../../tutorial/src/interaction/interaction-basic.md).
 
 ```javascript
-let drtjs = await require('@terradharitri/drtjs');
+let drtjs = await require('@numbatnetwork/drtjs');
 let { drtSys, Rewa, wallets: { alice, bob, carol } } = await drtjs.setupInteractive("local-testnet");
 
 // Issue a new semi-fungible token

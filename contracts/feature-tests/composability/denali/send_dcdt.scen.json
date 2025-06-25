@@ -9,7 +9,7 @@
                     "nonce": "1000",
                     "balance": "0",
                     "dcdt": {
-                        "str:BASIC-FEATUR": "1,000"
+                        "str:SENDDCDT": "1,000"
                     },
                     "code": "file:../forwarder/output/forwarder.wasm"
                 },
@@ -21,14 +21,14 @@
         },
         {
             "step": "scCall",
-            "txId": "not-enough",
+            "id": "not-enough",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "send_dcdt",
                 "arguments": [
                     "address:an_account",
-                    "str:BASIC-FEATUR",
+                    "str:SENDDCDT",
                     "10000"
                 ],
                 "gasLimit": "50,000,000",
@@ -43,15 +43,15 @@
         },
         {
             "step": "scCall",
-            "txId": "without-message",
+            "id": "send_dcdt-ok",
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
                 "function": "send_dcdt",
                 "arguments": [
                     "address:an_account",
-                    "str:BASIC-FEATUR",
-                    "100"
+                    "str:SENDDCDT",
+                    "200"
                 ],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"
@@ -64,43 +64,9 @@
                         "address": "sc:basic-features",
                         "endpoint": "str:DCDTTransfer",
                         "topics": [
-                            "str:BASIC-FEATUR",
+                            "str:SENDDCDT",
                             "",
-                            "100",
-                            "address:an_account"
-                        ],
-                        "data": ""
-                    }
-                ]
-            }
-        },
-        {
-            "step": "scCall",
-            "txId": "with-message",
-            "tx": {
-                "from": "address:an_account",
-                "to": "sc:basic-features",
-                "function": "send_dcdt",
-                "arguments": [
-                    "address:an_account",
-                    "str:BASIC-FEATUR",
-                    "100",
-                    "str:send tx message here"
-                ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [],
-                "status": "",
-                "logs": [
-                    {
-                        "address": "sc:basic-features",
-                        "endpoint": "str:DCDTTransfer",
-                        "topics": [
-                            "str:BASIC-FEATUR",
-                            "",
-                            "100",
+                            "200",
                             "address:an_account"
                         ],
                         "data": ""
@@ -115,7 +81,7 @@
                     "nonce": "1000",
                     "balance": "0",
                     "dcdt": {
-                        "str:BASIC-FEATUR": "800"
+                        "str:SENDDCDT": "800"
                     },
                     "storage": {},
                     "code": "file:../forwarder/output/forwarder.wasm"
@@ -124,7 +90,7 @@
                     "nonce": "*",
                     "balance": "0",
                     "dcdt": {
-                        "str:BASIC-FEATUR": "200"
+                        "str:SENDDCDT": "200"
                     },
                     "storage": {},
                     "code": ""

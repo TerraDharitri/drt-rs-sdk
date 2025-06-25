@@ -1,7 +1,8 @@
-use numbat_wasm::types::Address;
+use numbat_wasm::types::heap::Address;
+use num_traits::Zero;
 
 use crate::{
-    tx_mock::{BlockchainUpdate, TxCache, TxContext, TxInput, TxResult},
+    tx_mock::{BlockchainUpdate, TxCache, TxContext, TxFunctionName, TxInput, TxLog, TxResult},
     world_mock::is_smart_contract_address,
 };
 
@@ -19,6 +20,25 @@ pub fn default_execution(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, Blo
         &tx_context.tx_input_box.rewa_value,
     );
 
+    // skip for transactions coming directly from denali, which should all be coming from user wallets
+    // TODO: reorg context logic
+    let add_transfer_log = is_smart_contract_address(&tx_context.tx_input_box.from)
+        && !tx_context.tx_input_box.rewa_value.is_zero();
+    let transfer_value_log = if add_transfer_log {
+        Some(TxLog {
+            address: Address::zero(), // TODO: figure out the real VM behavior
+            endpoint: "transferValueOnly".into(),
+            topics: vec![
+                tx_context.tx_input_box.from.to_vec(),
+                tx_context.tx_input_box.to.to_vec(),
+                tx_context.tx_input_box.rewa_value.to_bytes_be(),
+            ],
+            data: Vec::new(),
+        })
+    } else {
+        None
+    };
+
     // TODO: temporary, will convert to explicit builtin function first
     for dcdt_transfer in tx_context.tx_input_box.dcdt_values.iter() {
         tx_context.tx_cache.transfer_dcdt_balance(
@@ -30,7 +50,7 @@ pub fn default_execution(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, Blo
         );
     }
 
-    let tx_result = if !is_smart_contract_address(&tx_context.tx_input_box.to)
+    let mut tx_result = if !is_smart_contract_address(&tx_context.tx_input_box.to)
         || tx_context.tx_input_box.func_name.is_empty()
     {
         // direct REWA transfer
@@ -41,6 +61,10 @@ pub fn default_execution(tx_input: TxInput, tx_cache: TxCache) -> (TxResult, Blo
         tx_result
     };
 
+    if let Some(tv_log) = transfer_value_log {
+        tx_result.result_logs.insert(0, tv_log);
+    }
+
     let blockchain_updates = tx_context.into_blockchain_updates();
 
     (tx_result, blockchain_updates)
@@ -50,10 +74,10 @@ pub fn deploy_contract(
     mut tx_input: TxInput,
     contract_path: Vec<u8>,
     tx_cache: TxCache,
-) -> (TxResult, BlockchainUpdate, Address) {
+) -> (TxResult, Address, BlockchainUpdate) {
     let new_address = tx_cache.get_new_address(&tx_input.from);
     tx_input.to = new_address.clone();
-    tx_input.func_name = b"init".to_vec();
+    tx_input.func_name = TxFunctionName::INIT;
     let tx_context = TxContext::new(tx_input, tx_cache);
     let tx_input_ref = &*tx_context.tx_input_box;
 
@@ -68,5 +92,5 @@ pub fn deploy_contract(
     let (tx_context, tx_result) = execute_tx_context(tx_context);
     let blockchain_updates = tx_context.into_blockchain_updates();
 
-    (tx_result, blockchain_updates, new_address)
+    (tx_result, new_address, blockchain_updates)
 }

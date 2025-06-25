@@ -74,21 +74,18 @@ fn generate_topic_conversion_code(
                             #pat.copy_to_array_big_endian_pad_right(&mut topics[#topic_index]);
                         },
                         other_stype_str => panic!(
-                            "[Event topic] Unsupported reference argument type: {:?}",
-                            other_stype_str
+                            "[Event topic] Unsupported reference argument type: {other_stype_str:?}"
                         ),
                     }
                 },
-                _ => panic!(
-                    "[Event topic] Unsupported reference argument type: {:?}",
-                    type_reference
-                ),
+                _ => {
+                    panic!("[Event topic] Unsupported reference argument type: {type_reference:?}")
+                },
             }
         },
-        other_arg => panic!(
-            "[Event topic] Unsupported argument type: {:?}, should be reference",
-            other_arg
-        ),
+        other_arg => {
+            panic!("[Event topic] Unsupported argument type: {other_arg:?}, should be reference")
+        },
     }
 }
 
@@ -98,7 +95,7 @@ pub fn generate_legacy_event_impl(m: &Method, event_id_bytes: &[u8]) -> proc_mac
         nr_args_no_self != 0,
         "events need at least 1 argument, for the data"
     );
-    let nr_topics = nr_args_no_self as usize; // -1 data, +1 event id
+    let nr_topics = nr_args_no_self; // -1 data, +1 event id
 
     let mut topic_index: usize = 1;
     let topic_conv_snippets: Vec<proc_macro2::TokenStream> = m

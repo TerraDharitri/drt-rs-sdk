@@ -1,10 +1,11 @@
 #![no_std]
 
-mod action;
-mod multisig_perform;
-mod multisig_propose;
-mod multisig_state;
-mod user_role;
+pub mod action;
+pub mod multisig_events;
+pub mod multisig_perform;
+pub mod multisig_propose;
+pub mod multisig_state;
+pub mod user_role;
 
 use action::ActionFullInfo;
 use user_role::UserRole;
@@ -19,9 +20,11 @@ pub trait Multisig:
     multisig_state::MultisigStateModule
     + multisig_propose::MultisigProposeModule
     + multisig_perform::MultisigPerformModule
+    + multisig_events::MultisigEventsModule
+    + numbat_wasm_modules::dns::DnsModule
 {
     #[init]
-    fn init(&self, quorum: usize, #[var_args] board: MultiValueEncoded<ManagedAddress>) {
+    fn init(&self, quorum: usize, board: MultiValueEncoded<ManagedAddress>) {
         let board_vec = board.to_vec();
         let new_num_board_members = self.add_multiple_board_members(board_vec);
 
@@ -48,7 +51,8 @@ pub trait Multisig:
     /// - the action id
     /// - the serialized action data
     /// - (number of signers followed by) list of signer addresses.
-    #[external_view(getPendingActionFullInfo)]
+    #[label("multisig-external-view")]
+    #[view(getPendingActionFullInfo)]
     fn get_pending_action_full_info(&self) -> MultiValueEncoded<ActionFullInfo<Self::Api>> {
         let mut result = MultiValueEncoded::new();
         let action_last_index = self.get_action_last_index();
@@ -82,7 +86,8 @@ pub trait Multisig:
     /// `0` = no rights,
     /// `1` = can propose, but not sign,
     /// `2` = can propose and sign.
-    #[external_view(userRole)]
+    #[label("multisig-external-view")]
+    #[view(userRole)]
     fn user_role(&self, user: ManagedAddress) -> UserRole {
         let user_id = self.user_mapper().get_user_id(&user);
         if user_id == 0 {
@@ -93,13 +98,15 @@ pub trait Multisig:
     }
 
     /// Lists all users that can sign actions.
-    #[external_view(getAllBoardMembers)]
+    #[label("multisig-external-view")]
+    #[view(getAllBoardMembers)]
     fn get_all_board_members(&self) -> MultiValueEncoded<ManagedAddress> {
         self.get_all_users_with_role(UserRole::BoardMember)
     }
 
     /// Lists all proposers that are not board members.
-    #[external_view(getAllProposers)]
+    #[label("multisig-external-view")]
+    #[view(getAllProposers)]
     fn get_all_proposers(&self) -> MultiValueEncoded<ManagedAddress> {
         self.get_all_users_with_role(UserRole::Proposer)
     }

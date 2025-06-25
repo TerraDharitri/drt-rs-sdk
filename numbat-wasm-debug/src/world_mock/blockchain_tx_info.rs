@@ -1,5 +1,5 @@
-use numbat_wasm::types::Address;
-use num_bigint::BigUint;
+use crate::num_bigint::BigUint;
+use numbat_wasm::types::heap::Address;
 
 use super::{AccountDcdt, BlockInfo, BlockchainMock};
 

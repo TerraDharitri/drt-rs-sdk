@@ -1,7 +1,7 @@
 [package]
 name = "numbat-wasm-modules"
-version = "0.0.17"
-edition = "2018"
+version = "0.0.19"
+edition = "2021"
 
 authors = ["contact@dharitri.org"]
 license = "GPL-3.0-only"
@@ -13,6 +13,9 @@ description = "Numbat WebAssembly standard smart contract modules"
 keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 
+[features]
+alloc = ["numbat-wasm/alloc"]
+
 [dependencies.numbat-wasm]
-version = "0.0.17"
+version = "0.0.19"
 path = "../numbat-wasm"

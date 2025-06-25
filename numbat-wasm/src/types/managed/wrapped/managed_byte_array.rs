@@ -1,12 +1,11 @@
 use core::convert::TryFrom;
 
 use crate::{
-    abi::TypeAbi,
-    api::{Handle, ManagedTypeApi},
-    hex_util::encode_bytes_as_hex,
+    abi::{TypeAbi, TypeName},
+    api::ManagedTypeApi,
+    formatter::{hex_util::encode_bytes_as_hex, FormatByteReceiver, SCLowerHex},
     types::{ManagedBuffer, ManagedType},
 };
-use alloc::string::String;
 use numbat_codec::{
     DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput,
     NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
@@ -31,19 +30,20 @@ impl<M, const N: usize> ManagedType<M> for ManagedByteArray<M, N>
 where
     M: ManagedTypeApi,
 {
+    type OwnHandle = M::ManagedBufferHandle;
+
     #[inline]
-    fn from_raw_handle(handle: Handle) -> Self {
+    fn from_handle(handle: M::ManagedBufferHandle) -> Self {
         ManagedByteArray {
-            buffer: ManagedBuffer::from_raw_handle(handle),
+            buffer: ManagedBuffer::from_handle(handle),
         }
     }
 
-    #[doc(hidden)]
-    fn get_raw_handle(&self) -> Handle {
-        self.buffer.get_raw_handle()
+    fn get_handle(&self) -> M::ManagedBufferHandle {
+        self.buffer.get_handle()
     }
 
-    fn transmute_from_handle_ref(handle_ref: &Handle) -> &Self {
+    fn transmute_from_handle_ref(handle_ref: &M::ManagedBufferHandle) -> &Self {
         unsafe { core::mem::transmute(handle_ref) }
     }
 }
@@ -208,8 +208,17 @@ where
     M: ManagedTypeApi,
 {
     /// It is semantically equivalent to `[u8; N]`.
-    fn type_name() -> String {
+    fn type_name() -> TypeName {
         <&[u8; N] as TypeAbi>::type_name()
+    }
+}
+
+impl<M, const N: usize> SCLowerHex for ManagedByteArray<M, N>
+where
+    M: ManagedTypeApi,
+{
+    fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {
+        SCLowerHex::fmt(&self.buffer, f)
     }
 }
 

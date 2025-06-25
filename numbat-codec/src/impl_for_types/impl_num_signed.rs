@@ -1,40 +1,40 @@
 use crate::{
-    dep_encode_from_no_err, dep_encode_num_mimic, num_conv::bytes_to_number,
-    top_encode_from_no_err, DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode,
-    NestedDecodeInput, NestedEncode, NestedEncodeNoErr, NestedEncodeOutput, TopDecode,
-    TopDecodeInput, TopEncode, TopEncodeNoErr, TopEncodeOutput, TypeInfo,
+    dep_encode_num_mimic, num_conv::universal_decode_number, DecodeError, DecodeErrorHandler,
+    EncodeErrorHandler, NestedDecode, NestedDecodeInput, NestedEncode, NestedEncodeOutput,
+    TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
 };
 
 macro_rules! top_encode_num_signed {
-    ($num_type:ty, $size_in_bits:expr, $type_info:expr) => {
-        impl TopEncodeNoErr for $num_type {
+    ($num_type:ty, $size_in_bits:expr) => {
+        impl TopEncode for $num_type {
             #[inline]
-            fn top_encode_no_err<O: TopEncodeOutput>(&self, output: O) {
+            fn top_encode_or_handle_err<O, H>(&self, output: O, _h: H) -> Result<(), H::HandledErr>
+            where
+                O: TopEncodeOutput,
+                H: EncodeErrorHandler,
+            {
                 output.set_i64(*self as i64);
+                Ok(())
             }
         }
-
-        top_encode_from_no_err! {$num_type, $type_info}
     };
 }
 
-top_encode_num_signed! {i64, 64, TypeInfo::I64}
-top_encode_num_signed! {i32, 32, TypeInfo::I32}
-top_encode_num_signed! {isize, 32, TypeInfo::ISIZE}
-top_encode_num_signed! {i16, 16, TypeInfo::I16}
-top_encode_num_signed! {i8, 8, TypeInfo::I8}
+top_encode_num_signed! {i64, 64}
+top_encode_num_signed! {i32, 32}
+top_encode_num_signed! {isize, 32}
+top_encode_num_signed! {i16, 16}
+top_encode_num_signed! {i8, 8}
 
-dep_encode_num_mimic! {i64, u64, TypeInfo::I64}
-dep_encode_num_mimic! {i32, u32, TypeInfo::I32}
-dep_encode_num_mimic! {isize, u32, TypeInfo::ISIZE}
-dep_encode_num_mimic! {i16, u16, TypeInfo::I16}
-dep_encode_num_mimic! {i8, u8, TypeInfo::I8}
+dep_encode_num_mimic! {i64, u64}
+dep_encode_num_mimic! {i32, u32}
+dep_encode_num_mimic! {isize, u32}
+dep_encode_num_mimic! {i16, u16}
+dep_encode_num_mimic! {i8, u8}
 
 macro_rules! dep_decode_num_signed {
-    ($ty:ty, $num_bytes:expr, $type_info:expr) => {
+    ($ty:ty, $num_bytes:expr) => {
         impl NestedDecode for $ty {
-            const TYPE_INFO: TypeInfo = $type_info;
-
             fn dep_decode_or_handle_err<I, H>(input: &mut I, h: H) -> Result<Self, H::HandledErr>
             where
                 I: NestedDecodeInput,
@@ -42,30 +42,28 @@ macro_rules! dep_decode_num_signed {
             {
                 let mut bytes = [0u8; $num_bytes];
                 input.read_into(&mut bytes[..], h)?;
-                let num = bytes_to_number(&bytes[..], true) as $ty;
+                let num = universal_decode_number(&bytes[..], true) as $ty;
                 Ok(num)
             }
         }
     };
 }
 
-dep_decode_num_signed!(i8, 1, TypeInfo::I8);
-dep_decode_num_signed!(i16, 2, TypeInfo::I16);
-dep_decode_num_signed!(i32, 4, TypeInfo::I32);
-dep_decode_num_signed!(isize, 4, TypeInfo::ISIZE);
-dep_decode_num_signed!(i64, 8, TypeInfo::I64);
+dep_decode_num_signed!(i8, 1);
+dep_decode_num_signed!(i16, 2);
+dep_decode_num_signed!(i32, 4);
+dep_decode_num_signed!(isize, 4);
+dep_decode_num_signed!(i64, 8);
 
 macro_rules! top_decode_num_signed {
-    ($ty:ty, $bounds_ty:ty, $type_info:expr) => {
+    ($ty:ty, $bounds_ty:ty) => {
         impl TopDecode for $ty {
-            const TYPE_INFO: TypeInfo = $type_info;
-
             fn top_decode_or_handle_err<I, H>(input: I, h: H) -> Result<Self, H::HandledErr>
             where
                 I: TopDecodeInput,
                 H: DecodeErrorHandler,
             {
-                let arg_i64 = input.into_i64();
+                let arg_i64 = input.into_i64(h)?;
                 let min = <$bounds_ty>::MIN as i64;
                 let max = <$bounds_ty>::MAX as i64;
                 if arg_i64 < min || arg_i64 > max {
@@ -78,11 +76,11 @@ macro_rules! top_decode_num_signed {
     };
 }
 
-top_decode_num_signed!(i8, i8, TypeInfo::I8);
-top_decode_num_signed!(i16, i16, TypeInfo::I16);
-top_decode_num_signed!(i32, i32, TypeInfo::I32);
-top_decode_num_signed!(isize, i32, TypeInfo::ISIZE); // even if isize can be 64 bits on some platforms, we always deserialize as max 32 bits
-top_decode_num_signed!(i64, i64, TypeInfo::I64);
+top_decode_num_signed!(i8, i8);
+top_decode_num_signed!(i16, i16);
+top_decode_num_signed!(i32, i32);
+top_decode_num_signed!(isize, i32); // even if isize can be 64 bits on some platforms, we always deserialize as max 32 bits
+top_decode_num_signed!(i64, i64);
 
 #[cfg(test)]
 pub mod tests {

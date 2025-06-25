@@ -46,7 +46,7 @@ pub trait Pair:
     }
 
     #[endpoint(matchOrders)]
-    fn match_orders_endpoint(&self, order_ids: Vec<u64>) {
+    fn match_orders_endpoint(&self, order_ids: ManagedVec<u64>) {
         self.require_global_op_not_ongoing();
         self.require_valid_match_input_order_ids(&order_ids);
 
@@ -54,7 +54,7 @@ pub trait Pair:
     }
 
     #[endpoint(cancelOrders)]
-    fn cancel_orders_endpoint(&self, order_ids: Vec<u64>) {
+    fn cancel_orders_endpoint(&self, order_ids: MultiValueManagedVec<u64>) {
         self.require_global_op_not_ongoing();
         self.require_order_ids_not_empty(&order_ids);
 
@@ -68,7 +68,7 @@ pub trait Pair:
     }
 
     #[endpoint(freeOrders)]
-    fn free_orders_endpoint(&self, order_ids: Vec<u64>) {
+    fn free_orders_endpoint(&self, order_ids: MultiValueManagedVec<u64>) {
         self.require_global_op_not_ongoing();
         self.require_order_ids_not_empty(&order_ids);
 

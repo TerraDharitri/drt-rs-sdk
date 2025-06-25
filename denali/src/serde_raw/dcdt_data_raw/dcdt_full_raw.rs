@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::serde_raw::{InstanceRaw, ValueSubTree};
+use crate::serde_raw::{DcdtInstanceRaw, ValueSubTree};
 
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -10,7 +10,7 @@ pub struct DcdtFullRaw {
     pub token_identifier: Option<ValueSubTree>,
 
     #[serde(default)]
-    pub instances: Vec<InstanceRaw>,
+    pub instances: Vec<DcdtInstanceRaw>,
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
