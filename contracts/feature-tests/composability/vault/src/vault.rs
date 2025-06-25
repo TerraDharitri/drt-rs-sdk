@@ -38,7 +38,10 @@ pub trait Vault {
     }
 
     fn dcdt_transfers_multi(&self) -> MultiValueEncoded<DcdtTokenPaymentMultiValue> {
-        self.call_value().all_dcdt_transfers().into_multi_value()
+        self.call_value()
+            .all_dcdt_transfers()
+            .clone_value()
+            .into_multi_value()
     }
 
     #[payable("*")]
@@ -63,7 +66,7 @@ pub trait Vault {
         self.call_counts(ManagedBuffer::from(b"accept_funds_echo_payment"))
             .update(|c| *c += 1);
 
-        (rewa_value, dcdt_transfers_multi).into()
+        (rewa_value.clone_value(), dcdt_transfers_multi).into()
     }
 
     #[payable("*")]
@@ -84,7 +87,6 @@ pub trait Vault {
     #[endpoint]
     fn retrieve_funds_with_transfer_exec(
         &self,
-        #[payment_multi] _payments: ManagedVec<DcdtTokenPayment<Self::Api>>,
         token: TokenIdentifier,
         amount: BigUint,
         opt_receive_func: OptionalValue<ManagedBuffer>,

@@ -48,7 +48,7 @@ pub trait DcdtTransferWithFee {
     #[endpoint]
     fn transfer(&self, address: ManagedAddress) {
         require!(
-            self.call_value().rewa_value() == 0,
+            *self.call_value().rewa_value() == 0,
             "REWA transfers not allowed"
         );
         let payments = self.call_value().all_dcdt_transfers();

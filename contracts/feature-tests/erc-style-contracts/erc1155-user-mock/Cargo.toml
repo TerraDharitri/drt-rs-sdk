@@ -9,11 +9,10 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.dharitri-sc]
-version = "1.0.14"
+version = "1.2.0"
 path = "../../../../framework/base"
-features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.0.14"
+version = "1.2.0"
 path = "../../../../framework/scenario"
 

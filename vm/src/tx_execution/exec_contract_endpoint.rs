@@ -28,8 +28,8 @@ fn execute_tx_context_rc(tx_context_rc: Rc<TxContext>) -> (Rc<TxContext>, TxResu
 
     let func_name = &tx_context_ref.tx_input_box.func_name;
     let contract_identifier = get_contract_identifier(&tx_context_ref);
-
     let contract_map = &tx_context_rc.blockchain_ref().contract_map;
+
     // Not redundant at all, func_name is borrowed from it...
     #[allow(clippy::redundant_clone)]
     let contract_container =
@@ -72,7 +72,6 @@ fn execute_contract_instance_endpoint(
     }));
     match result {
         Ok(tx_output) => tx_output,
-
         Err(panic_any) => interpret_panic_as_tx_result(panic_any, contract_container.panic_message),
     }
 }

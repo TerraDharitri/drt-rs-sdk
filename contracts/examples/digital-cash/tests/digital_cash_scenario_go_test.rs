@@ -27,3 +27,8 @@ fn withdraw_rewa_go() {
 fn withdraw_dcdt_go() {
     dharitri_sc_scenario::run_go("scenarios/withdraw-dcdt.scen.json");
 }
+
+#[test]
+fn forward_go() {
+    dharitri_sc_scenario::run_go("scenarios/forward.scen.json");
+}

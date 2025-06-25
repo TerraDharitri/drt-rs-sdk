@@ -17,7 +17,7 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
         self.require_not_paused();
 
         let payment_amount = self.call_value().rewa_value();
-        require!(payment_amount > 0u32, "Payment must be more than 0");
+        require!(*payment_amount > 0u32, "Payment must be more than 0");
 
         let wrapped_rewa_token_id = self.wrapped_rewa_token_id().get();
         self.send()
@@ -27,7 +27,7 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
         self.send()
             .direct_dcdt(&caller, &wrapped_rewa_token_id, 0, &payment_amount);
 
-        DcdtTokenPayment::new(wrapped_rewa_token_id, 0, payment_amount)
+        DcdtTokenPayment::new(wrapped_rewa_token_id, 0, payment_amount.clone_value())
     }
 
     #[payable("*")]

@@ -37,6 +37,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
 
     #[endpoint]
     fn get_caller_legacy(&self) -> Address {
+        #[allow(deprecated)]
         self.blockchain().get_caller_legacy()
     }
 
@@ -55,14 +56,14 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[payable("REWA")]
     #[endpoint]
     fn receive_rewa(&self) -> BigUint {
-        self.call_value().rewa_value()
+        self.call_value().rewa_value().clone_value()
     }
 
     #[payable("REWA")]
     #[endpoint]
     fn recieve_rewa_half(&self) {
         let caller = self.blockchain().get_caller();
-        let payment_amount = self.call_value().rewa_value() / 2u32;
+        let payment_amount = &*self.call_value().rewa_value() / 2u32;
         self.send().direct(
             &caller,
             &RewaOrDcdtTokenIdentifier::rewa(),
@@ -98,7 +99,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[payable("*")]
     #[endpoint]
     fn receive_multi_dcdt(&self) -> ManagedVec<DcdtTokenPayment<Self::Api>> {
-        self.call_value().all_dcdt_transfers()
+        self.call_value().all_dcdt_transfers().clone_value()
     }
 
     #[payable("*")]

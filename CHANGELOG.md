@@ -26,8 +26,41 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
+## [sc 0.41.0, vm 0.3.0] - 2023-05-05
+- Fixed compatibility with rustc v1.71.0.
+- Allocator system:
+	- Contracts can now choose their own allocator. This works in multi-contract contexts.
+	- New allocators: `fail` (default), `static64k`, `leaking`.
+	- Removed dependency to `wee_alloc`, but using it is still possible if the contract references it directly.
+	- Contract call stack size is now configurable in `multicontract.toml`.
+	- The 'panic with message' system now relies on managed buffers instead of on an allocator.
+- Fixed BigUint bitwise operations in the debugger.
+- When building contracts, an additional `.drtsc.json` file is created, which packs both the contract binary, the ABI, and some additional metadata.
+- Refactor: reorganized the meta crate.
+- Deprecated some legacy methods in the API wrappers.
 
-## [sc 1.0.14, vm 1.0.14] - 2023-02-06
+## [sc 0.40.1, vm 0.2.1] - 2023-04-24
+- Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
+- `ManagedVecItem` implementation for arrays.
+
+## [sc 0.40.0, vm 0.2.0] - 2023-04-20
+- Call value `rewa_value` and `all_dcdt_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
+
+## [sc 0.39.8, vm 0.1.8] - 2023-03-29
+- `dharitri-sc-meta` `test-gen` command: generates Rust integration tests based on scenarios present in the `scenarios` folder.
+ - `UnorderedSetMapper` `swap_indexes` method.
+
+## [sc 0.39.7, vm 0.1.7] - 2023-03-18
+ - `TokenIdentifier` `ticker` method.
+ - `ManagedBuffer` `concat` method.
+
+## [sc 0.39.6, vm 0.1.6] - 2023-03-16
+- `dharitri-sc-meta` improvements:
+	- Bugfix: custom names in the main contract no longer crash the multi-contract build.
+	- Bugfix: the `--mir` flag works correctly in `sc-meta all build`;
+	- Multi-contract configs can now specify separate cargo features for individual contracts, for conditional compilation.
+
+## [sc 0.39.5, vm 0.1.5] - 2023-02-06
 - `dharitri-sc-meta` improvements:
 	- Rust snippet generator fixes. The generator creates compilable code with appropriate argument types.
 	- `local-deps` command: generates a report on the local depedencies of contract crates. Will explore indirect depdencies too.
@@ -54,17 +87,16 @@ They are:
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 1.0.14, vm 1.0.14, scenario-format 1.0.14, sdk 1.0.14] - 2023-01-18
+## [sc 0.39.1, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
 
 ## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
-- All crates were renamed, in line with the Dharitri brand.
+- All crates were renamed, in line with the DharitrI brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
 - A `ScenarioWorld` facade, for contract tests.
-- The multi-contract build system.
 - The meta crate supports `twiggy` post-processing, this is a tool to analyze contract size and investigate bloat in the binaries.
 - Dropped crate: `numbat-wasm-output`. There is no equivalent crate, its job was passed to the individual `wasm` crates.
 - `ManagedVec` supports sorting and deduplication.
@@ -365,7 +397,7 @@ They are:
 - Improved preprocessor substitutions: hidden generics for most managed types
 - Build info in ABI - rustc version, framework version, crate version
 
-## [numbat-wasm 1.0.14] - 2021-09-17
+## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
 ## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
@@ -424,7 +456,7 @@ They are:
 ## [numbat-wasm 0.17.2] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
-## [numbat-wasm 1.0.14] - 2021-06-04
+## [numbat-wasm 0.17.1] - 2021-06-04
 - `legacy-nft-transfer` feature for interacting with older versions of Andes
 
 ## [numbat-wasm 0.17.0] - 2021-05-28
@@ -645,7 +677,7 @@ They are:
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [numbat-wasm 0.5.4, numbat-codec 1.0.14] - 2020-07-18
+## [numbat-wasm 0.5.4, numbat-codec 0.1.1] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -718,7 +750,7 @@ They are:
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [numbat-wasm 1.0.14] - 2020-02-27
+## [numbat-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [numbat-wasm 0.1.0] - 2020-02-05 

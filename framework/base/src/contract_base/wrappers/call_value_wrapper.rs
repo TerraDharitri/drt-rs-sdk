@@ -7,7 +7,7 @@ use crate::{
     },
     err_msg,
     types::{
-        BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, DcdtTokenPayment, ManagedType,
+        BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, DcdtTokenPayment, ManagedRef,
         ManagedVec, TokenIdentifier,
     },
 };
@@ -32,27 +32,27 @@ where
 
     /// Retrieves the REWA call value from the VM.
     /// Will return 0 in case of an DCDT transfer (cannot have both REWA and DCDT transfer simultaneously).
-    pub fn rewa_value(&self) -> BigUint<A> {
+    pub fn rewa_value(&self) -> ManagedRef<'static, A, BigUint<A>> {
         let mut call_value_handle = A::static_var_api_impl().get_call_value_rewa_handle();
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
             call_value_handle = use_raw_handle(const_handles::CALL_VALUE_REWA);
             A::static_var_api_impl().set_call_value_rewa_handle(call_value_handle.clone());
             A::call_value_api_impl().load_rewa_value(call_value_handle.clone());
         }
-        BigUint::from_handle(call_value_handle) // unsafe, TODO: replace with ManagedRef<...>
+        unsafe { ManagedRef::wrap_handle(call_value_handle) }
     }
 
     /// Returns all DCDT transfers that accompany this SC call.
     /// Will return 0 results if nothing was transfered, or just REWA.
     /// Fully managed underlying types, very efficient.
-    pub fn all_dcdt_transfers(&self) -> ManagedVec<A, DcdtTokenPayment<A>> {
+    pub fn all_dcdt_transfers(&self) -> ManagedRef<'static, A, ManagedVec<A, DcdtTokenPayment<A>>> {
         let mut call_value_handle = A::static_var_api_impl().get_call_value_multi_dcdt_handle();
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
             call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MULTI_DCDT);
             A::static_var_api_impl().set_call_value_multi_dcdt_handle(call_value_handle.clone());
             A::call_value_api_impl().load_all_dcdt_transfers(call_value_handle.clone());
         }
-        ManagedVec::from_handle(call_value_handle) // unsafe, TODO: replace with ManagedRef<...>
+        unsafe { ManagedRef::wrap_handle(call_value_handle) }
     }
 
     /// Verify and casts the received multi DCDT transfer in to an array.
@@ -91,15 +91,6 @@ where
         (payment.token_identifier, payment.amount)
     }
 
-    /// Retrieves the DCDT call value from the VM.
-    /// Will return 0 in case of an REWA transfer (cannot have both REWA and DCDT transfer simultaneously).
-    pub fn dcdt_value(&self) -> BigUint<A> {
-        let call_value_single_dcdt: A::BigIntHandle =
-            use_raw_handle(const_handles::CALL_VALUE_SINGLE_DCDT);
-        A::call_value_api_impl().load_single_dcdt_value(call_value_single_dcdt.clone());
-        BigUint::from_handle(call_value_single_dcdt)
-    }
-
     /// Accepts and returns either an REWA payment, or a single DCDT token.
     ///
     /// Will halt execution if more than one DCDT transfer was received.
@@ -111,7 +102,7 @@ where
             0 => RewaOrDcdtTokenPayment {
                 token_identifier: RewaOrDcdtTokenIdentifier::rewa(),
                 token_nonce: 0,
-                amount: self.rewa_value(),
+                amount: self.rewa_value().clone_value(),
             },
             1 => dcdt_transfers.get(0).into(),
             _ => A::error_api_impl().signal_error(err_msg::INCORRECT_NUM_DCDT_TRANSFERS.as_bytes()),

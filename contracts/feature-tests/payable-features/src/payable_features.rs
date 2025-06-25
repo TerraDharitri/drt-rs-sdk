@@ -16,8 +16,8 @@ pub trait PayableFeatures {
         &self,
     ) -> MultiValue2<BigUint, ManagedVec<Self::Api, DcdtTokenPayment<Self::Api>>> {
         (
-            self.call_value().rewa_value(),
-            self.call_value().all_dcdt_transfers(),
+            self.call_value().rewa_value().clone_value(),
+            self.call_value().all_dcdt_transfers().clone_value(),
         )
             .into()
     }
@@ -26,9 +26,9 @@ pub trait PayableFeatures {
     #[payable("*")]
     fn payment_multiple(
         &self,
-        #[payment_multi] payments: ManagedVec<DcdtTokenPayment<Self::Api>>,
+        #[payment_multi] payments: ManagedRef<'static, ManagedVec<DcdtTokenPayment<Self::Api>>>,
     ) -> ManagedVec<DcdtTokenPayment<Self::Api>> {
-        payments
+        payments.clone_value()
     }
 
     #[endpoint]
@@ -81,7 +81,7 @@ pub trait PayableFeatures {
         &self,
         #[payment_token] token: RewaOrDcdtTokenIdentifier,
     ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
-        let payment = self.call_value().rewa_value();
+        let payment = self.call_value().rewa_value().clone_value();
         (payment, token).into()
     }
 
@@ -101,7 +101,7 @@ pub trait PayableFeatures {
         &self,
         #[payment_token] token: RewaOrDcdtTokenIdentifier,
     ) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
-        let payment = self.call_value().rewa_value();
+        let payment = self.call_value().rewa_value().clone_value();
         (payment, token).into()
     }
 
@@ -110,7 +110,7 @@ pub trait PayableFeatures {
     fn payable_rewa_4(&self) -> MultiValue2<BigUint, RewaOrDcdtTokenIdentifier> {
         let payment = self.call_value().rewa_value();
         let token = self.call_value().rewa_or_single_dcdt().token_identifier;
-        (payment, token).into()
+        (payment.clone_value(), token).into()
     }
 
     #[endpoint]

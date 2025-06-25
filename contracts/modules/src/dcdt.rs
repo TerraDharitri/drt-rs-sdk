@@ -34,7 +34,7 @@ pub trait DcdtModule {
     ) {
         require!(self.token_id().is_empty(), "Token already issued");
 
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa_value().clone_value();
         let num_decimals = match opt_num_decimals {
             OptionalValue::Some(d) => d,
             OptionalValue::None => 0,
@@ -64,7 +64,7 @@ pub trait DcdtModule {
                 // return payment to initial caller
                 let initial_caller = self.blockchain().get_owner_address();
                 let rewa_returned = self.call_value().rewa_value();
-                if rewa_returned > 0u32 {
+                if *rewa_returned > 0u32 {
                     self.send().direct_rewa(&initial_caller, &rewa_returned);
                 }
             },

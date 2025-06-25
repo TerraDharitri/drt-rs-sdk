@@ -54,7 +54,7 @@ pub trait PingPong {
         let payment = self.call_value().rewa_value();
 
         require!(
-            payment == self.ping_amount().get(),
+            *payment == self.ping_amount().get(),
             "the payment must match the fixed sum"
         );
 
@@ -74,7 +74,7 @@ pub trait PingPong {
                 &self
                     .blockchain()
                     .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
-                    + &payment
+                    + &*payment
                     <= max_funds,
                 "smart contract full"
             );

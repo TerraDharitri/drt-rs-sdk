@@ -96,7 +96,7 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
         self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
-                issue_cost,
+                issue_cost.clone_value(),
                 &token_display_name,
                 &token_ticker,
                 &initial_supply,

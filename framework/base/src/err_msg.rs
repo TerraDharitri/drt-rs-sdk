@@ -1,8 +1,10 @@
 pub const PANIC_OCCURRED: &str = "panic occurred";
+pub const MEM_ALLOC_ERROR: &str = "memory allocation error";
 
 pub const NON_PAYABLE_FUNC_REWA: &str = "function does not accept REWA payment";
 pub const NON_PAYABLE_FUNC_DCDT: &str = "function does not accept DCDT payment";
 pub const BAD_TOKEN_PROVIDED: &str = "bad call value token provided";
+pub const BAD_TOKEN_TICKER_FORMAT: &[u8] = b"bad token ticker format";
 pub const SINGLE_DCDT_EXPECTED: &str = "function expects single DCDT payment";
 pub const TOO_MANY_DCDT_TRANSFERS: &str = "too many DCDT transfers";
 pub const DCDT_INVALID_TOKEN_INDEX: &str = "invalid token index";

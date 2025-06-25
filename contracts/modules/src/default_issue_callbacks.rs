@@ -44,7 +44,7 @@ pub trait DefaultIssueCallbacksModule {
 
     fn return_failed_issue_funds(&self, initial_caller: ManagedAddress) {
         let rewa_returned = self.call_value().rewa_value();
-        if rewa_returned > 0u32 {
+        if *rewa_returned > 0u32 {
             self.send().direct_rewa(&initial_caller, &rewa_returned);
         }
     }

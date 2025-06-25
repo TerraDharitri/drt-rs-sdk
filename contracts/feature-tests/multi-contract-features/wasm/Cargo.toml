@@ -1,5 +1,5 @@
 [package]
-name = "multi-contract-features-wasm"
+name = "multi-contract-features-custom-cargo-toml-name"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
 edition = "2021"
@@ -19,7 +19,7 @@ panic = "abort"
 path = ".."
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "1.0.14"
+version = "1.2.0"
 path = "../../../../framework/wasm-adapter"
 
 [workspace]

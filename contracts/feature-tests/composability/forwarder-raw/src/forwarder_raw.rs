@@ -88,7 +88,7 @@ pub trait ForwarderRaw {
         self.forward_contract_call(
             to,
             RewaOrDcdtTokenIdentifier::rewa(),
-            payment,
+            payment.clone_value(),
             endpoint_name,
             args,
         )
@@ -245,11 +245,11 @@ pub trait ForwarderRaw {
         let payments = self.call_value().all_dcdt_transfers();
         if payments.is_empty() {
             let rewa_value = self.call_value().rewa_value();
-            if rewa_value > 0 {
+            if *rewa_value > 0 {
                 let _ = self.callback_payments().push(&(
                     RewaOrDcdtTokenIdentifier::rewa(),
                     0,
-                    rewa_value,
+                    rewa_value.clone_value(),
                 ));
             }
         } else {
@@ -304,7 +304,7 @@ pub trait ForwarderRaw {
     ) {
         let payment = self.call_value().rewa_value();
         let one_third_gas = self.blockchain().get_gas_left() / 3;
-        let half_payment = payment / 2u32;
+        let half_payment = &*payment / 2u32;
         let arg_buffer = args.to_arg_buffer();
 
         let result = self.send_raw().execute_on_dest_context_raw(
