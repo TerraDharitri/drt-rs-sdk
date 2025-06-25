@@ -1,4 +1,19 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use erc20::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   erc20
+   (
+        init
+        callBack
+        allowance
+        approve
+        balanceOf
+        totalSupply
+        transfer
+        transferFrom
+   )
+}

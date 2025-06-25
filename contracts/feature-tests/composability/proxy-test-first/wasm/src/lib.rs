@@ -1,5 +1,19 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use proxy_test_first::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   proxy_test_first
+   (
+        init
+        callBack
+        deploySecondContract
+        forwardToOtherContract
+        forwardToOtherContractWithCallback
+        messageOtherContract
+        messageOtherContractWithCallback
+        upgradeSecondContract
+   )
+}

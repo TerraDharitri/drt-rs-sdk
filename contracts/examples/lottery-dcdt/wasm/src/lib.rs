@@ -1,4 +1,19 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use lottery_dcdt::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   lottery_dcdt
+   (
+        init
+        callBack
+        buy_ticket
+        createLotteryPool
+        determine_winner
+        getLotteryInfo
+        start
+        status
+   )
+}

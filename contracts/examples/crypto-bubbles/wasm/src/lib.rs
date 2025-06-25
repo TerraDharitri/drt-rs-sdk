@@ -1,4 +1,19 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use crypto_bubbles::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   crypto_bubbles
+   (
+        init
+        callBack
+        balanceOf
+        joinGame
+        rewardAndSendToWallet
+        rewardWinner
+        topUp
+        withdraw
+   )
+}

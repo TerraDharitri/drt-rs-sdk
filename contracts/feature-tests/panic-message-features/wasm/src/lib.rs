@@ -1,5 +1,14 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use panic_message_features::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   panic_message_features
+   (
+        init
+        callBack
+        panicWithMessage
+   )
+}

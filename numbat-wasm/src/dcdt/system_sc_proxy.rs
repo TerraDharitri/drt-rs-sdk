@@ -17,6 +17,7 @@ pub const DCDT_SYSTEM_SC_ADDRESS_ARRAY: [u8; 32] =
 const ISSUE_FUNGIBLE_ENDPOINT_NAME: &[u8] = b"issue";
 const ISSUE_NON_FUNGIBLE_ENDPOINT_NAME: &[u8] = b"issueNonFungible";
 const ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME: &[u8] = b"issueSemiFungible";
+const REGISTER_META_DCDT_ENDPOINT_NAME: &[u8] = b"registerMetaDCDT";
 
 /// Proxy for the DCDT system smart contract.
 /// Unlike other contract proxies, this one has a fixed address,
@@ -123,6 +124,36 @@ where
         )
     }
 
+    /// Produces a contract call to the DCDT system SC,
+    /// which causes it to register a new Meta DCDT token.
+    pub fn register_meta_dcdt(
+        self,
+        issue_cost: BigUint<SA>,
+        token_display_name: &ManagedBuffer<SA>,
+        token_ticker: &ManagedBuffer<SA>,
+        properties: MetaTokenProperties,
+    ) -> ContractCall<SA, ()> {
+        let zero = BigUint::zero(self.api.clone());
+        self.issue(
+            issue_cost,
+            DcdtTokenType::Meta,
+            token_display_name,
+            token_ticker,
+            &zero,
+            TokenProperties {
+                num_decimals: properties.num_decimals,
+                can_freeze: properties.can_freeze,
+                can_wipe: properties.can_wipe,
+                can_pause: properties.can_pause,
+                can_mint: false,
+                can_burn: false,
+                can_change_owner: properties.can_change_owner,
+                can_upgrade: properties.can_upgrade,
+                can_add_special_roles: properties.can_add_special_roles,
+            },
+        )
+    }
+
     /// Deduplicates code from all the possible issue functions
     fn issue(
         self,
@@ -140,6 +171,7 @@ where
             DcdtTokenType::Fungible => ISSUE_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::NonFungible => ISSUE_NON_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::SemiFungible => ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME,
+            DcdtTokenType::Meta => REGISTER_META_DCDT_ENDPOINT_NAME,
             DcdtTokenType::Invalid => &[],
         };
 
@@ -155,6 +187,8 @@ where
 
         if token_type == DcdtTokenType::Fungible {
             contract_call.push_endpoint_arg(initial_supply);
+            contract_call.push_endpoint_arg(&properties.num_decimals);
+        } else if token_type == DcdtTokenType::Meta {
             contract_call.push_endpoint_arg(&properties.num_decimals);
         }
 
@@ -279,6 +313,21 @@ where
 
         contract_call.push_endpoint_arg(token_identifier);
         contract_call.push_endpoint_arg(address);
+
+        contract_call
+    }
+
+    /// This function converts an SFT to a metaDCDT by adding decimals to its structure in the metachain DCDT System SC.
+    /// This function as almost all in case of DCDT can be called only by the owner.
+    pub fn change_sft_to_meta_dcdt(
+        self,
+        token_identifier: &TokenIdentifier<SA>,
+        num_decimals: usize,
+    ) -> ContractCall<SA, ()> {
+        let mut contract_call = self.dcdt_system_sc_call_no_args(b"changeSFTToMetaDCDT");
+
+        contract_call.push_endpoint_arg(token_identifier);
+        contract_call.push_endpoint_arg(num_decimals);
 
         contract_call
     }

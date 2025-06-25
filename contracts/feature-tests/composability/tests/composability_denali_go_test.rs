@@ -14,6 +14,28 @@ fn forw_raw_async_echo_go() {
 }
 
 #[test]
+fn forw_raw_async_send_and_retrieve_multi_transfer_funds_go() {
+    numbat_wasm_debug::denali_go(
+        "denali/forw_raw_async_send_and_retrieve_multi_transfer_funds.scen.json",
+    );
+}
+
+#[test]
+fn forw_raw_call_async_retrieve_multi_transfer_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_call_async_retrieve_multi_transfer.scen.json");
+}
+
+#[test]
+fn forw_raw_contract_deploy_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_contract_deploy.scen.json");
+}
+
+#[test]
+fn forw_raw_contract_upgrade_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_contract_upgrade.scen.json");
+}
+
+#[test]
 fn forw_raw_direct_rewa_go() {
     numbat_wasm_debug::denali_go("denali/forw_raw_direct_rewa.scen.json");
 }
@@ -29,8 +51,58 @@ fn forw_raw_sync_echo_go() {
 }
 
 #[test]
+fn forw_raw_sync_echo_caller_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_sync_echo_caller.scen.json");
+}
+
+#[test]
 fn forw_raw_sync_rewa_go() {
     numbat_wasm_debug::denali_go("denali/forw_raw_sync_rewa.scen.json");
+}
+
+#[test]
+fn forw_raw_sync_readonly_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_sync_readonly.scen.json");
+}
+
+#[test]
+fn forw_raw_sync_same_context_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_sync_same_context.scen.json");
+}
+
+#[test]
+fn forw_raw_sync_same_context_rewa_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_sync_same_context_rewa.scen.json");
+}
+
+#[test]
+fn forw_raw_transf_exec_rewa_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_transf_exec_rewa.scen.json");
+}
+
+#[test]
+fn forwarder_builtin_nft_add_quantity_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_add_quantity.scen.json");
+}
+
+#[test]
+fn forwarder_builtin_nft_burn_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_burn.scen.json");
+}
+
+#[test]
+fn forwarder_builtin_nft_create_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_create.scen.json");
+}
+
+#[test]
+fn forwarder_builtin_nft_local_burn_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_local_burn.scen.json");
+}
+
+#[test]
+fn forwarder_builtin_nft_local_mint_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_local_mint.scen.json");
 }
 
 #[test]
@@ -76,6 +148,11 @@ fn forwarder_call_sync_accept_rewa_go() {
 #[test]
 fn forwarder_call_sync_accept_dcdt_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_call_sync_accept_dcdt.scen.json");
+}
+
+#[test]
+fn forwarder_call_sync_accept_multi_transfer_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_call_sync_accept_multi_transfer.scen.json");
 }
 
 #[test]
@@ -171,18 +248,13 @@ fn forwarder_contract_upgrade_go() {
 }
 
 #[test]
-fn forwarder_nft_create_go() {
-    numbat_wasm_debug::denali_go("denali/forwarder_nft_create.scen.json");
+fn forwarder_nft_create_and_send_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_nft_create_and_send.scen.json");
 }
 
 #[test]
 fn forwarder_nft_decode_complex_attributes_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_nft_decode_complex_attributes.scen.json");
-}
-
-#[test]
-fn forwarder_nft_create_and_send_go() {
-    numbat_wasm_debug::denali_go("denali/forwarder_nft_create_and_send.scen.json");
 }
 
 #[test]
@@ -196,15 +268,19 @@ fn forwarder_nft_transfer_exec_go() {
 }
 
 #[test]
+fn forwarder_send_no_endpoint_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_no_endpoint.scen.json");
+}
+
+#[test]
 fn forwarder_send_dcdt_multi_transfer_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_send_dcdt_multi_transfer.scen.json");
 }
 
-// TODO: investigate issue with logs
-// #[test]
-// fn forwarder_send_twice_rewa_go() {
-//     numbat_wasm_debug::denali_go("denali/forwarder_send_twice_rewa.scen.json");
-// }
+#[test]
+fn forwarder_send_twice_rewa_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_send_twice_rewa.scen.json");
+}
 
 #[test]
 fn forwarder_send_twice_dcdt_go() {
@@ -219,6 +295,11 @@ fn forwarder_sync_echo_go() {
 #[test]
 fn forwarder_sync_echo_range_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_sync_echo_range.scen.json");
+}
+
+#[test]
+fn forwarder_tranfer_dcdt_with_fees_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_tranfer_dcdt_with_fees.scen.json");
 }
 
 #[test]
@@ -264,6 +345,11 @@ fn proxy_test_payment_sameshard_go() {
 #[test]
 fn proxy_test_payment_sameshard_callback_go() {
     numbat_wasm_debug::denali_go("denali/proxy_test_payment_sameShard_callback.scen.json");
+}
+
+#[test]
+fn proxy_test_upgrade_go() {
+    numbat_wasm_debug::denali_go("denali/proxy_test_upgrade.scen.json");
 }
 
 #[test]

@@ -1,24 +1,24 @@
 use numbat_wasm::types::{BoxedBytes, TokenIdentifier};
-use numbat_wasm_debug::{check_managed_top_decode, check_managed_top_encode_decode, TxContext};
+use numbat_wasm_debug::{check_managed_top_decode, check_managed_top_encode_decode, DebugApi};
 
 #[test]
 fn test_rewa() {
-    let api = TxContext::dummy();
+    let api = DebugApi::dummy();
     assert!(TokenIdentifier::rewa(api).is_rewa());
 }
 
 #[test]
 fn test_codec() {
-    let api = TxContext::dummy();
+    let api = DebugApi::dummy();
     check_managed_top_encode_decode(
         api.clone(),
         TokenIdentifier::rewa(api.clone()),
-        TokenIdentifier::<TxContext>::REWA_REPRESENTATION,
+        TokenIdentifier::<DebugApi>::REWA_REPRESENTATION,
     );
 
     let expected = BoxedBytes::from_concat(&[
         &[0, 0, 0, 4],
-        &TokenIdentifier::<TxContext>::REWA_REPRESENTATION[..],
+        &TokenIdentifier::<DebugApi>::REWA_REPRESENTATION[..],
     ]);
     check_managed_top_encode_decode(
         api.clone(),
@@ -29,18 +29,18 @@ fn test_codec() {
     // also allowed
     assert_eq!(
         TokenIdentifier::rewa(api.clone()),
-        check_managed_top_decode::<TokenIdentifier<TxContext>>(api.clone(), &[])
+        check_managed_top_decode::<TokenIdentifier<DebugApi>>(api.clone(), &[])
     );
     assert_eq!(
         vec![TokenIdentifier::rewa(api.clone())],
-        check_managed_top_decode::<Vec<TokenIdentifier<TxContext>>>(api, &[0, 0, 0, 0])
+        check_managed_top_decode::<Vec<TokenIdentifier<DebugApi>>>(api, &[0, 0, 0, 0])
     );
 }
 
 #[test]
 #[rustfmt::skip]
 fn test_is_valid_dcdt_identifier() {
-    let api = TxContext::dummy();
+    let api = DebugApi::dummy();
 
     // valid identifier
     assert!(TokenIdentifier::from_dcdt_bytes(api.clone(), &b"ALC-6258d2"[..]).is_valid_dcdt_identifier());

@@ -1,16 +1,17 @@
 use crate::{
-    abi::TypeAbi,
     api::ManagedTypeApi,
-    types::{BigUint, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec},
+    types::{AsManagedRef, BigUint, ManagedAddress, ManagedBuffer, ManagedType, ManagedVec},
 };
-use alloc::string::String;
 use numbat_codec::*;
 
 use super::DcdtTokenType;
 
 use numbat_codec::numbat_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Debug)]
+use crate as numbat_wasm; // needed by the TypeAbi generated code
+use crate::derive::TypeAbi;
+
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
 pub struct DcdtTokenData<M: ManagedTypeApi> {
     pub token_type: DcdtTokenType,
     pub amount: BigUint<M>,
@@ -29,12 +30,6 @@ impl<M: ManagedTypeApi> DcdtTokenData<M> {
     }
 
     pub fn decode_attributes<T: TopDecode>(&self) -> Result<T, DecodeError> {
-        T::top_decode(&self.attributes)
-    }
-}
-
-impl<M: ManagedTypeApi> TypeAbi for DcdtTokenData<M> {
-    fn type_name() -> String {
-        "DcdtTokenData".into()
+        T::top_decode(self.attributes.as_managed_ref())
     }
 }

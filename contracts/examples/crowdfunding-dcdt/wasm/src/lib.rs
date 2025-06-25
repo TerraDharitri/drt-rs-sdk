@@ -1,5 +1,21 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use crowdfunding_dcdt::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   crowdfunding_dcdt
+   (
+        init
+        callBack
+        claim
+        fund
+        getCrowdfundingTokenIdentifier
+        getCurrentFunds
+        getDeadline
+        getDeposit
+        getTarget
+        status
+   )
+}

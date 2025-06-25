@@ -1,6 +1,6 @@
 [package]
 name = "numbat-codec"
-version = "0.0.13"
+version = "0.0.15"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]
@@ -18,7 +18,7 @@ derive = ["numbat-codec-derive"]
 
 [dependencies.numbat-codec-derive]
 path = "../numbat-codec-derive"
-version = "=0.0.13"
+version = "=0.0.15"
 optional = true
 
 [dependencies]
@@ -27,4 +27,4 @@ arrayvec = { version = "0.7.1", default-features = false }
 
 [dev-dependencies.numbat-codec-derive]
 path = "../numbat-codec-derive"
-version = "=0.0.13"
+version = "=0.0.15"

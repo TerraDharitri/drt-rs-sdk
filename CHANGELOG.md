@@ -4,7 +4,39 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [numbat-wasm 0.20.1]
+## [numbat-wasm 0.22.1] - 2021-11-04
+- Made the generated code in `wasm/lib.rs` more compact with the use of macros.
+
+## [numbat-wasm 0.22.0] - 2021-11-02
+- Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
+- Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `drtpy`.
+- Renamed feature `andes-tests` to `denali-go-tests`
+
+## [numbat-wasm 0.21.2] - 2021-10-26
+- Bugfix regarding contract upgrade args in `numbat-wasm-debug`
+
+## [numbat-wasm 0.21.1, numbat-codec 0.8.1, denali 0.11.1] - 2021-10-26
+- Relative path improvements and fixes in `numbat-wasm-debug`:
+	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
+	- debugging now works seamlessly, without needing to temporarily change paths in the tests
+- SC proxy - `register_meta_dcdt`
+- Debugger builtin function mocks check for DCDT roles
+- ABI provides definitions for DcdtTokenPayment, DcdtTokenData, DcdtTokenType
+
+## [numbat-wasm 0.21.0, numbat-codec 0.8.0, denali 0.11.0] - 2021-10-22
+- Denali support for NFT syntax. Many more small improvements and some major refactoring.
+- Major refactoring of the `numbat-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
+	- support for synchronous calls, also nested synchronous calls
+	- support for NFT simple transfers
+	- support for DCDT multitransfer (FT + NFT)
+	- builtin functions mocked in the debugger: `DCDTLocalMint`, `DCDTLocalBurn`, `MultiDCDTNFTTransfer`, `DCDTNFTTransfer`, `DCDTNFTCreate`, `DCDTNFTAddQuantity`, `DCDTNFTBurn`, `DCDTTransfer`, `ChangeOwnerAddress`, `SetUserName`
+	- supports deploy/deploy from source/upgrade/upgrade from source from contracts
+- `#[payment_multi]` annotation
+- `ManagedRef` type, that allows easier handling of managed types
+- ABI contains endpoint mutability flag (mutable/readonly)
+- reverse iteration for `ManagedVec`
+
+## [numbat-wasm 0.20.1] - 2021-10-05
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 

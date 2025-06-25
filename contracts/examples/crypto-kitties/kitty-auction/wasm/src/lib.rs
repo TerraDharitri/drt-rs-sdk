@@ -1,4 +1,22 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use kitty_auction::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   kitty_auction
+   (
+        init
+        callBack
+        bid
+        createAndAuctionGenZeroKitty
+        createSaleAuction
+        createSiringAuction
+        endAuction
+        getAuctionStatus
+        getCurrentWinningBid
+        isUpForAuction
+        setKittyOwnershipContractAddress
+   )
+}

@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-node"
-version = "0.0.13"
+version = "0.0.15"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]
@@ -17,5 +17,5 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 unmanaged-ei = []
 
 [dependencies.numbat-wasm]
-version = "0.0.13"
+version = "=0.0.15"
 path = "../numbat-wasm"

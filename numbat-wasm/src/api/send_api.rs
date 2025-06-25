@@ -4,10 +4,6 @@ use crate::types::{
     ManagedInto, ManagedVec, TokenIdentifier,
 };
 
-pub const DCDT_TRANSFER_STRING: &[u8] = b"DCDTTransfer";
-pub const DCDT_NFT_TRANSFER_STRING: &[u8] = b"DCDTNFTTransfer";
-pub const DCDT_MULTI_TRANSFER_STRING: &[u8] = b"MultiDCDTNFTTransfer";
-
 /// API that groups methods that either send REWA or DCDT, or that call other contracts.
 pub trait SendApi: ManagedTypeApi + BlockchainApi + Clone + Sized {
     /// Sends REWA to a given address, directly.
@@ -97,6 +93,16 @@ pub trait SendApi: ManagedTypeApi + BlockchainApi + Clone + Sized {
         code_metadata: CodeMetadata,
         arg_buffer: &ManagedArgBuffer<Self>,
     ) -> (ManagedAddress<Self>, ManagedVec<Self, ManagedBuffer<Self>>);
+
+    fn upgrade_from_source_contract(
+        &self,
+        sc_address: &ManagedAddress<Self>,
+        gas: u64,
+        amount: &BigUint<Self>,
+        source_contract_address: &ManagedAddress<Self>,
+        code_metadata: CodeMetadata,
+        arg_buffer: &ManagedArgBuffer<Self>,
+    );
 
     /// Upgrades a child contract of the currently executing contract.
     /// The upgrade is synchronous, and the current transaction will fail if the upgrade fails.

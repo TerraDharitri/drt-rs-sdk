@@ -1,6 +1,7 @@
 pub const NON_PAYABLE_FUNC_REWA: &[u8] = b"function does not accept REWA payment";
 pub const NON_PAYABLE_FUNC_DCDT: &[u8] = b"function does not accept DCDT payment";
 pub const BAD_TOKEN_PROVIDED: &[u8] = b"bad call value token provided";
+pub const TOO_MANY_DCDT_TRANSFERS: &[u8] = b"too many DCDT transfers";
 
 pub const ARG_WRONG_NUMBER: &[u8] = b"wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &[u8] = b"wrong number of arguments provided to async call";

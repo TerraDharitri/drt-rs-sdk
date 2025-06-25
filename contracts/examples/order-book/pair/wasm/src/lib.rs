@@ -1,4 +1,26 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use order_book_pair::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   order_book_pair
+   (
+        init
+        callBack
+        cancelAllOrders
+        cancelOrders
+        createBuyOrder
+        createSellOrder
+        freeOrders
+        getAddressOrderIds
+        getFirstTokenId
+        getOrderById
+        getOrderIdCounter
+        getSecondTokenId
+        matchOrders
+        startGlobalOperation
+        stopGlobalOperation
+   )
+}

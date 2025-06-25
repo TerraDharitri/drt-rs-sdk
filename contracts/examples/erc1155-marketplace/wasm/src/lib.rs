@@ -1,5 +1,25 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use erc1155_marketplace::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   erc1155_marketplace
+   (
+        init
+        callBack
+        bid
+        claim
+        endAuction
+        getAuctionStatus
+        getCurrentWinner
+        getCurrentWinningBid
+        getPercentageCut
+        isUpForAuction
+        onERC1155BatchReceived
+        onERC1155Received
+        setCutPercentage
+        setTokenOwnershipContractAddress
+   )
+}

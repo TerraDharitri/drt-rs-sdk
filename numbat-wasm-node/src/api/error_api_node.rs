@@ -1,4 +1,4 @@
-use crate::{error_hook, AndesApiImpl};
+use crate::{error_hook, VmApiImpl};
 use numbat_wasm::api::{ErrorApi, Handle};
 
 extern "C" {
@@ -6,7 +6,7 @@ extern "C" {
     fn managedSignalError(messageHandle: i32) -> !;
 }
 
-impl ErrorApi for AndesApiImpl {
+impl ErrorApi for VmApiImpl {
     #[inline(always)]
     fn signal_error(&self, message: &[u8]) -> ! {
         error_hook::signal_error(message)

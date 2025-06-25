@@ -1,4 +1,14 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use recursive_caller::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   recursive_caller
+   (
+        init
+        callBack
+        recursive_send_funds
+   )
+}

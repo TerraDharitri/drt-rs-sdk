@@ -20,11 +20,13 @@ debug = false
 panic = "abort"
 
 [dependencies.order-book-factory]
-features = [ "wasm-output-mode",]
-default-features = false
 path = ".."
 
+[dependencies.numbat-wasm-node]
+version = "0.0.15"
+path = "../../../../../numbat-wasm-node"
+
 [dependencies.numbat-wasm-output]
-version = "0.0.13"
-features = [ "wasm-output-mode",]
+version = "0.0.15"
 path = "../../../../../numbat-wasm-output"
+features = ["wasm-output-mode"]

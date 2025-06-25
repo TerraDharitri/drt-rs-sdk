@@ -1,4 +1,14 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use kitty_genetic_alg::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   kitty_genetic_alg
+   (
+        init
+        callBack
+        generateKittyGenes
+   )
+}

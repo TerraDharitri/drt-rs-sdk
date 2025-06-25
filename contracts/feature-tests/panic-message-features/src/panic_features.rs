@@ -7,6 +7,9 @@ numbat_wasm::imports!();
 /// but it greatly inflates the bytecode size.
 #[numbat_wasm::contract]
 pub trait PanicMessageFeatures {
+    #[init]
+    fn init(&self) {}
+
     #[endpoint(panicWithMessage)]
     fn panic_with_message(&self) {
         panic!("example panic message");

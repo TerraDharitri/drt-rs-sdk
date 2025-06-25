@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-serde"
-version = "0.0.13"
+version = "0.0.15"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]

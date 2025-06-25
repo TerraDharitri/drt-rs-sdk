@@ -37,7 +37,7 @@ fn print_denali_rs(file: &mut File, names: &[String]) {
             file,
             "#[test]
 fn {}_rs() {{
-    numbat_wasm_debug::denali_rs(\"denali/{}.scen.json\", &contract_map());
+    numbat_wasm_debug::denali_rs(\"denali/{}.scen.json\", world());
 }}
 ",
             name.replace('-', "_").to_lowercase(),
@@ -64,8 +64,8 @@ fn {}_go() {{
 }
 
 /// Examples how to run:
-/// `cargo run ../../contracts/examples/erc20/denali`
-/// `cargo run ../../contracts/feature-tests/basic-features/denali`
+/// `cargo run ../../contracts/examples/multisig/denali`
+/// `cargo run ../../contracts/feature-tests/composability/denali`
 fn main() {
     let args: Vec<String> = env::args().collect();
     let files_path = &args[1];

@@ -17,11 +17,13 @@ panic = "abort"
 
 [dependencies.erc1155-user-mock]
 path = ".."
-features = ["wasm-output-mode"]
-default-features = false
+
+[dependencies.numbat-wasm-node]
+version = "0.0.15"
+path = "../../../../numbat-wasm-node"
 
 [dependencies.numbat-wasm-output]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../../../numbat-wasm-output"
 features = ["wasm-output-mode"]
 

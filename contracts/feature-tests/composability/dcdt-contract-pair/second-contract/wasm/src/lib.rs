@@ -1,5 +1,16 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use second_contract::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   second_contract
+   (
+        init
+        callBack
+        acceptDcdtPayment
+        getdcdtTokenName
+        rejectDcdtPayment
+   )
+}

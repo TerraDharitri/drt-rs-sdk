@@ -1,8 +1,13 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
-use denali::{Account, AddressKey, BlockInfo, NewAddress};
+use numbat_wasm::types::Address;
+use denali::model::{Account, AddressKey, BlockInfo, NewAddress};
+use num_bigint::BigUint;
 
-use crate::{AccountData, BlockInfo as CrateBlockInfo, BlockchainMock};
+use crate::world_mock::{
+    is_smart_contract_address, AccountData, AccountDcdt, BlockInfo as CrateBlockInfo,
+    BlockchainMock, DcdtData, DcdtInstance, DcdtInstanceMetadata, DcdtInstances, DcdtRoles,
+};
 
 pub fn execute(
     state: &mut BlockchainMock,
@@ -17,14 +22,19 @@ pub fn execute(
             .iter()
             .map(|(k, v)| (k.value.clone(), v.value.clone()))
             .collect();
-        let dcdt = if let Some(dcdt_map) = &account.dcdt {
-            dcdt_map
+        let dcdt = AccountDcdt::new_from_raw_map(
+            account
+                .dcdt
                 .iter()
-                .map(|(k, v)| (k.value.clone(), v.value.clone()))
-                .collect()
-        } else {
-            HashMap::new()
-        };
+                .map(|(k, v)| {
+                    (
+                        k.value.clone(),
+                        convert_denali_dcdt_to_world_mock(k.value.as_slice(), v),
+                    )
+                })
+                .collect(),
+        );
+
         state.validate_and_add_account(AccountData {
             address: address.value.into(),
             nonce: account
@@ -32,7 +42,7 @@ pub fn execute(
                 .as_ref()
                 .map(|nonce| nonce.value)
                 .unwrap_or_default(),
-            balance: account
+            rewa_balance: account
                 .balance
                 .as_ref()
                 .map(|balance| balance.value.clone())
@@ -56,7 +66,7 @@ pub fn execute(
     }
     for new_address in new_addresses.iter() {
         assert!(
-            state.is_smart_contract_address(&new_address.new_address.value.into()),
+            is_smart_contract_address(&new_address.new_address.value.into()),
             "field should have SC format"
         );
         state.put_new_address(
@@ -73,7 +83,98 @@ pub fn execute(
     }
 }
 
-fn update_block_info(block_info: &mut CrateBlockInfo, denali_block_info: &denali::BlockInfo) {
+fn convert_denali_dcdt_to_world_mock(
+    token_identifier: &[u8],
+    denali_dcdt: &denali::model::Dcdt,
+) -> DcdtData {
+    match denali_dcdt {
+        denali::model::Dcdt::Short(short_dcdt) => {
+            let balance = BigUint::from_bytes_be(short_dcdt.value.as_slice());
+            let mut dcdt_data = DcdtData {
+                token_identifier: token_identifier.to_vec(),
+                ..Default::default()
+            };
+            dcdt_data.instances.add(0, balance);
+            dcdt_data
+        },
+        denali::model::Dcdt::Full(full_dcdt) => DcdtData {
+            token_identifier: full_dcdt
+                .token_identifier
+                .as_ref()
+                .map(|token_identifier| token_identifier.value.clone())
+                .unwrap_or_default(),
+            instances: DcdtInstances::new_from_hash(
+                full_dcdt
+                    .instances
+                    .iter()
+                    .map(|denali_instance| {
+                        let mock_instance =
+                            convert_denali_dcdt_instance_to_world_mock(denali_instance);
+                        (mock_instance.nonce, mock_instance)
+                    })
+                    .collect(),
+            ),
+            last_nonce: full_dcdt
+                .last_nonce
+                .as_ref()
+                .map(|last_nonce| last_nonce.value)
+                .unwrap_or_default(),
+            roles: DcdtRoles::new(
+                full_dcdt
+                    .roles
+                    .iter()
+                    .map(|role| role.value.clone())
+                    .collect(),
+            ),
+            frozen: if let Some(u64_value) = &full_dcdt.frozen {
+                u64_value.value > 0
+            } else {
+                false
+            },
+        },
+    }
+}
+
+fn convert_denali_dcdt_instance_to_world_mock(
+    denali_dcdt: &denali::model::Instance,
+) -> DcdtInstance {
+    DcdtInstance {
+        nonce: denali_dcdt
+            .nonce
+            .as_ref()
+            .map(|nonce| nonce.value)
+            .unwrap_or_default(),
+        balance: denali_dcdt
+            .balance
+            .as_ref()
+            .map(|value| value.value.clone())
+            .unwrap_or_default(),
+        metadata: DcdtInstanceMetadata {
+            name: Vec::new(),
+            creator: denali_dcdt
+                .creator
+                .as_ref()
+                .map(|creator| Address::from_slice(creator.value.as_slice())),
+            royalties: denali_dcdt
+                .royalties
+                .as_ref()
+                .map(|royalties| royalties.value)
+                .unwrap_or_default(),
+            hash: denali_dcdt.hash.as_ref().map(|hash| hash.value.clone()),
+            uri: denali_dcdt.uri.as_ref().map(|uri| uri.value.clone()),
+            attributes: denali_dcdt
+                .attributes
+                .as_ref()
+                .map(|attributes| attributes.value.clone())
+                .unwrap_or_default(),
+        },
+    }
+}
+
+fn update_block_info(
+    block_info: &mut CrateBlockInfo,
+    denali_block_info: &denali::model::BlockInfo,
+) {
     if let Some(u64_value) = &denali_block_info.block_timestamp {
         block_info.block_timestamp = u64_value.value;
     }

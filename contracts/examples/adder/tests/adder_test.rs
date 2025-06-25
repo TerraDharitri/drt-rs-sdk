@@ -1,10 +1,10 @@
 use adder::*;
 use numbat_wasm::{contract_base::ContractBase, types::BigInt};
-use numbat_wasm_debug::TxContext;
+use numbat_wasm_debug::DebugApi;
 
 #[test]
 fn test_add() {
-    let adder = adder::contract_obj(TxContext::dummy());
+    let adder = adder::contract_obj(DebugApi::dummy());
 
     adder.init(BigInt::from_i64(adder.type_manager(), 5));
     assert_eq!(BigInt::from_i64(adder.type_manager(), 5), adder.sum().get());

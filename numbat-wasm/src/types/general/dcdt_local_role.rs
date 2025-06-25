@@ -1,6 +1,7 @@
-use crate::{abi::TypeAbi, Vec};
-use alloc::string::String;
 use numbat_codec::numbat_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
+
+use crate as numbat_wasm; // needed by the TypeAbi generated code
+use crate::derive::TypeAbi;
 
 const DCDT_ROLE_NONE: &[u8] = &[];
 const DCDT_ROLE_LOCAL_MINT: &[u8] = b"DCDTRoleLocalMint";
@@ -9,7 +10,7 @@ const DCDT_ROLE_NFT_CREATE: &[u8] = b"DCDTRoleNFTCreate";
 const DCDT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCDTRoleNFTAddQuantity";
 const DCDT_ROLE_NFT_BURN: &[u8] = b"DCDTRoleNFTBurn";
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Debug)]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug)]
 pub enum DcdtLocalRole {
     None,
     Mint,
@@ -72,66 +73,6 @@ impl<'a> From<&'a [u8]> for DcdtLocalRole {
             Self::NftBurn
         } else {
             Self::None
-        }
-    }
-}
-
-impl TypeAbi for DcdtLocalRole {
-    fn type_name() -> String {
-        "DcdtLocalRole".into()
-    }
-
-    fn provide_type_descriptions<TDC: crate::abi::TypeDescriptionContainer>(accumulator: &mut TDC) {
-        let type_name = Self::type_name();
-        if !accumulator.contains_type(&type_name) {
-            accumulator.reserve_type_name(type_name.clone());
-            let variant_descriptions = [
-                crate::abi::EnumVariantDescription {
-                    docs: &[],
-                    discriminant: 0usize,
-                    name: "None",
-                    fields: Vec::new(),
-                },
-                crate::abi::EnumVariantDescription {
-                    docs: &[],
-                    discriminant: 1usize,
-                    name: "Mint",
-                    fields: Vec::new(),
-                },
-                crate::abi::EnumVariantDescription {
-                    docs: &[],
-                    discriminant: 2usize,
-                    name: "Burn",
-                    fields: Vec::new(),
-                },
-                crate::abi::EnumVariantDescription {
-                    docs: &[],
-                    discriminant: 3usize,
-                    name: "NftCreate",
-                    fields: Vec::new(),
-                },
-                crate::abi::EnumVariantDescription {
-                    docs: &[],
-                    discriminant: 4usize,
-                    name: "NftAddQuantity",
-                    fields: Vec::new(),
-                },
-                crate::abi::EnumVariantDescription {
-                    docs: &[],
-                    discriminant: 5usize,
-                    name: "NftBurn",
-                    fields: Vec::new(),
-                },
-            ]
-            .to_vec();
-            accumulator.insert(
-                type_name.clone(),
-                crate::abi::TypeDescription {
-                    docs: &[],
-                    name: type_name,
-                    contents: crate::abi::TypeContents::Enum(variant_descriptions),
-                },
-            );
         }
     }
 }

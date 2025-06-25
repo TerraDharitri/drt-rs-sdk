@@ -18,10 +18,13 @@ debug = false
 panic = "abort"
 
 [dependencies.ping-pong-rewa]
-features = [ "wasm-output-mode",]
 path = ".."
 
+[dependencies.numbat-wasm-node]
+version = "0.0.15"
+path = "../../../../numbat-wasm-node"
+
 [dependencies.numbat-wasm-output]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../../../numbat-wasm-output"
-features = [ "wasm-output-mode",]
+features = ["wasm-output-mode"]

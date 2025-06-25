@@ -1,26 +1,21 @@
 use crate::{
-    abi::TypeAbi,
     api::{Handle, ManagedTypeApi},
     types::{BigUint, ManagedBuffer, ManagedType, ManagedVecItem},
 };
-use alloc::string::String;
 
 use super::{DcdtTokenType, TokenIdentifier};
 
 use numbat_codec::numbat_codec_derive::{NestedDecode, NestedEncode, TopDecode, TopEncode};
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Debug)]
+use crate as numbat_wasm; // needed by the TypeAbi generated code
+use crate::derive::TypeAbi;
+
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Debug)]
 pub struct DcdtTokenPayment<M: ManagedTypeApi> {
     pub token_type: DcdtTokenType,
     pub token_identifier: TokenIdentifier<M>,
     pub token_nonce: u64,
     pub amount: BigUint<M>,
-}
-
-impl<M: ManagedTypeApi> TypeAbi for DcdtTokenPayment<M> {
-    fn type_name() -> String {
-        "DcdtTokenPayment".into()
-    }
 }
 
 impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
@@ -33,11 +28,7 @@ impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
         }
     }
 
-    pub fn from(
-        token_identifier: TokenIdentifier<M>,
-        token_nonce: u64,
-        amount: BigUint<M>,
-    ) -> Self {
+    pub fn new(token_identifier: TokenIdentifier<M>, token_nonce: u64, amount: BigUint<M>) -> Self {
         let token_type = if amount != 0 && token_identifier.is_valid_dcdt_identifier() {
             if token_nonce == 0 {
                 DcdtTokenType::Fungible

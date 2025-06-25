@@ -1,4 +1,15 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use order_book_factory::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   order_book_factory
+   (
+        init
+        callBack
+        createPair
+        getPair
+   )
+}

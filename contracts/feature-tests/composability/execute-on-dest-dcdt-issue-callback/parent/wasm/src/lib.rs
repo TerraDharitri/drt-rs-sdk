@@ -1,5 +1,17 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use parent::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   parent
+   (
+        init
+        callBack
+        deployChildContract
+        deposit
+        executeOnDestIssueToken
+        getChildContractAddress
+   )
+}

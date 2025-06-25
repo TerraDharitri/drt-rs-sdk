@@ -1,4 +1,16 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use str_repeat::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   str_repeat
+   (
+        init
+        callBack
+        getByteArray
+        getByteArrayLength
+        repeat
+   )
+}

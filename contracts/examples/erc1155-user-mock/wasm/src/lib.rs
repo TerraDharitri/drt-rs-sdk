@@ -1,4 +1,15 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use erc1155_user_mock::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   erc1155_user_mock
+   (
+        init
+        callBack
+        onERC1155BatchReceived
+        onERC1155Received
+   )
+}

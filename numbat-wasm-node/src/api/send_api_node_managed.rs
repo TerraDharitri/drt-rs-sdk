@@ -1,4 +1,4 @@
-use crate::{error_hook, AndesApiImpl};
+use crate::{error_hook, VmApiImpl};
 use numbat_wasm::{
     api::{BlockchainApi, Handle, SendApi, StorageReadApi, StorageWriteApi},
     types::{
@@ -114,7 +114,7 @@ unsafe fn code_metadata_to_buffer_handle(code_metadata: CodeMetadata) -> Handle 
     )
 }
 
-impl SendApi for AndesApiImpl {
+impl SendApi for VmApiImpl {
     fn direct_rewa<D>(&self, to: &ManagedAddress<Self>, amount: &BigUint<Self>, data: D)
     where
         D: ManagedInto<Self, ManagedBuffer<Self>>,
@@ -180,7 +180,7 @@ impl SendApi for AndesApiImpl {
         arg_buffer: &ManagedArgBuffer<Self>,
     ) -> Result<(), &'static [u8]> {
         let mut payments = ManagedVec::new(self.clone());
-        payments.push(DcdtTokenPayment::from(token.clone(), nonce, amount.clone()));
+        payments.push(DcdtTokenPayment::new(token.clone(), nonce, amount.clone()));
         self.direct_multi_dcdt_transfer_execute(to, &payments, gas_limit, endpoint_name, arg_buffer)
     }
 
@@ -282,6 +282,30 @@ impl SendApi for AndesApiImpl {
             let results = ManagedVec::from_raw_handle(self.clone(), result_handle);
 
             (new_managed_address, results)
+        }
+    }
+
+    fn upgrade_from_source_contract(
+        &self,
+        sc_address: &ManagedAddress<Self>,
+        gas: u64,
+        amount: &BigUint<Self>,
+        source_contract_address: &ManagedAddress<Self>,
+        code_metadata: CodeMetadata,
+        arg_buffer: &ManagedArgBuffer<Self>,
+    ) {
+        unsafe {
+            let code_metadata_handle = code_metadata_to_buffer_handle(code_metadata);
+            let result_handle = mBufferNew();
+            managedUpgradeFromSourceContract(
+                sc_address.get_raw_handle(),
+                gas as i64,
+                amount.get_raw_handle(),
+                source_contract_address.get_raw_handle(),
+                code_metadata_handle,
+                arg_buffer.get_raw_handle(),
+                result_handle,
+            );
         }
     }
 

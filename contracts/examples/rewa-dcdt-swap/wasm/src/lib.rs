@@ -1,4 +1,20 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use rewa_dcdt_swap::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   rewa_dcdt_swap
+   (
+        init
+        callBack
+        getLockedRewaBalance
+        getUnusedWrappedRewa
+        getWrappedRewaTokenIdentifier
+        issueWrappedRewa
+        mintWrappedRewa
+        unwrapRewa
+        wrapRewa
+   )
+}

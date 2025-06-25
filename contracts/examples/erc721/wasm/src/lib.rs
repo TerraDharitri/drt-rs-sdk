@@ -1,4 +1,21 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use erc721::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   erc721
+   (
+        init
+        callBack
+        approval
+        approve
+        mint
+        revoke
+        tokenCount
+        tokenOwner
+        totalMinted
+        transfer
+   )
+}

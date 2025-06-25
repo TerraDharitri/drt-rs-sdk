@@ -8,46 +8,30 @@ publish = false
 [lib]
 path = "src/use_module.rs"
 
-[features]
-wasm-output-mode = [
-    "numbat-wasm-node",
-    "numbat-wasm-module-dns/wasm-output-mode",
-    "numbat-wasm-module-dcdt/wasm-output-mode",
-    "numbat-wasm-module-features/wasm-output-mode",
-    "numbat-wasm-module-governance/wasm-output-mode",
-    "numbat-wasm-module-pause/wasm-output-mode",
-]
-
 [dependencies.numbat-wasm-module-dns]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../modules/numbat-wasm-module-dns"
 
 [dependencies.numbat-wasm-module-dcdt]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../modules/numbat-wasm-module-dcdt"
 
 [dependencies.numbat-wasm-module-features]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../modules/numbat-wasm-module-features"
 
 [dependencies.numbat-wasm-module-governance]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../modules/numbat-wasm-module-governance"
 
 [dependencies.numbat-wasm-module-pause]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../modules/numbat-wasm-module-pause"
 
 [dependencies.numbat-wasm]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../../numbat-wasm"
-features = ["derive"]
-
-[dependencies.numbat-wasm-node]
-version = "0.0.13"
-path = "../../../numbat-wasm-node"
-optional = true
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../../numbat-wasm-debug"

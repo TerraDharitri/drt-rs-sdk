@@ -1,4 +1,26 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use erc1155::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   erc1155
+   (
+        init
+        callBack
+        balanceOf
+        balanceOfBatch
+        burn
+        createToken
+        getTokenOwner
+        getTokenTypeCreator
+        getTokenTypeUri
+        isApprovedForAll
+        isFungible
+        mint
+        safeBatchTransferFrom
+        safeTransferFrom
+        setApprovalForAll
+   )
+}

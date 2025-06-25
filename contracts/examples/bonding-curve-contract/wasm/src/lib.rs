@@ -1,4 +1,23 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use bonding_curve_contract::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   bonding_curve_contract
+   (
+        init
+        callBack
+        buyToken
+        claim
+        deposit
+        getTokenAvailability
+        get_buy_price
+        get_sell_price
+        sellToken
+        setBondingCurve
+        setLocalRoles
+        unsetLocalRoles
+   )
+}

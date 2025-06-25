@@ -1,7 +1,7 @@
 use numbat_wasm::{api::VMApi, numbat_codec::TryStaticCast};
 
-use crate::TxContext;
+use crate::DebugApi;
 
-impl TryStaticCast for TxContext {}
+impl TryStaticCast for DebugApi {}
 
-impl VMApi for TxContext {}
+impl VMApi for DebugApi {}

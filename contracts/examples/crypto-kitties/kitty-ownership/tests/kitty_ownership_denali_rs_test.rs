@@ -1,47 +1,47 @@
 use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
-fn contract_map() -> ContractMap<TxContext> {
-    let mut contract_map = ContractMap::new();
+fn world() -> BlockchainMock {
+    let mut blockchain = BlockchainMock::new();
 
-    contract_map.register_contract(
-        "file:../../kitty-genetic-alg/output/kitty-genetic-alg.wasm",
+    blockchain.register_contract(
+        "file:../kitty-genetic-alg/output/kitty-genetic-alg.wasm",
         Box::new(|context| Box::new(kitty_genetic_alg::contract_obj(context))),
     );
-    contract_map.register_contract(
-        "file:../output/kitty-ownership.wasm",
+    blockchain.register_contract(
+        "file:output/kitty-ownership.wasm",
         Box::new(|context| Box::new(kitty_ownership::contract_obj(context))),
     );
 
-    contract_map
+    blockchain
 }
 
 #[test]
 fn approve_siring_rs() {
-    numbat_wasm_debug::denali_rs("denali/approve_siring.scen.json", &contract_map());
+    numbat_wasm_debug::denali_rs("denali/approve_siring.scen.json", world());
 }
 
 #[test]
 fn breed_ok_rs() {
-    numbat_wasm_debug::denali_rs("denali/breed_ok.scen.json", &contract_map());
+    numbat_wasm_debug::denali_rs("denali/breed_ok.scen.json", world());
 }
 
 #[test]
 fn give_birth_rs() {
-    numbat_wasm_debug::denali_rs("denali/give_birth.scen.json", &contract_map());
+    numbat_wasm_debug::denali_rs("denali/give_birth.scen.json", world());
 }
 
 #[test]
 fn init_rs() {
-    numbat_wasm_debug::denali_rs("denali/init.scen.json", &contract_map());
+    numbat_wasm_debug::denali_rs("denali/init.scen.json", world());
 }
 
 #[test]
 fn query_rs() {
-    numbat_wasm_debug::denali_rs("denali/query.scen.json", &contract_map());
+    numbat_wasm_debug::denali_rs("denali/query.scen.json", world());
 }
 
 #[test]
 fn setup_accounts_rs() {
-    numbat_wasm_debug::denali_rs("denali/setup_accounts.scen.json", &contract_map());
+    numbat_wasm_debug::denali_rs("denali/setup_accounts.scen.json", world());
 }

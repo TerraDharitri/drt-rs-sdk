@@ -11,17 +11,19 @@
             "tx": {
                 "from": "address:user",
                 "to": "sc:rewa-dcdt-swap",
-                "value": "0",
-                "dcdt": {
-                    "tokenIdentifier": "str:WREWA-abcdef",
-                    "value": "300"
-                },
+                "dcdtValue": [
+                    {
+                        "tokenIdentifier": "str:WREWA-abcdef",
+                        "value": "300"
+                    }
+                ],
                 "function": "unwrapRewa",
                 "arguments": [],
                 "gasLimit": "100,000,000",
                 "gasPrice": "0"
             },
             "expect": {
+                "out": [],
                 "status": "0",
                 "message": "",
                 "logs": [

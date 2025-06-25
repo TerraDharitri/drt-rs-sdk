@@ -1,1 +1,1 @@
-export PATH=$HOME/.local/bin:$HOME/numbatsdk/andestools:$PATH
+export PATH=$HOME/.local/bin:$HOME/numbatsdk/vmtools:$PATH

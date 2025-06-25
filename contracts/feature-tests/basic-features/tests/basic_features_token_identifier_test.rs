@@ -5,7 +5,7 @@ use basic_features::token_identifier_features::TokenIdentifierFeatures;
 
 #[test]
 fn test_token_identifier_rewa() {
-    let context = TxContext::dummy();
+    let context = DebugApi::dummy();
     let bf = basic_features::contract_obj(context.clone());
     let result = bf.token_identifier_rewa();
     assert_eq!(TokenIdentifier::rewa(context), result);
@@ -15,7 +15,7 @@ fn test_token_identifier_rewa() {
 /// For a complete suite of test cases, see `numbat-wasm-debug/tests/managed_token_identifier_test.rs`.
 #[test]
 fn test_token_identifier_is_valid() {
-    let context = TxContext::dummy();
+    let context = DebugApi::dummy();
     let bf = basic_features::contract_obj(context.clone());
     let result = bf.token_identifier_is_valid_1(&b"ALC-6258d2"[..]);
     assert!(result);

@@ -1,4 +1,18 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use nft_minter::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   nft_minter
+   (
+        init
+        callBack
+        buyNft
+        createNft
+        getNftPrice
+        issueToken
+        setLocalRoles
+   )
+}

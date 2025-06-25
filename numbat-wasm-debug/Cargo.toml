@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-debug"
-version = "0.0.13"
+version = "0.0.15"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]
@@ -24,13 +24,12 @@ serde_json = "1.0"
 rustc_version = "0.4"
 
 [features]
-andes-tests = []
+denali-go-tests = []
 
 [dependencies.numbat-wasm]
-version = "0.0.13"
+version = "=0.0.15"
 path = "../numbat-wasm"
-features = ["derive"]
 
 [dependencies.denali]
-version = "0.10.0"
+version = "0.11.1"
 path = "../denali"

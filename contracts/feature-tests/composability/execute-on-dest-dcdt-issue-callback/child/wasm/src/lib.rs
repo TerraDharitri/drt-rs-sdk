@@ -1,5 +1,15 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use child::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   child
+   (
+        init
+        callBack
+        getWrappedRewaTokenIdentifier
+        issueWrappedRewa
+   )
+}

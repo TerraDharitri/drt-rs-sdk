@@ -1,4 +1,20 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
+
 #![no_std]
 
-pub use lottery_erc20::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   lottery_erc20
+   (
+        init
+        callBack
+        buy_ticket
+        createLotteryPool
+        determine_winner
+        erc20ContractManagedAddress
+        lotteryInfo
+        start
+        status
+   )
+}

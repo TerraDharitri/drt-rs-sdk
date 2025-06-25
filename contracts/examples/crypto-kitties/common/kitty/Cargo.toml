@@ -9,9 +9,8 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.numbat-wasm]
-version = "0.0.13"
+version = "0.0.15"
 path = "../../../../../numbat-wasm"
-features = ["derive"]
 
 [dependencies.random]
 version = "0.0.0"

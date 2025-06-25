@@ -7,6 +7,9 @@ numbat_wasm::imports!();
 /// i.e. the framework/Andes functionality for accepting REWA and DCDT payments.
 #[numbat_wasm::contract]
 pub trait PayableFeatures {
+    #[init]
+    fn init(&self) {}
+
     #[view]
     #[payable("*")]
     fn echo_call_value(
@@ -17,6 +20,15 @@ pub trait PayableFeatures {
             self.call_value().all_dcdt_transfers(),
         )
             .into()
+    }
+
+    #[endpoint]
+    #[payable("*")]
+    fn payment_multiple(
+        &self,
+        #[payment_multi] payments: ManagedVec<DcdtTokenPayment<Self::Api>>,
+    ) -> ManagedVec<DcdtTokenPayment<Self::Api>> {
+        payments
     }
 
     #[endpoint]

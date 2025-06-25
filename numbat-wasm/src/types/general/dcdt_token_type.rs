@@ -1,28 +1,40 @@
-use crate::abi::TypeAbi;
-use alloc::string::String;
 use numbat_codec::*;
 
 const DCDT_TYPE_FUNGIBLE: &[u8] = b"FungibleDCDT";
 const DCDT_TYPE_NON_FUNGIBLE: &[u8] = b"NonFungibleDCDT";
 const DCDT_TYPE_SEMI_FUNGIBLE: &[u8] = b"SemiFungibleDCDT";
+const DCDT_TYPE_META: &[u8] = b"MetaDCDT";
 const DCDT_TYPE_INVALID: &[u8] = &[];
 
+use crate as numbat_wasm; // needed by the TypeAbi generated code
+use crate::derive::TypeAbi;
+
 // Note: In the current implementation, SemiFungible is never returned
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, TypeAbi)]
 pub enum DcdtTokenType {
     Fungible,
     NonFungible,
     SemiFungible,
+    Meta,
     Invalid,
 }
 
 impl DcdtTokenType {
+    pub fn based_on_token_nonce(token_nonce: u64) -> Self {
+        if token_nonce == 0 {
+            DcdtTokenType::Fungible
+        } else {
+            DcdtTokenType::SemiFungible
+        }
+    }
+
     pub fn as_u8(&self) -> u8 {
         match self {
             Self::Fungible => 0,
             Self::NonFungible => 1,
             Self::SemiFungible => 2,
-            Self::Invalid => 3,
+            Self::Meta => 3,
+            Self::Invalid => 4,
         }
     }
 
@@ -31,6 +43,7 @@ impl DcdtTokenType {
             Self::Fungible => DCDT_TYPE_FUNGIBLE,
             Self::NonFungible => DCDT_TYPE_NON_FUNGIBLE,
             Self::SemiFungible => DCDT_TYPE_SEMI_FUNGIBLE,
+            Self::Meta => DCDT_TYPE_META,
             Self::Invalid => DCDT_TYPE_INVALID,
         }
     }
@@ -43,6 +56,7 @@ impl From<u8> for DcdtTokenType {
             0 => Self::Fungible,
             1 => Self::NonFungible,
             2 => Self::SemiFungible,
+            3 => Self::Meta,
             _ => Self::Invalid,
         }
     }
@@ -57,6 +71,8 @@ impl<'a> From<&'a [u8]> for DcdtTokenType {
             Self::NonFungible
         } else if byte_slice == DCDT_TYPE_SEMI_FUNGIBLE {
             Self::SemiFungible
+        } else if byte_slice == DCDT_TYPE_META {
+            Self::Meta
         } else {
             Self::Invalid
         }
@@ -122,11 +138,5 @@ impl TopDecode for DcdtTokenType {
         exit: fn(ExitCtx, DecodeError) -> !,
     ) -> Self {
         Self::from(u8::top_decode_or_exit(input, c, exit))
-    }
-}
-
-impl TypeAbi for DcdtTokenType {
-    fn type_name() -> String {
-        "DcdtTokenType".into()
     }
 }

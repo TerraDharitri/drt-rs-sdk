@@ -1,5 +1,20 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use first_contract::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   first_contract
+   (
+        init
+        callBack
+        getSecondContractAddress
+        getdcdtTokenName
+        transferToSecondContractFull
+        transferToSecondContractFullWithTransferAndExecute
+        transferToSecondContractHalf
+        transferToSecondContractRejected
+        transferToSecondContractRejectedWithTransferAndExecute
+   )
+}

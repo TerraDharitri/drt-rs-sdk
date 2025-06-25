@@ -1,5 +1,23 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use ping_pong_rewa::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   ping_pong_rewa
+   (
+        init
+        callBack
+        getActivationTimestamp
+        getDeadline
+        getMaxFunds
+        getPingAmount
+        getUserAddresses
+        getUserStatus
+        ping
+        pong
+        pongAll
+        pongAllLastUser
+   )
+}

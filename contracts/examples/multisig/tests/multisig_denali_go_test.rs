@@ -1,4 +1,19 @@
 #[test]
+fn call_other_shard_1_go() {
+    numbat_wasm_debug::denali_go("denali/call_other_shard-1.scen.json");
+}
+
+#[test]
+fn call_other_shard_2_go() {
+    numbat_wasm_debug::denali_go("denali/call_other_shard-2.scen.json");
+}
+
+#[test]
+fn call_other_shard_insufficient_gas_go() {
+    numbat_wasm_debug::denali_go("denali/call_other_shard-insufficient-gas.scen.json");
+}
+
+#[test]
 fn changeboard_go() {
     numbat_wasm_debug::denali_go("denali/changeBoard.scen.json");
 }
@@ -29,6 +44,11 @@ fn deployfactorial_go() {
 }
 
 #[test]
+fn deployothermultisig_go() {
+    numbat_wasm_debug::denali_go("denali/deployOtherMultisig.scen.json");
+}
+
+#[test]
 fn deploy_duplicate_bm_go() {
     numbat_wasm_debug::denali_go("denali/deploy_duplicate_bm.scen.json");
 }
@@ -36,4 +56,19 @@ fn deploy_duplicate_bm_go() {
 #[test]
 fn remove_everyone_go() {
     numbat_wasm_debug::denali_go("denali/remove_everyone.scen.json");
+}
+
+#[test]
+fn senddcdt_go() {
+    numbat_wasm_debug::denali_go("denali/sendDcdt.scen.json");
+}
+
+#[test]
+fn upgrade_go() {
+    numbat_wasm_debug::denali_go("denali/upgrade.scen.json");
+}
+
+#[test]
+fn upgrade_from_source_go() {
+    numbat_wasm_debug::denali_go("denali/upgrade_from_source.scen.json");
 }

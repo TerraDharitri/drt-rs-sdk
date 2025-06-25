@@ -24,14 +24,11 @@
             "tx": {
                 "from": "address:paul",
                 "to": "sc:multisig",
-                "value": "0",
                 "function": "proposeSCDeploy",
                 "arguments": [
                     "0",
                     "file:../test-contracts/adder.wasm",
-                    "false",
-                    "false",
-                    "false"
+                    "0x0000"
                 ],
                 "gasLimit": "200,000,000",
                 "gasPrice": "0"
@@ -52,7 +49,6 @@
             "tx": {
                 "from": "address:alice",
                 "to": "sc:multisig",
-                "value": "0",
                 "function": "sign",
                 "arguments": [
                     "3"
@@ -74,7 +70,6 @@
             "tx": {
                 "from": "address:bob",
                 "to": "sc:multisig",
-                "value": "0",
                 "function": "sign",
                 "arguments": [
                     "3"
@@ -102,16 +97,15 @@
         },
         {
             "step": "scCall",
-            "txId": "sc-deploy-perform",
+            "txId": "sc-deploy-perform-err",
             "tx": {
                 "from": "address:paul",
                 "to": "sc:multisig",
-                "value": "0",
                 "function": "performAction",
                 "arguments": [
                     "3"
                 ],
-                "gasLimit": "70,000,000",
+                "gasLimit": "90,000,000",
                 "gasPrice": "0"
             },
             "expect": {

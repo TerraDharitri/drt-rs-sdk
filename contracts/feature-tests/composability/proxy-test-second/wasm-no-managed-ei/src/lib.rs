@@ -1,5 +1,16 @@
+////////////////////////////////////////////////////
+////////////////// AUTO-GENERATED //////////////////
+////////////////////////////////////////////////////
 
 #![no_std]
 
-pub use proxy_test_second::*;
-pub use numbat_wasm_output::*;
+numbat_wasm_node::wasm_endpoints! {
+   proxy_test_second
+   (
+        init
+        callBack
+        messageMe
+        payMe
+        payMeWithResult
+   )
+}

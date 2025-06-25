@@ -1,4 +1,4 @@
-use crate::AndesApiImpl;
+use super::VmApiImpl;
 use numbat_wasm::{
     api::CallValueApi,
     types::{BigUint, DcdtTokenType, ManagedType, TokenIdentifier},
@@ -33,7 +33,7 @@ extern "C" {
     fn getCallValueTokenName(callValueOffset: *const u8, resultOffset: *const u8) -> i32;
 }
 
-impl CallValueApi for AndesApiImpl {
+impl CallValueApi for VmApiImpl {
     #[inline]
     fn check_not_payable(&self) {
         unsafe {
