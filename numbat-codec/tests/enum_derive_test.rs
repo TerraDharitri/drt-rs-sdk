@@ -3,7 +3,7 @@ use numbat_codec_derive::*;
 
 use numbat_codec::test_util::{check_dep_encode_decode, check_top_decode, check_top_encode_decode};
 
-// to test, run the following command in numbat-codec-derive folder:
+// to test, run the following command in numbat-codec folder:
 // cargo expand --test enum_derive_test > enum_expanded.rs
 
 #[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Clone, Debug)]

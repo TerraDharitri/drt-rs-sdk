@@ -5,7 +5,7 @@ pub use internal_mod_a::*;
 mod internal_mod_b;
 pub use internal_mod_b::*;
 
-imports!();
+numbat_wasm::imports!();
 
 #[cfg(feature = "numbat-wasm-module-features-default")]
 use numbat_wasm_module_features_default::*;

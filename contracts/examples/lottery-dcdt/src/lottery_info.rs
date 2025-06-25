@@ -1,10 +1,11 @@
-use numbat_wasm::{Address, BigUintApi, BoxedBytes, Vec};
+use numbat_wasm::api::BigUintApi;
+use numbat_wasm::types::{Address, TokenIdentifier, Vec};
 
-derive_imports!();
+numbat_wasm::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct LotteryInfo<BigUint: BigUintApi> {
-	pub dcdt_token_name: BoxedBytes,
+	pub dcdt_token_name: TokenIdentifier,
 	pub ticket_price: BigUint,
 	pub tickets_left: u32,
 	pub deadline: u64,

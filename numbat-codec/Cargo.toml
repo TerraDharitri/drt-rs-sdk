@@ -1,6 +1,6 @@
 [package]
 name = "numbat-codec"
-version = "0.4.2"
+version = "0.0.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@numbat.com>", "Numbat Network <contact@numbat.com>"]
@@ -18,7 +18,7 @@ derive = ["numbat-codec-derive"]
 
 [dependencies.numbat-codec-derive]
 path = "../numbat-codec-derive"
-version = "0.4.2"
+version = "0.0.5"
 optional = true
 
 [dependencies]
@@ -27,4 +27,4 @@ arrayvec = { version = "0.5.2", default-features = false, features = ["array-siz
 
 [dev-dependencies.numbat-codec-derive]
 path = "../numbat-codec-derive"
-version = "0.4.2"
+version = "0.0.5"

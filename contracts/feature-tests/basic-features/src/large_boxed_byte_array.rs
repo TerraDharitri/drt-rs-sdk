@@ -1,5 +1,5 @@
 use numbat_wasm::Box;
-derive_imports!();
+numbat_wasm::derive_imports!();
 
 const ARRAY_SIZE: usize = 512;
 

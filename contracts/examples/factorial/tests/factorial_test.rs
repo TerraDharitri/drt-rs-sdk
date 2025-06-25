@@ -1,5 +1,6 @@
 extern crate factorial;
-use numbat_wasm_debug::*;
+use numbat_wasm_debug::api::RustBigUint;
+use numbat_wasm_debug::TxContext;
 use factorial::*;
 
 #[test]

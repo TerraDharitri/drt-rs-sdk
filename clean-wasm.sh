@@ -2,18 +2,21 @@
 
 # cleans all wasm targets
 
-drtpy --verbose contract clean "contracts/benchmarks/str-repeat"
-drtpy --verbose contract clean "contracts/examples/adder"
-drtpy --verbose contract clean "contracts/examples/crowdfunding-rewa"
-drtpy --verbose contract clean "contracts/examples/crowdfunding-erc20"
-drtpy --verbose contract clean "contracts/examples/crowdfunding-dcdt"
-drtpy --verbose contract clean "contracts/examples/crypto-bubbles"
-drtpy --verbose contract clean "contracts/examples/factorial"
-drtpy --verbose contract clean "contracts/examples/lottery-rewa"
-drtpy --verbose contract clean "contracts/examples/lottery-erc20"
-drtpy --verbose contract clean "contracts/examples/multisig"
-drtpy --verbose contract clean "contracts/examples/simple-erc20"
-drtpy --verbose contract clean "contracts/feature-tests/basic-features"
-drtpy --verbose contract clean "contracts/feature-tests/async/async-alice"
-drtpy --verbose contract clean "contracts/feature-tests/async/async-bob"
-drtpy --verbose contract clean "contracts/feature-tests/use-module"
+set -e
+SMART_CONTRACT_JSONS=$(find . -name "numbat.json")
+for smart_contract_json in $SMART_CONTRACT_JSONS
+do
+    smart_contract_folder=$(dirname $smart_contract_json)
+    echo ""
+    (set -x; drtpy --verbose contract clean $smart_contract_folder)
+done
+
+# not wasm, but worth cleaning from time to time
+
+cargo clean
+cd numbat-wasm-node
+cargo clean
+cd ..
+cd numbat-wasm-output
+cargo clean
+cd ..

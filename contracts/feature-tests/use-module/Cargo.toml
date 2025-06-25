@@ -22,43 +22,43 @@ default = [
 
 [dependencies.numbat-wasm-module-features-wasm]
 package = "numbat-wasm-module-features"
-version = "0.10.3"
+version = "0.0.5"
 path = "../../modules/numbat-wasm-module-features"
 features = ["wasm-output-mode"]
 optional = true
 
 [dependencies.numbat-wasm-module-features-default]
 package = "numbat-wasm-module-features"
-version = "0.10.3"
+version = "0.0.5"
 path = "../../modules/numbat-wasm-module-features"
 optional = true
 
 [dependencies.numbat-wasm-module-pause-wasm]
 package = "numbat-wasm-module-pause"
-version = "0.10.3"
+version = "0.0.5"
 path = "../../modules/numbat-wasm-module-pause"
 features = ["wasm-output-mode"]
 optional = true
 
 [dependencies.numbat-wasm-module-pause-default]
 package = "numbat-wasm-module-pause"
-version = "0.10.3"
+version = "0.0.5"
 path = "../../modules/numbat-wasm-module-pause"
 optional = true
 
 [dependencies.numbat-wasm]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm"
 
 [dependencies.numbat-wasm-derive]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm-derive"
 
 [dependencies.numbat-wasm-node]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm-node"
 optional = true
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm-debug"

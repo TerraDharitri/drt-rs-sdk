@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm"
-version = "0.10.3"
+version = "0.0.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@numbat.com>", "Numbat Network <contact@numbat.com>"]
@@ -17,8 +17,9 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-t
 wee_alloc = "0.4"
 arrayvec = { version = "0.5.2", default-features = false, features = ["array-sizes-33-128", "array-sizes-129-255"] }
 hashbrown = "0.9.1"
+hex-literal = "0.3.1"
 
 [dependencies.numbat-codec]
-version = "0.4.2"
+version = "0.0.5"
 path = "../numbat-codec"
 features = ["derive"]

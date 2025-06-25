@@ -1,37 +1,27 @@
-use numbat_wasm::{Address, H256};
-
-use crate::big_int_mock::*;
-use crate::big_uint_mock::*;
+use super::mock_error::BlockchainMockError;
 use crate::contract_map::*;
 use crate::display_util::*;
-use crate::ext_mock::*;
-
-use numbat_wasm::err_msg;
-use numbat_wasm::BigUintApi;
-use numbat_wasm::CallableContract;
-use numbat_wasm::ContractHookApi;
-
-use num_bigint::{BigInt, BigUint};
-use num_traits::{cast::ToPrimitive, Zero};
-
+use crate::tx_context::*;
 use alloc::boxed::Box;
 use alloc::vec::Vec;
-
+use numbat_wasm::types::Address;
+use num_bigint::BigUint;
+use num_traits::Zero;
 use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Write;
 
-use alloc::rc::Rc;
-use core::cell::RefCell;
-
 const NUMBAT_REWARD_KEY: &[u8] = b"NUMBATreward";
+
+pub type AccountStorage = HashMap<Vec<u8>, Vec<u8>>;
+pub type AccountDcdt = HashMap<Vec<u8>, BigUint>;
 
 pub struct AccountData {
 	pub address: Address,
 	pub nonce: u64,
 	pub balance: BigUint,
-	pub storage: HashMap<Vec<u8>, Vec<u8>>,
-	pub dcdt: Option<HashMap<Vec<u8>, BigUint>>,
+	pub storage: AccountStorage,
+	pub dcdt: AccountDcdt,
 	pub contract_path: Option<Vec<u8>>,
 	pub contract_owner: Option<Address>,
 }
@@ -54,12 +44,12 @@ impl fmt::Display for AccountData {
 		}
 
 		let mut dcdt_buf = String::new();
-		let dcdt_unwrapped = self.dcdt.clone().unwrap_or_default();
-		let mut dcdt_keys: Vec<Vec<u8>> = dcdt_unwrapped.iter().map(|(k, _)| k.clone()).collect();
+		let mut dcdt_keys: Vec<Vec<u8>> =
+			self.dcdt.clone().iter().map(|(k, _)| k.clone()).collect();
 		dcdt_keys.sort();
 
 		for key in &dcdt_keys {
-			let value = dcdt_unwrapped.get(key).unwrap();
+			let value = self.dcdt.get(key).unwrap();
 			write!(
 				&mut dcdt_buf,
 				"\n\t\t{} -> 0x{}",
@@ -175,16 +165,20 @@ impl BlockchainMock {
 		}
 	}
 
-	pub fn subtract_tx_payment(&mut self, address: &Address, call_value: &BigUint) {
+	pub fn subtract_tx_payment(
+		&mut self,
+		address: &Address,
+		call_value: &BigUint,
+	) -> Result<(), BlockchainMockError> {
 		let sender_account = self
 			.accounts
 			.get_mut(address)
 			.unwrap_or_else(|| panic!("Sender account not found"));
-		assert!(
-			&sender_account.balance >= call_value,
-			"Not enough balance to send tx payment"
-		);
+		if &sender_account.balance < call_value {
+			return Err("failed transfer (insufficient funds)".into());
+		}
 		sender_account.balance -= call_value;
+		Ok(())
 	}
 
 	pub fn subtract_tx_gas(&mut self, address: &Address, gas_limit: u64, gas_price: u64) {
@@ -208,17 +202,36 @@ impl BlockchainMock {
 		account.balance += amount;
 	}
 
-	pub fn send_balance(&mut self, contract_address: &Address, send_balance_list: &[SendBalance]) {
+	pub fn send_balance(
+		&mut self,
+		contract_address: &Address,
+		send_balance_list: &[SendBalance],
+	) -> Result<(), BlockchainMockError> {
 		for send_balance in send_balance_list {
-			self.subtract_tx_payment(contract_address, &send_balance.amount);
-			self.increase_balance(&send_balance.recipient, &send_balance.amount);
+			if send_balance.token.is_rewa() {
+				self.subtract_tx_payment(contract_address, &send_balance.amount)?;
+				self.increase_balance(&send_balance.recipient, &send_balance.amount);
+			} else {
+				let dcdt_token_identifier = send_balance.token.as_dcdt_identifier();
+				self.substract_dcdt_balance(
+					contract_address,
+					dcdt_token_identifier,
+					&send_balance.amount,
+				);
+				self.increase_dcdt_balance(
+					&send_balance.recipient,
+					dcdt_token_identifier,
+					&send_balance.amount,
+				);
+			}
 		}
+		Ok(())
 	}
 
 	pub fn substract_dcdt_balance(
 		&mut self,
 		address: &Address,
-		dcdt_token_name: &[u8],
+		dcdt_token_identifier: &[u8],
 		value: &BigUint,
 	) {
 		let sender_account = self
@@ -226,18 +239,16 @@ impl BlockchainMock {
 			.get_mut(address)
 			.unwrap_or_else(|| panic!("Sender account {} not found", address_hex(&address)));
 
-		let dcdt = sender_account
+		let dcdt_balance = sender_account
 			.dcdt
-			.as_mut()
-			.unwrap_or_else(|| panic!("Account {} has no dcdt tokens", address_hex(&address)));
-
-		let dcdt_balance = dcdt.get_mut(dcdt_token_name).unwrap_or_else(|| {
-			panic!(
-				"Account {} has no dcdt tokens with name {}",
-				address_hex(&address),
-				String::from_utf8(dcdt_token_name.to_vec()).unwrap()
-			)
-		});
+			.get_mut(dcdt_token_identifier)
+			.unwrap_or_else(|| {
+				panic!(
+					"Account {} has no dcdt tokens with name {}",
+					address_hex(&address),
+					String::from_utf8(dcdt_token_identifier.to_vec()).unwrap()
+				)
+			});
 
 		assert!(
 			*dcdt_balance >= *value,
@@ -252,7 +263,7 @@ impl BlockchainMock {
 	pub fn increase_dcdt_balance(
 		&mut self,
 		address: &Address,
-		dcdt_token_name: &[u8],
+		dcdt_token_identifier: &[u8],
 		value: &BigUint,
 	) {
 		let account = self
@@ -260,20 +271,13 @@ impl BlockchainMock {
 			.get_mut(address)
 			.unwrap_or_else(|| panic!("Receiver account not found"));
 
-		if account.dcdt.is_none() {
-			let mut new_dcdt = HashMap::<Vec<u8>, BigUint>::new();
-			new_dcdt.insert(dcdt_token_name.to_vec(), value.clone());
-
-			account.dcdt = Some(new_dcdt);
+		if account.dcdt.contains_key(dcdt_token_identifier) {
+			let dcdt_balance = account.dcdt.get_mut(dcdt_token_identifier).unwrap();
+			*dcdt_balance += value;
 		} else {
-			let dcdt = account.dcdt.as_mut().unwrap();
-
-			if dcdt.contains_key(dcdt_token_name) {
-				let dcdt_balance = dcdt.get_mut(dcdt_token_name).unwrap();
-				*dcdt_balance += value;
-			} else {
-				dcdt.insert(dcdt_token_name.to_vec(), value.clone());
-			}
+			account
+				.dcdt
+				.insert(dcdt_token_identifier.to_vec(), value.clone());
 		}
 	}
 
@@ -302,14 +306,11 @@ impl BlockchainMock {
 				panic!("Missing new address. Only explicit new deploy addresses supported")
 			});
 		let mut dcdt = HashMap::<Vec<u8>, BigUint>::new();
-		let mut dcdt_opt: Option<HashMap<Vec<u8>, BigUint>> = None;
-
-		if !tx_input.dcdt_token_name.is_empty() {
+		if !tx_input.dcdt_token_identifier.is_empty() {
 			dcdt.insert(
-				tx_input.dcdt_token_name.clone(),
+				tx_input.dcdt_token_identifier.clone(),
 				tx_input.dcdt_value.clone(),
 			);
-			dcdt_opt = Some(dcdt);
 		}
 
 		let old_value = self.accounts.insert(
@@ -319,7 +320,7 @@ impl BlockchainMock {
 				nonce: 0,
 				balance: tx_input.call_value.clone(),
 				storage: new_storage,
-				dcdt: dcdt_opt,
+				dcdt,
 				contract_path: Some(contract_path),
 				contract_owner: Some(tx_input.from.clone()),
 			},
@@ -352,23 +353,35 @@ impl BlockchainMock {
 
 pub fn execute_tx(
 	tx_context: TxContext,
-	contract_identifier: &Vec<u8>,
+	contract_identifier: &[u8],
 	contract_map: &ContractMap<TxContext>,
 ) -> TxOutput {
 	let func_name = tx_context.tx_input_box.func_name.clone();
 	let contract_inst = contract_map.new_contract_instance(contract_identifier, tx_context);
 	let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-		contract_inst.call(func_name.as_slice());
+		let call_successful = contract_inst.call(func_name.as_slice());
+		if !call_successful {
+			std::panic::panic_any(TxPanic {
+				status: 1,
+				message: b"invalid function (not found)".to_vec(),
+			});
+		}
 		let context = contract_inst.into_api();
 		context.into_output()
 	}));
 	match result {
-		Ok(tx_result) => tx_result,
+		Ok(tx_output) => tx_output,
 		Err(panic_any) => panic_result(panic_any),
 	}
 }
 
 fn panic_result(panic_any: Box<dyn std::any::Any + std::marker::Send>) -> TxOutput {
+	if panic_any.downcast_ref::<TxOutput>().is_some() {
+		// async calls panic with the tx output directly
+		// it is not a failure, simply a way to kill the execution
+		return *panic_any.downcast::<TxOutput>().unwrap();
+	}
+
 	if let Some(panic_obj) = panic_any.downcast_ref::<TxPanic>() {
 		return TxOutput::from_panic_obj(panic_obj);
 	}
@@ -388,6 +401,7 @@ pub struct BlockchainTxInfo {
 	pub previous_block_info: BlockInfo,
 	pub current_block_info: BlockInfo,
 	pub contract_balance: BigUint,
+	pub contract_dcdt: HashMap<Vec<u8>, BigUint>,
 	pub contract_owner: Option<Address>,
 }
 
@@ -398,6 +412,7 @@ impl BlockchainMock {
 				previous_block_info: self.previous_block_info.clone(),
 				current_block_info: self.current_block_info.clone(),
 				contract_balance: contract.balance.clone(),
+				contract_dcdt: contract.dcdt.clone(),
 				contract_owner: contract.contract_owner.clone(),
 			}
 		} else {
@@ -405,6 +420,7 @@ impl BlockchainMock {
 				previous_block_info: self.previous_block_info.clone(),
 				current_block_info: self.current_block_info.clone(),
 				contract_balance: 0u32.into(),
+				contract_dcdt: HashMap::new(),
 				contract_owner: None,
 			}
 		}

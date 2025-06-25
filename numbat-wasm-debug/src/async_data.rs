@@ -1,11 +1,9 @@
-use crate::display_util::*;
-use crate::ext_mock::*;
+use crate::tx_context::*;
 use numbat_wasm::numbat_codec::*;
 use numbat_wasm::hex_call_data::HexCallDataDeserializer;
-use numbat_wasm::{Address, H256};
+use numbat_wasm::types::{Address, H256};
 
-use num_bigint::{BigInt, BigUint};
-use num_traits::cast::ToPrimitive;
+use num_bigint::BigUint;
 
 use alloc::vec::Vec;
 
@@ -23,11 +21,11 @@ pub fn async_call_tx_input(async_data: &AsyncCallTxData, contract_addr: &Address
 	let mut de = HexCallDataDeserializer::new(async_data.call_data.as_slice());
 	let func_name = de.get_func_name().to_vec();
 	let mut args: Vec<Vec<u8>> = Vec::new();
-	let mut dcdt_token_name = Vec::<u8>::new();
+	let mut dcdt_token_identifier = Vec::<u8>::new();
 	let mut dcdt_value = 0u32.into();
 
 	if func_name == DCDT_TRANSFER_STRING {
-		dcdt_token_name = de.next_argument().unwrap().unwrap();
+		dcdt_token_identifier = de.next_argument().unwrap().unwrap();
 		dcdt_value = BigUint::from_bytes_be(&de.next_argument().unwrap().unwrap());
 	}
 
@@ -39,7 +37,7 @@ pub fn async_call_tx_input(async_data: &AsyncCallTxData, contract_addr: &Address
 		to: async_data.to.clone(),
 		call_value: async_data.call_value.clone(),
 		dcdt_value,
-		dcdt_token_name,
+		dcdt_token_identifier,
 		func_name,
 		args,
 		gas_limit: 1000,
@@ -66,7 +64,7 @@ pub fn async_callback_tx_input(
 		to: contract_addr.clone(),
 		call_value: 0u32.into(),
 		dcdt_value: 0u32.into(),
-		dcdt_token_name: Vec::new(),
+		dcdt_token_identifier: Vec::new(),
 		func_name: b"callBack".to_vec(),
 		args,
 		gas_limit: 1000,

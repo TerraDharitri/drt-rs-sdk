@@ -1,5 +1,5 @@
-use numbat_wasm::{BoxedBytes, Vec};
-derive_imports!();
+use numbat_wasm::types::{BoxedBytes, Vec};
+numbat_wasm::derive_imports!();
 
 /// Copied from numbat-wasm serialization tests.
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]

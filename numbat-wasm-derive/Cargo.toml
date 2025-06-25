@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-derive"
-version = "0.10.3"
+version = "0.0.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@numbat.com>", "Numbat Network <contact@numbat.com>"]

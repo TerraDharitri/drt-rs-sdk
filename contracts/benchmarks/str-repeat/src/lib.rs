@@ -1,6 +1,6 @@
 #![no_std]
 
-imports!();
+numbat_wasm::imports!();
 
 #[numbat_wasm_derive::contract(StrRepeatImpl)]
 pub trait StrRepeat {

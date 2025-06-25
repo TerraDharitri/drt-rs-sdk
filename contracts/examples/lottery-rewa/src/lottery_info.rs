@@ -1,6 +1,7 @@
-use numbat_wasm::{Address, BigUintApi, Vec};
+use numbat_wasm::api::BigUintApi;
+use numbat_wasm::types::{Address, Vec};
 
-derive_imports!();
+numbat_wasm::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct LotteryInfo<BigUint: BigUintApi> {

@@ -20,7 +20,7 @@ path = ".."
 features=["wasm-output-mode"]
 
 [dependencies.numbat-wasm-output]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../../../numbat-wasm-output"
 features=["wasm-output-mode"]
 

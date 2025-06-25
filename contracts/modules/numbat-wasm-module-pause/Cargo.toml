@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-module-pause"
-version = "0.10.3"
+version = "0.0.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@numbat.com>", "Numbat Network <contact@numbat.com>"]
@@ -17,18 +17,18 @@ categories = ["no-std", "wasm", "cryptography::cryptocurrencies"]
 wasm-output-mode = ["numbat-wasm-node"]
 
 [dependencies.numbat-wasm]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm"
 
 [dependencies.numbat-wasm-derive]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm-derive"
 
 [dependencies.numbat-wasm-node]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm-node"
 optional = true
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.10.3"
+version = "0.0.5"
 path = "../../../numbat-wasm-debug"

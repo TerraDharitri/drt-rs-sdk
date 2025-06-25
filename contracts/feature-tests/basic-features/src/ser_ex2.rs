@@ -1,4 +1,4 @@
-derive_imports!();
+numbat_wasm::derive_imports!();
 
 /// Copied from numbat-wasm serialization tests.
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]

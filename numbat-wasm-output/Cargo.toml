@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-output"
-version = "0.10.3"
+version = "0.0.5"
 edition = "2018"
 
 authors = ["Andrei Marinica <andrei.marinica@numbat.com>", "Numbat Network <contact@numbat.com>"]
@@ -27,5 +27,5 @@ panic-message = []
 wee_alloc = "0.4"
 
 [dependencies.numbat-wasm-node]
-version = "0.10.3"
+version = "0.0.5"
 path = "../numbat-wasm-node"

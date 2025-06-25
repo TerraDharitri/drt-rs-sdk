@@ -4,7 +4,7 @@ use numbat_codec_derive::*;
 use numbat_codec::test_util::{check_dep_encode_decode, check_top_encode_decode};
 use numbat_codec::*;
 
-// to test, run the following command in numbat-codec-derive folder:
+// to test, run the following command in numbat-codec folder:
 // cargo expand --test struct_with_generic_derive_test > expanded.rs
 
 trait SimpleTrait {
