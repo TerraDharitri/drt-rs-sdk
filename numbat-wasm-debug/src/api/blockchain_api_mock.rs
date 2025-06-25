@@ -2,7 +2,7 @@ use super::big_uint_api_mock::*;
 use crate::TxContext;
 use numbat_wasm::{
 	api::BigUintApi,
-	types::{Address, DcdtTokenData, H256},
+	types::{Address, DcdtTokenData, TokenIdentifier, H256},
 };
 
 impl numbat_wasm::api::BlockchainApi for TxContext {
@@ -102,20 +102,29 @@ impl numbat_wasm::api::BlockchainApi for TxContext {
 			.clone()
 	}
 
-	fn get_current_dcdt_nft_nonce(&self, _address: &Address, _token: &[u8]) -> u64 {
+	fn get_current_dcdt_nft_nonce(&self, _address: &Address, _token: &TokenIdentifier) -> u64 {
 		// TODO: Implement
 		0u64
 	}
 
 	// TODO: Include nonce and create a map like: TokenId -> Nonce -> Amount
-	fn get_dcdt_balance(&self, address: &Address, token: &[u8], _nonce: u64) -> RustBigUint {
+	fn get_dcdt_balance(
+		&self,
+		address: &Address,
+		token: &TokenIdentifier,
+		_nonce: u64,
+	) -> RustBigUint {
 		if address != &self.get_sc_address() {
 			panic!(
 				"get_dcdt_balance not yet implemented for accounts other than the contract itself"
 			);
 		}
 
-		match self.blockchain_info_box.contract_dcdt.get(&token.to_vec()) {
+		match self
+			.blockchain_info_box
+			.contract_dcdt
+			.get(&token.as_dcdt_identifier().to_vec())
+		{
 			Some(value) => value.clone().into(),
 			None => RustBigUint::zero(),
 		}
@@ -124,7 +133,7 @@ impl numbat_wasm::api::BlockchainApi for TxContext {
 	fn get_dcdt_token_data(
 		&self,
 		_address: &Address,
-		_token: &[u8],
+		_token: &TokenIdentifier,
 		_nonce: u64,
 	) -> DcdtTokenData<RustBigUint> {
 		panic!("get_dcdt_token_data not yet implemented")

@@ -1,5 +1,5 @@
 PEM_FILE="./ping-pong.pem"
-PING_PONG_CONTRACT="./drt-rs-sdk/contracts/examples/ping-pong-rewa"
+PING_PONG_CONTRACT="./numbat-wasm-rs/contracts/examples/ping-pong-rewa"
 
 PROXY_ARGUMENT="--proxy=https://devnet-api.numbat.com"
 CHAIN_ARGUMENT="--chain=D"

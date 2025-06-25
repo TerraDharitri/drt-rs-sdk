@@ -1,7 +1,9 @@
 use super::AndesBigUint;
 use crate::AndesApiImpl;
 use numbat_wasm::api::BlockchainApi;
-use numbat_wasm::types::{Address, Box, BoxedBytes, DcdtTokenData, DcdtTokenType, H256};
+use numbat_wasm::types::{
+	Address, Box, BoxedBytes, DcdtTokenData, DcdtTokenType, TokenIdentifier, H256,
+};
 
 extern "C" {
 	fn getSCAddress(resultOffset: *mut u8);
@@ -209,7 +211,7 @@ impl BlockchainApi for AndesApiImpl {
 	}
 
 	#[inline]
-	fn get_current_dcdt_nft_nonce(&self, address: &Address, token: &[u8]) -> u64 {
+	fn get_current_dcdt_nft_nonce(&self, address: &Address, token: &TokenIdentifier) -> u64 {
 		unsafe {
 			getCurrentDCDTNFTNonce(
 				address.as_ref().as_ptr(),
@@ -220,7 +222,12 @@ impl BlockchainApi for AndesApiImpl {
 	}
 
 	#[inline]
-	fn get_dcdt_balance(&self, address: &Address, token: &[u8], nonce: u64) -> AndesBigUint {
+	fn get_dcdt_balance(
+		&self,
+		address: &Address,
+		token: &TokenIdentifier,
+		nonce: u64,
+	) -> AndesBigUint {
 		unsafe {
 			let result = bigIntNew(0);
 			bigIntGetDCDTExternalBalance(
@@ -239,13 +246,13 @@ impl BlockchainApi for AndesApiImpl {
 	fn get_dcdt_token_data(
 		&self,
 		address: &Address,
-		token: &[u8],
+		token: &TokenIdentifier,
 		nonce: u64,
 	) -> DcdtTokenData<AndesBigUint> {
 		unsafe {
 			let value = bigIntNew(0);
 			let mut properties = [0u8; 2]; // always 2 bytes
-			let mut hash = H256::zero();
+			let mut hash = BoxedBytes::allocate(128);
 
 			let name_len = getDCDTNFTNameLength(
 				address.as_ref().as_ptr(),

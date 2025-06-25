@@ -21,16 +21,16 @@ jobs:
           source .github/workflows/env
           pip3 install drtpy
           mkdir $HOME/numbatsdk
+          drtpy config set dependencies.andestools.tag v1.3.3
           drtpy deps install andestools
       - name: Build the wasm contracts
         run: |
           source .github/workflows/env
           ./build-wasm.sh
-      # # Running the denali tests through Andes is not yet stable enough
-      # - name: Run the wasm denali tests
-      #   run: |
-      #     source .github/workflows/env
-      #     denali-test .
+      - name: Run Andes tests
+        run: |
+          source .github/workflows/env
+          cargo test --features andes-tests
   rust_test:
     name: Rust tests
     runs-on: ubuntu-latest

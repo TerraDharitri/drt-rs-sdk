@@ -14,10 +14,28 @@ pub enum Status {
 #[numbat_wasm_derive::contract]
 pub trait Crowdfunding {
 	#[init]
-	fn init(&self, target: Self::BigUint, deadline: u64, token_name: TokenIdentifier) {
+	fn init(
+		&self,
+		target: Self::BigUint,
+		deadline: u64,
+		token_name: TokenIdentifier,
+	) -> SCResult<()> {
+		require!(target > 0, "Target must be more than 0");
 		self.target().set(&target);
+
+		require!(
+			deadline > self.get_current_time(),
+			"Deadline can't be in the past"
+		);
 		self.deadline().set(&deadline);
+
+		require!(
+			token_name.is_rewa() || token_name.is_valid_dcdt_identifier(),
+			"Invalid token provided"
+		);
 		self.cf_token_name().set(&token_name);
+
+		Ok(())
 	}
 
 	#[endpoint]
@@ -58,8 +76,7 @@ pub trait Crowdfunding {
 		if token.is_rewa() {
 			self.blockchain().get_sc_balance()
 		} else {
-			self.blockchain()
-				.get_dcdt_balance(&sc_address, token.as_dcdt_identifier(), 0)
+			self.blockchain().get_dcdt_balance(&sc_address, &token, 0)
 		}
 	}
 

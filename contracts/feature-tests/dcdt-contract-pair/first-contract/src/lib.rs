@@ -101,7 +101,7 @@ pub trait FirstContract {
 
 		let _ = self.send().direct_dcdt_execute(
 			&second_contract_address,
-			expected_token_name.as_dcdt_identifier(),
+			&expected_token_name,
 			&dcdt_value,
 			self.blockchain().get_gas_left(),
 			SECOND_CONTRACT_REJECT_DCDT_PAYMENT,
@@ -126,7 +126,7 @@ pub trait FirstContract {
 
 		let _ = self.send().direct_dcdt_execute(
 			&second_contract_address,
-			expected_token_name.as_dcdt_identifier(),
+			&expected_token_name,
 			&dcdt_value,
 			self.blockchain().get_gas_left(),
 			SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT,

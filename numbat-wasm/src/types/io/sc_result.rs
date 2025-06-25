@@ -3,6 +3,8 @@ use crate::abi::{OutputAbi, TypeAbi, TypeDescriptionContainer};
 use crate::api::EndpointFinishApi;
 use crate::EndpointResult;
 use crate::*;
+use core::convert;
+use core::ops::{ControlFlow, FromResidual, Try};
 
 /// Default way to optionally return an error from a smart contract endpoint.
 #[must_use]
@@ -53,49 +55,40 @@ impl<T> SCResult<T> {
 	}
 }
 
-/// Implementing the `Try` trait overloads the `?` operator.  #teja789
-// impl<T> core::ops::Try for SCResult<T> {
-// 	type Ok = T;
-// 	type Error = SCError;
-// 	fn into_result(self) -> Result<T, SCError> {
-// 		match self {
-// 			SCResult::Ok(t) => Ok(t),
-// 			SCResult::Err(e) => Err(e),
-// 		}
-// 	}
-// 	fn from_error(v: SCError) -> Self {
-// 		SCResult::Err(v)
-// 	}
-// 	fn from_ok(v: T) -> Self {
-// 		SCResult::Ok(v)
-// 	}
-// }                                                     #teja789
-
-use core::ops::{ControlFlow, FromResidual, Try};
-
+/// Implementing the `Try` trait overloads the `?` operator.
+/// Documentation on the new version of the trait:
+/// https://github.com/scottmcm/rfcs/blob/do-or-do-not/text/0000-try-trait-v2.md#the-try-trait
 impl<T> Try for SCResult<T> {
-    type Output = T;
-    type Residual = SCResult<SCError>;
+	type Output = T;
+	type Residual = SCError;
 
-    fn from_output(output: Self::Output) -> Self {
-        SCResult::Ok(output)
-    }
-
-    fn branch(self) -> ControlFlow<Self::Residual, Self::Output> {
-        match self {
-            SCResult::Ok(value) => ControlFlow::Continue(value),
-            SCResult::Err(error) => ControlFlow::Break(SCResult::Err(error)),
-        }
-    }
+	fn branch(self) -> ControlFlow<Self::Residual, T> {
+		match self {
+			SCResult::Ok(t) => ControlFlow::Continue(t),
+			SCResult::Err(e) => ControlFlow::Break(e),
+		}
+	}
+	fn from_output(v: T) -> Self {
+		SCResult::Ok(v)
+	}
 }
 
-impl<T> FromResidual<SCResult<SCError>> for SCResult<T> {
-    fn from_residual(residual: SCResult<SCError>) -> Self {
-        match residual {
-            SCResult::Err(e) => SCResult::Err(e),
-            _ => panic!("Invalid conversion from residual to SCResult"),
-        }
-    }
+impl<T> FromResidual for SCResult<T> {
+	fn from_residual(r: SCError) -> Self {
+		SCResult::Err(r)
+	}
+}
+
+impl<T, E> FromResidual<Result<convert::Infallible, E>> for SCResult<T>
+where
+	E: Into<SCError>,
+{
+	fn from_residual(residual: Result<convert::Infallible, E>) -> Self {
+		match residual {
+			Ok(_) => unreachable!(),
+			Err(e) => SCResult::Err(e.into()),
+		}
+	}
 }
 
 impl<T> EndpointResult for SCResult<T>

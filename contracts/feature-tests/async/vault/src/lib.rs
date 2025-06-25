@@ -23,7 +23,7 @@ pub trait Vault {
 	fn accept_funds(
 		&self,
 		#[payment_token] token: TokenIdentifier,
-		#[payment] payment: Self::BigUint,
+		#[payment_amount] payment: Self::BigUint,
 	) {
 		let nonce = self.call_value().dcdt_token_nonce();
 		let token_type = self.call_value().dcdt_token_type();
@@ -38,9 +38,9 @@ pub trait Vault {
 	fn accept_funds_echo_payment(
 		&self,
 		#[payment_token] token_identifier: TokenIdentifier,
-		#[payment] token_payment: Self::BigUint,
+		#[payment_amount] token_payment: Self::BigUint,
+		#[payment_nonce] token_nonce: u64,
 	) -> SCResult<MultiResult4<TokenIdentifier, BoxedBytes, Self::BigUint, u64>> {
-		let token_nonce = self.call_value().dcdt_token_nonce();
 		let token_type = self.call_value().dcdt_token_type();
 
 		self.accept_funds_event(
@@ -82,12 +82,18 @@ pub trait Vault {
 	) {
 		self.retrieve_funds_event(&token, &amount);
 
+		let caller = self.blockchain().get_caller();
 		let data = match &return_message {
 			OptionalArg::Some(data) => data.as_slice(),
 			OptionalArg::None => &[],
 		};
-		self.send()
-			.direct_via_async_call(&self.blockchain().get_caller(), &token, &amount, data);
+
+		if token.is_rewa() {
+			self.send().direct_rewa(&caller, &amount, data);
+		} else {
+			self.send()
+				.transfer_dcdt_via_async_call(&caller, &token, &amount, data);
+		}
 	}
 
 	#[event("accept_funds")]

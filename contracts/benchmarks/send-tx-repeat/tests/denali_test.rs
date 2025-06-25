@@ -10,14 +10,14 @@ fn contract_map() -> ContractMap<TxContext> {
 }
 
 #[test]
-fn test_send_tx_repeat_without_data_denali() {
-	parse_execute_denali(
+fn test_send_tx_repeat_without_data_denali_rs() {
+	numbat_wasm_debug::denali_rs(
 		"denali/send_tx_repeat_without_data.scen.json",
 		&contract_map(),
 	);
 }
 
 #[test]
-fn test_send_tx_repeat_with_data_denali() {
-	parse_execute_denali("denali/send_tx_repeat_with_data.scen.json", &contract_map());
+fn test_send_tx_repeat_with_data_denali_rs() {
+	numbat_wasm_debug::denali_rs("denali/send_tx_repeat_with_data.scen.json", &contract_map());
 }

@@ -54,20 +54,12 @@ pub trait LocalDcdtAndDcdtNft {
 
 	#[endpoint(localMint)]
 	fn local_mint(&self, token_identifier: TokenIdentifier, amount: Self::BigUint) {
-		self.send().dcdt_local_mint(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
-			&amount,
-		);
+		self.send().dcdt_local_mint(&token_identifier, &amount);
 	}
 
 	#[endpoint(localBurn)]
 	fn local_burn(&self, token_identifier: TokenIdentifier, amount: Self::BigUint) {
-		self.send().dcdt_local_burn(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
-			&amount,
-		);
+		self.send().dcdt_local_burn(&token_identifier, &amount);
 	}
 
 	// Non-Fungible Tokens
@@ -107,13 +99,12 @@ pub trait LocalDcdtAndDcdtNft {
 		amount: Self::BigUint,
 		name: BoxedBytes,
 		royalties: Self::BigUint,
-		hash: H256,
+		hash: BoxedBytes,
 		color: Color,
 		uri: BoxedBytes,
 	) {
 		self.send().dcdt_nft_create::<Color>(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			&amount,
 			&name,
 			&royalties,
@@ -130,22 +121,13 @@ pub trait LocalDcdtAndDcdtNft {
 		nonce: u64,
 		amount: Self::BigUint,
 	) {
-		self.send().dcdt_nft_add_quantity(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
-			nonce,
-			&amount,
-		);
+		self.send()
+			.dcdt_nft_add_quantity(&token_identifier, nonce, &amount);
 	}
 
 	#[endpoint(nftBurn)]
 	fn nft_burn(&self, token_identifier: TokenIdentifier, nonce: u64, amount: Self::BigUint) {
-		self.send().dcdt_nft_burn(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
-			nonce,
-			&amount,
-		);
+		self.send().dcdt_nft_burn(&token_identifier, nonce, &amount);
 	}
 
 	#[endpoint(transferNftViaAsyncCall)]
@@ -157,10 +139,10 @@ pub trait LocalDcdtAndDcdtNft {
 		amount: Self::BigUint,
 		data: BoxedBytes,
 	) {
-		self.send().direct_dcdt_nft_via_async_call(
+		self.send().transfer_dcdt_nft_via_async_call(
 			&self.blockchain().get_sc_address(),
 			&to,
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			nonce,
 			&amount,
 			data.as_slice(),
@@ -184,7 +166,7 @@ pub trait LocalDcdtAndDcdtNft {
 
 		let _ = self.send().direct_dcdt_nft_execute(
 			&to,
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			nonce,
 			&amount,
 			self.blockchain().get_gas_left(),
@@ -233,11 +215,7 @@ pub trait LocalDcdtAndDcdtNft {
 		#[var_args] roles: VarArgs<DcdtLocalRole>,
 	) -> AsyncCall<Self::SendApi> {
 		DCDTSystemSmartContractProxy::new_proxy_obj(self.send())
-			.set_special_roles(
-				&address,
-				token_identifier.as_dcdt_identifier(),
-				roles.as_slice(),
-			)
+			.set_special_roles(&address, &token_identifier, roles.as_slice())
 			.async_call()
 			.with_callback(self.callbacks().change_roles_callback())
 	}
@@ -250,11 +228,7 @@ pub trait LocalDcdtAndDcdtNft {
 		#[var_args] roles: VarArgs<DcdtLocalRole>,
 	) -> AsyncCall<Self::SendApi> {
 		DCDTSystemSmartContractProxy::new_proxy_obj(self.send())
-			.unset_special_roles(
-				&address,
-				token_identifier.as_dcdt_identifier(),
-				roles.as_slice(),
-			)
+			.unset_special_roles(&address, &token_identifier, roles.as_slice())
 			.async_call()
 			.with_callback(self.callbacks().change_roles_callback())
 	}
@@ -265,7 +239,7 @@ pub trait LocalDcdtAndDcdtNft {
 	fn get_fungible_dcdt_balance(&self, token_identifier: &TokenIdentifier) -> Self::BigUint {
 		self.blockchain().get_dcdt_balance(
 			&self.blockchain().get_sc_address(),
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			0,
 		)
 	}
@@ -274,7 +248,7 @@ pub trait LocalDcdtAndDcdtNft {
 	fn get_nft_balance(&self, token_identifier: &TokenIdentifier, nonce: u64) -> Self::BigUint {
 		self.blockchain().get_dcdt_balance(
 			&self.blockchain().get_sc_address(),
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			nonce,
 		)
 	}

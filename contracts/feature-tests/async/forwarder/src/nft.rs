@@ -17,7 +17,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 	fn get_nft_balance(&self, token_identifier: &TokenIdentifier, nonce: u64) -> Self::BigUint {
 		self.blockchain().get_dcdt_balance(
 			&self.blockchain().get_sc_address(),
-			token_identifier.as_dcdt_identifier(),
+			token_identifier,
 			nonce,
 		)
 	}
@@ -80,13 +80,12 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 		amount: Self::BigUint,
 		name: BoxedBytes,
 		royalties: Self::BigUint,
-		hash: H256,
+		hash: BoxedBytes,
 		color: Color,
 		uri: BoxedBytes,
 	) {
 		self.send().dcdt_nft_create::<Color>(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			&amount,
 			&name,
 			&royalties,
@@ -103,22 +102,13 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 		nonce: u64,
 		amount: Self::BigUint,
 	) {
-		self.send().dcdt_nft_add_quantity(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
-			nonce,
-			&amount,
-		);
+		self.send()
+			.dcdt_nft_add_quantity(&token_identifier, nonce, &amount);
 	}
 
 	#[endpoint]
 	fn nft_burn(&self, token_identifier: TokenIdentifier, nonce: u64, amount: Self::BigUint) {
-		self.send().dcdt_nft_burn(
-			self.blockchain().get_gas_left(),
-			token_identifier.as_dcdt_identifier(),
-			nonce,
-			&amount,
-		);
+		self.send().dcdt_nft_burn(&token_identifier, nonce, &amount);
 	}
 
 	#[endpoint]
@@ -130,10 +120,10 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 		amount: Self::BigUint,
 		data: BoxedBytes,
 	) {
-		self.send().direct_dcdt_nft_via_async_call(
+		self.send().transfer_dcdt_nft_via_async_call(
 			&self.blockchain().get_sc_address(),
 			&to,
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			nonce,
 			&amount,
 			data.as_slice(),
@@ -157,7 +147,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 
 		let _ = self.send().direct_dcdt_nft_execute(
 			&to,
-			token_identifier.as_dcdt_identifier(),
+			&token_identifier,
 			nonce,
 			&amount,
 			self.blockchain().get_gas_left(),

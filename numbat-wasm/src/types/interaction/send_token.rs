@@ -24,8 +24,17 @@ where
 
 	#[inline]
 	fn finish<FA>(&self, _api: FA) {
-		self.api
-			.direct_via_async_call(&self.to, &self.token, &self.amount, self.data.as_slice());
+		if self.token.is_rewa() {
+			self.api
+				.direct_rewa(&self.to, &self.amount, self.data.as_slice());
+		} else {
+			self.api.transfer_dcdt_via_async_call(
+				&self.to,
+				&self.token,
+				&self.amount,
+				self.data.as_slice(),
+			);
+		}
 	}
 }
 

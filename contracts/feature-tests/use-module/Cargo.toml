@@ -1,7 +1,7 @@
 [package]
 name = "use-module"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
+authors = ["Andrei Marinica <andrei.marinica@numbat.com>"]
 edition = "2018"
 publish = false
 
@@ -11,54 +11,69 @@ path = "src/lib.rs"
 [features]
 wasm-output-mode = [
     "numbat-wasm-node",
+    "numbat-wasm-module-dns-wasm",
     "numbat-wasm-module-features-wasm",
     "numbat-wasm-module-pause-wasm"
 ]
 
 default = [
+    "numbat-wasm-module-dns-default",
     "numbat-wasm-module-features-default",
     "numbat-wasm-module-pause-default"
 ]
 
+[dependencies.numbat-wasm-module-dns-wasm]
+package = "numbat-wasm-module-dns"
+version = "0.0.9"
+path = "../../modules/numbat-wasm-module-dns"
+features = ["wasm-output-mode"]
+optional = true
+
+[dependencies.numbat-wasm-module-dns-default]
+package = "numbat-wasm-module-dns"
+version = "0.0.9"
+path = "../../modules/numbat-wasm-module-dns"
+optional = true
+
 [dependencies.numbat-wasm-module-features-wasm]
 package = "numbat-wasm-module-features"
-version = "0.0.7"
+version = "0.0.9"
 path = "../../modules/numbat-wasm-module-features"
 features = ["wasm-output-mode"]
 optional = true
 
 [dependencies.numbat-wasm-module-features-default]
 package = "numbat-wasm-module-features"
-version = "0.0.7"
+version = "0.0.9"
 path = "../../modules/numbat-wasm-module-features"
 optional = true
 
 [dependencies.numbat-wasm-module-pause-wasm]
 package = "numbat-wasm-module-pause"
-version = "0.0.7"
+version = "0.0.9"
 path = "../../modules/numbat-wasm-module-pause"
 features = ["wasm-output-mode"]
 optional = true
 
 [dependencies.numbat-wasm-module-pause-default]
 package = "numbat-wasm-module-pause"
-version = "0.0.7"
+version = "0.0.9"
 path = "../../modules/numbat-wasm-module-pause"
 optional = true
 
 [dependencies.numbat-wasm]
-version = "0.0.7"
+version = "0.0.9"
 path = "../../../numbat-wasm"
 
 [dependencies.numbat-wasm-derive]
-version = "0.0.7"
+version = "0.0.9"
 path = "../../../numbat-wasm-derive"
 
 [dependencies.numbat-wasm-node]
-version = "0.0.7"
+version = "0.0.9"
 path = "../../../numbat-wasm-node"
 optional = true
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.7"
+version = "0.0.9"
 path = "../../../numbat-wasm-debug"

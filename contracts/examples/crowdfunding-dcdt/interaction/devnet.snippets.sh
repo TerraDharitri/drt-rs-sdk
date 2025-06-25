@@ -1,12 +1,18 @@
 ALICE="${USERS}/alice.pem"
+BOB="${USERS}/bob.pem"
+
 ADDRESS=$(drtpy data load --key=address-devnet)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-devnet)
-DEPLOY_ARGUMENTS="12 4096 0xABBAABBA"
+
 DEPLOY_GAS="80000000"
+TARGET=10
+DEADLINE_UNIX_TIMESTAMP=1609452000 # Fri Jan 01 2021 00:00:00 GMT+0200 (Eastern European Standard Time)
+REWA_TOKEN_ID=0x52455741 # "REWA"
 
 deploy() {
     drtpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
-          --gas-limit=${DEPLOY_GAS} --arguments ${DEPLOY_ARGUMENTS} \
+          --gas-limit=${DEPLOY_GAS} \
+          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${REWA_TOKEN_ID} \
           --outfile="deploy-devnet.interaction.json" --send || return
 
     TRANSACTION=$(drtpy data parse --file="deploy-devnet.interaction.json" --expression="data['emitted_tx']['hash']")
@@ -21,7 +27,8 @@ deploy() {
 
 deploySimulate() {
     drtpy --verbose contract deploy --project=${PROJECT} --recall-nonce --pem=${ALICE} \
-          --gas-limit=${DEPLOY_GAS} --arguments ${DEPLOY_ARGUMENTS} \
+          --gas-limit=${DEPLOY_GAS} \
+          --arguments ${TARGET} ${DEADLINE_UNIX_TIMESTAMP} ${REWA_TOKEN_ID} \
           --outfile="simulate-devnet.interaction.json" --simulate || return
 
     TRANSACTION=$(drtpy data parse --file="simulate-devnet.interaction.json" --expression="data['result']['hash']")
@@ -41,16 +48,47 @@ checkDeployment() {
     drtpy account get --address=$ADDRESS --omit-fields="['code']"
 }
 
+# BOB sends funds
+sendFunds() {
+    drtpy --verbose contract call ${ADDRESS} --recall-nonce --pem=${BOB} --gas-limit=10000000 \
+        --function="fund" --value=5 \
+        --send
+}
+
+# ALICE claims
+claimFunds() {
+    drtpy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
+        --function="claim" \
+        --send
+}
+
+# 0 - Funding Period
+# 1 - Successful
+# 2 - Failed
 status() {
     drtpy --verbose contract query ${ADDRESS} --function="status"
 }
 
-currentFunds() {
-    drtpy --verbose contract query ${ADDRESS} --function="currentFunds"
+getCurrentFunds() {
+    drtpy --verbose contract query ${ADDRESS} --function="getCurrentFunds"
 }
 
-sendFunds() {
-    drtpy --verbose contract call ${ADDRESS} --recall-nonce --pem=${ALICE} --gas-limit=10000000 \
-        --function="fund" --value=3\
-        --send
+getTarget() {
+    drtpy --verbose contract query ${ADDRESS} --function="getTarget"
+}
+
+getDeadline() {
+    drtpy --verbose contract query ${ADDRESS} --function="getDeadline"
+}
+
+# BOB's deposit
+getDeposit() {
+    local BOB_ADDRESS_BECH32=drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c
+    local BOB_ADDRESS_HEX=0x$(drtpy wallet bech32 --decode ${BOB_ADDRESS_BECH32})
+
+    drtpy --verbose contract query ${ADDRESS} --function="getDeposit" --arguments ${BOB_ADDRESS_HEX}
+}
+
+getCrowdfundingTokenName() {
+    drtpy --verbose contract query ${ADDRESS} --function="getCrowdfundingTokenName"
 }

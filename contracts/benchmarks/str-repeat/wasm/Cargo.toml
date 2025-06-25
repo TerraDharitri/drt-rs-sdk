@@ -1,7 +1,7 @@
 [package]
 name = "str-repeat-wasm"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
+authors = ["Andrei Marinica <andrei.marinica@numbat.com>"]
 edition = "2018"
 publish = false
 
@@ -21,7 +21,7 @@ features = ["wasm-output-mode"]
 default-features = false
 
 [dependencies.numbat-wasm-output]
-version = "0.0.7"
+version = "0.0.9"
 path = "../../../../numbat-wasm-output"
 features = ["wasm-output-mode"]
 

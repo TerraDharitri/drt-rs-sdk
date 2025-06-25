@@ -4,6 +4,32 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [Unreleased]
+### New math hooks exposed from Andes:
+- `pow`, `log2`, `sqrt`
+- cryptography: elliptic curves
+
+## [numbat-wasm 0.17.2] - 2021-06-04
+- callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
+
+## [numbat-wasm 0.17.1] - 2021-06-04
+- `legacy-nft-transfer` feature for interacting with older versions of Andes
+
+## [numbat-wasm 0.17.0] - 2021-05-28
+- Integration tests can now call Andes-Denali (denali-go)
+- Send API refactoring and cleanup
+	- DCDT builtin function calls no longer require explicit gas
+	- sync calls and transfer-execute no longer require explicit gas
+- `#[payment_nonce]` endpoint argument annotation
+- `#[payable]` annotation no longer allowed without argument
+
+## [numbat-wasm 0.16.2, denali 0.7.2] - 2021-05-20
+- New implementation for the `Try` trait for `SCResult`, in accordance to feature `try_trait_v2`
+- Published DNS module, which helps contracts register usernames for themselves
+- `DCDTLocalRole` more expressive type ABI
+
+## [numbat-wasm 0.16.1, denali 0.7.1] - 2021-05-18
+- Improvements in denali-rs: username, contract owner, nested async calls
 
 ## [numbat-wasm 0.16.0, denali 0.7.0, numbat-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
@@ -17,10 +43,6 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Callbacks and callback proxies needed to be adapted to the new system, but work similar to how they did in the past.
 - Contracts can define proxy getter methods using the `#[proxy]` annotation.
 - Callbacks can now have names, just like endpoints. This name gets saved in the callback closure in storage, but has no other impact on the contract. The reason I needed it was to help me with defining callback forwarders and avoiding some name collisions there. Callback forwarders are still needed for a little longer, until module callbacks are properly implemented.
-
-### New math hooks exposed from Andes:
-- `pow`, `log2`, `sqrt`
-- cryptography: elliptic curves
 
 ### Denali
 - denali-rs syntax synchronized with denali-go (`sc:` syntax, new DCDT call value syntax, _no NFTs yet_).
@@ -251,7 +273,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [numbat-wasm 0.4.4] - 2020-05-19
 - Serialization fixes for small ints
-- `storage_load_cumulated_validator_reward` hook
+- `get_cumulated_validator_rewards` hook
 
 ## [numbat-wasm 0.4.3] - 2020-05-11
 - Allow any (macro-based) serializable argument in async call

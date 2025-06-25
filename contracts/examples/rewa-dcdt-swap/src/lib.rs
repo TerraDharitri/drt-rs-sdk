@@ -95,12 +95,12 @@ pub trait RewaDcdtSwap {
 		);
 
 		let wrapped_rewa_token_id = self.wrapped_rewa_token_id().get();
-		let dcdt_token_id = wrapped_rewa_token_id.as_dcdt_identifier();
+		let dcdt_token_id = wrapped_rewa_token_id;
 		let caller = self.blockchain().get_caller();
 		self.mint_started_event(&caller, &amount);
 
 		Ok(DCDTSystemSmartContractProxy::new_proxy_obj(self.send())
-			.mint(dcdt_token_id, &amount)
+			.mint(&dcdt_token_id, &amount)
 			.async_call()
 			.with_callback(self.callbacks().dcdt_mint_callback(&caller, &amount)))
 	}
@@ -144,9 +144,9 @@ pub trait RewaDcdtSwap {
 		self.unused_wrapped_rewa().set(&unused_wrapped_rewa);
 
 		let caller = self.blockchain().get_caller();
-		let _ = self.send().direct_dcdt_via_transf_exec(
+		let _ = self.send().direct(
 			&caller,
-			self.wrapped_rewa_token_id().get().as_dcdt_identifier(),
+			&self.wrapped_rewa_token_id().get(),
 			&payment,
 			b"wrapping",
 		);

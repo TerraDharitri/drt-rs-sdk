@@ -6,6 +6,11 @@ mod internal_mod_c;
 
 numbat_wasm::imports!();
 
+#[cfg(feature = "numbat-wasm-module-dns-default")]
+pub use numbat_wasm_module_dns_default as dns;
+#[cfg(feature = "numbat-wasm-module-dns-wasm")]
+pub use numbat_wasm_module_dns_wasm as dns;
+
 #[cfg(feature = "numbat-wasm-module-features-default")]
 pub use numbat_wasm_module_features_default as features;
 #[cfg(feature = "numbat-wasm-module-features-wasm")]
@@ -20,6 +25,7 @@ use features::feature_guard;
 
 /// Contract that tests that using modules works correctly.
 /// Also provides testing for the most common modules:
+/// - DnsModule
 /// - FeaturesModule
 /// - PauseModule
 #[numbat_wasm_derive::contract]
@@ -29,6 +35,7 @@ pub trait UseModule:
 	+ internal_mod_c::InternalModuleC
 	+ features::FeaturesModule
 	+ pause::PauseModule
+	+ dns::DnsModule
 {
 	#[init]
 	fn init(&self) {}

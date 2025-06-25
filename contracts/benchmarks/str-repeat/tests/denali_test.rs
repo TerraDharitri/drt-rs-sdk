@@ -10,6 +10,6 @@ fn contract_map() -> ContractMap<TxContext> {
 }
 
 #[test]
-fn test_str_repeat_denali() {
-	parse_execute_denali("denali/str_repeat.scen.json", &contract_map());
+fn test_str_repeat_denali_rs() {
+	numbat_wasm_debug::denali_rs("denali/str_repeat.scen.json", &contract_map());
 }

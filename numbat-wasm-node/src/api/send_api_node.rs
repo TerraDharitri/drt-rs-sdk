@@ -2,7 +2,7 @@ use super::{AndesBigInt, AndesBigUint};
 use crate::AndesApiImpl;
 use alloc::vec::Vec;
 use numbat_wasm::api::{BlockchainApi, SendApi, StorageReadApi, StorageWriteApi};
-use numbat_wasm::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata};
+use numbat_wasm::types::{Address, ArgBuffer, BoxedBytes, CodeMetadata, TokenIdentifier};
 
 extern "C" {
 	fn transferValue(
@@ -117,6 +117,11 @@ impl SendApi for AndesApiImpl {
 		BlockchainApi::get_sc_address(self)
 	}
 
+	#[inline]
+	fn get_gas_left(&self) -> u64 {
+		BlockchainApi::get_gas_left(self)
+	}
+
 	fn direct_rewa(&self, to: &Address, amount: &AndesBigUint, data: &[u8]) {
 		unsafe {
 			let amount_bytes32_ptr = amount.unsafe_buffer_load_be_pad_right(32);
@@ -160,7 +165,7 @@ impl SendApi for AndesApiImpl {
 	fn direct_dcdt_execute(
 		&self,
 		to: &Address,
-		token: &[u8],
+		token: &TokenIdentifier,
 		amount: &AndesBigUint,
 		gas_limit: u64,
 		function: &[u8],
@@ -191,7 +196,7 @@ impl SendApi for AndesApiImpl {
 	fn direct_dcdt_nft_execute(
 		&self,
 		to: &Address,
-		token: &[u8],
+		token: &TokenIdentifier,
 		nonce: u64,
 		amount: &AndesBigUint,
 		gas_limit: u64,

@@ -1,9 +1,6 @@
 #![no_std]
 #![allow(clippy::string_lit_as_bytes)]
 
-#[macro_use]
-extern crate numbat_wasm;
-
 numbat_wasm::imports!();
 
 pub const FEATURE_NOT_SET: u8 = 0;

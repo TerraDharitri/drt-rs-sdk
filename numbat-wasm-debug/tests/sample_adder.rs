@@ -918,7 +918,7 @@ fn contract_map() -> numbat_wasm_debug::ContractMap<numbat_wasm_debug::TxContext
 
 #[test]
 fn test_denali() {
-	numbat_wasm_debug::parse_execute_denali(
+	numbat_wasm_debug::denali_rs(
 		"../contracts/examples/adder/denali/adder.scen.json",
 		&contract_map(),
 	);
