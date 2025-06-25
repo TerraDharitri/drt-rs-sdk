@@ -1,0 +1,19 @@
+[package]
+name = "rewa-dcdt-swap-abi"
+version = "0.0.0"
+authors = [ "you",]
+edition = "2018"
+publish = false
+
+[dev-dependencies]
+
+[dependencies.rewa-dcdt-swap]
+path = ".."
+
+[dependencies.numbat-wasm]
+version = "0.0.5"
+path = "../../../../numbat-wasm"
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.5"
+path = "../../../../numbat-wasm-debug"

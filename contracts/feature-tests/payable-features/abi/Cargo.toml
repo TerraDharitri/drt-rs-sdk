@@ -1,0 +1,17 @@
+[package]
+name = "payable-features-abi"
+version = "0.0.0"
+authors = ["Andrei Marinica <andrei.marinica@numbat.com>"]
+edition = "2018"
+publish = false
+
+[dependencies.payable-features]
+path = ".."
+
+[dependencies.numbat-wasm]
+version = "0.0.5"
+path = "../../../../numbat-wasm"
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.5"
+path = "../../../../numbat-wasm-debug"

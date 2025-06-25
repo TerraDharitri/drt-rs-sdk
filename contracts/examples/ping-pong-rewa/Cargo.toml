@@ -1,0 +1,29 @@
+[package]
+name = "ping-pong-rewa"
+version = "0.0.2"
+authors = [ "Bruda Claudiu-Marcel <claudiu725@yahoo.com>",]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+wasm-output-mode = ["numbat-wasm-node"]
+
+[dependencies.numbat-wasm]
+version = "0.0.5"
+path = "../../../numbat-wasm"
+
+[dependencies.numbat-wasm-derive]
+version = "0.0.5"
+path = "../../../numbat-wasm-derive"
+
+[dependencies.numbat-wasm-node]
+version = "0.0.5"
+path = "../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.5"
+path = "../../../numbat-wasm-debug"
