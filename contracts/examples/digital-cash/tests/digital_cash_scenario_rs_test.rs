@@ -12,15 +12,18 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-#[ignore] // verify_ed25519 not implemented
 fn claim_rewa_rs() {
     dharitri_sc_scenario::run_rs("scenarios/claim-rewa.scen.json", world());
 }
 
 #[test]
-#[ignore] // verify_ed25519 not implemented
 fn claim_dcdt_rs() {
     dharitri_sc_scenario::run_rs("scenarios/claim-dcdt.scen.json", world());
+}
+
+#[test]
+fn claim_fees_rs() {
+    dharitri_sc_scenario::run_rs("scenarios/claim-fees.scen.json", world());
 }
 
 #[test]

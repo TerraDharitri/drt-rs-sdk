@@ -20,7 +20,7 @@ path = ".."
 features = ["ei-unmanaged"]
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "1.2.0"
+version = "1.2.6"
 path = "../../../../../framework/wasm-adapter"
 features = ["ei-unmanaged-node"]
 

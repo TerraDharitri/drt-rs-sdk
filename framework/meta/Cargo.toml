@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-meta"
-version = "1.2.0"
+version = "1.2.6"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -32,7 +32,7 @@ convert_case = "0.6.0"
 hex = "0.4"
 
 [dependencies.dharitri-sc]
-version = "=1.2.0"
+version = "=1.2.6"
 path = "../base"
 features = ["alloc", "num-bigint", "promises", "big-float"]
 

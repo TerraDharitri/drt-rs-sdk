@@ -25,7 +25,7 @@ dharitri_sc::derive_imports!();
 // path = "../../../../vm"
 
 // [dependencies.dharitri-sdk]
-// version = "0.1.1"
+// version = "1.2.6"
 // path = "../../../../sdk/core"
 
 #[derive(

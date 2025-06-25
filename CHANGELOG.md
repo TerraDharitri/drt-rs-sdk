@@ -26,6 +26,17 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
+
+## [sc 1.2.6, vm 1.2.6] - 2023-06-19
+- Bugfix on `ManagedBufferCachedBuilder`, involving large inputs.
+- Explicit enum ABI: `OperationCompletionStatus` is now properly described in the ABI as an enum that gets serialized by name instead of discriminant.
+
+## [sc 0.41.2, codec 1.2.6, vm 0.3.2] - 2023-06-09
+- Releasing a new version of the codec, without the dependency to `wee_alloc`.
+
+## [sc 0.41.1, vm 0.3.1] - 2023-05-15
+- Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
+
 ## [sc 0.41.0, vm 0.3.0] - 2023-05-05
 - Fixed compatibility with rustc v1.71.0.
 - Allocator system:
@@ -87,7 +98,7 @@ They are:
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
+## [sc 0.39.1, codec 0.17.1, vm 1.2.6, scenario-format 1.2.6, sdk 1.2.6] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -397,7 +408,7 @@ They are:
 - Improved preprocessor substitutions: hidden generics for most managed types
 - Build info in ABI - rustc version, framework version, crate version
 
-## [numbat-wasm 0.19.1] - 2021-09-17
+## [numbat-wasm 1.2.6] - 2021-09-17
 - Legacy Send API implementation fix
 
 ## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
@@ -453,7 +464,7 @@ They are:
 ## [numbat-wasm 0.17.3] - 2021-06-11
 - `SingleValueMapper` `set_if_empty` method
 
-## [numbat-wasm 0.17.2] - 2021-06-04
+## [numbat-wasm 1.2.6] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
 ## [numbat-wasm 0.17.1] - 2021-06-04
@@ -677,7 +688,7 @@ They are:
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [numbat-wasm 0.5.4, numbat-codec 0.1.1] - 2020-07-18
+## [numbat-wasm 0.5.4, numbat-codec 1.2.6] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -750,7 +761,7 @@ They are:
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [numbat-wasm 0.1.1] - 2020-02-27
+## [numbat-wasm 1.2.6] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [numbat-wasm 0.1.0] - 2020-02-05 
