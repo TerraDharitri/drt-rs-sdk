@@ -4,6 +4,16 @@ fn big_int_to_i64_go() {
 }
 
 #[test]
+fn big_num_conversions_go() {
+    numbat_wasm_debug::denali_go("denali/big_num_conversions.scen.json");
+}
+
+#[test]
+fn big_uint_sqrt_go() {
+    numbat_wasm_debug::denali_go("denali/big_uint_sqrt.scen.json");
+}
+
+#[test]
 fn big_uint_to_u64_go() {
     numbat_wasm_debug::denali_go("denali/big_uint_to_u64.scen.json");
 }
@@ -19,13 +29,28 @@ fn boxed_bytes_zeros_go() {
 }
 
 #[test]
+fn codec_err_go() {
+    numbat_wasm_debug::denali_go("denali/codec_err.scen.json");
+}
+
+#[test]
 fn count_ones_go() {
     numbat_wasm_debug::denali_go("denali/count_ones.scen.json");
 }
 
 #[test]
+fn crypto_elliptic_curves_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_elliptic_curves.scen.json");
+}
+
+#[test]
 fn crypto_keccak256_go() {
     numbat_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
+}
+
+#[test]
+fn crypto_ripemd160_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_ripemd160.scen.json");
 }
 
 #[test]
@@ -49,8 +74,18 @@ fn echo_async_result_empty_go() {
 }
 
 #[test]
-fn echo_big_int_go() {
-    numbat_wasm_debug::denali_go("denali/echo_big_int.scen.json");
+fn echo_async_result_empty_managed_go() {
+    numbat_wasm_debug::denali_go("denali/echo_async_result_empty_managed.scen.json");
+}
+
+#[test]
+fn echo_big_int_nested_go() {
+    numbat_wasm_debug::denali_go("denali/echo_big_int_nested.scen.json");
+}
+
+#[test]
+fn echo_big_int_top_go() {
+    numbat_wasm_debug::denali_go("denali/echo_big_int_top.scen.json");
 }
 
 #[test]
@@ -71,6 +106,16 @@ fn echo_i32_go() {
 #[test]
 fn echo_i64_go() {
     numbat_wasm_debug::denali_go("denali/echo_i64.scen.json");
+}
+
+#[test]
+fn echo_managed_bytes_go() {
+    numbat_wasm_debug::denali_go("denali/echo_managed_bytes.scen.json");
+}
+
+#[test]
+fn echo_managed_vec_go() {
+    numbat_wasm_debug::denali_go("denali/echo_managed_vec.scen.json");
 }
 
 #[test]
@@ -101,6 +146,11 @@ fn echo_str_box_go() {
 #[test]
 fn echo_string_go() {
     numbat_wasm_debug::denali_go("denali/echo_string.scen.json");
+}
+
+#[test]
+fn echo_tuple_into_multiresult_go() {
+    numbat_wasm_debug::denali_go("denali/echo_tuple_into_multiresult.scen.json");
 }
 
 #[test]
@@ -151,6 +201,46 @@ fn get_cumulated_validator_rewards_go() {
 #[test]
 fn get_dcdt_local_roles_go() {
     numbat_wasm_debug::denali_go("denali/get_dcdt_local_roles.scen.json");
+}
+
+#[test]
+fn managed_buffer_concat_1_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_concat_1.scen.json");
+}
+
+#[test]
+fn managed_buffer_concat_2_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_concat_2.scen.json");
+}
+
+#[test]
+fn managed_buffer_eq_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_eq.scen.json");
+}
+
+#[test]
+fn managed_buffer_overwrite_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_overwrite.scen.json");
+}
+
+#[test]
+fn managed_buffer_slice_1_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_slice_1.scen.json");
+}
+
+#[test]
+fn managed_buffer_slice_2_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_slice_2.scen.json");
+}
+
+#[test]
+fn managed_vec_address_push_go() {
+    numbat_wasm_debug::denali_go("denali/managed_vec_address_push.scen.json");
+}
+
+#[test]
+fn managed_vec_biguint_push_go() {
+    numbat_wasm_debug::denali_go("denali/managed_vec_biguint_push.scen.json");
 }
 
 #[test]
@@ -249,6 +339,11 @@ fn storage_mapper_map_storage_go() {
 }
 
 #[test]
+fn storage_mapper_queue_go() {
+    numbat_wasm_debug::denali_go("denali/storage_mapper_queue.scen.json");
+}
+
+#[test]
 fn storage_mapper_set_go() {
     numbat_wasm_debug::denali_go("denali/storage_mapper_set.scen.json");
 }
@@ -256,6 +351,11 @@ fn storage_mapper_set_go() {
 #[test]
 fn storage_mapper_single_value_go() {
     numbat_wasm_debug::denali_go("denali/storage_mapper_single_value.scen.json");
+}
+
+#[test]
+fn storage_mapper_token_attributes_go() {
+    numbat_wasm_debug::denali_go("denali/storage_mapper_token_attributes.scen.json");
 }
 
 #[test]
@@ -296,19 +396,4 @@ fn storage_usize_bad_go() {
 #[test]
 fn storage_vec_u8_go() {
     numbat_wasm_debug::denali_go("denali/storage_vec_u8.scen.json");
-}
-
-#[test]
-fn sqrt() {
-    numbat_wasm_debug::denali_go("denali/sqrt.scen.json");
-}
-
-#[test]
-fn log2() {
-    numbat_wasm_debug::denali_go("denali/log2_func.scen.json");
-}
-
-#[test]
-fn pow() {
-    numbat_wasm_debug::denali_go("denali/pow_func.scen.json");
 }

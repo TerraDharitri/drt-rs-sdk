@@ -1,4 +1,21 @@
 {
+    "buildInfo": {
+        "rustc": {
+            "version": "x.x.x-nightly",
+            "commitHash": "<commit hash here>",
+            "commitDate": "<commit date here>",
+            "channel": "Channel",
+            "short": "rustc <version> (<short hash> <date>)"
+        },
+        "contractCrate": {
+            "name": "abi-tester",
+            "version": "0.0.0"
+        },
+        "framework": {
+            "name": "numbat-wasm",
+            "version": "0.20.1"
+        }
+    },
     "docs": [
         "Contract whose sole purpose is to verify that",
         "the ABI generation framework works sa expected.",
@@ -166,6 +183,27 @@
                 },
                 {
                     "type": "H256"
+                }
+            ]
+        },
+        {
+            "name": "managed_address_vs_byte_array",
+            "inputs": [
+                {
+                    "name": "address",
+                    "type": "Address"
+                },
+                {
+                    "name": "byte_array",
+                    "type": "array32<u8>"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "Address"
+                },
+                {
+                    "type": "array32<u8>"
                 }
             ]
         },

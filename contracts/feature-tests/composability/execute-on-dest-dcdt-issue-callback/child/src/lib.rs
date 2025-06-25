@@ -13,12 +13,13 @@ pub trait Child {
     #[endpoint(issueWrappedRewa)]
     fn issue_wrapped_rewa(
         &self,
-        token_display_name: BoxedBytes,
-        token_ticker: BoxedBytes,
-        initial_supply: Self::BigUint,
-        #[payment] issue_cost: Self::BigUint,
-    ) -> AsyncCall<Self::SendApi> {
-        DCDTSystemSmartContractProxy::new_proxy_obj(self.send())
+        token_display_name: ManagedBuffer,
+        token_ticker: ManagedBuffer,
+        initial_supply: BigUint,
+        #[payment] issue_cost: BigUint,
+    ) -> AsyncCall {
+        self.send()
+            .dcdt_system_sc_proxy()
             .issue_fungible(
                 issue_cost,
                 &token_display_name,
@@ -46,8 +47,8 @@ pub trait Child {
     fn dcdt_issue_callback(
         &self,
         #[payment_token] token_identifier: TokenIdentifier,
-        #[payment] _amount: Self::BigUint,
-        #[call_result] _result: AsyncCallResult<()>,
+        #[payment] _amount: BigUint,
+        #[call_result] _result: ManagedAsyncCallResult<()>,
     ) {
         self.wrapped_rewa_token_identifier().set(&token_identifier);
     }
@@ -56,5 +57,5 @@ pub trait Child {
 
     #[view(getWrappedRewaTokenIdentifier)]
     #[storage_mapper("wrappedRewaTokenIdentifier")]
-    fn wrapped_rewa_token_identifier(&self) -> SingleValueMapper<Self::Storage, TokenIdentifier>;
+    fn wrapped_rewa_token_identifier(&self) -> SingleValueMapper<TokenIdentifier>;
 }

@@ -9,7 +9,7 @@ publish = false
 path = "src/lib.rs"
 
 [dependencies.numbat-wasm]
-version = "0.0.11"
+version = "0.0.13"
 path = "../../../../../numbat-wasm"
 features = ["derive"]
 

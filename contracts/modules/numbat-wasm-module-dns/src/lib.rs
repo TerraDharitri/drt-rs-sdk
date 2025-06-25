@@ -8,16 +8,16 @@ numbat_wasm::imports!();
 #[numbat_wasm::module]
 pub trait DnsModule {
     #[proxy]
-    fn dns_proxy(&self, to: Address) -> dns_proxy::Proxy<Self::SendApi>;
+    fn dns_proxy(&self, to: ManagedAddress) -> dns_proxy::Proxy<Self::Api>;
 
     #[payable("REWA")]
     #[endpoint(dnsRegister)]
     fn dns_register(
         &self,
-        dns_address: Address,
+        dns_address: ManagedAddress,
         name: BoxedBytes,
-        #[payment] payment: Self::BigUint,
-    ) -> SCResult<AsyncCall<Self::SendApi>> {
+        #[payment] payment: BigUint,
+    ) -> SCResult<AsyncCall> {
         only_owner!(self, "only owner can call dnsRegister");
 
         Ok(self

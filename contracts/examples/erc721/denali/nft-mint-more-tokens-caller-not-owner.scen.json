@@ -32,7 +32,7 @@
             },
             "expect": {
                 "status": "4",
-                "message": "str:Endpoint can olny be called by owner",
+                "message": "str:Endpoint can only be called by owner",
                 "gas": "*",
                 "refund": "*"
             }
@@ -54,7 +54,6 @@
                     "nonce": "0",
                     "balance": "0",
                     "storage": {
-                        
                         "str:totalMinted": "3",
                         "str:tokenCount|address:contract_owner": "3",
                         "str:tokenOwner|u64:0": "address:contract_owner",

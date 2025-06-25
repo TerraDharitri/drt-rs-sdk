@@ -16,6 +16,16 @@ fn big_int_to_i64_rs() {
 }
 
 #[test]
+fn big_num_conversions_rs() {
+    numbat_wasm_debug::denali_rs("denali/big_num_conversions.scen.json", &contract_map());
+}
+
+#[test]
+fn big_uint_sqrt_rs() {
+    numbat_wasm_debug::denali_rs("denali/big_uint_sqrt.scen.json", &contract_map());
+}
+
+#[test]
 fn big_uint_to_u64_rs() {
     numbat_wasm_debug::denali_rs("denali/big_uint_to_u64.scen.json", &contract_map());
 }
@@ -31,24 +41,39 @@ fn boxed_bytes_zeros_rs() {
 }
 
 #[test]
+fn codec_err_rs() {
+    numbat_wasm_debug::denali_rs("denali/codec_err.scen.json", &contract_map());
+}
+
+#[test]
 fn count_ones_rs() {
     numbat_wasm_debug::denali_rs("denali/count_ones.scen.json", &contract_map());
 }
 
-#[test]
-fn only_owner_rs() {
-    numbat_wasm_debug::denali_rs("denali/only_owner.scen.json", &contract_map());
-}
+// #[test]
+// fn crypto_elliptic_curves_rs() {
+//     numbat_wasm_debug::denali_rs("denali/crypto_elliptic_curves.scen.json", &contract_map());
+// }
 
 #[test]
 fn crypto_keccak256_rs() {
     numbat_wasm_debug::denali_rs("denali/crypto_keccak256.scen.json", &contract_map());
 }
 
+// #[test]
+// fn crypto_ripemd160_rs() {
+//     numbat_wasm_debug::denali_rs("denali/crypto_ripemd160.scen.json", &contract_map());
+// }
+
 #[test]
 fn crypto_sha256_rs() {
     numbat_wasm_debug::denali_rs("denali/crypto_sha256.scen.json", &contract_map());
 }
+
+// #[test]
+// fn crypto_verify_funcs_rs() {
+//     numbat_wasm_debug::denali_rs("denali/crypto_verify_funcs.scen.json", &contract_map());
+// }
 
 #[test]
 fn echo_array_u8_rs() {
@@ -61,8 +86,21 @@ fn echo_async_result_empty_rs() {
 }
 
 #[test]
-fn echo_big_int_rs() {
-    numbat_wasm_debug::denali_rs("denali/echo_big_int.scen.json", &contract_map());
+fn echo_async_result_empty_managed_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/echo_async_result_empty_managed.scen.json",
+        &contract_map(),
+    );
+}
+
+#[test]
+fn echo_big_int_nested_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_big_int_nested.scen.json", &contract_map());
+}
+
+#[test]
+fn echo_big_int_top_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_big_int_top.scen.json", &contract_map());
 }
 
 #[test]
@@ -83,6 +121,16 @@ fn echo_i32_rs() {
 #[test]
 fn echo_i64_rs() {
     numbat_wasm_debug::denali_rs("denali/echo_i64.scen.json", &contract_map());
+}
+
+#[test]
+fn echo_managed_bytes_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_managed_bytes.scen.json", &contract_map());
+}
+
+#[test]
+fn echo_managed_vec_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_managed_vec.scen.json", &contract_map());
 }
 
 #[test]
@@ -113,6 +161,14 @@ fn echo_str_box_rs() {
 #[test]
 fn echo_string_rs() {
     numbat_wasm_debug::denali_rs("denali/echo_string.scen.json", &contract_map());
+}
+
+#[test]
+fn echo_tuple_into_multiresult_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/echo_tuple_into_multiresult.scen.json",
+        &contract_map(),
+    );
 }
 
 #[test]
@@ -170,6 +226,57 @@ fn get_cumulated_validator_rewards_rs() {
 // 		"denali/get_dcdt_local_roles.scen.json",
 // 		&contract_map(),
 // 	);
+// }
+
+#[test]
+fn managed_buffer_concat_1_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_buffer_concat_1.scen.json", &contract_map());
+}
+
+#[test]
+fn managed_buffer_concat_2_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_buffer_concat_2.scen.json", &contract_map());
+}
+
+#[test]
+fn managed_buffer_eq_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_buffer_eq.scen.json", &contract_map());
+}
+
+#[test]
+fn managed_buffer_overwrite_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_buffer_overwrite.scen.json", &contract_map());
+}
+
+#[test]
+fn managed_buffer_slice_1_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_buffer_slice_1.scen.json", &contract_map());
+}
+
+#[test]
+fn managed_buffer_slice_2_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_buffer_slice_2.scen.json", &contract_map());
+}
+
+#[test]
+fn managed_vec_address_push_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_vec_address_push.scen.json", &contract_map());
+}
+
+#[test]
+fn managed_vec_biguint_push_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_vec_biguint_push.scen.json", &contract_map());
+}
+
+#[test]
+fn only_owner_rs() {
+    numbat_wasm_debug::denali_rs("denali/only_owner.scen.json", &contract_map());
+}
+
+// Will never run in denali-rs.
+// #[test]
+// fn out_of_gas_rs() {
+//     numbat_wasm_debug::denali_rs("denali/out_of_gas.scen.json", &contract_map());
 // }
 
 #[test]
@@ -254,13 +361,13 @@ fn storage_mapper_linked_list_rs() {
 }
 
 #[test]
-fn storage_mapper_map_rs() {
-    numbat_wasm_debug::denali_rs("denali/storage_mapper_map.scen.json", &contract_map());
+fn storage_mapper_queue_rs() {
+    numbat_wasm_debug::denali_rs("denali/storage_mapper_queue.scen.json", &contract_map());
 }
 
 #[test]
-fn storage_mapper_set_rs() {
-    numbat_wasm_debug::denali_rs("denali/storage_mapper_set.scen.json", &contract_map());
+fn storage_mapper_map_rs() {
+    numbat_wasm_debug::denali_rs("denali/storage_mapper_map.scen.json", &contract_map());
 }
 
 #[test]
@@ -272,9 +379,22 @@ fn storage_mapper_map_storage_rs() {
 }
 
 #[test]
+fn storage_mapper_set_rs() {
+    numbat_wasm_debug::denali_rs("denali/storage_mapper_set.scen.json", &contract_map());
+}
+
+#[test]
 fn storage_mapper_single_value_rs() {
     numbat_wasm_debug::denali_rs(
         "denali/storage_mapper_single_value.scen.json",
+        &contract_map(),
+    );
+}
+
+#[test]
+fn storage_mapper_token_attributes_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/storage_mapper_token_attributes.scen.json",
         &contract_map(),
     );
 }
@@ -317,19 +437,4 @@ fn storage_usize_bad_rs() {
 #[test]
 fn storage_vec_u8_rs() {
     numbat_wasm_debug::denali_rs("denali/storage_vec_u8.scen.json", &contract_map());
-}
-
-#[test]
-fn sqrt() {
-    numbat_wasm_debug::denali_rs("denali/sqrt.scen.json", &contract_map());
-}
-
-#[test]
-fn log2() {
-    numbat_wasm_debug::denali_rs("denali/log2_func.scen.json", &contract_map());
-}
-
-#[test]
-fn pow() {
-    numbat_wasm_debug::denali_rs("denali/pow_func.scen.json", &contract_map());
 }

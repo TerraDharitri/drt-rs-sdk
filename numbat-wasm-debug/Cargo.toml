@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-debug"
-version = "0.0.11"
+version = "0.0.13"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]
@@ -14,21 +14,23 @@ keywords = ["numbat", "blockchain", "contract", "debug"]
 categories = ["cryptography::cryptocurrencies", "development-tools::debugging"]
 
 [dependencies]
-num-bigint = "0.4"
+num-bigint = "0.4.2"
 num-traits = "0.2"
 hex = "0.4"
 sha2 = "0.9.2"
 sha3 = "0.9.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+rustc_version = "0.4"
 
 [features]
 andes-tests = []
 
 [dependencies.numbat-wasm]
-version = "0.0.11"
+version = "0.0.13"
 path = "../numbat-wasm"
+features = ["derive"]
 
 [dependencies.denali]
-version = "0.8.1"
+version = "0.10.0"
 path = "../denali"

@@ -44,6 +44,7 @@
                         "endpoint": "str:DCDTTransfer",
                         "topics": [
                             "str:WREWA-abcdef",
+                            "",
                             "500",
                             "address:user"
                         ],

@@ -1,84 +1,79 @@
-#!/bin/sh
+#!/bin/bash
 
 # copies wasm & denali files to the Andes test folder
 # expects 1 argument: the path to the Andes repo root
 
 ANDES_PATH=$1
 
-# building all contracts takes a lot of time, here are just the ones for Andes:
-drtpy --verbose contract build ./contracts/examples/adder || return 1
-drtpy --verbose contract build ./contracts/examples/crowdfunding-dcdt || return 1
-drtpy --verbose contract build ./contracts/examples/ping-pong-rewa || return 1
-drtpy --verbose contract build ./contracts/examples/multisig || return 1
-drtpy --verbose contract build ./contracts/examples/rewa-dcdt-swap || return 1
-drtpy --verbose contract build ./contracts/examples/erc20 || return 1
-drtpy --verbose contract build ./contracts/feature-tests/basic-features || return 1
-drtpy --verbose contract build ./contracts/feature-tests/composability/forwarder || return 1
-drtpy --verbose contract build ./contracts/feature-tests/composability/forwarder-raw || return 1
-drtpy --verbose contract build ./contracts/feature-tests/composability/proxy-test-first || return 1
-drtpy --verbose contract build ./contracts/feature-tests/composability/proxy-test-second || return 1
-drtpy --verbose contract build ./contracts/feature-tests/composability/recursive-caller || return 1
-drtpy --verbose contract build ./contracts/feature-tests/composability/vault || return 1
-drtpy --verbose contract build ./contracts/feature-tests/payable-features || return 1
+build_and_copy() {
+   contract_path=$1
+   contract_name=${contract_path##*/}
+   andes_contract_path=$2
 
+   drtpy --verbose contract build $contract_path || return 1
+   mkdir -p $andes_contract_path/output
+   cp -R $contract_path/output/$contract_name.wasm \
+      $andes_contract_path/output/$contract_name.wasm
+   cp -R $contract_path/denali \
+      $andes_contract_path
+}
+
+# building all contracts takes a lot of time, only the ones for Andes are built below
 # if you still want to build all:
 # ./build-wasm.sh
 
+build_and_copy ./contracts/examples/adder $ANDES_PATH/test/adder
+build_and_copy ./contracts/examples/crowdfunding-dcdt $ANDES_PATH/test/crowdfunding-dcdt
+build_and_copy ./contracts/examples/ping-pong-rewa $ANDES_PATH/test/ping-pong-rewa
+build_and_copy ./contracts/examples/multisig $ANDES_PATH/test/multisig
+build_and_copy ./contracts/examples/rewa-dcdt-swap $ANDES_PATH/test/rewa-dcdt-swap
+build_and_copy ./contracts/examples/erc20 $ANDES_PATH/test/erc20-rust
+build_and_copy ./contracts/feature-tests/basic-features $ANDES_PATH/test/features/basic-features
+build_and_copy ./contracts/feature-tests/payable-features $ANDES_PATH/test/features/payable-features
 
-# copying the files to andes here:
-cp contracts/examples/adder/output/adder.wasm \
-   $ANDES_PATH/test/adder/output/adder.wasm
-cp -R contracts/examples/adder/denali \
-   $ANDES_PATH/test/adder
+build_and_copy_composability() {
+   contract=$1
+   contract_with_underscores="${contract//-/_}"
 
-cp contracts/examples/crowdfunding-dcdt/output/crowdfunding-dcdt.wasm \
-   $ANDES_PATH/test/crowdfunding-dcdt/output/crowdfunding-dcdt.wasm
-cp -R contracts/examples/crowdfunding-dcdt/denali \
-   $ANDES_PATH/test/crowdfunding-dcdt
+   # with managed-ei
+   drtpy --verbose contract build ./contracts/feature-tests/composability/$contract || return 1
+   cp -R contracts/feature-tests/composability/$contract/output/${contract}.wasm \
+      $ANDES_PATH/test/features/composability/$contract/output/${contract}.wasm
 
-cp contracts/examples/ping-pong-rewa/output/ping-pong-rewa.wasm \
-   $ANDES_PATH/test/ping-pong-rewa/output/ping-pong-rewa.wasm
-cp -R contracts/examples/ping-pong-rewa/denali \
-   $ANDES_PATH/test/ping-pong-rewa
+   # without managed-ei
+   export RUSTFLAGS=${RUSTFLAGS-'-C link-arg=-s'}
+   cd contracts/feature-tests/composability/$contract/wasm-no-managed-ei
+   cargo build --target=wasm32-unknown-unknown --release
+   cd ..
+   mkdir -p output
+   cp \
+      wasm-no-managed-ei/target/wasm32-unknown-unknown/release/${contract_with_underscores}_wasm.wasm \
+      output/${contract}-unmanaged.wasm
+   cd ../../../..
 
-cp contracts/examples/multisig/output/multisig.wasm \
-   $ANDES_PATH/test/multisig/output/multisig.wasm
-cp -R contracts/examples/multisig/denali \
-   $ANDES_PATH/test/multisig
-cp -R contracts/examples/multisig/test-contracts \
-   $ANDES_PATH/test/multisig
+   cp -R contracts/feature-tests/composability/$contract/output/${contract}-unmanaged.wasm \
+      $ANDES_PATH/test/features/composability/$contract/output/${contract}-unmanaged.wasm
+}
 
-cp -R contracts/examples/rewa-dcdt-swap/output/rewa-dcdt-swap.wasm \
-   $ANDES_PATH/test/rewa-dcdt-swap/output/rewa-dcdt-swap.wasm
-cp -R contracts/examples/rewa-dcdt-swap/denali \
-   $ANDES_PATH/test/rewa-dcdt-swap
+build_and_copy_composability forwarder
+build_and_copy_composability forwarder-raw
+build_and_copy_composability proxy-test-first
+build_and_copy_composability proxy-test-second
+build_and_copy_composability recursive-caller
 
-cp -R contracts/examples/erc20/output/erc20.wasm \
-   $ANDES_PATH/test/erc20-rust/output/erc20.wasm
-cp -R contracts/examples/erc20/denali \
-   $ANDES_PATH/test/erc20-rust
-
-cp -R contracts/feature-tests/basic-features/output/basic-features.wasm \
-   $ANDES_PATH/test/features/basic-features/output/basic-features.wasm
-cp -R contracts/feature-tests/basic-features/denali \
-   $ANDES_PATH/test/features/basic-features
-
-cp -R contracts/feature-tests/payable-features/output/payable-features.wasm \
-   $ANDES_PATH/test/features/payable-features/output/payable-features.wasm
-cp -R contracts/feature-tests/payable-features/denali \
-   $ANDES_PATH/test/features/payable-features
-
-cp -R contracts/feature-tests/composability/forwarder/output/forwarder.wasm \
-   $ANDES_PATH/test/features/composability/forwarder/output/forwarder.wasm
-cp -R contracts/feature-tests/composability/forwarder-raw/output/forwarder-raw.wasm \
-   $ANDES_PATH/test/features/composability/forwarder-raw/output/forwarder-raw.wasm
-cp -R contracts/feature-tests/composability/proxy-test-first/output/proxy-test-first.wasm \
-   $ANDES_PATH/test/features/composability/proxy-test-first/output/proxy-test-first.wasm
-cp -R contracts/feature-tests/composability/proxy-test-second/output/proxy-test-second.wasm \
-   $ANDES_PATH/test/features/composability/proxy-test-second/output/proxy-test-second.wasm
-cp -R contracts/feature-tests/composability/recursive-caller/output/recursive-caller.wasm \
-   $ANDES_PATH/test/features/composability/recursive-caller/output/recursive-caller.wasm
+drtpy --verbose contract build ./contracts/feature-tests/composability/vault || return 1
 cp -R contracts/feature-tests/composability/vault/output/vault.wasm \
    $ANDES_PATH/test/features/composability/vault/output/vault.wasm
+
 cp -R contracts/feature-tests/composability/denali \
    $ANDES_PATH/test/features/composability
+rm -f $ANDES_PATH/test/features/composability/denali-legacy/*
+mmv -c 'contracts/feature-tests/composability/denali/*.scen.json' \
+   $ANDES_PATH/test/features/composability/denali-legacy/l_'#1.scen.json'
+
+sed -i 's/forwarder.wasm/forwarder-unmanaged.wasm/g' $ANDES_PATH/test/features/composability/denali-legacy/*
+sed -i 's/forwarder-raw.wasm/forwarder-raw-unmanaged.wasm/g' $ANDES_PATH/test/features/composability/denali-legacy/*
+sed -i 's/proxy-test-first.wasm/proxy-test-first-unmanaged.wasm/g' $ANDES_PATH/test/features/composability/denali-legacy/*
+sed -i 's/proxy-test-second.wasm/proxy-test-second-unmanaged.wasm/g' $ANDES_PATH/test/features/composability/denali-legacy/*
+sed -i 's/recursive-caller.wasm/recursive-caller-unmanaged.wasm/g' $ANDES_PATH/test/features/composability/denali-legacy/*
+sed -i 's/proxy_test_init.scen.json/l_proxy_test_init.scen.json/g' $ANDES_PATH/test/features/composability/denali-legacy/*

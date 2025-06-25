@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm"
-version = "0.0.11"
+version = "0.0.13"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]
@@ -14,8 +14,8 @@ keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
 [features]
-legacy-nft-transfer = []
 derive = ["numbat-wasm-derive"]
+cb_closure_managed_deser = []
 
 [dependencies]
 wee_alloc = "0.4"
@@ -24,11 +24,11 @@ hashbrown = "0.11.2"
 hex-literal = "0.3.1"
 
 [dependencies.numbat-wasm-derive]
-version = "=0.0.11"
+version = "=0.0.13"
 path = "../numbat-wasm-derive"
 optional = true
 
 [dependencies.numbat-codec]
-version = "0.0.11"
+version = "0.0.13"
 path = "../numbat-codec"
 features = ["derive"]

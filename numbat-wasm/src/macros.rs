@@ -5,25 +5,31 @@
 #[macro_export]
 macro_rules! imports {
     () => {
-        use core::ops::{Add, Div, Mul, Rem, Sub};
-        use core::ops::{AddAssign, DivAssign, MulAssign, RemAssign, SubAssign};
-        use core::ops::{BitAnd, BitOr, BitXor, Shl, Shr};
-        use core::ops::{BitAndAssign, BitOrAssign, BitXorAssign, ShlAssign, ShrAssign};
-        use numbat_wasm::api::{
-            BigIntApi, BigUintApi, BlockchainApi, CallValueApi, ContractBase, CryptoApi,
-            EllipticCurveApi, ProxyObjApi, SendApi,
+        use core::ops::{
+            Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div,
+            DivAssign, Mul, MulAssign, Rem, RemAssign, Shl, ShlAssign, Shr, ShrAssign, Sub,
+            SubAssign,
         };
-        use numbat_wasm::api::{ErrorApi, LogApi}; // TODO: remove at some point, they shouldn't be public
-        use numbat_wasm::numbat_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode};
-        use numbat_wasm::err_msg;
-        use numbat_wasm::dcdt::*;
-        use numbat_wasm::io::*;
-        use numbat_wasm::non_zero_util::*;
-        use numbat_wasm::storage::mappers::*;
-        use numbat_wasm::types::*;
-        use numbat_wasm::types::{SCResult::Err, SCResult::Ok};
-        use numbat_wasm::{non_zero_usize, only_owner, require, sc_error};
-        use numbat_wasm::{Box, Vec};
+        use numbat_wasm::{
+            api::{
+                BigIntApi, BlockchainApi, CallValueApi, CryptoApi, EllipticCurveApi, ErrorApi,
+                LogApi, ManagedTypeApi, SendApi,
+            },
+            contract_base::{ContractBase, ProxyObjBase},
+            numbat_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode},
+            err_msg,
+            dcdt::*,
+            io::*,
+            non_zero_usize,
+            non_zero_util::*,
+            only_owner, require, sc_error,
+            storage::mappers::*,
+            types::{
+                SCResult::{Err, Ok},
+                *,
+            },
+            Box, Vec,
+        }; // TODO: remove at some point, they shouldn't be public
     };
 }
 
@@ -31,11 +37,13 @@ macro_rules! imports {
 #[macro_export]
 macro_rules! derive_imports {
     () => {
-        use numbat_wasm::derive::TypeAbi;
-        use numbat_wasm::numbat_codec;
-        use numbat_wasm::numbat_codec::numbat_codec_derive::{
-            NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
-            TopEncodeOrDefault,
+        use numbat_wasm::{
+            derive::TypeAbi,
+            numbat_codec,
+            numbat_codec::numbat_codec_derive::{
+                NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
+                TopEncodeOrDefault,
+            },
         };
     };
 }
@@ -44,7 +52,7 @@ macro_rules! derive_imports {
 #[macro_export]
 macro_rules! sc_error {
     ($s:expr) => {
-        numbat_wasm::types::SCResult::Err(numbat_wasm::types::SCError::from($s)).into()
+        numbat_wasm::types::SCResult::Err(numbat_wasm::types::StaticSCError::from($s)).into()
     };
 }
 
@@ -73,10 +81,7 @@ macro_rules! sc_try {
 /// # use numbat_wasm::*;
 /// # use numbat_wasm::api::BlockchainApi;
 /// # use numbat_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: numbat_wasm::api::ContractBase
-/// # where
-/// #   BigInt: numbat_wasm::api::BigIntApi + 'static,
-/// #   BigUint: numbat_wasm::api::BigUintApi + 'static,
+/// # pub trait ExampleContract: numbat_wasm::contract_base::ContractBase
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
 ///     require!(self.blockchain().get_caller() == self.blockchain().get_owner_address(), "Caller must be owner");
@@ -101,10 +106,7 @@ macro_rules! require {
 /// # use numbat_wasm::*;
 /// # use numbat_wasm::api::BlockchainApi;
 /// # use numbat_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract<BigInt, BigUint>: numbat_wasm::api::ContractBase
-/// # where
-/// #   BigInt: numbat_wasm::api::BigIntApi + 'static,
-/// #   BigUint: numbat_wasm::api::BigUintApi + 'static,
+/// # pub trait ExampleContract: numbat_wasm::contract_base::ContractBase
 /// # {
 /// fn only_callable_by_owner(&self) -> SCResult<()> {
 ///     only_owner!(self, "Caller must be owner");

@@ -1,6 +1,6 @@
 [package]
 name = "numbat-wasm-node"
-version = "0.0.11"
+version = "0.0.13"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]
@@ -13,6 +13,9 @@ description = "Numbat WebAssembly VM API wrapper"
 keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools::ffi"]
 
+[features]
+unmanaged-ei = []
+
 [dependencies.numbat-wasm]
-version = "0.0.11"
+version = "0.0.13"
 path = "../numbat-wasm"

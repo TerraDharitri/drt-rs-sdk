@@ -1,8 +1,9 @@
-use super::AndesBigUint;
 use crate::AndesApiImpl;
-use numbat_wasm::api::CryptoApi;
-use numbat_wasm::types::{BoxedBytes, MessageHashType, H256};
-use numbat_wasm::Box;
+use numbat_wasm::{
+    api::CryptoApi,
+    types::{BoxedBytes, MessageHashType, H256},
+    Box,
+};
 
 extern "C" {
 
@@ -54,8 +55,6 @@ extern "C" {
 }
 
 impl CryptoApi for AndesApiImpl {
-    type BigUint = AndesBigUint;
-
     fn sha256(&self, data: &[u8]) -> H256 {
         unsafe {
             let mut res = H256::zero();

@@ -1,29 +1,23 @@
-use super::managed_types::RustBigUint;
 use crate::TxContext;
-use numbat_wasm::{
-    api::BigUintApi,
-    types::{Address, DcdtTokenData, TokenIdentifier, H256},
-};
+use numbat_wasm::types::{Address, BigUint, DcdtTokenData, ManagedAddress, TokenIdentifier, H256};
 
 impl numbat_wasm::api::BlockchainApi for TxContext {
-    type BalanceType = RustBigUint;
-
-    fn get_sc_address(&self) -> Address {
+    fn get_sc_address_legacy(&self) -> Address {
         self.tx_input_box.to.clone()
     }
 
-    fn get_owner_address(&self) -> Address {
+    fn get_owner_address_legacy(&self) -> Address {
         self.blockchain_info_box
             .contract_owner
             .clone()
             .unwrap_or_else(|| panic!("contract owner address not set"))
     }
 
-    fn get_shard_of_address(&self, _address: &Address) -> u32 {
+    fn get_shard_of_address_legacy(&self, _address: &Address) -> u32 {
         panic!("get_shard_of_address not implemented")
     }
 
-    fn is_smart_contract(&self, _address: &Address) -> bool {
+    fn is_smart_contract_legacy(&self, _address: &Address) -> bool {
         panic!("is_smart_contract not implemented")
 
         /*
@@ -37,18 +31,23 @@ impl numbat_wasm::api::BlockchainApi for TxContext {
         */
     }
 
-    fn get_caller(&self) -> Address {
+    fn get_caller_legacy(&self) -> Address {
         self.tx_input_box.from.clone()
     }
 
-    fn get_balance(&self, address: &Address) -> RustBigUint {
-        if address != &self.get_sc_address() {
-            panic!("get balance not yet implemented for accounts other than the contract itself");
-        }
-        self.blockchain_info_box.contract_balance.clone().into()
+    fn get_balance_legacy(&self, address: &Address) -> BigUint<Self> {
+        assert!(
+            address == &self.get_sc_address_legacy(),
+            "get balance not yet implemented for accounts other than the contract itself"
+        );
+        self.insert_new_big_uint(self.blockchain_info_box.contract_balance.clone())
     }
 
-    fn get_tx_hash(&self) -> H256 {
+    fn get_state_root_hash_legacy(&self) -> H256 {
+        panic!("get_state_root_hash_legacy not yet implemented")
+    }
+
+    fn get_tx_hash_legacy(&self) -> H256 {
         self.tx_input_box.tx_hash.clone()
     }
 
@@ -72,7 +71,7 @@ impl numbat_wasm::api::BlockchainApi for TxContext {
         self.blockchain_info_box.current_block_info.block_epoch
     }
 
-    fn get_block_random_seed(&self) -> Box<[u8; 48]> {
+    fn get_block_random_seed_legacy(&self) -> Box<[u8; 48]> {
         self.blockchain_info_box
             .current_block_info
             .block_random_seed
@@ -95,14 +94,18 @@ impl numbat_wasm::api::BlockchainApi for TxContext {
         self.blockchain_info_box.previous_block_info.block_epoch
     }
 
-    fn get_prev_block_random_seed(&self) -> Box<[u8; 48]> {
+    fn get_prev_block_random_seed_legacy(&self) -> Box<[u8; 48]> {
         self.blockchain_info_box
             .previous_block_info
             .block_random_seed
             .clone()
     }
 
-    fn get_current_dcdt_nft_nonce(&self, _address: &Address, _token: &TokenIdentifier) -> u64 {
+    fn get_current_dcdt_nft_nonce(
+        &self,
+        _address: &Address,
+        _token: &TokenIdentifier<Self>,
+    ) -> u64 {
         // TODO: Implement
         0u64
     }
@@ -110,32 +113,31 @@ impl numbat_wasm::api::BlockchainApi for TxContext {
     // TODO: Include nonce and create a map like: TokenId -> Nonce -> Amount
     fn get_dcdt_balance(
         &self,
-        address: &Address,
-        token: &TokenIdentifier,
+        address: &ManagedAddress<Self>,
+        token: &TokenIdentifier<Self>,
         _nonce: u64,
-    ) -> RustBigUint {
-        if address != &self.get_sc_address() {
-            panic!(
-                "get_dcdt_balance not yet implemented for accounts other than the contract itself"
-            );
-        }
+    ) -> BigUint<Self> {
+        assert!(
+            address == &self.get_sc_address(),
+            "get_dcdt_balance not yet implemented for accounts other than the contract itself"
+        );
 
         match self
             .blockchain_info_box
             .contract_dcdt
-            .get(&token.as_dcdt_identifier().to_vec())
+            .get(&token.to_dcdt_identifier().into_vec())
         {
-            Some(value) => value.clone().into(),
-            None => RustBigUint::zero(),
+            Some(value) => self.insert_new_big_uint(value.clone()),
+            None => BigUint::zero(self.clone()),
         }
     }
 
     fn get_dcdt_token_data(
         &self,
-        _address: &Address,
-        _token: &TokenIdentifier,
+        _address: &ManagedAddress<Self>,
+        _token: &TokenIdentifier<Self>,
         _nonce: u64,
-    ) -> DcdtTokenData<RustBigUint> {
+    ) -> DcdtTokenData<Self> {
         panic!("get_dcdt_token_data not yet implemented")
     }
 }

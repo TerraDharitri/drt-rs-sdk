@@ -1,7 +1,9 @@
-use crate::tx_context::*;
-use numbat_wasm::numbat_codec::*;
-use numbat_wasm::hex_call_data::HexCallDataDeserializer;
-use numbat_wasm::types::{Address, H256};
+use crate::{TxInput, TxResult};
+use numbat_wasm::{
+    numbat_codec::*,
+    hex_call_data::HexCallDataDeserializer,
+    types::{Address, H256},
+};
 
 use num_bigint::BigUint;
 

@@ -1,6 +1,4 @@
-use super::context::*;
-use super::functions::*;
-use super::value_raw::*;
+use super::{context::*, functions::*, value_raw::*};
 use num_bigint::{BigInt, BigUint, Sign};
 use num_traits::identities::Zero;
 
@@ -173,9 +171,12 @@ fn parse_fixed_width_signed(s: &str, length: usize) -> Vec<u8> {
             s
         };
         let result = parse_fixed_width_unsigned(s, length);
-        if !result.is_empty() && result[0] >> 7 == 1 {
-            panic!("representation of {} does not fit in {} bytes", s, length);
-        }
+        assert!(
+            result.is_empty() || result[0] >> 7 != 1,
+            "representation of {} does not fit in {} bytes",
+            s,
+            length
+        );
         result
     }
 }

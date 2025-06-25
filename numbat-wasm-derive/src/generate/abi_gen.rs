@@ -90,7 +90,7 @@ fn generate_abi_method_body(
 			.map(|supertrait| {
 				let module_path = &supertrait.module_path;
 				quote! {
-					contract_abi.coalesce(<#module_path AbiProvider as numbat_wasm::api::ContractAbiProvider>::abi());
+					contract_abi.coalesce(<#module_path AbiProvider as numbat_wasm::contract_base::ContractAbiProvider>::abi());
 				}
 			})
 			.collect()
@@ -102,6 +102,13 @@ fn generate_abi_method_body(
     let contract_name = &contract.trait_name.to_string();
     quote! {
         let mut contract_abi = numbat_wasm::abi::ContractAbi{
+            build_info: numbat_wasm::abi::BuildInfoAbi {
+                contract_crate: numbat_wasm::abi::ContractCrateBuildAbi {
+                    name: env!("CARGO_PKG_NAME"),
+                    version: env!("CARGO_PKG_VERSION"),
+                },
+                framework: numbat_wasm::abi::FrameworkBuildAbi::create(),
+            },
             docs: &[ #(#contract_docs),* ],
             name: #contract_name,
             constructor: None,
@@ -122,12 +129,8 @@ pub fn generate_abi_provider(
     quote! {
         pub struct AbiProvider {}
 
-        impl numbat_wasm::api::ContractAbiProvider for AbiProvider {
-            type BigUint = numbat_wasm::api::uncallable::BigUintUncallable;
-            type BigInt = numbat_wasm::api::uncallable::BigIntUncallable;
-            type EllipticCurve = numbat_wasm::api::uncallable::EllipticCurveUncallable;
-            type Storage = numbat_wasm::api::uncallable::UncallableApi;
-            type SendApi = numbat_wasm::api::uncallable::UncallableApi;
+        impl numbat_wasm::contract_base::ContractAbiProvider for AbiProvider {
+            type Api = numbat_wasm::api::uncallable::UncallableApi;
 
             fn abi() -> numbat_wasm::abi::ContractAbi {
                 #abi_body

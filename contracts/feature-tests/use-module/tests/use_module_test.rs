@@ -1,4 +1,4 @@
-use numbat_wasm::api::CallableContract;
+use numbat_wasm::contract_base::CallableContract;
 use numbat_wasm_debug::*;
 
 #[test]
