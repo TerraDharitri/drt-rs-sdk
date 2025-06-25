@@ -10,6 +10,7 @@
 // Total number of exported functions:   5
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,10 +19,11 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     second_contract
     (
-        acceptDcdtPayment
-        rejectDcdtPayment
-        getdcdtTokenName
+        init => init
+        acceptDcdtPayment => accept_dcdt_payment
+        rejectDcdtPayment => reject_dcdt_payment
+        getdcdtTokenName => get_contract_dcdt_token_identifier
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

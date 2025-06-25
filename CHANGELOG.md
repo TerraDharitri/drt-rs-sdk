@@ -27,11 +27,75 @@ They are:
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
 
-## [sc 1.2.6, vm 1.2.6] - 2023-06-19
+## [sc 1.4.6, vm 1.4.6] - 2023-09-08
+- Added several new methods in the `SendWrapper`, which perform REWA & DCDT transfers but don't do anything if the value is zero.
+- Added the `DeleteUsername` builtin function to the VM.
+- Minor fixes in API wrapper constructors.
+
+## [sc 0.43.2] - 2023-08-18
+- Template tool tag argument validation bugfix.
+
+## [sc 0.43.1, vm 0.5.1] - 2023-08-18
+- Template tool improvements:
+	- Ability to specify for which framework version to download (based on git tag). The first allowed version is 0.43.0.
+	- Ability to specify path where to create new contract.
+	- Various bugfixes.
+- VM implementation for `get_shard_of_address` VM hook.
+
+## [sc 0.43.0, codec 1.4.6, vm 0.5.0] - 2023-08-16
+- Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
+	- pre-rustc-1.71;
+	- between rustc-1.71 and rustc-1.73;
+	- latest, after rustc-1.73. Also upgraded some dependencies, notably proc-macro2 "1.0.66" and ed25519-dalek "2.0.0".
+- Initial version of the contract template tool in dharitri-sc-meta:
+	- Ability to download and adapt template contracts, to kickstart contract development;
+	- A template mechanism that is customizable on the framework side;
+	- Available templates: adder, empty, crypto-zombies.
+- The Rust debugger is now thread safe.
+- Removed the `big-float` feature of dharitri-sc, because the functionality is already available on mainnet.
+- Arguments `--target-dir-wasm`, `--target-dir-meta`, and `--target-dir-all` in the `dharitri-sc-meta` CLI.
+- Fixed an issue with contract calls and DCDT transfers in the `StaticApi` environment.
+
+## [sc 0.42.0, codec 0.18.0, vm 0.4.0, scenario-format 1.4.6, sdk 1.4.6] - 2023-07-15
+- Multi-endpoints in multi-contracts:
+	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
+	- We can also have multiple versions of the constructor.
+- Major architectural redesign of the debugger:
+	- The VM executor interface inserted between the smart contract API objects and the Rust VM. A new `VMHooksApi` is used to connect on the smart contract side. A `VMHooksDispatcher` object and `VMHooksHandler` interface provide the connection on the VM side.
+	- The `VMHooksApi` comes in several flavors (backends):
+		- The old `DebugApi` is now only used at runtime, on the VM context stack;
+		- A new `StaticApi` provides support for managed types in a regular context, without needing to be initialized;
+		- An additional `SingleTxApi` is useful for unit tests. Aside managed types, it also allows some basic context for tx inputs, results, storage and block info.
+	- Removed almost all of the legacy functionality from the smart contract APIs.
+- System SC mock.
+	- It is now possible to issue tokens (fungible, SFT, NFT) in integration tests.
+	- Setting roles is modelled.
+	- It is, however, not fully mocked.
+- Integration of blackbox and whitebox testing into one unified framework.
+	- Whitebox testing was the modus operandi of the old testing framework.
+	- Integration of whitebox functionality into the new testing framework allows easier migration in some specific cases.
+	- Tested the new whitebox framework with the old tests by injecting it into the implementation of the old one.
+- Interactors can now export a trace of their execution, thus producing integration tests.
+	- Integrated tool for retrieving the initial states of the involved accounts from the blockchain.
+	- Tight integration with the scenario testing infrastructure makes generating the trace straightforward;
+	- The same format for the trace is used, as in the case of the integration tests.
+- Interactors can now execute several steps (calls, deploys) in parallel.
+- Redesigned the wrappers around the Rust and Go JSON scenario executors;
+	- Also improved the  `sc-meta test-gen` tool for auto-generating these wrappers.
+	- Using the `ScenarioRunner` interface to abstract away the various backends used to run tests.
+- Redesigned syntax of both the testing and the interactor (snippets) frameworks.
+	- While the codebases are separate (the latter is async Rust), the names and arguments of the methods are the same, and both use the scenario infrastructure.
+	- Methods that allow chaining scenario steps, while also processing results;
+	- Added several defaults in the syntax, for more concise code;
+	- Deprecated the old testing framework;
+	- Updated all contract interactors and blackbox tests with the new syntax;
+	- Upgraded the snippets generator to produce new syntax.
+
+## [sc 0.41.3, vm 0.3.3] - 2023-06-19
 - Bugfix on `ManagedBufferCachedBuilder`, involving large inputs.
 - Explicit enum ABI: `OperationCompletionStatus` is now properly described in the ABI as an enum that gets serialized by name instead of discriminant.
 
-## [sc 0.41.2, codec 1.2.6, vm 0.3.2] - 2023-06-09
+## [sc 0.41.2, codec 0.17.2, vm 0.3.2] - 2023-06-09
 - Releasing a new version of the codec, without the dependency to `wee_alloc`.
 
 ## [sc 0.41.1, vm 0.3.1] - 2023-05-15
@@ -54,7 +118,7 @@ They are:
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
-## [sc 0.40.0, vm 0.2.0] - 2023-04-20
+## [sc 0.40.0, vm 1.4.6] - 2023-04-20
 - Call value `rewa_value` and `all_dcdt_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
 
 ## [sc 0.39.8, vm 0.1.8] - 2023-03-29
@@ -98,7 +162,7 @@ They are:
 	- `upgrade` also re-generates wasm crates after reaching 0.39.1.
 - Cleaned up dependencies.
 
-## [sc 0.39.1, codec 0.17.1, vm 1.2.6, scenario-format 1.2.6, sdk 1.2.6] - 2023-01-18
+## [sc 0.39.1, codec 0.17.1, vm 0.1.1, scenario-format 0.19.1, sdk 0.1.1] - 2023-01-18
 - `dharitri-sc-meta` can be installed as a standalone tool (`sc-meta`), and used to automatically upgrade contracts.
 - Many depedencies updates across the repo.
 - Updated readme files.
@@ -400,7 +464,7 @@ They are:
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [numbat-wasm 0.20.0, numbat-codec 0.7.0, denali 0.10.0] - 2021-10-02
+## [numbat-wasm 1.4.6, numbat-codec 0.7.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -408,7 +472,7 @@ They are:
 - Improved preprocessor substitutions: hidden generics for most managed types
 - Build info in ABI - rustc version, framework version, crate version
 
-## [numbat-wasm 1.2.6] - 2021-09-17
+## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
 ## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
@@ -442,7 +506,7 @@ They are:
 ## [numbat-wasm 0.18.2] - 2021-08-20
 - Crypto API: `ripemd160` function, custom secp256k1 signature verification (`verify_custom_secp256k1`) and signature generation (`encode_secp256k1_der_signature`).
 
-## [numbat-wasm 0.18.1] - 2021-08-05
+## [numbat-wasm 1.4.6] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
 ## [numbat-wasm 0.18.0, denali 0.8.0] - 2021-07-28
@@ -464,7 +528,7 @@ They are:
 ## [numbat-wasm 0.17.3] - 2021-06-11
 - `SingleValueMapper` `set_if_empty` method
 
-## [numbat-wasm 1.2.6] - 2021-06-04
+## [numbat-wasm 0.17.2] - 2021-06-04
 - callbacks can now declared in modules only (manual forwarding from the main contract no longer required)
 
 ## [numbat-wasm 0.17.1] - 2021-06-04
@@ -505,7 +569,7 @@ They are:
 ## [numbat-wasm 0.15.1] - 2021-04-30
 - Mitigating nested sync calls with Send API `execute_on_dest_context_raw_custom_result_range`
 
-## [numbat-wasm 0.15.0, numbat-codec 0.5.2] - 2021-04-19
+## [numbat-wasm 0.15.0, numbat-codec 1.4.6] - 2021-04-19
 - ABI
 	- Constructor representation
 	- Simplified ABI syntax for tuples and fixed-size arrays
@@ -648,12 +712,12 @@ They are:
 ## [numbat-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 1.4.6] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from numbat-wasm 0.8.0.
 
-## [numbat-wasm 0.8.0, numbat-codec 0.2.0] - 2020-11-02
+## [numbat-wasm 0.8.0, numbat-codec 1.4.6] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -688,7 +752,7 @@ They are:
 - H256 now boxed
 - SCResult is_ok, is_err
 
-## [numbat-wasm 0.5.4, numbat-codec 1.2.6] - 2020-07-18
+## [numbat-wasm 0.5.4, numbat-codec 0.1.1] - 2020-07-18
 - MultiResultVec - new, from_iter
 - EncodeError type
 
@@ -696,7 +760,7 @@ They are:
 - Extracted numbat-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
-## [numbat-wasm 0.5.2] - 2020-07-09
+## [numbat-wasm 1.4.6] - 2020-07-09
 - Queue type
 
 ## [numbat-wasm 0.5.1] - 2020-07-02
@@ -757,11 +821,11 @@ They are:
 - Multi args
 - Multi args in async calls
 
-## [numbat-wasm 0.2.0] - 2020-03-18
+## [numbat-wasm 1.4.6] - 2020-03-18
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 
-## [numbat-wasm 1.2.6] - 2020-02-27
+## [numbat-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
 ## [numbat-wasm 0.1.0] - 2020-02-05 

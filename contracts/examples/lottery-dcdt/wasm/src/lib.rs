@@ -10,6 +10,7 @@
 // Total number of exported functions:   9
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,14 +19,15 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     lottery_dcdt
     (
-        start
-        createLotteryPool
-        buy_ticket
-        determine_winner
-        status
-        getLotteryInfo
-        getLotteryWhitelist
+        init => init
+        start => start
+        createLotteryPool => create_lottery_pool
+        buy_ticket => buy_ticket
+        determine_winner => determine_winner
+        status => status
+        getLotteryInfo => lottery_info
+        getLotteryWhitelist => lottery_whitelist
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

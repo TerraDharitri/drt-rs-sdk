@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-wasm-adapter"
-version = "1.2.6"
+version = "1.4.6"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -18,11 +18,6 @@ categories = [
     "development-tools::ffi",
 ]
 
-[features]
-vm-validate-token-identifier = []
-vm-dcdt-local-roles = []
-ei-unmanaged-node = []
-
 [dependencies.dharitri-sc]
-version = "=1.2.6"
+version = "=1.4.6"
 path = "../base"

@@ -3,12 +3,12 @@ use core::marker::PhantomData;
 use crate::{
     api::{
         const_handles, use_raw_handle, CallValueApi, CallValueApiImpl, ErrorApi, ErrorApiImpl,
-        ManagedTypeApi, StaticVarApiImpl,
+        HandleConstraints, ManagedTypeApi, StaticVarApiImpl,
     },
     err_msg,
     types::{
-        BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, DcdtTokenPayment, ManagedRef,
-        ManagedVec, TokenIdentifier,
+        BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, RewaOrMultiDcdtPayment,
+        DcdtTokenPayment, ManagedRef, ManagedVec, TokenIdentifier,
     },
 };
 
@@ -33,10 +33,11 @@ where
     /// Retrieves the REWA call value from the VM.
     /// Will return 0 in case of an DCDT transfer (cannot have both REWA and DCDT transfer simultaneously).
     pub fn rewa_value(&self) -> ManagedRef<'static, A, BigUint<A>> {
-        let mut call_value_handle = A::static_var_api_impl().get_call_value_rewa_handle();
+        let mut call_value_handle: A::BigIntHandle =
+            use_raw_handle(A::static_var_api_impl().get_call_value_rewa_handle());
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
             call_value_handle = use_raw_handle(const_handles::CALL_VALUE_REWA);
-            A::static_var_api_impl().set_call_value_rewa_handle(call_value_handle.clone());
+            A::static_var_api_impl().set_call_value_rewa_handle(call_value_handle.get_raw_handle());
             A::call_value_api_impl().load_rewa_value(call_value_handle.clone());
         }
         unsafe { ManagedRef::wrap_handle(call_value_handle) }
@@ -46,10 +47,12 @@ where
     /// Will return 0 results if nothing was transfered, or just REWA.
     /// Fully managed underlying types, very efficient.
     pub fn all_dcdt_transfers(&self) -> ManagedRef<'static, A, ManagedVec<A, DcdtTokenPayment<A>>> {
-        let mut call_value_handle = A::static_var_api_impl().get_call_value_multi_dcdt_handle();
+        let mut call_value_handle: A::ManagedBufferHandle =
+            use_raw_handle(A::static_var_api_impl().get_call_value_multi_dcdt_handle());
         if call_value_handle == const_handles::UNINITIALIZED_HANDLE {
             call_value_handle = use_raw_handle(const_handles::CALL_VALUE_MULTI_DCDT);
-            A::static_var_api_impl().set_call_value_multi_dcdt_handle(call_value_handle.clone());
+            A::static_var_api_impl()
+                .set_call_value_multi_dcdt_handle(call_value_handle.get_raw_handle());
             A::call_value_api_impl().load_all_dcdt_transfers(call_value_handle.clone());
         }
         unsafe { ManagedRef::wrap_handle(call_value_handle) }
@@ -124,5 +127,17 @@ where
         }
 
         (payment.token_identifier, payment.amount)
+    }
+
+    /// Accepts any sort of patyment, which is either:
+    /// - REWA (can be zero in case of no payment whatsoever);
+    /// - Multi-DCDT (one or more DCDT transfers).
+    pub fn any_payment(&self) -> RewaOrMultiDcdtPayment<A> {
+        let dcdt_transfers = self.all_dcdt_transfers();
+        if dcdt_transfers.is_empty() {
+            RewaOrMultiDcdtPayment::Rewa(self.rewa_value().clone_value())
+        } else {
+            RewaOrMultiDcdtPayment::MultiDcdt(dcdt_transfers.clone_value())
+        }
     }
 }

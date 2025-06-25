@@ -3,8 +3,9 @@ use crate::codec::TopDecodeMulti;
 use crate::{
     api::{BlockchainApiImpl, CallTypeApi},
     contract_base::SendRawWrapper,
+    formatter::SCLowerHex,
     io::{ArgErrorHandler, ArgId, ManagedResultArgLoader},
-    types::{BigUint, DcdtTokenPayment, ManagedBuffer, ManagedVec},
+    types::{BigUint, DcdtTokenPayment, ManagedBuffer, ManagedBufferCachedBuilder, ManagedVec},
 };
 
 use super::{AsyncCall, ContractCallNoPayment, ContractCallWithRewa};
@@ -27,6 +28,16 @@ where
         } else {
             self.basic.explicit_gas_limit
         }
+    }
+
+    pub fn to_call_data_string(&self) -> ManagedBuffer<SA> {
+        let mut result = ManagedBufferCachedBuilder::default();
+        result.append_managed_buffer(&self.basic.endpoint_name);
+        for arg in self.basic.arg_buffer.raw_arg_iter() {
+            result.append_bytes(b"@");
+            SCLowerHex::fmt(&*arg, &mut result);
+        }
+        result.into_managed_buffer()
     }
 
     pub(super) fn async_call(self) -> AsyncCall<SA> {
@@ -172,6 +183,14 @@ where
             &self.endpoint_name,
             &self.arg_buffer,
         );
+    }
+
+    pub(super) fn transfer_execute_dcdt(self, payments: ManagedVec<SA, DcdtTokenPayment<SA>>) {
+        match payments.len() {
+            0 => self.transfer_execute_rewa(BigUint::zero()),
+            1 => self.transfer_execute_single_dcdt(payments.get(0)),
+            _ => self.transfer_execute_multi_dcdt(payments),
+        }
     }
 }
 

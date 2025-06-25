@@ -1,5 +1,5 @@
-ALICE="/home/numbat/dharitri-sdk/testwallets/latest/users/alice.pem"
-BOB="/home/numbat/dharitri-sdk/testwallets/latest/users/bob.pem"
+ALICE="~/dharitri-sdk/testwallets/latest/users/alice.pem"
+BOB="~/dharitri-sdk/testwallets/latest/users/bob.pem"
 ADDRESS=$(drtpy data load --key=address-testnet-rewa-dcdt-swap)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)
 PROXY=https://testnet-gateway.numbat.com
@@ -18,8 +18,8 @@ deploy() {
     --arguments ${WRAPPED_REWA_TOKEN_ID} \
     --send --outfile="deploy-testnet.interaction.json" --proxy=${PROXY} --chain=${CHAIN_ID} || return
 
-    TRANSACTION=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['contractAddress']")
 
     drtpy data store --key=address-testnet --value=${ADDRESS}
     drtpy data store --key=deployTransaction-testnet-rewa-dcdt-swap --value=${TRANSACTION}

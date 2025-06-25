@@ -13,10 +13,10 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn unwrap_rewa_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/unwrap_rewa.scen.json", world());
+    world().run("scenarios/unwrap_rewa.scen.json");
 }
 
 #[test]
 fn wrap_rewa_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/wrap_rewa.scen.json", world());
+    world().run("scenarios/wrap_rewa.scen.json");
 }

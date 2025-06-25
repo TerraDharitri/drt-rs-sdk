@@ -10,6 +10,7 @@
 // Total number of exported functions:  10
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,15 +19,16 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     erc721
     (
-        mint
-        approve
-        revoke
-        transfer
-        totalMinted
-        tokenOwner
-        tokenCount
-        approval
+        init => init
+        mint => mint
+        approve => approve
+        revoke => revoke
+        transfer => transfer
+        totalMinted => total_minted
+        tokenOwner => token_owner
+        tokenCount => token_count
+        approval => approval
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

@@ -10,6 +10,7 @@
 // Total number of exported functions:   5
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!(leaking);
@@ -18,10 +19,11 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     str_repeat
     (
-        repeat
-        getByteArrayLength
-        getByteArray
+        init => init
+        repeat => repeat
+        getByteArrayLength => get_byte_array_length
+        getByteArray => byte_array
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

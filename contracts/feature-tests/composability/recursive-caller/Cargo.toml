@@ -8,21 +8,13 @@ publish = false
 [lib]
 path = "src/recursive_caller.rs"
 
-[features]
-ei-unmanaged = ["dharitri-sc/ei-unmanaged"]
-
 [dependencies.vault]
 path = "../vault"
 
 [dependencies.dharitri-sc]
-version = "1.2.6"
+version = "1.4.6"
 path = "../../../../framework/base"
 
-[dependencies.dharitri-sc-wasm-adapter]
-version = "1.2.6"
-path = "../../../../framework/wasm-adapter"
-optional = true
-
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.2.6"
+version = "1.4.6"
 path = "../../../../framework/scenario"

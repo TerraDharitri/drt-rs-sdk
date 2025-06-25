@@ -13,40 +13,50 @@ fn world() -> ScenarioWorld {
 
 #[test]
 fn claim_rewa_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/claim-rewa.scen.json", world());
+    world().run("scenarios/claim-rewa.scen.json");
 }
 
 #[test]
 fn claim_dcdt_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/claim-dcdt.scen.json", world());
+    world().run("scenarios/claim-dcdt.scen.json");
 }
 
 #[test]
 fn claim_fees_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/claim-fees.scen.json", world());
+    world().run("scenarios/claim-fees.scen.json");
 }
 
 #[test]
-fn fund_rewa_and_dcdt_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/fund-rewa-and-dcdt.scen.json", world());
-}
-
-#[test]
-fn set_accounts_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/set-accounts.scen.json", world());
-}
-
-#[test]
-fn withdraw_rewa_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/withdraw-rewa.scen.json", world());
-}
-
-#[test]
-fn withdraw_dcdt_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/withdraw-dcdt.scen.json", world());
+fn claim_multi_dcdt_rs() {
+    world().run("scenarios/claim-multi-dcdt.scen.json");
 }
 
 #[test]
 fn forward_rs() {
-    dharitri_sc_scenario::run_rs("scenarios/forward.scen.json", world());
+    world().run("scenarios/forward.scen.json");
+}
+
+#[test]
+fn fund_rewa_and_dcdt_rs() {
+    world().run("scenarios/fund-rewa-and-dcdt.scen.json");
+}
+
+#[test]
+fn set_accounts_rs() {
+    world().run("scenarios/set-accounts.scen.json");
+}
+
+#[test]
+fn withdraw_rewa_rs() {
+    world().run("scenarios/withdraw-rewa.scen.json");
+}
+
+#[test]
+fn withdraw_dcdt_rs() {
+    world().run("scenarios/withdraw-dcdt.scen.json");
+}
+
+#[test]
+fn withdraw_multi_dcdt_rs() {
+    world().run("scenarios/withdraw-multi-dcdt.scen.json");
 }

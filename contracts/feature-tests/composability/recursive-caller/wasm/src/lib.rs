@@ -10,6 +10,7 @@
 // Total number of exported functions:   3
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,7 +19,9 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     recursive_caller
     (
-        recursive_send_funds
-        callBack
+        init => init
+        recursive_send_funds => recursive_send_funds
     )
 }
+
+dharitri_sc_wasm_adapter::async_callback! { recursive_caller }

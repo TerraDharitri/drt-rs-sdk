@@ -10,6 +10,7 @@
 // Total number of exported functions:   4
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,9 +19,10 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     multi_contract_features
     (
-        sample_value
-        example_feature_message
+        init => default_init
+        sample_value => sample_value
+        example_feature_message => example_feature_message
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

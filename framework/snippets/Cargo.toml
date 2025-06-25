@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-snippets"
-version = "1.2.6"
+version = "1.4.6"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -19,16 +19,18 @@ hex = "0.4"
 base64 = "0.13.0"
 log = "0.4.17"
 env_logger = "0.8.4"
+futures = "0.3"
 native-tls = "=0.2.7"
 idna = "=0.2.1"
 litemap = "0.1.1"
 url = "=2.2.0"
+clap = "=4.1.0"
+
 
 [dependencies.dharitri-sc-scenario]
-version = "=1.2.6"
+version = "=1.4.6"
 path = "../scenario"
 
 [dependencies.dharitri-sdk]
-version = "=1.2.6"
+version = "=1.4.6"
 path = "../../sdk/core"
-

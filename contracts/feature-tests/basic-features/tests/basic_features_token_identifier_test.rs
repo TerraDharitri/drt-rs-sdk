@@ -1,12 +1,11 @@
 use dharitri_sc::types::{RewaOrDcdtTokenIdentifier, ManagedBuffer, TokenIdentifier};
-use dharitri_sc_scenario::*;
+use dharitri_sc_scenario::{api::StaticApi, *};
 
 use basic_features::token_identifier_features::TokenIdentifierFeatures;
 
 #[test]
 fn test_token_identifier_rewa() {
-    let _ = DebugApi::dummy();
-    let bf = basic_features::contract_obj::<DebugApi>();
+    let bf = basic_features::contract_obj::<StaticApi>();
     let result = bf.token_identifier_rewa();
     assert_eq!(RewaOrDcdtTokenIdentifier::rewa(), result);
 }
@@ -15,8 +14,7 @@ fn test_token_identifier_rewa() {
 /// For a complete suite of test cases, see `dharitri-sc-scenario/tests/managed_token_identifier_test.rs`.
 #[test]
 fn test_token_identifier_is_valid() {
-    let _ = DebugApi::dummy();
-    let bf = basic_features::contract_obj::<DebugApi>();
+    let bf = basic_features::contract_obj::<StaticApi>();
     let result = bf.token_identifier_is_valid_1(RewaOrDcdtTokenIdentifier::dcdt(
         TokenIdentifier::from(&b"ALC-6258d2"[..]),
     ));
@@ -33,9 +31,7 @@ fn test_token_identifier_is_valid() {
 
 #[test]
 fn test_token_identifier_compare() {
-    let _ = DebugApi::dummy();
-
-    let token_id = TokenIdentifier::<DebugApi>::from(&b"ALC-6258d2"[..]);
+    let token_id = TokenIdentifier::<StaticApi>::from(&b"ALC-6258d2"[..]);
     let dcdt_token_id = RewaOrDcdtTokenIdentifier::dcdt(token_id.clone());
     let wrong_dcdt_token_id =
         RewaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(&b"AAA-111111"[..]));

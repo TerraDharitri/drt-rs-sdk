@@ -10,6 +10,7 @@
 // Total number of exported functions:  10
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,15 +19,16 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     digital_cash
     (
-        fund
-        withdraw
-        claim
-        claim_fees
-        deposit_fees
-        forward
-        amount
-        deposit
+        init => init
+        fund => fund
+        withdraw => withdraw
+        claim => claim
+        claim_fees => claim_fees
+        deposit_fees => deposit_fees
+        forward => forward
+        amount => get_amount
+        deposit => deposit
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

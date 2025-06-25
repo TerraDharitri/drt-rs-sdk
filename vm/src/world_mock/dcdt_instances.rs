@@ -1,13 +1,11 @@
-use crate::num_bigint::BigUint;
+use super::{DcdtInstance, DcdtInstanceMetadata};
+use crate::display_util::verbose_hex_list;
+use num_bigint::BigUint;
 use num_traits::Zero;
 use std::{
     collections::BTreeMap,
     fmt::{self, Write},
 };
-
-use crate::verbose_hex_list;
-
-use super::{DcdtInstance, DcdtInstanceMetadata};
 
 #[derive(Clone, Debug, Default)]
 pub struct DcdtInstances(BTreeMap<u64, DcdtInstance>);
@@ -55,12 +53,19 @@ impl DcdtInstances {
     }
 
     pub fn set_balance(&mut self, nonce: u64, value: &BigUint, metadata: DcdtInstanceMetadata) {
-        let instance = self.0.entry(nonce).or_insert_with(|| DcdtInstance {
-            nonce,
-            balance: BigUint::zero(),
-            metadata,
-        });
-        instance.balance = value.clone();
+        let _ = self
+            .0
+            .entry(nonce)
+            .and_modify(|instance| {
+                instance.balance = value.clone();
+                instance.nonce = nonce;
+                instance.metadata = metadata.clone();
+            })
+            .or_insert_with(|| DcdtInstance {
+                nonce,
+                balance: value.clone(),
+                metadata,
+            });
     }
 
     pub fn get_by_nonce(&self, nonce: u64) -> Option<&DcdtInstance> {

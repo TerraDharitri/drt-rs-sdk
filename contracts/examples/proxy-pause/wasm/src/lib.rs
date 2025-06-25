@@ -10,6 +10,7 @@
 // Total number of exported functions:  10
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,15 +19,16 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     proxy_pause
     (
-        addContracts
-        removeContracts
-        addOwners
-        removeOwners
-        pause
-        unpause
-        owners
-        contracts
+        init => init
+        addContracts => add_contracts
+        removeContracts => remove_contracts
+        addOwners => add_owners
+        removeOwners => remove_owners
+        pause => pause
+        unpause => unpause
+        owners => owners
+        contracts => contracts
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

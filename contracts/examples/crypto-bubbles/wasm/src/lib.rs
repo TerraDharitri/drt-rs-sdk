@@ -10,6 +10,7 @@
 // Total number of exported functions:   8
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,13 +19,14 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     crypto_bubbles
     (
-        topUp
-        withdraw
-        joinGame
-        rewardWinner
-        rewardAndSendToWallet
-        balanceOf
+        init => init
+        topUp => top_up
+        withdraw => withdraw
+        joinGame => join_game
+        rewardWinner => reward_winner
+        rewardAndSendToWallet => reward_and_send_to_wallet
+        balanceOf => player_balance
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

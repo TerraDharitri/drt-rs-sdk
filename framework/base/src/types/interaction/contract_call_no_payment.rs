@@ -5,15 +5,15 @@ use crate::codec::TopEncodeMulti;
 use crate::{
     api::CallTypeApi,
     types::{
-        BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, DcdtTokenPayment,
-        ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
+        BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, RewaOrMultiDcdtPayment,
+        DcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
     },
 };
 
 use super::{
     contract_call_exec::UNSPECIFIED_GAS_LIMIT, contract_call_with_rewa::ContractCallWithRewa,
     contract_call_with_multi_dcdt::ContractCallWithMultiDcdt, ContractCall,
-    ContractCallWithRewaOrSingleDcdt, ManagedArgBuffer,
+    ContractCallWithAnyPayment, ContractCallWithRewaOrSingleDcdt, ManagedArgBuffer,
 };
 
 /// Holds metadata for calling another contract, without payments.
@@ -123,6 +123,18 @@ where
         ContractCallWithMultiDcdt {
             basic: self,
             dcdt_payments: payments,
+        }
+    }
+
+    /// Sets payment to be a (potentially) multi-token transfer.
+    #[inline]
+    pub fn with_any_payment(
+        self,
+        payment: RewaOrMultiDcdtPayment<SA>,
+    ) -> ContractCallWithAnyPayment<SA, OriginalResult> {
+        ContractCallWithAnyPayment {
+            basic: self,
+            payment,
         }
     }
 

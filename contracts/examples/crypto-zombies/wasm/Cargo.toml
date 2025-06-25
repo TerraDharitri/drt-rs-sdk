@@ -1,5 +1,5 @@
 [package]
-name = "cryptozombies-wasm"
+name = "crypto-zombies-wasm"
 version = "0.0.0"
 authors = ["contact@dharitri.org"]
 edition = "2021"
@@ -7,7 +7,6 @@ publish = false
 
 [lib]
 crate-type = ["cdylib"]
-
 [profile.release]
 codegen-units = 1
 opt-level = "z"
@@ -15,11 +14,11 @@ lto = true
 debug = false
 panic = "abort"
 
-[dependencies.cryptozombies]
+[dependencies.crypto-zombies]
 path = ".."
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "1.2.6"
+version = "1.4.6"
 path = "../../../../framework/wasm-adapter"
 
 [workspace]

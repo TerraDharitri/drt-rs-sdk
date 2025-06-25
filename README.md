@@ -26,7 +26,7 @@ The crowdfunding tutorial is a great place to start: https://docs.dharitri.org/d
 
 # IDE
 
-The framework is designed to be easiest to use with the Numbat IDE VSCode extension: https://marketplace.visualstudio.com/items?itemName=Numbat.vscode-numbat-ide
+The framework is designed to be easiest to use with the IDE VSCode extension: https://marketplace.visualstudio.com/items?itemName=Numbat.vscode-numbat-ide
 
 # Building contracts
 

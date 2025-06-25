@@ -10,6 +10,7 @@
 // Total number of exported functions:  20
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,24 +19,26 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     local_dcdt_and_nft
     (
-        issueFungibleToken
-        localMint
-        localBurn
-        nftIssue
-        nftCreate
-        nftAddQuantity
-        nftBurn
-        transferNftViaAsyncCall
-        transfer_nft_and_execute
-        sftIssue
-        setLocalRoles
-        unsetLocalRoles
-        controlChanges
-        getFungibleDcdtBalance
-        getNftBalance
-        getCurrentNftNonce
-        lastIssuedToken
-        lastErrorMessage
-        callBack
+        init => init
+        issueFungibleToken => issue_fungible_token
+        localMint => local_mint
+        localBurn => local_burn
+        nftIssue => nft_issue
+        nftCreate => nft_create
+        nftAddQuantity => nft_add_quantity
+        nftBurn => nft_burn
+        transferNftViaAsyncCall => transfer_nft_via_async_call
+        transfer_nft_and_execute => transfer_nft_and_execute
+        sftIssue => sft_issue
+        setLocalRoles => set_local_roles
+        unsetLocalRoles => unset_local_roles
+        controlChanges => control_changes
+        getFungibleDcdtBalance => get_fungible_dcdt_balance
+        getNftBalance => get_nft_balance
+        getCurrentNftNonce => get_current_nft_nonce
+        lastIssuedToken => last_issued_token
+        lastErrorMessage => last_error_message
     )
 }
+
+dharitri_sc_wasm_adapter::async_callback! { local_dcdt_and_nft }

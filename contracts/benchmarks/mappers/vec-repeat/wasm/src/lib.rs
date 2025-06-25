@@ -10,6 +10,7 @@
 // Total number of exported functions:  10
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,15 +19,16 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     vec_repeat
     (
-        add
-        count
-        remove
-        bench
-        add_struct
-        count_struct
-        remove_struct
-        bench_struct
+        init => init
+        add => add
+        count => count
+        remove => remove
+        bench => bench
+        add_struct => add_struct
+        count_struct => count_struct
+        remove_struct => remove_struct
+        bench_struct => bench_struct
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

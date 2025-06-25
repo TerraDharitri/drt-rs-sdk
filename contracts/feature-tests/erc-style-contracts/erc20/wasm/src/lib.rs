@@ -10,6 +10,7 @@
 // Total number of exported functions:   8
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,13 +19,14 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     erc20
     (
-        totalSupply
-        balanceOf
-        allowance
-        transfer
-        transferFrom
-        approve
+        init => init
+        totalSupply => total_supply
+        balanceOf => token_balance
+        allowance => allowance
+        transfer => transfer
+        transferFrom => transfer_from
+        approve => approve
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

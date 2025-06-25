@@ -10,6 +10,7 @@
 // Total number of exported functions:   9
 
 #![no_std]
+#![allow(internal_features)]
 #![feature(lang_items)]
 
 dharitri_sc_wasm_adapter::allocator!();
@@ -18,14 +19,15 @@ dharitri_sc_wasm_adapter::panic_handler!();
 dharitri_sc_wasm_adapter::endpoints! {
     dharitri_sc_wrewa_swap
     (
-        wrapRewa
-        unwrapRewa
-        getLockedRewaBalance
-        getWrappedRewaTokenId
-        pause
-        unpause
-        isPaused
+        init => init
+        wrapRewa => wrap_rewa
+        unwrapRewa => unwrap_rewa
+        getLockedRewaBalance => get_locked_rewa_balance
+        getWrappedRewaTokenId => wrapped_rewa_token_id
+        pause => pause_endpoint
+        unpause => unpause_endpoint
+        isPaused => paused_status
     )
 }
 
-dharitri_sc_wasm_adapter::empty_callback! {}
+dharitri_sc_wasm_adapter::async_callback_empty! {}

@@ -6,7 +6,9 @@ use serde::{
 };
 use std::fmt;
 
+#[derive(Default)]
 pub enum CheckDcdtInstancesRaw {
+    #[default]
     Unspecified,
     Star,
     Equal(Vec<CheckDcdtInstanceRaw>),
@@ -19,12 +21,6 @@ impl CheckDcdtInstancesRaw {
 
     pub fn is_unspecified(&self) -> bool {
         matches!(self, CheckDcdtInstancesRaw::Unspecified)
-    }
-}
-
-impl Default for CheckDcdtInstancesRaw {
-    fn default() -> Self {
-        CheckDcdtInstancesRaw::Unspecified
     }
 }
 
