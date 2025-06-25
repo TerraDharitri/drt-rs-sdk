@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-wrewa-swap"
-version = "1.4.6"
+version = "1.4.10"
 
 authors = ["contact@dharitri.org"]
 license = "GPL-3.0-only"
@@ -17,13 +17,13 @@ edition = "2021"
 path = "src/wrewa.rs"
 
 [dependencies.dharitri-sc]
-version = "1.4.6"
+version = "1.4.10"
 path = "../../../framework/base"
 
 [dependencies.dharitri-sc-modules]
-version = "1.4.6"
+version = "1.4.10"
 path = "../../../contracts/modules"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.4.6"
+version = "1.4.10"
 path = "../../../framework/scenario"

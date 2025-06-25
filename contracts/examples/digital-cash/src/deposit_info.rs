@@ -1,8 +1,4 @@
-use dharitri_sc::{
-    api::ManagedTypeApi,
-    types::{BigUint, DcdtTokenPayment, ManagedAddress, ManagedVec},
-};
-
+dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
@@ -20,7 +16,12 @@ where
     M: ManagedTypeApi,
 {
     pub fn get_num_tokens(&self) -> usize {
-        (self.rewa_funds != BigUint::zero()) as usize + self.dcdt_funds.len()
+        let mut amount = self.dcdt_funds.len();
+        if self.rewa_funds > 0 {
+            amount += 1;
+        }
+
+        amount
     }
 }
 

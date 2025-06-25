@@ -9,9 +9,9 @@ publish = false
 path = ".."
 
 [dependencies.dharitri-sc]
-version = "1.4.6"
+version = "1.4.10"
 path = "../../../../framework/base"
 
 [dependencies.dharitri-sc-meta]
-version = "1.4.6"
+version = "1.4.10"
 path = "../../../../framework/meta"

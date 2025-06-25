@@ -9,7 +9,7 @@ TOKEN_ID=""
 TOKEN_ID_HEX="0x$(echo -n ${TOKEN_ID} | xxd -p -u | tr -d '\n')"
 TOKEN_AMOUNT_PER_TX=100
 
-PROXY="https://testnet-gateway.numbat.com"
+PROXY="https://testnet-gateway.dharitri.org"
 CHAIN_ID="T"
 
 SC_WITH_ROLE_ADDRESS_BECH32=

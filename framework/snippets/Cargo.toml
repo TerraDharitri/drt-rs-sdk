@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-snippets"
-version = "1.4.6"
+version = "1.4.10"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -14,7 +14,7 @@ keywords = ["dharitri", "blockchain", "contract", "snippets"]
 categories = ["cryptography::cryptocurrencies"]
 
 [dependencies]
-tokio = { version = "=1.24.2", features = ["full"] }
+tokio = { version = "1.24", features = ["full"] }
 hex = "0.4"
 base64 = "0.13.0"
 log = "0.4.17"
@@ -26,11 +26,10 @@ litemap = "0.1.1"
 url = "=2.2.0"
 clap = "=4.1.0"
 
-
 [dependencies.dharitri-sc-scenario]
-version = "=1.4.6"
+version = "=1.4.10"
 path = "../scenario"
 
 [dependencies.dharitri-sdk]
-version = "=1.4.6"
+version = "=1.4.10"
 path = "../../sdk/core"

@@ -1,3 +1,5 @@
+use dharitri_sc::codec::{top_encode_to_vec_u8_or_panic, TopEncode};
+
 use crate::{
     scenario::model::{
         BigUintValue, BytesKey, BytesValue, CheckDcdt, CheckDcdtInstances, CheckDcdtMap,
@@ -7,6 +9,7 @@ use crate::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
         serde_raw::CheckAccountRaw,
     },
+    scenario_model::CheckDcdtData,
 };
 use std::collections::BTreeMap;
 
@@ -94,6 +97,52 @@ impl CheckAccount {
                     }
                 }
             },
+        }
+
+        self
+    }
+
+    pub fn dcdt_nft_balance_and_attributes<K, N, V, T>(
+        mut self,
+        token_id_expr: K,
+        nonce_expr: N,
+        balance_expr: V,
+        attributes_expr: Option<T>,
+    ) -> Self
+    where
+        BytesKey: From<K>,
+        U64Value: From<N>,
+        BigUintValue: From<V>,
+        T: TopEncode,
+    {
+        let token_id = BytesKey::from(token_id_expr);
+
+        if let CheckDcdtMap::Unspecified = &self.dcdt {
+            let mut check_dcdt = CheckDcdt::Full(CheckDcdtData::default());
+
+            if let Some(attributes_expr) = attributes_expr {
+                check_dcdt.add_balance_and_attributes_check(
+                    nonce_expr,
+                    balance_expr,
+                    top_encode_to_vec_u8_or_panic(&attributes_expr),
+                );
+            } else {
+                check_dcdt.add_balance_and_attributes_check(
+                    nonce_expr,
+                    balance_expr,
+                    Vec::<u8>::new(),
+                );
+            }
+
+            let mut new_dcdt_map = BTreeMap::new();
+            let _ = new_dcdt_map.insert(token_id, check_dcdt);
+
+            let new_check_dcdt_map = CheckDcdtMapContents {
+                contents: new_dcdt_map,
+                other_dcdts_allowed: true,
+            };
+
+            self.dcdt = CheckDcdtMap::Equal(new_check_dcdt_map);
         }
 
         self
