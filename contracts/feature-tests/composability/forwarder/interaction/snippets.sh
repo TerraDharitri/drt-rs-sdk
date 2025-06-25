@@ -1,7 +1,7 @@
 ALICE="/home/numbat/MySandbox/testnet/wallets/users/alice.pem"
 ADDRESS=$(drtpy data load --key=address-testnet)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)
-PROXY=https://testnet-api.numbat.com
+PROXY=https://testnet-api.dharitri.org
 CHAIN_ID=T
 
 SC_PARENT_ADDRESS_BECH32=drt1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ssj7kxgw

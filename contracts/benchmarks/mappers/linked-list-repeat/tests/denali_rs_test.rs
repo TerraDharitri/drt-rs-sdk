@@ -4,14 +4,19 @@ fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/benchmarks/mappers/linked-list-repeat");
 
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:output/linked-list-repeat.wasm",
-        Box::new(|context| Box::new(linked_list_repeat::contract_obj(context))),
+        linked_list_repeat::ContractBuilder,
     );
     blockchain
 }
 
 #[test]
-fn linked_list_repeat_denali_rs() {
+fn linked_list_repeat_struct_rs() {
+    numbat_wasm_debug::denali_rs("denali/linked_list_repeat_struct.scen.json", world());
+}
+
+#[test]
+fn linked_list_repeat_rs() {
     numbat_wasm_debug::denali_rs("denali/linked_list_repeat.scen.json", world());
 }

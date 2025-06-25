@@ -1,7 +1,7 @@
 use super::VmApiImpl;
 use numbat_wasm::{
-    api::CallValueApi,
-    types::{BigUint, DcdtTokenType, ManagedType, TokenIdentifier},
+    api::{CallValueApi, CallValueApiImpl, Handle},
+    types::{DcdtTokenType, ManagedType, TokenIdentifier},
 };
 
 const MAX_POSSIBLE_TOKEN_IDENTIFIER_LENGTH: usize = 32;
@@ -34,6 +34,15 @@ extern "C" {
 }
 
 impl CallValueApi for VmApiImpl {
+    type CallValueApiImpl = VmApiImpl;
+
+    #[inline]
+    fn call_value_api_impl() -> Self::CallValueApiImpl {
+        VmApiImpl {}
+    }
+}
+
+impl CallValueApiImpl for VmApiImpl {
     #[inline]
     fn check_not_payable(&self) {
         unsafe {
@@ -41,30 +50,31 @@ impl CallValueApi for VmApiImpl {
         }
     }
 
-    fn rewa_value(&self) -> BigUint<Self> {
+    fn rewa_value(&self) -> Handle {
         unsafe {
             let value_handle = bigIntNew(0);
             bigIntGetCallValue(value_handle);
-            BigUint::from_raw_handle(self.clone(), value_handle)
+            value_handle
         }
     }
 
-    fn dcdt_value(&self) -> BigUint<Self> {
+    fn dcdt_value(&self) -> Handle {
         unsafe {
             let value_handle = bigIntNew(0);
             bigIntGetDCDTCallValue(value_handle);
-            BigUint::from_raw_handle(self.clone(), value_handle)
+            value_handle
         }
     }
 
-    fn token(&self) -> TokenIdentifier<Self> {
+    fn token(&self) -> Handle {
         unsafe {
             let mut name_buffer = [0u8; MAX_POSSIBLE_TOKEN_IDENTIFIER_LENGTH];
             let name_len = getDCDTTokenName(name_buffer.as_mut_ptr());
             if name_len == 0 {
-                TokenIdentifier::rewa(self.clone())
+                TokenIdentifier::<Self>::rewa().get_raw_handle()
             } else {
-                TokenIdentifier::from_dcdt_bytes(self.clone(), &name_buffer[..name_len as usize])
+                TokenIdentifier::<Self>::from_dcdt_bytes(&name_buffer[..name_len as usize])
+                    .get_raw_handle()
             }
         }
     }
@@ -81,22 +91,23 @@ impl CallValueApi for VmApiImpl {
         unsafe { getNumDCDTTransfers() as usize }
     }
 
-    fn dcdt_value_by_index(&self, index: usize) -> BigUint<Self> {
+    fn dcdt_value_by_index(&self, index: usize) -> Handle {
         unsafe {
             let value_handle = bigIntNew(0);
             bigIntGetDCDTCallValueByIndex(value_handle, index as i32);
-            BigUint::from_raw_handle(self.clone(), value_handle)
+            value_handle
         }
     }
 
-    fn token_by_index(&self, index: usize) -> TokenIdentifier<Self> {
+    fn token_by_index(&self, index: usize) -> Handle {
         unsafe {
             let mut name_buffer = [0u8; MAX_POSSIBLE_TOKEN_IDENTIFIER_LENGTH];
             let name_len = getDCDTTokenNameByIndex(name_buffer.as_mut_ptr(), index as i32);
             if name_len == 0 {
-                TokenIdentifier::rewa(self.clone())
+                TokenIdentifier::<Self>::rewa().get_raw_handle()
             } else {
-                TokenIdentifier::from_dcdt_bytes(self.clone(), &name_buffer[..name_len as usize])
+                TokenIdentifier::<Self>::from_dcdt_bytes(&name_buffer[..name_len as usize])
+                    .get_raw_handle()
             }
         }
     }
@@ -110,13 +121,13 @@ impl CallValueApi for VmApiImpl {
     }
 
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_all_dcdt_transfers(
+    fn get_all_dcdt_transfers<M: numbat_wasm::api::ManagedTypeApi>(
         &self,
-    ) -> numbat_wasm::types::ManagedVec<Self, numbat_wasm::types::DcdtTokenPayment<Self>> {
+    ) -> numbat_wasm::types::ManagedVec<M, numbat_wasm::types::DcdtTokenPayment<M>> {
         unsafe {
             let result_handle = mBufferNew();
             managedGetMultiDCDTCallValue(result_handle);
-            numbat_wasm::types::ManagedVec::from_raw_handle(self.clone(), result_handle)
+            numbat_wasm::types::ManagedVec::from_raw_handle(result_handle)
         }
     }
 }

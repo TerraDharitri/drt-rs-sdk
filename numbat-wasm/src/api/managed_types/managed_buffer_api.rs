@@ -4,6 +4,7 @@ use super::Handle;
 
 /// Returned if load/copy slice could not be performed.
 /// No further data needed.
+#[derive(Debug)]
 pub struct InvalidSliceError;
 
 /// A raw bytes buffer managed by Andes.
@@ -36,6 +37,15 @@ pub trait ManagedBufferApi {
     fn mb_copy_to_slice_pad_right(&self, handle: Handle, destination: &mut [u8]);
 
     fn mb_overwrite(&self, handle: Handle, value: &[u8]);
+
+    fn mb_set_slice(
+        &self,
+        dest_handle: Handle,
+        starting_position: usize,
+        source_slice: &[u8],
+    ) -> Result<(), InvalidSliceError>;
+
+    fn mb_set_random(&self, dest_handle: Handle, length: usize);
 
     fn mb_append(&self, accumulator_handle: Handle, data_handle: Handle);
 

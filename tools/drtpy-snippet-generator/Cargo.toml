@@ -1,0 +1,23 @@
+[package]
+name = "drtpy-snippet-generator"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+
+[[bin]]
+name = "drtpy-snippet-generator"
+path = "src/drtpy_snippet_generator.rs"
+
+[dependencies.numbat-wasm]
+version = "0.0.17"
+path = "../../numbat-wasm"
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.17"
+path = "../../numbat-wasm-debug"
+
+[dependencies]
+bech32 = "0.8.1"
+num-bigint = "0.4.2"
+num-traits = "0.2"
+hex = "0.4"

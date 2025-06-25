@@ -1,5 +1,4 @@
 {
-    "gasSchedule": "v3",
     "steps": [
         {
             "step": "externalSteps",
@@ -23,10 +22,10 @@
             "tx": {
                 "from": "address:paul",
                 "to": "sc:multisig",
-                "function": "proposeSCDeploy",
+                "function": "proposeSCDeployFromSource",
                 "arguments": [
                     "0",
-                    "file:../test-contracts/adder.wasm",
+                    "sc:adder-code",
                     "0x0000",
                     "1234"
                 ],
@@ -38,7 +37,7 @@
                     "3"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -73,7 +72,7 @@
                         "str:action_data.item|u32:3": {
                             "1-discriminant": "0x07",
                             "2-amount": "u32:0",
-                            "3-code": "nested:file:../test-contracts/adder.wasm",
+                            "3-code_source": "sc:adder-code",
                             "4-code_metadata": "0x0000",
                             "5-arguments": [
                                 "u32:1",
@@ -102,7 +101,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -123,7 +122,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -148,7 +147,7 @@
                 "arguments": [
                     "3"
                 ],
-                "gasLimit": "90,000,000",
+                "gasLimit": "40,000,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -156,7 +155,7 @@
                     "sc:adder"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -177,11 +176,11 @@
         },
         {
             "step": "scCall",
-            "txId": "proposeSendRewa",
+            "txId": "proposeTransferExecute",
             "tx": {
                 "from": "address:paul",
                 "to": "sc:multisig",
-                "function": "proposeSendRewa",
+                "function": "proposeTransferExecute",
                 "arguments": [
                     "sc:adder",
                     "0",
@@ -196,7 +195,7 @@
                     "4"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -217,7 +216,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -238,7 +237,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -259,57 +258,44 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
         },
         {
-            "step": "scCall",
+            "step": "scQuery",
             "txId": "check-cleanup-1",
             "comment": "check that account data got cleaned up",
             "tx": {
-                "from": "address:paul",
-                "to": "sc:multisig",
+                "to": "sc:multisig-view",
                 "function": "getActionData",
                 "arguments": [
                     "4"
-                ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                ]
             },
             "expect": {
                 "out": [
                     ""
                 ],
-                "status": "",
-                "logs": [],
-                "gas": "*",
-                "refund": "*"
+                "status": ""
             }
         },
         {
-            "step": "scCall",
+            "step": "scQuery",
             "txId": "check-cleanup-2",
             "comment": "check that account data got cleaned up",
             "tx": {
-                "from": "address:paul",
-                "to": "sc:multisig",
+                "to": "sc:multisig-view",
                 "function": "getActionSigners",
                 "arguments": [
                     "4"
-                ],
-                "gasLimit": "50,000,000",
-                "gasPrice": "0"
+                ]
             },
             "expect": {
                 "out": [
                     ""
-                ],
-                "status": "",
-                "logs": [],
-                "gas": "*",
-                "refund": "*"
+                ]
             }
         },
         {

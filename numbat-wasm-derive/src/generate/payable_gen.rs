@@ -28,7 +28,7 @@ fn payable_single_snippet_for_metadata(
             let token_init = rewa_token_init(payment_token_arg);
             let nonce_init = zero_nonce_init(payment_nonce_arg);
             quote! {
-                numbat_wasm::api::CallValueApi::check_not_payable(&self.raw_vm_api());
+                numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
                 #amount_init
                 #token_init
                 #nonce_init
@@ -39,7 +39,7 @@ fn payable_single_snippet_for_metadata(
             let token_init = rewa_token_init(payment_token_arg);
             let nonce_init = zero_nonce_init(payment_nonce_arg);
             quote! {
-                let #payment_var_name = numbat_wasm::api::CallValueApi::require_rewa(&self.raw_vm_api());
+                let #payment_var_name = numbat_wasm::contract_base::CallValueWrapper::<Self::Api>::new().require_rewa();
                 #token_init
                 #nonce_init
             }
@@ -50,7 +50,7 @@ fn payable_single_snippet_for_metadata(
             let token_init = if let Some(arg) = payment_token_arg {
                 let pat = &arg.pat;
                 quote! {
-                    let #pat = TokenIdentifier::from_dcdt_bytes(self.raw_vm_api(), #token_literal);
+                    let #pat = TokenIdentifier::<Self::Api>::from_dcdt_bytes(#token_literal);
                 }
             } else {
                 quote! {}
@@ -58,7 +58,7 @@ fn payable_single_snippet_for_metadata(
             let nonce_init = nonce_getter_init(payment_nonce_arg);
 
             quote! {
-                let #payment_var_name = numbat_wasm::api::CallValueApi::require_dcdt(&self.raw_vm_api(), #token_literal);
+                let #payment_var_name = numbat_wasm::contract_base::CallValueWrapper::<Self::Api>::new().require_dcdt(#token_literal);
                 #token_init
                 #nonce_init
             }
@@ -72,7 +72,7 @@ fn payable_single_snippet_for_metadata(
                 let token_var_name = var_name_or_underscore(payment_token_arg);
 
                 quote! {
-                    let (#payment_var_name, #token_var_name) = numbat_wasm::api::CallValueApi::payment_token_pair(&self.raw_vm_api());
+                    let (#payment_var_name, #token_var_name) = numbat_wasm::contract_base::CallValueWrapper::<Self::Api>::new().payment_token_pair();
                     #nonce_init
                 }
             }
@@ -95,7 +95,7 @@ fn rewa_token_init(opt_arg: &Option<MethodArgument>) -> proc_macro2::TokenStream
     if let Some(arg) = opt_arg {
         let pat = &arg.pat;
         quote! {
-            let #pat = TokenIdentifier::rewa(self.raw_vm_api());
+            let #pat = TokenIdentifier::<Self::Api>::rewa();
         }
     } else {
         quote! {}

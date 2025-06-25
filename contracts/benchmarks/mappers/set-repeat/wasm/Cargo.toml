@@ -19,11 +19,11 @@ panic = "abort"
 path = ".."
 
 [dependencies.numbat-wasm-node]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../../numbat-wasm-node"
 
 [dependencies.numbat-wasm-output]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../../numbat-wasm-output"
 features = ["wasm-output-mode"]
 

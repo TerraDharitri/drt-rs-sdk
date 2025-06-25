@@ -2,7 +2,7 @@ numbat_wasm::derive_imports!();
 
 use numbat_wasm::{
     api::ManagedTypeApi,
-    types::{BigUint, ManagedAddress, ManagedType},
+    types::{BigUint, ManagedAddress},
 };
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
@@ -25,20 +25,19 @@ pub struct Auction<M: ManagedTypeApi> {
 impl<M: ManagedTypeApi> Auction<M> {
     pub fn new(
         auction_type: AuctionType,
-        starting_price: &BigUint<M>,
-        ending_price: &BigUint<M>,
+        starting_price: BigUint<M>,
+        ending_price: BigUint<M>,
         deadline: u64,
-        kitty_owner: &ManagedAddress<M>,
+        kitty_owner: ManagedAddress<M>,
     ) -> Self {
-        let type_manager = starting_price.type_manager();
         Auction {
             auction_type,
-            starting_price: starting_price.clone(),
-            ending_price: ending_price.clone(),
+            starting_price,
+            ending_price,
             deadline,
-            kitty_owner: kitty_owner.clone(),
-            current_bid: BigUint::zero(type_manager.clone()),
-            current_winner: ManagedAddress::zero(type_manager),
+            kitty_owner,
+            current_bid: BigUint::zero(),
+            current_winner: ManagedAddress::zero(),
         }
     }
 }

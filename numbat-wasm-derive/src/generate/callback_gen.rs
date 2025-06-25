@@ -23,7 +23,10 @@ pub fn generate_callback_selector_and_main(
             numbat_wasm::types::CallbackSelectorResult::Processed
         };
         let cb_main_body = quote! {
-            let _ = self.callback_selector(numbat_wasm::types::CallbackClosureForDeser::new_empty(self.raw_vm_api()));
+            let _ = self::EndpointWrappers::callback_selector(
+                self,
+                numbat_wasm::types::CallbackClosureForDeser::new_empty(),
+            );
         };
         (cb_selector_body, cb_main_body)
     } else {
@@ -39,10 +42,13 @@ pub fn generate_callback_selector_and_main(
         } else {
             let cb_selector_body = callback_selector_body(match_arms, module_calls);
             let cb_main_body = quote! {
-                if let Some(___cb_closure___) = numbat_wasm::types::CallbackClosureForDeser::storage_load_and_clear(self.raw_vm_api()) {
+                if let Some(___cb_closure___) = numbat_wasm::types::CallbackClosureForDeser::storage_load_and_clear::<Self::Api>() {
                     if let numbat_wasm::types::CallbackSelectorResult::NotProcessed(_) =
                         self::EndpointWrappers::callback_selector(self, ___cb_closure___)	{
-                        numbat_wasm::api::ErrorApi::signal_error(&self.raw_vm_api(), err_msg::CALLBACK_BAD_FUNC);
+                        numbat_wasm::api::ErrorApiImpl::signal_error(
+                            &Self::Api::error_api_impl(),
+                            err_msg::CALLBACK_BAD_FUNC,
+                        );
                     }
                 }
             };
@@ -63,7 +69,7 @@ fn callback_selector_body(
     module_calls: Vec<proc_macro2::TokenStream>,
 ) -> proc_macro2::TokenStream {
     quote! {
-        let mut ___call_result_loader___ = EndpointDynArgLoader::new(self.raw_vm_api());
+        let mut ___call_result_loader___ = numbat_wasm::io::EndpointDynArgLoader::<Self::Api>::new();
         let ___cb_closure_matcher___ = ___cb_closure___.matcher::<#CALLBACK_NAME_MAX_LENGTH>();
         if ___cb_closure_matcher___.matches_empty() {
             return numbat_wasm::types::CallbackSelectorResult::Processed;
@@ -111,7 +117,7 @@ fn match_arms(methods: &[Method]) -> Vec<proc_macro2::TokenStream> {
                 let call = generate_call_to_method_expr(m);
                 let call_result_assert_no_more_args = if has_call_result {
                     quote! {
-                        ___call_result_loader___.assert_no_more_args();
+                        numbat_wasm::io::assert_no_more_args::<Self::Api, _>(&___call_result_loader___);
                     }
                 } else {
                     quote! {}
@@ -123,7 +129,7 @@ fn match_arms(methods: &[Method]) -> Vec<proc_macro2::TokenStream> {
                         #payable_snippet
                         let mut ___cb_arg_loader___ = ___cb_closure___.into_arg_loader();
                         #(#arg_init_snippets)*
-                        ___cb_arg_loader___.assert_no_more_args();
+                        numbat_wasm::io::assert_no_more_args::<Self::Api, _>(&___cb_arg_loader___);
                         #call_result_assert_no_more_args
                         #body_with_result ;
                         return numbat_wasm::types::CallbackSelectorResult::Processed;

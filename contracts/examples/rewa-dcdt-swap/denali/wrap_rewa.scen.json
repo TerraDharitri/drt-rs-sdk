@@ -1,5 +1,6 @@
 {
     "name": "wrap rewa",
+    "gasSchedule": "v4",
     "steps": [
         {
             "step": "setState",
@@ -8,15 +9,25 @@
                     "nonce": "0",
                     "balance": "1000"
                 },
-                "sc:rewa-dcdt-swap": {
+                "sc:rewa_dcdt_swap": {
                     "nonce": "0",
                     "balance": "0",
                     "dcdt": {
-                        "str:WREWA-abcdef": "2000"
+                        "str:REWA-abcdef": {
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
+                            "roles": [
+                                "DCDTRoleLocalMint",
+                                "DCDTRoleLocalBurn"
+                            ]
+                        }
                     },
                     "storage": {
-                        "str:wrapped_rewa_token_id": "str:WREWA-abcdef",
-                        "str:unused_wrapped_rewa": "2000"
+                        "str:wrappedRewaTokenId": "str:REWA-abcdef"
                     },
                     "code": "file:../output/rewa-dcdt-swap.wasm"
                 }
@@ -27,39 +38,17 @@
             "txId": "wrap-rewa",
             "tx": {
                 "from": "address:user",
-                "to": "sc:rewa-dcdt-swap",
+                "to": "sc:rewa_dcdt_swap",
                 "rewaValue": "500",
                 "function": "wrapRewa",
                 "arguments": [],
-                "gasLimit": "100,000,000",
+                "gasLimit": "5,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "0",
                 "message": "",
-                "logs": [
-                    {
-                        "address": "sc:rewa-dcdt-swap",
-                        "endpoint": "str:DCDTTransfer",
-                        "topics": [
-                            "str:WREWA-abcdef",
-                            "",
-                            "500",
-                            "address:user"
-                        ],
-                        "data": ""
-                    },
-                    {
-                        "address": "sc:rewa-dcdt-swap",
-                        "endpoint": "str:wrapRewa",
-                        "topics": [
-                            "str:wrap-rewa",
-                            "address:user"
-                        ],
-                        "data": "500"
-                    }
-                ],
                 "gas": "*",
                 "refund": "*"
             }
@@ -71,19 +60,29 @@
                     "nonce": "1",
                     "balance": "500",
                     "dcdt": {
-                        "str:WREWA-abcdef": "500"
+                        "str:REWA-abcdef": "500"
                     },
                     "storage": {}
                 },
-                "sc:rewa-dcdt-swap": {
+                "sc:rewa_dcdt_swap": {
                     "nonce": "0",
                     "balance": "500",
                     "dcdt": {
-                        "str:WREWA-abcdef": "1500"
+                        "str:REWA-abcdef": {
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
+                            "roles": [
+                                "DCDTRoleLocalMint",
+                                "DCDTRoleLocalBurn"
+                            ]
+                        }
                     },
                     "storage": {
-                        "str:wrapped_rewa_token_id": "str:WREWA-abcdef",
-                        "str:unused_wrapped_rewa": "1500"
+                        "str:wrappedRewaTokenId": "str:REWA-abcdef"
                     },
                     "code": "file:../output/rewa-dcdt-swap.wasm"
                 }

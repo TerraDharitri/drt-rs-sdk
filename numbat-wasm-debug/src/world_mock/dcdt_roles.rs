@@ -23,7 +23,7 @@ impl fmt::Display for DcdtRoles {
         let dcdt_keys: Vec<Vec<u8>> = self.clone().0.to_vec();
 
         for value in &dcdt_keys {
-            write!(&mut dcdt_buf, "{}", hex::encode(value.as_slice()))?;
+            write!(dcdt_buf, "{}", hex::encode(value.as_slice()))?;
         }
         Ok(())
     }

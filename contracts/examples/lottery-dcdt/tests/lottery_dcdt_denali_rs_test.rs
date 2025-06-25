@@ -1,14 +1,12 @@
-use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
-#[allow(dead_code)]
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/lottery-dcdt");
 
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:output/lottery-dcdt.wasm",
-        Box::new(|context| Box::new(lottery_dcdt::contract_obj(context))),
+        lottery_dcdt::ContractBuilder,
     );
     blockchain
 }

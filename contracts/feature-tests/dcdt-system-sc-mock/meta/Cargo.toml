@@ -1,0 +1,17 @@
+[package]
+name = "dcdt-system-sc-mock-meta"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[dependencies.dcdt-system-sc-mock]
+path = ".."
+
+[dependencies.numbat-wasm]
+version = "0.0.17"
+path = "../../../../numbat-wasm"
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.17"
+path = "../../../../numbat-wasm-debug"

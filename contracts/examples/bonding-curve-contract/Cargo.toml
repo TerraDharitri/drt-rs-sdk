@@ -8,15 +8,15 @@ publish = false
 [lib]
 path = "src/lib.rs"
 
-[dependencies.numbat-wasm-module-bonding-curve]
-version = "0.0.15"
-path = "../../modules/numbat-wasm-module-bonding-curve"
-
 [dependencies.numbat-wasm]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../numbat-wasm"
 
+[dependencies.numbat-wasm-modules]
+version = "0.0.17"
+path = "../../../numbat-wasm-modules"
+
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../numbat-wasm-debug"
 

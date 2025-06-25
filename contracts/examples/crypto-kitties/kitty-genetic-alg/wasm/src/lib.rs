@@ -5,10 +5,10 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   kitty_genetic_alg
-   (
-        init
-        callBack
+    kitty_genetic_alg
+    (
         generateKittyGenes
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

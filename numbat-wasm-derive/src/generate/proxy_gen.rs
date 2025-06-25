@@ -17,7 +17,7 @@ pub fn generate_proxy_endpoint_sig(method: &Method) -> proc_macro2::TokenStream 
         fn #method_name #generics (
             self,
             #(#arg_decl),*
-        ) -> numbat_wasm::types::ContractCall<Self::Api, <#ret_tok as numbat_wasm::io::EndpointResult>::DecodeAs>
+        ) -> numbat_wasm::types::ContractCall<Self::Api, <#ret_tok as numbat_wasm::numbat_codec::TopEncodeMulti>::DecodeAs>
         #generics_where
     };
     result
@@ -42,13 +42,14 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
     let msig = generate_proxy_endpoint_sig(m);
 
     let mut token_count = 0;
-    let mut token_expr = quote! { numbat_wasm::types::TokenIdentifier::rewa(___api___.clone()) };
+    let mut token_expr = quote! { numbat_wasm::types::TokenIdentifier::<Self::Api>::rewa() };
     let mut nonce_count = 0;
     let mut nonce_expr = quote! { 0u64 };
     let mut payment_count = 0;
-    let mut payment_expr = quote! { numbat_wasm::types::BigUint::zero(___api___.clone()) };
+    let mut payment_expr = quote! { numbat_wasm::types::BigUint::<Self::Api>::zero() };
     let mut multi_count = 0;
-    let mut multi_expr = quote! { numbat_wasm::types::ManagedVec::new(___api___.clone()) };
+    let mut multi_expr =
+        quote! { numbat_wasm::types::ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new() };
 
     let arg_push_snippets: Vec<proc_macro2::TokenStream> = m
         .method_args
@@ -57,7 +58,7 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
             ArgPaymentMetadata::NotPayment => {
                 let pat = &arg.pat;
                 quote! {
-                    ___contract_call___.push_endpoint_arg(#pat);
+                    ___contract_call___.push_endpoint_arg(&#pat);
                 }
             },
             ArgPaymentMetadata::PaymentToken => {
@@ -129,12 +130,11 @@ pub fn generate_proxy_endpoint(m: &Method, endpoint_name: String) -> proc_macro2
         #[allow(clippy::too_many_arguments)]
         #[allow(clippy::type_complexity)]
         #msig {
-            let (___api___, ___address___) = self.into_fields();
+            let ___address___ = self.into_fields();
             let mut ___contract_call___ = numbat_wasm::types::new_contract_call(
-                ___api___.clone(),
                 ___address___,
                 #endpoint_name_literal,
-                ManagedVec::new(___api___.clone()),
+                ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new(),
             );
             #single_payment_snippet
             #multiple_payment_snippet
@@ -161,7 +161,7 @@ pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
             ArgPaymentMetadata::NotPayment => {
                 let pat = &arg.pat;
                 quote! {
-                    ___contract_deploy___.push_endpoint_arg(#pat);
+                    ___contract_deploy___.push_endpoint_arg(&#pat);
                 }
             },
             ArgPaymentMetadata::PaymentToken => {
@@ -202,10 +202,8 @@ pub fn generate_proxy_deploy(init_method: &Method) -> proc_macro2::TokenStream {
         #[allow(clippy::too_many_arguments)]
         #[allow(clippy::type_complexity)]
         #msig {
-            let (___api___, ___address___) =
-                self.into_fields();
-            let mut ___contract_deploy___ = numbat_wasm::types::new_contract_deploy(
-                ___api___.clone(),
+            let ___address___ = self.into_fields();
+            let mut ___contract_deploy___ = numbat_wasm::types::new_contract_deploy::<Self::Api>(
                 ___address___,
             );
             #(#arg_push_snippets)*

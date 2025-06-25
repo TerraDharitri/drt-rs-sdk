@@ -22,7 +22,7 @@
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
-                "function": "computeRipemd160",
+                "function": "compute_ripemd160",
                 "arguments": [
                     "0x010203"
                 ],
@@ -34,7 +34,7 @@
                     "0x79f901da2609f020adadbf2e5f68a16c8c3f7d57"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -45,7 +45,7 @@
             "tx": {
                 "from": "address:an_account",
                 "to": "sc:basic-features",
-                "function": "computeRipemd160",
+                "function": "compute_ripemd160",
                 "arguments": [
                     "0x0102030405060708"
                 ],
@@ -57,7 +57,7 @@
                     "0xc9883eece7dca619b830dc9d87e82c38478111c0"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }

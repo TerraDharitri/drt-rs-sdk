@@ -7,10 +7,6 @@ publish = false
 [dependencies.kitty-genetic-alg]
 path = ".."
 
-[dependencies.numbat-wasm]
-version = "0.0.15"
-path = "../../../../../numbat-wasm"
-
 [dependencies.numbat-wasm-debug]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../../numbat-wasm-debug"

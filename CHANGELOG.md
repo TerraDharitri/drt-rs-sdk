@@ -4,6 +4,128 @@ There are several crates in this repo, this changelog will keep track of all of 
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [numbat-wasm 0.0.17] - 2022-03-01
+- Disabled git tag/commit info in ABI due to issue in standard modules.
+
+## [numbat-wasm 0.29.0] - 2022-03-01
+- Cleaned up allocator from modules: `DnsModule`, `DcdtModule`, `FeaturesModule`, `PauseModule`, `UsersModule`.
+- Crypto API managed wrapper over legacy VM endpoints.
+- Managed multi-value types refactor and rename.
+- `ManagedVec` - `remove`, `contains`, `find`.
+- `ManagedVecItem` derive for simple enums.
+- Feature `cb_closure_managed_deser` replaced by `cb_closure_unmanaged_deser`, managed implementation is now the default.
+- Git tag/commit info in ABI.
+
+## [numbat-wasm 0.28.0, numbat-codec 0.0.17, denali 0.12.0] - 2022-02-22
+- Major numbat-codec refactor:
+	- Redesigned the error handling for single value encoding
+	- Introduced multi-value encoding, which replaces the previous endpoint argument and result mechanisms
+- Denali improvements:
+	- Multi-values: out, topics, DCDT uri
+	- Logs "+" wildcard
+- Builtin function mocks: `DCDTNFTUpdateAttributes`, `DCDTNFTAddURI`
+- New storage mappers: `FungibleTokenMapper`, `NonFungibleTokenMapper`, `WhitelistMapper`
+- Call value wrapper avoids using invalid token index in requests
+
+## [numbat-wasm 0.27.4, numbat-codec 0.8.5] - 2022-02-02
+- Backwards compatibility fix.
+
+## [numbat-wasm 0.27.3] - 2022-01-31
+- Backwards compatibility fix.
+- Trailing commas are allowed in `sc_panic!`, `require!` and `sc_print!`.
+- DcdtTokenData `decode_attributes_or_exit` for easier error handling.
+
+## [numbat-wasm 0.27.2, numbat-codec 0.8.4] - 2022-01-27
+- Added missing non-specialized decode implementations for managed types.
+
+## [numbat-wasm 0.27.1] - 2022-01-27
+- Deriving `PartialEq` now works on structs that contain managed types.
+
+## [numbat-wasm 0.27.0] - 2022-01-25
+- Fixed certain compilation error messages. The previous implementation of the macro preprocessor would have concealed the location of many issues.
+- Changed implementation of `require!`:
+	- `require!` no longer returns a `SCResult` type, when the condition is false it now stops the transaction immediately, via `signal_error`;
+	- `require!` now accepts message formatting;
+	- `require_old!` gives access to the old implementation.
+- The Rust testing framework can now handle panics and async calls.
+- ABI bugfix - an issue regarding nested types.
+- `meta` crate build also attempts to call `wasm-opt` after building the contracts.
+- Refactored `CodeMetadata` and added "payable by SC" field.
+- Empty contract template.
+
+## [numbat-wasm 0.26.0] - 2022-01-19
+- Major VM API trait refactoring. All API methods can be accessed from a static context. Removed api instance variables from all objects.
+- External view contracts
+	- Annotating one or more endpoints with `#[external_view]` triggers the framework to create a second "external view" contract where all these endpoints are placed. This is primarily to reduce the main contract size.
+	- General `meta` crate functionality refactor to allow multiple contract generation.
+- `ManagedRef` type
+	- Provided as a more efficient alternative to regular references to managed types
+	- Has `Copy` semantics
+	- `ManagedVec` iterators made safer by the proper use of lifetimes
+	- `ManagedVec` `get_mut` offers a safe mutable reference, using lifetimes
+	- Some initial optimizations in storage mappers
+- First version of a message formatter based on `ManagedBuffer`s:
+	- `sc_print!` macro
+	- `sc_panic!` macro
+- Random number generator wrapper over randomness source from the VM.
+
+## [numbat-wasm 0.25.0] - 2021-12-14
+- Rust testing framework - denali generation fixes and some more getters
+- Standard modules moved to `numbat-wasm-modules` crates
+
+## [numbat-wasm 0.24.0] - 2021-12-07
+- Rust testing framework
+- Managed Crypto API - keccak256 and sha256
+- New hook for DCDT local roles
+- Only-owner module annotation
+
+## [numbat-wasm 0.23.1, numbat-codec 0.8.3] - 2021-11-25
+- `ArrayVec` serialization
+- `ManagedAddress` additional conversions
+
+## [numbat-wasm 0.23.0] - 2021-11-23
+- Static access to API. Static thread-local context stack in the debugger.
+
+## [numbat-wasm 0.22.11] - 2021-11-17
+- Derive `ManagedVecItem` generics fix
+- Constructor can reside in module
+
+## [numbat-wasm 0.22.10] - 2021-11-12
+- `ManagedMultiResultVec` push accepts multi result
+
+## [numbat-wasm 0.22.9] - 2021-11-12
+- `ManagedVarArgsEager` implementation
+- `DcdtLocalRoleFlags`, no heap allocation in `get_dcdt_local_roles`
+
+## [numbat-wasm 0.22.8, numbat-codec 0.8.2] - 2021-11-12
+- Optimized decode unsigned number from slice
+
+## [numbat-wasm 0.22.7] - 2021-11-12
+- Optimized decode unsigned number from slice
+- Optimized blockchain API: managed get token nonce, get dcdt balance
+- `ManagedVecItem` for `ManagedByteArray`
+
+## [numbat-wasm 0.22.6] - 2021-11-11
+- Optimized decode u64 from `ManagedBuffer`
+- `ManagedVecItem` in `derive_imports`
+
+## [numbat-wasm 0.22.5] - 2021-11-11
+- Implemented `ManagedVecItem` for `bool`.
+- Substitution for `ManagedMultiResultVec::new()`.
+
+## [numbat-wasm 0.22.4] - 2021-11-11
+- Derive `ManagedVecItem`.
+- Nested encode and decode from ManagedBuffers cached in a static singleton buffer.
+- Implemented `ExactSizeIterator` for `ManagedVecIterator`.
+
+## [numbat-wasm 0.22.3] - 2021-11-10
+- Memory allocation optimisations.
+
+## [numbat-wasm 0.22.2] - 2021-11-06
+- Callback endpoint automatically created empty for contracts that have no callbacks. This is determined by the `meta` crate, based on the ABI of the contract and its modules.
+- `UnorderedSetMapper`
+- `IgnoreVarArgs` variadic argument type that ignores input
+
 ## [numbat-wasm 0.22.1] - 2021-11-04
 - Made the generated code in `wasm/lib.rs` more compact with the use of macros.
 
@@ -51,7 +173,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
+## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.0.17] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Andes minimum version is `v1.4.10`.
 	- Redesigned parts of the numbat-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -288,7 +410,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [numbat-wasm 0.0.17, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from numbat-wasm 0.8.0.
@@ -306,7 +428,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [numbat-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [numbat-wasm 0.7.0, denali 0.0.17] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -332,7 +454,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - MultiResultVec - new, from_iter
 - EncodeError type
 
-## [numbat-wasm 0.5.3, numbat-codec 0.1.0] - 2020-07-10
+## [numbat-wasm 0.5.3, numbat-codec 0.0.17] - 2020-07-10
 - Extracted numbat-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
@@ -404,7 +526,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [numbat-wasm 0.1.1] - 2020-02-27
 - Async call contract proxy infrastructure
 
-## [numbat-wasm 0.1.0] - 2020-02-05 
+## [numbat-wasm 0.0.17] - 2020-02-05 
 - Initial relase of the framework
 - Main features at this time:
 	- contract main macro

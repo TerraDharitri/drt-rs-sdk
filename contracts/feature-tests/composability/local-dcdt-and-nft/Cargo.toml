@@ -10,9 +10,9 @@ path = "src/lib.rs"
 
 
 [dependencies.numbat-wasm]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../numbat-wasm"
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../numbat-wasm-debug"

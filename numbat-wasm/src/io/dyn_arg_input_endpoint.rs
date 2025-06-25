@@ -1,56 +1,64 @@
+use core::marker::PhantomData;
+
+use numbat_codec::{DecodeError, DecodeErrorHandler, TopDecodeMultiInput};
+
 use crate::{
-    api::{EndpointArgumentApi, ManagedTypeApi},
-    err_msg, ArgDecodeInput, DynArgInput,
+    api::{EndpointArgumentApi, EndpointArgumentApiImpl, ErrorApi, ManagedTypeApi},
+    ArgDecodeInput,
 };
 
+#[derive(Default)]
 pub struct EndpointDynArgLoader<AA>
 where
-    AA: ManagedTypeApi + EndpointArgumentApi,
+    AA: ManagedTypeApi + ErrorApi + EndpointArgumentApi,
 {
-    api: AA,
+    _phantom: PhantomData<AA>,
     current_index: i32,
     num_arguments: i32,
 }
 
 impl<AA> EndpointDynArgLoader<AA>
 where
-    AA: ManagedTypeApi + EndpointArgumentApi,
+    AA: ManagedTypeApi + ErrorApi + EndpointArgumentApi,
 {
-    pub fn new(api: AA) -> Self {
-        let num_arguments = api.get_num_arguments();
+    pub fn new() -> Self {
+        let num_arguments = AA::argument_api_impl().get_num_arguments();
         EndpointDynArgLoader {
-            api,
+            _phantom: PhantomData,
             current_index: 0,
             num_arguments,
         }
     }
 }
 
-impl<AA> DynArgInput for EndpointDynArgLoader<AA>
+impl<AA> TopDecodeMultiInput for EndpointDynArgLoader<AA>
 where
-    AA: ManagedTypeApi + EndpointArgumentApi,
+    AA: ManagedTypeApi + ErrorApi + EndpointArgumentApi,
 {
-    type ItemInput = ArgDecodeInput<AA>;
-
-    type ErrorApi = AA;
-
-    #[inline]
-    fn dyn_arg_vm_api(&self) -> Self::ErrorApi {
-        self.api.clone()
-    }
+    type ValueInput = ArgDecodeInput<AA>;
 
     fn has_next(&self) -> bool {
         self.current_index < self.num_arguments
     }
 
-    fn next_arg_input(&mut self) -> ArgDecodeInput<AA> {
+    fn next_value_input<H>(&mut self, h: H) -> Result<Self::ValueInput, H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
         if self.current_index >= self.num_arguments {
-            self.dyn_arg_vm_api()
-                .signal_error(err_msg::ARG_WRONG_NUMBER)
+            Err(h.handle_error(DecodeError::MULTI_TOO_FEW_ARGS))
         } else {
-            let arg_input = ArgDecodeInput::new(self.api.clone(), self.current_index);
+            let arg_input = ArgDecodeInput::new(self.current_index);
             self.current_index += 1;
-            arg_input
+            Ok(arg_input)
         }
+    }
+
+    fn flush_ignore<H>(&mut self, _h: H) -> Result<(), H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
+        self.current_index = self.num_arguments;
+        Ok(())
     }
 }

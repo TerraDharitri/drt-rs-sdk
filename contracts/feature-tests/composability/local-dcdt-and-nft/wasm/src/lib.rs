@@ -5,9 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   local_dcdt_and_nft
-   (
-        init
+    local_dcdt_and_nft
+    (
         callBack
         getCurrentNftNonce
         getFungibleDcdtBalance
@@ -26,5 +25,5 @@ numbat_wasm_node::wasm_endpoints! {
         transferNftViaAsyncCall
         transfer_nft_and_execute
         unsetLocalRoles
-   )
+    )
 }

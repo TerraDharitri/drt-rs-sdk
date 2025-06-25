@@ -8,30 +8,14 @@ publish = false
 [lib]
 path = "src/use_module.rs"
 
-[dependencies.numbat-wasm-module-dns]
-version = "0.0.15"
-path = "../../modules/numbat-wasm-module-dns"
-
-[dependencies.numbat-wasm-module-dcdt]
-version = "0.0.15"
-path = "../../modules/numbat-wasm-module-dcdt"
-
-[dependencies.numbat-wasm-module-features]
-version = "0.0.15"
-path = "../../modules/numbat-wasm-module-features"
-
-[dependencies.numbat-wasm-module-governance]
-version = "0.0.15"
-path = "../../modules/numbat-wasm-module-governance"
-
-[dependencies.numbat-wasm-module-pause]
-version = "0.0.15"
-path = "../../modules/numbat-wasm-module-pause"
+[dependencies.numbat-wasm-modules]
+version = "0.0.17"
+path = "../../../numbat-wasm-modules"
 
 [dependencies.numbat-wasm]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../numbat-wasm"
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../numbat-wasm-debug"

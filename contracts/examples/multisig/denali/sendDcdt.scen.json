@@ -1,5 +1,4 @@
 {
-    "gasSchedule": "v4",
     "steps": [
         {
             "step": "externalSteps",
@@ -23,7 +22,7 @@
                 "address:dcdt-owner": {
                     "dcdt": {
                         "str:FUNG-TOKEN": "1000",
-                        "str:NFT-123": {
+                        "str:NFT-123456": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -31,7 +30,7 @@
                                 }
                             ]
                         },
-                        "str:SFT-456": {
+                        "str:SFT-456789": {
                             "instances": [
                                 {
                                     "nonce": "3",
@@ -55,12 +54,12 @@
                         "value": "1000"
                     },
                     {
-                        "tokenIdentifier": "str:NFT-123",
+                        "tokenIdentifier": "str:NFT-123456",
                         "nonce": "1",
                         "value": "1"
                     },
                     {
-                        "tokenIdentifier": "str:SFT-456",
+                        "tokenIdentifier": "str:SFT-456789",
                         "nonce": "3",
                         "value": "10"
                     }
@@ -75,17 +74,20 @@
             "tx": {
                 "from": "address:paul",
                 "to": "sc:multisig",
-                "function": "proposeSendDcdt",
+                "function": "proposeAsyncCall",
                 "arguments": [
+                    "sc:multisig",
+                    "0",
+                    "str:MultiDCDTNFTTransfer",
                     "address:dcdt-owner",
                     "3",
                     "str:FUNG-TOKEN",
                     "0",
                     "1000",
-                    "str:NFT-123",
+                    "str:NFT-123456",
                     "1",
                     "1",
-                    "str:SFT-456",
+                    "str:SFT-456789",
                     "3",
                     "10"
                 ],
@@ -117,7 +119,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -138,7 +140,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -175,7 +177,7 @@
                         "address": "sc:multisig",
                         "endpoint": "str:MultiDCDTNFTTransfer",
                         "topics": [
-                            "str:NFT-123",
+                            "str:NFT-123456",
                             "1",
                             "1",
                             "address:dcdt-owner"
@@ -186,7 +188,7 @@
                         "address": "sc:multisig",
                         "endpoint": "str:MultiDCDTNFTTransfer",
                         "topics": [
-                            "str:SFT-456",
+                            "str:SFT-456789",
                             "3",
                             "10",
                             "address:dcdt-owner"
@@ -205,7 +207,7 @@
                     "nonce": "1",
                     "dcdt": {
                         "str:FUNG-TOKEN": "1000",
-                        "str:NFT-123": {
+                        "str:NFT-123456": {
                             "instances": [
                                 {
                                     "nonce": "1",
@@ -213,7 +215,7 @@
                                 }
                             ]
                         },
-                        "str:SFT-456": {
+                        "str:SFT-456789": {
                             "instances": [
                                 {
                                     "nonce": "3",

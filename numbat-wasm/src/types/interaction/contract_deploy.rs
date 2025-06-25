@@ -1,7 +1,12 @@
+use core::marker::PhantomData;
+
+use numbat_codec::TopEncodeMulti;
+
 use crate::{
-    api::SendApi,
+    api::{BlockchainApiImpl, SendApi, SendApiImpl},
+    contract_base::ExitCodecErrorHandler,
+    err_msg,
     types::{BigUint, CodeMetadata, ManagedAddress, ManagedBuffer, ManagedVec},
-    ContractCallArg,
 };
 
 use super::ManagedArgBuffer;
@@ -16,7 +21,7 @@ pub struct ContractDeploy<SA>
 where
     SA: SendApi + 'static,
 {
-    api: SA,
+    _phantom: PhantomData<SA>,
     to: ManagedAddress<SA>, // only used for Upgrade, ignored for Deploy
     rewa_payment: BigUint<SA>,
     explicit_gas_limit: u64,
@@ -25,30 +30,40 @@ where
 
 /// Syntactical sugar to help macros to generate code easier.
 /// Unlike calling `ContractDeploy::<SA>::new`, here types can be inferred from the context.
-pub fn new_contract_deploy<SA>(api: SA, to: ManagedAddress<SA>) -> ContractDeploy<SA>
+pub fn new_contract_deploy<SA>(to: ManagedAddress<SA>) -> ContractDeploy<SA>
 where
     SA: SendApi + 'static,
 {
-    let mut contract_deploy = ContractDeploy::<SA>::new(api);
+    let mut contract_deploy = ContractDeploy::<SA>::new();
     contract_deploy.to = to;
     contract_deploy
 }
 
-impl<SA> ContractDeploy<SA>
+impl<SA> Default for ContractDeploy<SA>
 where
     SA: SendApi + 'static,
 {
-    pub fn new(api: SA) -> Self {
-        let zero = BigUint::zero(api.clone());
-        let zero_address = ManagedAddress::zero(api.clone());
-        let arg_buffer = ManagedArgBuffer::new_empty(api.clone());
+    fn default() -> Self {
+        let zero = BigUint::zero();
+        let zero_address = ManagedAddress::zero();
+        let arg_buffer = ManagedArgBuffer::new_empty();
         ContractDeploy {
-            api,
+            _phantom: PhantomData,
             to: zero_address,
             rewa_payment: zero,
             explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
             arg_buffer,
         }
+    }
+}
+
+#[allow(clippy::return_self_not_must_use)]
+impl<SA> ContractDeploy<SA>
+where
+    SA: SendApi + 'static,
+{
+    pub fn new() -> Self {
+        Self::default()
     }
 
     pub fn with_rewa_transfer(mut self, payment_amount: BigUint<SA>) -> Self {
@@ -61,8 +76,9 @@ where
         self
     }
 
-    pub fn push_endpoint_arg<D: ContractCallArg>(&mut self, endpoint_arg: D) {
-        endpoint_arg.push_dyn_arg(&mut self.arg_buffer);
+    pub fn push_endpoint_arg<T: TopEncodeMulti>(&mut self, endpoint_arg: &T) {
+        let h = ExitCodecErrorHandler::<SA>::from(err_msg::CONTRACT_CALL_ENCODE_ERROR);
+        let Ok(()) = endpoint_arg.multi_encode_or_handle_err(&mut self.arg_buffer, h);
     }
 
     // pub fn get_mut_arg_buffer(&mut self) -> &mut ArgBuffer {
@@ -76,7 +92,7 @@ where
 
     fn resolve_gas_limit(&self) -> u64 {
         if self.explicit_gas_limit == UNSPECIFIED_GAS_LIMIT {
-            self.api.get_gas_left()
+            SA::blockchain_api_impl().get_gas_left()
         } else {
             self.explicit_gas_limit
         }
@@ -94,7 +110,7 @@ where
         code: &ManagedBuffer<SA>,
         code_metadata: CodeMetadata,
     ) -> (ManagedAddress<SA>, ManagedVec<SA, ManagedBuffer<SA>>) {
-        self.api.deploy_contract(
+        SA::send_api_impl().deploy_contract(
             self.resolve_gas_limit(),
             &self.rewa_payment,
             code,
@@ -108,7 +124,7 @@ where
         source_address: &ManagedAddress<SA>,
         code_metadata: CodeMetadata,
     ) -> (ManagedAddress<SA>, ManagedVec<SA, ManagedBuffer<SA>>) {
-        self.api.deploy_from_source_contract(
+        SA::send_api_impl().deploy_from_source_contract(
             self.resolve_gas_limit(),
             &self.rewa_payment,
             source_address,
@@ -122,7 +138,7 @@ where
         source_address: &ManagedAddress<SA>,
         code_metadata: CodeMetadata,
     ) {
-        self.api.upgrade_from_source_contract(
+        SA::send_api_impl().upgrade_from_source_contract(
             &self.to,
             self.resolve_gas_limit(),
             &self.rewa_payment,
@@ -133,7 +149,7 @@ where
     }
 
     pub fn upgrade_contract(self, code: &ManagedBuffer<SA>, code_metadata: CodeMetadata) {
-        self.api.upgrade_contract(
+        SA::send_api_impl().upgrade_contract(
             &self.to,
             self.resolve_gas_limit(),
             &self.rewa_payment,

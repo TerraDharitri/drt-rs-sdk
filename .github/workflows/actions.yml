@@ -15,14 +15,16 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           default: true
-          toolchain: nightly
-      - name: Install drtpy and vmtools
+          toolchain: nightly-2022-01-17
+      - name: Install drtpy, vmtools and wasm-opt
         run: |
           source .github/workflows/env
           pip3 install drtpy
           mkdir $HOME/numbatsdk
-          drtpy config set dependencies.vmtools.tag v1.4.22
+          drtpy config set dependencies.vmtools.tag v1.4.42
           drtpy deps install vmtools
+          drtpy deps install nodejs
+          drtpy deps install wasm-opt
       - name: Build the wasm contracts
         run: |
           source .github/workflows/env
@@ -74,7 +76,7 @@ jobs:
           body-includes: Contract file size comparison
       - name: Create or update sizes report comment
         uses: peter-evans/create-or-update-comment@v1
-        if: ${{ github.event_name == 'pull_request' }}
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}

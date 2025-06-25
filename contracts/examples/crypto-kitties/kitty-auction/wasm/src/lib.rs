@@ -5,9 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   kitty_auction
-   (
-        init
+    kitty_auction
+    (
         callBack
         bid
         createAndAuctionGenZeroKitty
@@ -18,5 +17,5 @@ numbat_wasm_node::wasm_endpoints! {
         getCurrentWinningBid
         isUpForAuction
         setKittyOwnershipContractAddress
-   )
+    )
 }

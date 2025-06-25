@@ -1,5 +1,4 @@
 {
-    "gasSchedule": "v3",
     "steps": [
         {
             "step": "externalSteps",
@@ -21,7 +20,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -44,7 +43,7 @@
                     "1"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -65,7 +64,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -87,7 +86,7 @@
                 "out": [],
                 "status": "4",
                 "message": "str:cannot remove all board members and proposers",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }

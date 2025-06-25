@@ -1,5 +1,6 @@
 use crate::{
-    api::{ErrorApi, ManagedTypeApi},
+    api::{ErrorApi, Handle, ManagedTypeApi},
+    contract_base::ExitCodecErrorHandler,
     types::{BoxedBytes, ManagedBuffer, ManagedByteArray, ManagedType},
     *,
 };
@@ -12,14 +13,35 @@ where
     pub(crate) buffer: ManagedBuffer<A>,
 }
 
+impl<A> ManagedType<A> for StorageKey<A>
+where
+    A: ManagedTypeApi + ErrorApi + 'static,
+{
+    #[inline]
+    fn from_raw_handle(handle: Handle) -> Self {
+        StorageKey {
+            buffer: ManagedBuffer::from_raw_handle(handle),
+        }
+    }
+
+    #[doc(hidden)]
+    fn get_raw_handle(&self) -> Handle {
+        self.buffer.get_raw_handle()
+    }
+
+    fn transmute_from_handle_ref(handle_ref: &Handle) -> &Self {
+        unsafe { core::mem::transmute(handle_ref) }
+    }
+}
+
 impl<A> StorageKey<A>
 where
     A: ManagedTypeApi + ErrorApi + 'static,
 {
     #[inline]
-    pub fn new(api: A, base_key: &[u8]) -> Self {
+    pub fn new(base_key: &[u8]) -> Self {
         StorageKey {
-            buffer: ManagedBuffer::new_from_bytes(api, base_key),
+            buffer: ManagedBuffer::new_from_bytes(base_key),
         }
     }
 
@@ -37,8 +59,10 @@ where
     where
         T: NestedEncode,
     {
-        let exit_ctx = self.buffer.type_manager();
-        item.dep_encode_or_exit(&mut self.buffer, exit_ctx, storage_key_append_exit);
+        let Ok(()) = item.dep_encode_or_handle_err(
+            &mut self.buffer,
+            ExitCodecErrorHandler::<A>::from(err_msg::STORAGE_KEY_ENCODE_ERROR),
+        );
     }
 
     #[inline]
@@ -56,7 +80,7 @@ impl<M: ManagedTypeApi> From<ManagedBuffer<M>> for StorageKey<M> {
 
 impl<M, const N: usize> From<ManagedByteArray<M, N>> for StorageKey<M>
 where
-    M: ManagedTypeApi,
+    M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
     fn from(mba: ManagedByteArray<M, N>) -> Self {
@@ -70,15 +94,4 @@ impl<M: ManagedTypeApi> Clone for StorageKey<M> {
             buffer: self.buffer.clone(),
         }
     }
-}
-
-#[inline(always)]
-fn storage_key_append_exit<A>(api: A, encode_err: EncodeError) -> !
-where
-    A: ManagedTypeApi + ErrorApi + 'static,
-{
-    let mut message_buffer =
-        ManagedBuffer::new_from_bytes(api.clone(), err_msg::STORAGE_KEY_ENCODE_ERROR);
-    message_buffer.append_bytes(encode_err.message_bytes());
-    api.signal_error_from_buffer(message_buffer.get_raw_handle())
 }

@@ -5,9 +5,10 @@ use numbat_wasm::String;
 /// Various macros provided by numbat-wasm.
 #[numbat_wasm::module]
 pub trait Macros {
+    #[allow(deprecated)]
     #[view]
     fn only_owner_legacy(&self) -> SCResult<()> {
-        only_owner!(self, "Caller must be owner");
+        numbat_wasm::only_owner!(self, "Caller must be owner");
         Ok(())
     }
 
@@ -33,28 +34,28 @@ pub trait Macros {
 
     #[view]
     fn result_err_from_bytes_1(&self, e: BoxedBytes) -> SCResult<(), ManagedSCError> {
-        SCResult::Err(e.managed_into())?;
+        SCResult::Err(e.into())?;
         unreachable!()
     }
 
     #[view]
     fn result_err_from_bytes_2<'a>(&self, e: &'a [u8]) -> SCResult<(), ManagedSCError> {
-        SCResult::Err(e.managed_into())
+        SCResult::Err(e.into())
     }
 
     #[view]
     fn result_err_from_bytes_3(&self, e: Vec<u8>) -> SCResult<(), ManagedSCError> {
-        SCResult::Err(e.managed_into())
+        SCResult::Err(e.into())
     }
 
     #[view]
     fn result_err_from_string(&self, e: String) -> SCResult<(), ManagedSCError> {
-        SCResult::Err(e.managed_into())
+        SCResult::Err(e.into())
     }
 
     #[view]
     fn result_err_from_str<'a>(&self, e: &'a str) -> SCResult<(), ManagedSCError> {
-        SCResult::Err(e.managed_into())
+        SCResult::Err(e.into())
     }
 
     #[endpoint]
@@ -74,6 +75,6 @@ pub trait Macros {
     #[endpoint]
     fn result_echo_3(&self, arg: Option<String>) -> String {
         let result: SCResult<String> = arg.ok_or("option argument is none").into();
-        result.unwrap_or_signal_error()
+        result.unwrap_or_signal_error::<Self::Api>()
     }
 }

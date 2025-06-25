@@ -6,17 +6,21 @@ use crate::{
 use super::{
     change_owner_mock::execute_change_owner, dcdt_local_burn::execute_local_burn,
     dcdt_local_mint::execute_local_mint, dcdt_multi_transfer_mock::execute_dcdt_multi_transfer,
-    dcdt_nft_add_quantity_mock::execute_nft_add_quantity, dcdt_nft_burn_mock::execute_nft_burn,
+    dcdt_nft_add_quantity_mock::execute_nft_add_quantity,
+    dcdt_nft_add_uri_mock::execute_nft_add_uri, dcdt_nft_burn_mock::execute_nft_burn,
     dcdt_nft_create_mock::execute_dcdt_nft_create,
-    dcdt_nft_transfer_mock::execute_dcdt_nft_transfer, dcdt_transfer_mock::execute_dcdt_transfer,
-    set_username_mock::execute_set_username, upgrade_contract::execute_upgrade_contract,
+    dcdt_nft_transfer_mock::execute_dcdt_nft_transfer,
+    dcdt_nft_update_attriutes_mock::execute_dcdt_nft_update_attriutes,
+    dcdt_transfer_mock::execute_dcdt_transfer, set_username_mock::execute_set_username,
+    upgrade_contract::execute_upgrade_contract,
 };
 
 use numbat_wasm::api::{
     CHANGE_OWNER_BUILTIN_FUNC_NAME, DCDT_LOCAL_BURN_FUNC_NAME, DCDT_LOCAL_MINT_FUNC_NAME,
-    DCDT_MULTI_TRANSFER_FUNC_NAME, DCDT_NFT_ADD_QUANTITY_FUNC_NAME, DCDT_NFT_BURN_FUNC_NAME,
-    DCDT_NFT_CREATE_FUNC_NAME, DCDT_NFT_TRANSFER_FUNC_NAME, DCDT_TRANSFER_FUNC_NAME,
-    SET_USERNAME_FUNC_NAME, UPGRADE_CONTRACT_FUNC_NAME,
+    DCDT_MULTI_TRANSFER_FUNC_NAME, DCDT_NFT_ADD_QUANTITY_FUNC_NAME, DCDT_NFT_ADD_URI_FUNC_NAME,
+    DCDT_NFT_BURN_FUNC_NAME, DCDT_NFT_CREATE_FUNC_NAME, DCDT_NFT_TRANSFER_FUNC_NAME,
+    DCDT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME, DCDT_TRANSFER_FUNC_NAME, SET_USERNAME_FUNC_NAME,
+    UPGRADE_CONTRACT_FUNC_NAME,
 };
 
 const DCDT_ROLE_LOCAL_MINT: &[u8] = b"DCDTRoleLocalMint";
@@ -24,6 +28,8 @@ const DCDT_ROLE_LOCAL_BURN: &[u8] = b"DCDTRoleLocalBurn";
 const DCDT_ROLE_NFT_CREATE: &[u8] = b"DCDTRoleNFTCreate";
 const DCDT_ROLE_NFT_ADD_QUANTITY: &[u8] = b"DCDTRoleNFTAddQuantity";
 const DCDT_ROLE_NFT_BURN: &[u8] = b"DCDTRoleNFTBurn";
+const DCDT_ROLE_NFT_ADD_URI: &[u8] = b"DCDTRoleNFTAddURI";
+const DCDT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCDTRoleNFTUpdateAttributes";
 
 pub fn execute_builtin_function_or_default(
     tx_input: TxInput,
@@ -61,6 +67,18 @@ pub fn execute_builtin_function_or_default(
             tx_input,
             tx_cache,
             &execute_nft_burn,
+        ),
+        DCDT_NFT_ADD_URI_FUNC_NAME => check_and_execute_builtin_function(
+            DCDT_ROLE_NFT_ADD_URI,
+            tx_input,
+            tx_cache,
+            &execute_nft_add_uri,
+        ),
+        DCDT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME => check_and_execute_builtin_function(
+            DCDT_ROLE_NFT_UPDATE_ATTRIBUTES,
+            tx_input,
+            tx_cache,
+            &execute_dcdt_nft_update_attriutes,
         ),
 
         DCDT_TRANSFER_FUNC_NAME => execute_dcdt_transfer(tx_input, tx_cache),

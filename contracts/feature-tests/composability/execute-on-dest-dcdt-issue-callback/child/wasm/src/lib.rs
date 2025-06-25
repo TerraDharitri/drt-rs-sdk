@@ -5,11 +5,10 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   child
-   (
-        init
+    child
+    (
         callBack
         getWrappedRewaTokenIdentifier
         issueWrappedRewa
-   )
+    )
 }

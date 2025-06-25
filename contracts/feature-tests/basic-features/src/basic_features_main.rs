@@ -14,18 +14,23 @@ pub mod echo_managed;
 pub mod elliptic_curve_features;
 pub mod event_features;
 pub mod macro_features;
+pub mod managed_address_features;
 pub mod managed_buffer_features;
 pub mod managed_vec_features;
 pub mod storage_direct_load;
 pub mod storage_direct_store;
+pub mod storage_mapper_fungible_token;
 pub mod storage_mapper_linked_list;
 pub mod storage_mapper_map;
 pub mod storage_mapper_map_storage;
+pub mod storage_mapper_non_fungible_token;
 pub mod storage_mapper_queue;
 pub mod storage_mapper_set;
 pub mod storage_mapper_single;
 pub mod storage_mapper_token_attributes;
 pub mod storage_mapper_vec;
+pub mod storage_mapper_whitelist;
+pub mod struct_eq;
 pub mod token_identifier_features;
 pub mod type_features;
 pub mod types;
@@ -43,6 +48,7 @@ pub trait BasicFeatures:
     + echo_managed::EchoManagedTypes
     + event_features::EventFeatures
     + macro_features::Macros
+    + managed_address_features::ManagedAddressFeatures
     + managed_buffer_features::ManagedBufferFeatures
     + managed_vec_features::ManagedVecFeatures
     + storage_direct_load::StorageLoadFeatures
@@ -55,8 +61,13 @@ pub trait BasicFeatures:
     + storage_mapper_single::SingleValueMapperFeatures
     + storage_mapper_vec::VecMapperFeatures
     + storage_mapper_token_attributes::TokenAttributesMapperFeatures
+    + storage_mapper_whitelist::StorageMapperWhitelistFeatures
+    + storage_mapper_fungible_token::FungibleTokenMapperFeatures
+    + storage_mapper_non_fungible_token::NonFungibleTokenMapperFeatures
+    + struct_eq::StructEquals
     + token_identifier_features::TokenIdentifierFeatures
     + type_features::TypeFeatures
+    + numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[init]
     fn init(&self) {}

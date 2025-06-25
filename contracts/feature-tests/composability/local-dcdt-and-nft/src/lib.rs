@@ -26,7 +26,7 @@ pub trait LocalDcdtAndDcdtNft {
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
-    ) -> AsyncCall {
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -50,6 +50,7 @@ pub trait LocalDcdtAndDcdtNft {
             )
             .async_call()
             .with_callback(self.callbacks().dcdt_issue_callback(&caller))
+            .call_and_exit()
     }
 
     #[endpoint(localMint)]
@@ -71,7 +72,7 @@ pub trait LocalDcdtAndDcdtNft {
         #[payment] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
-    ) -> AsyncCall {
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -91,6 +92,7 @@ pub trait LocalDcdtAndDcdtNft {
             )
             .async_call()
             .with_callback(self.callbacks().nft_issue_callback(&caller))
+            .call_and_exit()
     }
 
     #[endpoint(nftCreate)]
@@ -105,7 +107,7 @@ pub trait LocalDcdtAndDcdtNft {
         color: Color,
         uri: ManagedBuffer,
     ) {
-        let mut uris = ManagedVec::new(self.type_manager());
+        let mut uris = ManagedVec::new();
         uris.push(uri);
 
         self.send().dcdt_nft_create::<Color>(
@@ -152,14 +154,14 @@ pub trait LocalDcdtAndDcdtNft {
         nonce: u64,
         amount: BigUint,
         function: ManagedBuffer,
-        #[var_args] arguments: VarArgs<ManagedBuffer>,
+        #[var_args] arguments: MultiValueVec<ManagedBuffer>,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new_empty(self.type_manager());
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         for arg in arguments.into_vec() {
             arg_buffer.push_arg_raw(arg);
         }
 
-        let _ = self.raw_vm_api().direct_dcdt_nft_execute(
+        let _ = Self::Api::send_api_impl().direct_dcdt_nft_execute(
             &to,
             &token_identifier,
             nonce,
@@ -179,7 +181,7 @@ pub trait LocalDcdtAndDcdtNft {
         #[payment] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
-    ) -> AsyncCall {
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -199,6 +201,7 @@ pub trait LocalDcdtAndDcdtNft {
             )
             .async_call()
             .with_callback(self.callbacks().nft_issue_callback(&caller))
+            .call_and_exit()
     }
 
     // common
@@ -208,13 +211,14 @@ pub trait LocalDcdtAndDcdtNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: ManagedVarArgs<DcdtLocalRole>,
-    ) -> AsyncCall {
+        #[var_args] roles: MultiValueEncoded<DcdtLocalRole>,
+    ) {
         self.send()
             .dcdt_system_sc_proxy()
             .set_special_roles(&address, &token_identifier, roles.into_iter())
             .async_call()
             .with_callback(self.callbacks().change_roles_callback())
+            .call_and_exit()
     }
 
     #[endpoint(unsetLocalRoles)]
@@ -222,13 +226,14 @@ pub trait LocalDcdtAndDcdtNft {
         &self,
         address: ManagedAddress,
         token_identifier: TokenIdentifier,
-        #[var_args] roles: ManagedVarArgs<DcdtLocalRole>,
-    ) -> AsyncCall {
+        #[var_args] roles: MultiValueEncoded<DcdtLocalRole>,
+    ) {
         self.send()
             .dcdt_system_sc_proxy()
             .unset_special_roles(&address, &token_identifier, roles.into_iter())
             .async_call()
             .with_callback(self.callbacks().change_roles_callback())
+            .call_and_exit()
     }
 
     // views
@@ -250,10 +255,8 @@ pub trait LocalDcdtAndDcdtNft {
 
     #[view(getCurrentNftNonce)]
     fn get_current_nft_nonce(&self, token_identifier: &TokenIdentifier) -> u64 {
-        self.blockchain().get_current_dcdt_nft_nonce(
-            &self.blockchain().get_sc_address_legacy(),
-            token_identifier,
-        )
+        self.blockchain()
+            .get_current_dcdt_nft_nonce(&self.blockchain().get_sc_address(), token_identifier)
     }
 
     // callbacks

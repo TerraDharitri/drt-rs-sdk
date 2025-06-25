@@ -1,19 +1,9 @@
-use numbat_codec::TryStaticCast;
-
 use crate::api::ErrorApi;
 
-use super::{BigIntApi, EllipticCurveApi, ManagedBufferApi};
+use super::{ManagedTypeApiImpl, StaticVarApi};
 
-pub type Handle = i32;
+pub trait ManagedTypeApi: StaticVarApi + ErrorApi + Clone + 'static {
+    type ManagedTypeApiImpl: ManagedTypeApiImpl;
 
-pub trait ManagedTypeApi:
-    TryStaticCast + BigIntApi + EllipticCurveApi + ManagedBufferApi + ErrorApi + Clone + 'static
-{
-    fn mb_to_big_int_unsigned(&self, buffer_handle: Handle) -> Handle;
-
-    fn mb_to_big_int_signed(&self, buffer_handle: Handle) -> Handle;
-
-    fn mb_from_big_int_unsigned(&self, big_int_handle: Handle) -> Handle;
-
-    fn mb_from_big_int_signed(&self, big_int_handle: Handle) -> Handle;
+    fn managed_type_impl() -> Self::ManagedTypeApiImpl;
 }

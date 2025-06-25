@@ -1,3 +1,4 @@
+#![feature(generic_associated_types)]
 #![allow(clippy::type_complexity)]
 
 pub mod abi_json;
@@ -9,6 +10,7 @@ mod denali_go_runner;
 mod denali_rs_runner;
 mod denali_step;
 pub mod meta;
+pub mod testing_framework;
 pub mod tx_execution;
 pub mod tx_mock;
 pub mod world_mock;

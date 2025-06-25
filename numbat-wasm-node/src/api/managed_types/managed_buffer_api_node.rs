@@ -26,6 +26,13 @@ extern "C" {
     #[cfg(not(feature = "unmanaged-ei"))]
     fn mBufferEq(handle1: i32, handle2: i32) -> i32;
     fn mBufferSetBytes(mBufferHandle: i32, byte_ptr: *const u8, byte_len: i32) -> i32;
+    fn mBufferSetByteSlice(
+        mBufferHandle: i32,
+        startingPosition: i32,
+        dataLength: i32,
+        dataOffset: *const u8,
+    ) -> i32;
+    fn mBufferSetRandom(destinationHandle: i32, length: i32) -> i32;
     fn mBufferAppend(accumulatorHandle: i32, dataHandle: i32) -> i32;
     fn mBufferAppendBytes(accumulatorHandle: i32, byte_ptr: *const u8, byte_len: i32) -> i32;
 }
@@ -122,6 +129,35 @@ impl ManagedBufferApi for crate::VmApiImpl {
     }
 
     #[inline]
+    fn mb_set_slice(
+        &self,
+        dest_handle: Handle,
+        starting_position: usize,
+        source_slice: &[u8],
+    ) -> Result<(), InvalidSliceError> {
+        unsafe {
+            let err = mBufferSetByteSlice(
+                dest_handle,
+                starting_position as i32,
+                source_slice.len() as i32,
+                source_slice.as_ptr(),
+            );
+            if err == 0 {
+                Ok(())
+            } else {
+                Err(InvalidSliceError)
+            }
+        }
+    }
+
+    #[inline]
+    fn mb_set_random(&self, dest_handle: Handle, length: usize) {
+        unsafe {
+            let _ = mBufferSetRandom(dest_handle as i32, length as i32);
+        }
+    }
+
+    #[inline]
     fn mb_append(&self, accumulator_handle: Handle, data_handle: Handle) {
         unsafe {
             let _ = mBufferAppend(accumulator_handle as i32, data_handle as i32);
@@ -166,7 +202,15 @@ impl ManagedBufferApi for crate::VmApiImpl {
 }
 
 pub(crate) unsafe fn unsafe_buffer_load_address(address_handle: Handle) -> *const u8 {
-    let unsafe_buffer_ptr = unsafe_buffer::buffer_ptr();
-    let _ = mBufferGetBytes(address_handle, unsafe_buffer_ptr);
-    unsafe_buffer_ptr
+    let unsafe_buffer_1_ptr = unsafe_buffer::buffer_1_ptr();
+    let _ = mBufferGetBytes(address_handle, unsafe_buffer_1_ptr);
+    unsafe_buffer_1_ptr
+}
+
+/// We usually need it at the same time with the address,
+/// so we put in in buffer #2.
+pub(crate) unsafe fn unsafe_buffer_load_token_identifier(token_handle: Handle) -> *const u8 {
+    let unsafe_buffer_2_ptr = unsafe_buffer::buffer_2_ptr();
+    let _ = mBufferGetBytes(token_handle, unsafe_buffer_2_ptr);
+    unsafe_buffer_2_ptr
 }

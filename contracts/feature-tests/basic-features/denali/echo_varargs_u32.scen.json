@@ -1,5 +1,4 @@
 {
-    "name": "echo_varags_u32",
     "gasSchedule": "v3",
     "steps": [
         {
@@ -39,7 +38,7 @@
                     "30"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -60,7 +59,7 @@
                     "0"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }

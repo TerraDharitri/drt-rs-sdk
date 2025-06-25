@@ -25,11 +25,12 @@ pub trait ForwarderAsyncCallModule {
         #[payment_token] token: TokenIdentifier,
         #[payment_amount] payment: BigUint,
         #[payment_nonce] token_nonce: u64,
-    ) -> AsyncCall {
+    ) {
         self.vault_proxy()
             .contract(to)
             .accept_funds(token, token_nonce, payment)
             .async_call()
+            .call_and_exit()
     }
 
     #[endpoint]
@@ -39,12 +40,13 @@ pub trait ForwarderAsyncCallModule {
         to: ManagedAddress,
         #[payment_token] token: TokenIdentifier,
         #[payment] payment: BigUint,
-    ) -> AsyncCall {
+    ) {
         let half_payment = payment / 2u32;
         self.vault_proxy()
             .contract(to)
             .accept_funds(token, 0, half_payment)
             .async_call()
+            .call_and_exit()
     }
 
     #[payable("*")]
@@ -55,7 +57,7 @@ pub trait ForwarderAsyncCallModule {
         #[payment_amount] payment: BigUint,
         to: ManagedAddress,
         percentage_fees: BigUint,
-    ) -> AsyncCall {
+    ) {
         let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = payment - fees;
 
@@ -63,6 +65,7 @@ pub trait ForwarderAsyncCallModule {
             .contract(to)
             .accept_funds(token_id, 0, amount_to_send)
             .async_call()
+            .call_and_exit()
     }
 
     #[endpoint]
@@ -72,12 +75,13 @@ pub trait ForwarderAsyncCallModule {
         token: TokenIdentifier,
         token_nonce: u64,
         amount: BigUint,
-    ) -> AsyncCall {
+    ) {
         self.vault_proxy()
             .contract(to)
-            .retrieve_funds(token, token_nonce, amount, OptionalArg::None)
+            .retrieve_funds(token, token_nonce, amount, OptionalValue::None)
             .async_call()
             .with_callback(self.callbacks().retrieve_funds_callback())
+            .call_and_exit()
     }
 
     #[callback]
@@ -90,11 +94,11 @@ pub trait ForwarderAsyncCallModule {
         self.retrieve_funds_callback_event(&token, nonce, &payment);
 
         let _ = self.callback_data().push(&CallbackData {
-            callback_name: self.types().managed_buffer_from(b"retrieve_funds_callback"),
+            callback_name: ManagedBuffer::from(b"retrieve_funds_callback"),
             token_identifier: token,
             token_nonce: nonce,
             token_amount: payment,
-            args: ManagedVec::new(self.type_manager()),
+            args: ManagedVec::new(),
         });
     }
 
@@ -112,7 +116,7 @@ pub trait ForwarderAsyncCallModule {
         to: &ManagedAddress,
         token_identifier: &TokenIdentifier,
         amount: &BigUint,
-    ) -> AsyncCall {
+    ) {
         self.vault_proxy()
             .contract(to.clone())
             .accept_funds(token_identifier.clone(), 0, amount.clone())
@@ -121,6 +125,7 @@ pub trait ForwarderAsyncCallModule {
                 self.callbacks()
                     .send_funds_twice_callback(to, token_identifier, amount),
             )
+            .call_and_exit()
     }
 
     #[callback]
@@ -129,20 +134,21 @@ pub trait ForwarderAsyncCallModule {
         to: &ManagedAddress,
         token_identifier: &TokenIdentifier,
         cb_amount: &BigUint,
-    ) -> AsyncCall {
+    ) {
         self.vault_proxy()
             .contract(to.clone())
             .accept_funds(token_identifier.clone(), 0, cb_amount.clone())
             .async_call()
+            .call_and_exit()
     }
 
     #[endpoint]
     fn multi_transfer_via_async(
         &self,
         to: ManagedAddress,
-        #[var_args] token_payments: ManagedVarArgs<MultiArg3<TokenIdentifier, u64, BigUint>>,
+        #[var_args] token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
-        let mut all_token_payments = ManagedVec::new(self.type_manager());
+        let mut all_token_payments = ManagedVec::new();
 
         for multi_arg in token_payments.into_iter() {
             let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
@@ -171,15 +177,20 @@ pub trait ForwarderAsyncCallModule {
     fn callback_data_at_index(
         &self,
         index: usize,
-    ) -> MultiResult5<ManagedBuffer, TokenIdentifier, u64, BigUint, MultiResultVec<ManagedBuffer>>
-    {
+    ) -> MultiValue5<
+        ManagedBuffer,
+        TokenIdentifier,
+        u64,
+        BigUint,
+        MultiValueManagedVec<Self::Api, ManagedBuffer>,
+    > {
         let cb_data = self.callback_data().get(index);
         (
             cb_data.callback_name,
             cb_data.token_identifier,
             cb_data.token_nonce,
             cb_data.token_amount,
-            cb_data.args.into_vec().into(),
+            cb_data.args.into(),
         )
             .into()
     }

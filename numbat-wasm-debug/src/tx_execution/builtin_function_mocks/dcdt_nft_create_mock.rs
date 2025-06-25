@@ -44,7 +44,7 @@ pub fn execute_dcdt_nft_create(
                 creator: Some(tx_input.from.clone()),
                 royalties,
                 hash: Some(hash),
-                uri: Some(uri),
+                uri: vec![uri],
                 attributes,
             },
         });

@@ -35,7 +35,7 @@ pub fn generate_callback_proxies_object(methods: &[Method]) -> proc_macro2::Toke
                             } else {
                                 let pat = &arg.pat;
                                 quote! {
-                                    ___callback_call___.push_endpoint_arg(#pat);
+                                    ___callback_call___.push_endpoint_arg(&#pat);
                                 }
                             }
                         } else {
@@ -52,7 +52,7 @@ pub fn generate_callback_proxies_object(methods: &[Method]) -> proc_macro2::Toke
                         #(#arg_decl),*
                     ) -> numbat_wasm::types::CallbackClosure<Self::Api> {
                         let mut ___callback_call___ =
-                            numbat_wasm::types::new_callback_call(self.cb_call_api(), #cb_name_literal);
+                            numbat_wasm::types::new_callback_call::<Self::Api>(#cb_name_literal);
                         #(#cb_arg_push_snippets)*
                         ___callback_call___
                     }
@@ -94,7 +94,7 @@ pub fn generate_callback_proxies(
             },
             quote! {
                 fn callbacks(&self) -> self::CallbackProxyObj<Self::Api> {
-                    <self::CallbackProxyObj::<Self::Api> as numbat_wasm::contract_base::CallbackProxyObjBase>::new_cb_proxy_obj(self.raw_vm_api())
+                    <self::CallbackProxyObj::<Self::Api> as numbat_wasm::contract_base::CallbackProxyObjBase>::new_cb_proxy_obj()
                 }
             },
             generate_callback_proxies_object(contract.methods.as_slice()),

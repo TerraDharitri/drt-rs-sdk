@@ -4,7 +4,7 @@ use crate::{
     serde_raw::DcdtRaw,
 };
 
-use super::{DcdtObject, Instance};
+use super::{DcdtInstance, DcdtObject};
 
 #[derive(Debug)]
 pub enum Dcdt {
@@ -25,7 +25,7 @@ impl InterpretableFrom<DcdtRaw> for Dcdt {
                 instances: full_dcdt
                     .instances
                     .into_iter()
-                    .map(|instance| Instance::interpret_from(instance, context))
+                    .map(|instance| DcdtInstance::interpret_from(instance, context))
                     .collect(),
                 last_nonce: full_dcdt
                     .last_nonce

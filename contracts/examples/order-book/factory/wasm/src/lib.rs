@@ -5,11 +5,11 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   order_book_factory
-   (
-        init
-        callBack
+    order_book_factory
+    (
         createPair
         getPair
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

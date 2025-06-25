@@ -7,15 +7,13 @@
 // and maintenance.
 
 use numbat_wasm::{
-    contract_base::{ContractBase, ProxyObjBase},
+    contract_base::ProxyObjBase,
     types::{BigInt, ManagedAddress},
 };
 
 use crate::module_1::VersionModule;
 
 mod module_1 {
-    use numbat_wasm::abi::EndpointMutabilityAbi;
-
     numbat_wasm::imports!();
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +22,7 @@ mod module_1 {
     pub trait VersionModule: numbat_wasm::contract_base::ContractBase + Sized {
         fn version(&self) -> BigInt<Self::Api>;
 
-        fn some_async(&self) -> AsyncCall<Self::Api>;
+        fn some_async(&self);
 
         fn callback(&self);
     }
@@ -39,10 +37,10 @@ mod module_1 {
         C: AutoImpl,
     {
         fn version(&self) -> BigInt<Self::Api> {
-            BigInt::from_i64(self.type_manager(), 100)
+            BigInt::from(100)
         }
 
-        fn some_async(&self) -> AsyncCall<Self::Api> {
+        fn some_async(&self) {
             panic!("wooo")
         }
 
@@ -52,14 +50,14 @@ mod module_1 {
     pub trait EndpointWrappers: VersionModule + numbat_wasm::contract_base::ContractBase {
         #[inline]
         fn call_version(&self) {
-            numbat_wasm::api::CallValueApi::check_not_payable(&self.raw_vm_api());
+            numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
             let result = self.version();
-            numbat_wasm::io::EndpointResult::finish(&result, self.raw_vm_api())
+            numbat_wasm::io::finish_multi::<Self::Api, _>(&result)
         }
 
         fn call_some_async(&self) {
             let result = self.some_async();
-            numbat_wasm::io::EndpointResult::finish(&result, self.raw_vm_api())
+            numbat_wasm::io::finish_multi::<Self::Api, _>(&result)
         }
 
         fn call(&self, fn_name: &[u8]) -> bool {
@@ -85,34 +83,22 @@ mod module_1 {
         type Api = numbat_wasm::api::uncallable::UncallableApi;
 
         fn abi() -> numbat_wasm::abi::ContractAbi {
-            let mut contract_abi = numbat_wasm :: abi :: ContractAbi { build_info : numbat_wasm :: abi :: BuildInfoAbi { contract_crate : numbat_wasm :: abi :: ContractCrateBuildAbi { name : "adder" , version : "0.0.0" , } , framework : numbat_wasm :: abi :: FrameworkBuildAbi :: create () , } , docs : & ["One of the simplest smart contracts possible," , "it holds a single variable in storage, which anyone can increment."] , name : "Adder" , constructor : None , endpoints : Vec :: new () , type_descriptions : < numbat_wasm :: abi :: TypeDescriptionContainerImpl as numbat_wasm :: abi :: TypeDescriptionContainer > :: new () , } ;
-            let mut endpoint_abi = numbat_wasm::abi::EndpointAbi {
-                docs: &[],
-                name: "version",
-                only_owner: false,
-                mutability: EndpointMutabilityAbi::Mutable,
-                payable_in_tokens: &[],
-                inputs: Vec::new(),
-                outputs: Vec::new(),
-            };
-            endpoint_abi.add_output::<BigInt<Self::Api>>(&[]);
-            contract_abi.add_type_descriptions::<BigInt<Self::Api>>();
-            contract_abi.endpoints.push(endpoint_abi);
-            contract_abi
+            numbat_wasm::abi::ContractAbi::default()
         }
     }
 
     pub trait ProxyTrait: numbat_wasm::contract_base::ProxyObjBase + Sized {
         fn version(
             self,
-        ) -> ContractCall<Self::Api, <BigInt<Self::Api> as numbat_wasm::io::EndpointResult>::DecodeAs>
-        {
-            let (___api___, ___address___) = self.into_fields();
+        ) -> ContractCall<
+            Self::Api,
+            <BigInt<Self::Api> as numbat_wasm::numbat_codec::TopEncodeMulti>::DecodeAs,
+        > {
+            let ___address___ = self.into_fields();
             let mut ___contract_call___ = numbat_wasm::types::new_contract_call(
-                ___api___.clone(),
                 ___address___,
                 &b"version"[..],
-                ManagedVec::new(___api___.clone()),
+                ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new(),
             );
             ___contract_call___
         }
@@ -120,8 +106,6 @@ mod module_1 {
 }
 
 mod sample_adder {
-    use numbat_wasm::abi::EndpointMutabilityAbi;
-
     numbat_wasm::imports!();
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,18 +144,16 @@ mod sample_adder {
         C: AutoImpl + super::module_1::AutoImpl,
     {
         fn get_sum(&self) -> BigInt<Self::Api> {
-            let mut ___key___ =
-                numbat_wasm::storage::StorageKey::<Self::Api>::new(self.raw_vm_api(), &b"sum"[..]);
-            numbat_wasm::storage_get(self.raw_vm_api(), &___key___)
+            let mut ___key___ = numbat_wasm::storage::StorageKey::<Self::Api>::new(&b"sum"[..]);
+            numbat_wasm::storage_get(numbat_wasm::types::ManagedRef::new(&___key___))
         }
         fn set_sum(&self, sum: &BigInt<Self::Api>) {
-            let mut ___key___ =
-                numbat_wasm::storage::StorageKey::<Self::Api>::new(self.raw_vm_api(), &b"sum"[..]);
-            numbat_wasm::storage_set(self.raw_vm_api(), &___key___, &sum);
+            let mut ___key___ = numbat_wasm::storage::StorageKey::<Self::Api>::new(&b"sum"[..]);
+            numbat_wasm::storage_set(numbat_wasm::types::ManagedRef::new(&___key___), &sum);
         }
         fn callback(&self) {}
         fn callbacks(&self) -> self::CallbackProxyObj<Self::Api> {
-            <self::CallbackProxyObj::<Self::Api> as numbat_wasm::contract_base::CallbackProxyObjBase>::new_cb_proxy_obj(self.raw_vm_api())
+            <self::CallbackProxyObj::<Self::Api> as numbat_wasm::contract_base::CallbackProxyObjBase>::new_cb_proxy_obj()
         }
     }
 
@@ -180,17 +162,22 @@ mod sample_adder {
     {
         #[inline]
         fn call_get_sum(&self) {
-            numbat_wasm::api::CallValueApi::check_not_payable(&self.raw_vm_api());
-            numbat_wasm::api::EndpointArgumentApi::check_num_arguments(&self.raw_vm_api(), 0i32);
+            numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
+            numbat_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
+                &<Self::Api as numbat_wasm::api::EndpointArgumentApi>::argument_api_impl(),
+                0i32,
+            );
             let result = self.get_sum();
-            numbat_wasm::io::EndpointResult::finish(&result, self.raw_vm_api());
+            numbat_wasm::io::finish_multi::<Self::Api, _>(&result);
         }
         #[inline]
         fn call_init(&self) {
-            numbat_wasm::api::CallValueApi::check_not_payable(&self.raw_vm_api());
-            numbat_wasm::api::EndpointArgumentApi::check_num_arguments(&self.raw_vm_api(), 1i32);
+            numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
+            numbat_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
+                &<Self::Api as numbat_wasm::api::EndpointArgumentApi>::argument_api_impl(),
+                1i32,
+            );
             let initial_value = numbat_wasm::load_single_arg::<Self::Api, BigInt<Self::Api>>(
-                self.raw_vm_api(),
                 0i32,
                 ArgId::from(&b"initial_value"[..]),
             );
@@ -198,15 +185,17 @@ mod sample_adder {
         }
         #[inline]
         fn call_add(&self) {
-            numbat_wasm::api::CallValueApi::check_not_payable(&self.raw_vm_api());
-            numbat_wasm::api::EndpointArgumentApi::check_num_arguments(&self.raw_vm_api(), 1i32);
+            numbat_wasm::api::CallValueApiImpl::check_not_payable(&Self::Api::call_value_api_impl());
+            numbat_wasm::api::EndpointArgumentApiImpl::check_num_arguments(
+                &<Self::Api as numbat_wasm::api::EndpointArgumentApi>::argument_api_impl(),
+                1i32,
+            );
             let value = numbat_wasm::load_single_arg::<Self::Api, BigInt<Self::Api>>(
-                self.raw_vm_api(),
                 0i32,
                 ArgId::from(&b"value"[..]),
             );
             let result = self.add(value);
-            numbat_wasm::io::EndpointResult::finish(&result, self.raw_vm_api());
+            numbat_wasm::io::finish_multi::<Self::Api, _>(&result);
         }
 
         fn call(&self, fn_name: &[u8]) -> bool {
@@ -245,28 +234,28 @@ mod sample_adder {
             self,
         ) -> numbat_wasm::types::ContractCall<
             Self::Api,
-            <BigInt<Self::Api> as numbat_wasm::io::EndpointResult>::DecodeAs,
+            <BigInt<Self::Api> as numbat_wasm::numbat_codec::TopEncodeMulti>::DecodeAs,
         > {
-            let (___api___, ___address___) = self.into_fields();
+            let ___address___ = self.into_fields();
             let mut ___contract_call___ = numbat_wasm::types::new_contract_call(
-                ___api___.clone(),
                 ___address___,
                 &b"get_sum"[..],
-                ManagedVec::new(___api___.clone()),
+                ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new(),
             );
             ___contract_call___
         }
         fn add(
             self,
             amount: &BigInt<Self::Api>,
-        ) -> ContractCall<Self::Api, <SCResult<()> as numbat_wasm::io::EndpointResult>::DecodeAs>
-        {
-            let (___api___, ___address___) = self.into_fields();
+        ) -> ContractCall<
+            Self::Api,
+            <SCResult<()> as numbat_wasm::numbat_codec::TopEncodeMulti>::DecodeAs,
+        > {
+            let ___address___ = self.into_fields();
             let mut ___contract_call___ = numbat_wasm::types::new_contract_call(
-                ___api___.clone(),
                 ___address___,
                 &b"add"[..],
-                ManagedVec::new(___api___.clone()),
+                ManagedVec::<Self::Api, DcdtTokenPayment<Self::Api>>::new(),
             );
             ___contract_call___.push_endpoint_arg(amount);
             ___contract_call___
@@ -278,9 +267,9 @@ mod sample_adder {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     pub struct ContractObj<A>
     where
-        A: numbat_wasm::api::VMApi + Clone + 'static,
+        A: numbat_wasm::api::VMApi,
     {
-        api: A,
+        _phantom: core::marker::PhantomData<A>,
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,38 +277,43 @@ mod sample_adder {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     impl<A> numbat_wasm::contract_base::ContractBase for ContractObj<A>
     where
-        A: numbat_wasm::api::VMApi + Clone + 'static,
+        A: numbat_wasm::api::VMApi,
     {
         type Api = A;
-
-        fn raw_vm_api(&self) -> Self::Api {
-            self.api.clone()
-        }
     }
 
-    impl<A> super::module_1::AutoImpl for ContractObj<A> where
-        A: numbat_wasm::api::VMApi + Clone + 'static
-    {
-    }
+    impl<A> super::module_1::AutoImpl for ContractObj<A> where A: numbat_wasm::api::VMApi {}
 
-    impl<A> AutoImpl for ContractObj<A> where A: numbat_wasm::api::VMApi + Clone + 'static {}
+    impl<A> AutoImpl for ContractObj<A> where A: numbat_wasm::api::VMApi {}
 
-    impl<A> super::module_1::EndpointWrappers for ContractObj<A> where
-        A: numbat_wasm::api::VMApi + Clone + 'static
-    {
-    }
+    impl<A> super::module_1::EndpointWrappers for ContractObj<A> where A: numbat_wasm::api::VMApi {}
 
-    impl<A> EndpointWrappers for ContractObj<A> where A: numbat_wasm::api::VMApi + Clone + 'static {}
+    impl<A> EndpointWrappers for ContractObj<A> where A: numbat_wasm::api::VMApi {}
 
-    impl<A> numbat_wasm::contract_base::CallableContract<A> for ContractObj<A>
+    impl<A> numbat_wasm::contract_base::CallableContract for ContractObj<A>
     where
-        A: numbat_wasm::api::VMApi + Clone + 'static,
+        A: numbat_wasm::api::VMApi,
     {
         fn call(&self, fn_name: &[u8]) -> bool {
             EndpointWrappers::call(self, fn_name)
         }
-        fn into_api(self: Box<Self>) -> A {
-            self.api
+
+        fn clone_obj(&self) -> numbat_wasm::Box<dyn numbat_wasm::contract_base::CallableContract> {
+            numbat_wasm::Box::new(ContractObj::<A> {
+                _phantom: core::marker::PhantomData,
+            })
+        }
+    }
+
+    pub struct ContractBuilder;
+
+    impl numbat_wasm::contract_base::CallableContractBuilder for ContractBuilder {
+        fn new_contract_obj<A: numbat_wasm::api::VMApi>(
+            &self,
+        ) -> numbat_wasm::Box<dyn numbat_wasm::contract_base::CallableContract> {
+            numbat_wasm::Box::new(ContractObj::<A> {
+                _phantom: core::marker::PhantomData,
+            })
         }
     }
 
@@ -329,64 +323,23 @@ mod sample_adder {
         type Api = numbat_wasm::api::uncallable::UncallableApi;
 
         fn abi() -> numbat_wasm::abi::ContractAbi {
-            let mut contract_abi = numbat_wasm :: abi :: ContractAbi { build_info : numbat_wasm :: abi :: BuildInfoAbi { contract_crate : numbat_wasm :: abi :: ContractCrateBuildAbi { name : "adder" , version : "0.0.0" , } , framework : numbat_wasm :: abi :: FrameworkBuildAbi :: create () , } , docs : & ["One of the simplest smart contracts possible," , "it holds a single variable in storage, which anyone can increment."] , name : "Adder" , constructor : None , endpoints : Vec :: new () , type_descriptions : < numbat_wasm :: abi :: TypeDescriptionContainerImpl as numbat_wasm :: abi :: TypeDescriptionContainer > :: new () , } ;
-            let mut endpoint_abi = numbat_wasm::abi::EndpointAbi {
-                docs: &[],
-                name: "getSum",
-                only_owner: false,
-                mutability: EndpointMutabilityAbi::Readonly,
-                payable_in_tokens: &[],
-                inputs: Vec::new(),
-                outputs: Vec::new(),
-            };
-            endpoint_abi.add_output::<BigInt<Self::Api>>(&[]);
-            contract_abi.add_type_descriptions::<BigInt<Self::Api>>();
-            contract_abi.endpoints.push(endpoint_abi);
-            let mut endpoint_abi = numbat_wasm::abi::EndpointAbi {
-                docs: &[],
-                name: "init",
-                only_owner: false,
-                mutability: EndpointMutabilityAbi::Pure,
-                payable_in_tokens: &[],
-                inputs: Vec::new(),
-                outputs: Vec::new(),
-            };
-            endpoint_abi.add_input::<&BigInt<Self::Api>>("initial_value");
-            contract_abi.add_type_descriptions::<&BigInt<Self::Api>>();
-            contract_abi.constructor = Some(endpoint_abi);
-            let mut endpoint_abi = numbat_wasm::abi::EndpointAbi {
-                docs: &["Add desired amount to the storage variable."],
-                name: "add",
-                only_owner: false,
-                mutability: EndpointMutabilityAbi::Mutable,
-                payable_in_tokens: &[],
-                inputs: Vec::new(),
-                outputs: Vec::new(),
-            };
-            endpoint_abi.add_input::<&BigInt<Self::Api>>("value");
-            contract_abi.add_type_descriptions::<&BigInt<Self::Api>>();
-            endpoint_abi.add_output::<SCResult<()>>(&[]);
-            contract_abi.add_type_descriptions::<SCResult<()>>();
-            contract_abi.endpoints.push(endpoint_abi);
-            contract_abi.coalesce(
-                <super::module_1::AbiProvider as numbat_wasm::contract_base::ContractAbiProvider>::abi(),
-            );
-            contract_abi
+            numbat_wasm::abi::ContractAbi::default()
         }
     }
 
-    pub fn contract_obj<A>(api: A) -> ContractObj<A>
+    pub fn contract_obj<A>() -> ContractObj<A>
     where
-        A: numbat_wasm::api::VMApi + Clone + 'static,
+        A: numbat_wasm::api::VMApi,
     {
-        ContractObj { api }
+        ContractObj {
+            _phantom: core::marker::PhantomData,
+        }
     }
 
     pub struct Proxy<A>
     where
         A: numbat_wasm::api::VMApi + 'static,
     {
-        pub api: A,
         pub address: numbat_wasm::types::ManagedAddress<A>,
     }
 
@@ -396,10 +349,9 @@ mod sample_adder {
     {
         type Api = A;
 
-        fn new_proxy_obj(api: A) -> Self {
-            let zero_address = ManagedAddress::zero(api.clone());
+        fn new_proxy_obj() -> Self {
+            let zero_address = ManagedAddress::zero();
             Proxy {
-                api,
                 address: zero_address,
             }
         }
@@ -410,8 +362,8 @@ mod sample_adder {
         }
 
         #[inline]
-        fn into_fields(self) -> (Self::Api, ManagedAddress<Self::Api>) {
-            (self.api, self.address)
+        fn into_fields(self) -> ManagedAddress<Self::Api> {
+            self.address
         }
     }
 
@@ -423,7 +375,7 @@ mod sample_adder {
     where
         A: numbat_wasm::api::VMApi + 'static,
     {
-        pub api: A,
+        _phantom: core::marker::PhantomData<A>,
     }
 
     impl<A> numbat_wasm::contract_base::CallbackProxyObjBase for CallbackProxyObj<A>
@@ -432,18 +384,17 @@ mod sample_adder {
     {
         type Api = A;
 
-        fn new_cb_proxy_obj(api: A) -> Self {
-            CallbackProxyObj { api }
-        }
-        fn cb_call_api(self) -> Self::Api {
-            self.api.clone()
+        fn new_cb_proxy_obj() -> Self {
+            CallbackProxyObj {
+                _phantom: core::marker::PhantomData,
+            }
         }
     }
 
     pub trait CallbackProxy: numbat_wasm::contract_base::CallbackProxyObjBase + Sized {
         fn my_callback(self, caller: &Address) -> numbat_wasm::types::CallbackClosure<Self::Api> {
             let mut ___callback_call___ =
-                numbat_wasm::types::new_callback_call(self.cb_call_api(), &b"my_callback"[..]);
+                numbat_wasm::types::new_callback_call::<Self::Api>(&b"my_callback"[..]);
             ___callback_call___.push_endpoint_arg(caller);
             ___callback_call___
         }
@@ -456,30 +407,30 @@ fn test_add() {
     use numbat_wasm_debug::DebugApi;
     use sample_adder::{Adder, EndpointWrappers, ProxyTrait};
 
-    let tx_context = DebugApi::dummy();
+    let _ = DebugApi::dummy();
 
-    let adder = sample_adder::contract_obj(tx_context.clone());
+    let adder = sample_adder::contract_obj::<DebugApi>();
 
-    adder.init(&BigInt::from_i64(adder.type_manager(), 5));
-    assert_eq!(BigInt::from_i64(adder.type_manager(), 5), adder.get_sum());
+    adder.init(&BigInt::from(5));
+    assert_eq!(BigInt::from(5), adder.get_sum());
 
-    let _ = adder.add(BigInt::from_i64(adder.type_manager(), 7));
-    assert_eq!(BigInt::from_i64(adder.type_manager(), 12), adder.get_sum());
+    let _ = adder.add(BigInt::from(7));
+    assert_eq!(BigInt::from(12), adder.get_sum());
 
-    let _ = adder.add(BigInt::from_i64(adder.type_manager(), -1));
-    assert_eq!(BigInt::from_i64(adder.type_manager(), 11), adder.get_sum());
+    let _ = adder.add(BigInt::from(-1));
+    assert_eq!(BigInt::from(11), adder.get_sum());
 
-    assert_eq!(BigInt::from_i64(adder.type_manager(), 100), adder.version());
+    assert_eq!(BigInt::from(100), adder.version());
 
     let _ = adder.add_version();
-    assert_eq!(BigInt::from_i64(adder.type_manager(), 111), adder.get_sum());
+    assert_eq!(BigInt::from(111), adder.get_sum());
 
     assert!(!adder.call(b"invalid_endpoint"));
 
     assert!(adder.call(b"version"));
 
-    let own_proxy = sample_adder::Proxy::new_proxy_obj(tx_context.clone())
-        .contract(ManagedAddress::zero(tx_context));
+    let own_proxy =
+        sample_adder::Proxy::<DebugApi>::new_proxy_obj().contract(ManagedAddress::zero());
     let _ = own_proxy.get_sum();
 
     let _ = numbat_wasm_debug::abi_json::contract_abi::<sample_adder::AbiProvider>();
@@ -487,9 +438,9 @@ fn test_add() {
 
 fn world() -> numbat_wasm_debug::BlockchainMock {
     let mut blockchain = numbat_wasm_debug::BlockchainMock::new();
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:../contracts/examples/adder/output/adder.wasm",
-        Box::new(|context| Box::new(sample_adder::contract_obj(context))),
+        sample_adder::ContractBuilder,
     );
     blockchain
 }

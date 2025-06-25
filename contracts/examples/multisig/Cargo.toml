@@ -1,6 +1,6 @@
 [package]
 name = "multisig"
-version = "0.0.0"
+version = "1.0.0"
 authors = ["contact@dharitri.org"]
 edition = "2018"
 publish = false
@@ -9,11 +9,11 @@ publish = false
 path = "src/multisig.rs"
 
 [dependencies.numbat-wasm]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../numbat-wasm"
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../numbat-wasm-debug"
 
 [dev-dependencies.adder]

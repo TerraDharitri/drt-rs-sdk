@@ -14,10 +14,8 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
 
     #[view(getCurrentNftNonce)]
     fn get_current_nft_nonce(&self, token_identifier: &TokenIdentifier) -> u64 {
-        self.blockchain().get_current_dcdt_nft_nonce(
-            &self.blockchain().get_sc_address_legacy(),
-            token_identifier,
-        )
+        self.blockchain()
+            .get_current_dcdt_nft_nonce(&self.blockchain().get_sc_address(), token_identifier)
     }
 
     #[endpoint]
@@ -26,11 +24,11 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
         to: &ManagedAddress,
         token_id: TokenIdentifier,
         amount: &BigUint,
-        #[var_args] opt_data: OptionalArg<ManagedBuffer>,
+        #[var_args] opt_data: OptionalValue<ManagedBuffer>,
     ) {
         let data = match opt_data {
-            OptionalArg::Some(data) => data,
-            OptionalArg::None => ManagedBuffer::new(),
+            OptionalValue::Some(data) => data,
+            OptionalValue::None => ManagedBuffer::new(),
         };
         self.send().direct(to, &token_id, 0, amount, data);
     }
@@ -57,11 +55,11 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
         token_id: TokenIdentifier,
         amount_first_time: &BigUint,
         amount_second_time: &BigUint,
-        #[var_args] opt_data: OptionalArg<ManagedBuffer>,
+        #[var_args] opt_data: OptionalValue<ManagedBuffer>,
     ) {
         let data = match opt_data {
-            OptionalArg::Some(data) => data,
-            OptionalArg::None => ManagedBuffer::new(),
+            OptionalValue::Some(data) => data,
+            OptionalValue::None => ManagedBuffer::new(),
         };
         self.send()
             .direct(to, &token_id, 0, amount_first_time, data.clone());
@@ -73,9 +71,9 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
     fn send_dcdt_direct_multi_transfer(
         &self,
         to: ManagedAddress,
-        #[var_args] token_payments: ManagedVarArgs<MultiArg3<TokenIdentifier, u64, BigUint>>,
+        #[var_args] token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
-        let mut all_token_payments = ManagedVec::new(self.type_manager());
+        let mut all_token_payments = ManagedVec::new();
 
         for multi_arg in token_payments.into_iter() {
             let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
@@ -89,12 +87,12 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
             all_token_payments.push(payment);
         }
 
-        let _ = self.raw_vm_api().direct_multi_dcdt_transfer_execute(
+        let _ = Self::Api::send_api_impl().direct_multi_dcdt_transfer_execute(
             &to,
             &all_token_payments,
             self.blockchain().get_gas_left(),
             &ManagedBuffer::new(),
-            &ManagedArgBuffer::new_empty(self.type_manager()),
+            &ManagedArgBuffer::new_empty(),
         );
     }
 
@@ -106,7 +104,7 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
-    ) -> AsyncCall {
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -130,6 +128,7 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
             )
             .async_call()
             .with_callback(self.callbacks().dcdt_issue_callback(&caller))
+            .call_and_exit()
     }
 
     #[callback]
@@ -166,5 +165,20 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
     #[endpoint]
     fn local_burn(&self, token_identifier: TokenIdentifier, amount: BigUint) {
         self.send().dcdt_local_burn(&token_identifier, 0, &amount);
+    }
+
+    #[endpoint]
+    fn get_dcdt_local_roles(&self, token_id: TokenIdentifier) -> MultiValueEncoded<ManagedBuffer> {
+        let roles = self.blockchain().get_dcdt_local_roles(&token_id);
+        let mut result = MultiValueEncoded::new();
+        for role in roles.iter_roles() {
+            result.push(role.as_role_name().into());
+        }
+        result
+    }
+
+    #[endpoint]
+    fn validate_token_identifier(&self, token_id: TokenIdentifier) -> bool {
+        token_id.is_valid_dcdt_identifier()
     }
 }

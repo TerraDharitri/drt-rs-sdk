@@ -18,24 +18,19 @@ pub trait RewaDcdtSwap {
     #[only_owner]
     #[payable("REWA")]
     #[endpoint(issueWrappedRewa)]
-    fn issue_wrapped_rewa(
-        &self,
-        token_display_name: ManagedBuffer,
-        token_ticker: ManagedBuffer,
-        initial_supply: BigUint,
-        #[payment] issue_cost: BigUint,
-    ) -> SCResult<AsyncCall> {
+    fn issue_wrapped_rewa(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
         require!(
             self.wrapped_rewa_token_id().is_empty(),
             "wrapped rewa was already issued"
         );
 
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
+        let initial_supply = BigUint::zero();
 
         self.issue_started_event(&caller, &token_ticker, &initial_supply);
 
-        Ok(self
-            .send()
+        self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
                 issue_cost,
@@ -55,23 +50,23 @@ pub trait RewaDcdtSwap {
                 },
             )
             .async_call()
-            .with_callback(self.callbacks().dcdt_issue_callback(&caller)))
+            .with_callback(self.callbacks().dcdt_issue_callback(&caller))
+            .call_and_exit()
     }
 
     #[callback]
     fn dcdt_issue_callback(
         &self,
         caller: &ManagedAddress,
-        #[payment_token] token_identifier: TokenIdentifier,
-        #[payment] returned_tokens: BigUint,
         #[call_result] result: ManagedAsyncCallResult<()>,
     ) {
+        let (returned_tokens, token_identifier) = self.call_value().payment_token_pair();
+
         // callback is called with DCDTTransfer of the newly issued token, with the amount requested,
         // so we can get the token identifier and amount from the call data
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.issue_success_event(caller, &token_identifier, &returned_tokens);
-                self.unused_wrapped_rewa().set(&returned_tokens);
                 self.wrapped_rewa_token_id().set(&token_identifier);
             },
             ManagedAsyncCallResult::Err(message) => {
@@ -87,136 +82,76 @@ pub trait RewaDcdtSwap {
     }
 
     #[only_owner]
-    #[endpoint(mintWrappedRewa)]
-    fn mint_wrapped_rewa(&self, amount: BigUint) -> SCResult<AsyncCall> {
+    #[endpoint(setLocalRoles)]
+    fn set_local_roles(&self) {
         require!(
             !self.wrapped_rewa_token_id().is_empty(),
-            "Wrapped REWA was not issued yet"
+            "Must issue token first"
         );
 
-        let wrapped_rewa_token_id = self.wrapped_rewa_token_id().get();
-        let caller = self.blockchain().get_caller();
-        self.mint_started_event(&caller, &amount);
-
-        Ok(self
-            .send()
+        let roles = [DcdtLocalRole::Mint, DcdtLocalRole::Burn];
+        self.send()
             .dcdt_system_sc_proxy()
-            .mint(&wrapped_rewa_token_id, &amount)
+            .set_special_roles(
+                &self.blockchain().get_sc_address(),
+                &self.wrapped_rewa_token_id().get(),
+                roles[..].iter().cloned(),
+            )
             .async_call()
-            .with_callback(self.callbacks().dcdt_mint_callback(&caller, &amount)))
-    }
-
-    #[callback]
-    fn dcdt_mint_callback(
-        &self,
-        caller: &ManagedAddress,
-        amount: &BigUint,
-        #[call_result] result: ManagedAsyncCallResult<()>,
-    ) {
-        match result {
-            ManagedAsyncCallResult::Ok(()) => {
-                self.mint_success_event(caller);
-                self.unused_wrapped_rewa()
-                    .update(|unused_wrapped_rewa| *unused_wrapped_rewa += amount);
-            },
-            ManagedAsyncCallResult::Err(message) => {
-                self.mint_failure_event(caller, &message.err_msg);
-            },
-        }
+            .call_and_exit()
     }
 
     // endpoints
 
     #[payable("REWA")]
     #[endpoint(wrapRewa)]
-    fn wrap_rewa(&self, #[payment] payment: BigUint) -> SCResult<()> {
-        require!(payment > 0, "Payment must be more than 0");
-        require!(
-            !self.wrapped_rewa_token_id().is_empty(),
-            "Wrapped REWA was not issued yet"
-        );
+    fn wrap_rewa(&self) {
+        let (payment_amount, payment_token) = self.call_value().payment_token_pair();
+        require!(payment_token.is_rewa(), "Only REWA accepted");
+        require!(payment_amount > 0u32, "Payment must be more than 0");
 
-        self.unused_wrapped_rewa().update(|unused_wrapped_rewa| {
-            require!(
-                *unused_wrapped_rewa > payment,
-                "Contract does not have enough wrapped REWA. Please try again once more is minted."
-            );
-
-            *unused_wrapped_rewa -= &payment;
-
-            Ok(())
-        })?;
+        let wrapped_rewa_token_id = self.wrapped_rewa_token_id().get();
+        self.send()
+            .dcdt_local_mint(&wrapped_rewa_token_id, 0, &payment_amount);
 
         let caller = self.blockchain().get_caller();
-        self.send().direct(
-            &caller,
-            &self.wrapped_rewa_token_id().get(),
-            0,
-            &payment,
-            b"wrapping",
-        );
-
-        self.wrap_rewa_event(&caller, &payment);
-
-        Ok(())
+        self.send()
+            .direct(&caller, &wrapped_rewa_token_id, 0, &payment_amount, &[]);
     }
 
     #[payable("*")]
     #[endpoint(unwrapRewa)]
-    fn unwrap_rewa(
-        &self,
-        #[payment] wrapped_rewa_payment: BigUint,
-        #[payment_token] token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
-        require!(
-            !self.wrapped_rewa_token_id().is_empty(),
-            "Wrapped REWA was not issued yet"
-        );
+    fn unwrap_rewa(&self) {
+        let (payment_amount, payment_token) = self.call_value().payment_token_pair();
+        let wrapped_rewa_token_id = self.wrapped_rewa_token_id().get();
 
-        let wrapped_rewa_token_identifier = self.wrapped_rewa_token_id().get();
-        require!(
-            token_identifier == wrapped_rewa_token_identifier,
-            "Wrong dcdt token"
-        );
-
-        require!(wrapped_rewa_payment > 0, "Must pay more than 0 tokens!");
+        require!(payment_token == wrapped_rewa_token_id, "Wrong dcdt token");
+        require!(payment_amount > 0u32, "Must pay more than 0 tokens!");
         // this should never happen, but we'll check anyway
         require!(
-            wrapped_rewa_payment
-                <= self
-                    .blockchain()
-                    .get_sc_balance(&self.types().token_identifier_rewa(), 0),
+            payment_amount <= self.get_locked_rewa_balance(),
             "Contract does not have enough funds"
         );
 
-        self.unused_wrapped_rewa()
-            .update(|unused_wrapped_rewa| *unused_wrapped_rewa += &wrapped_rewa_payment);
-
-        // 1 wrapped REWA = 1 REWA, so we pay back the same amount
-        let caller = self.blockchain().get_caller();
         self.send()
-            .direct_rewa(&caller, &wrapped_rewa_payment, b"unwrapping");
+            .dcdt_local_burn(&wrapped_rewa_token_id, 0, &payment_amount);
 
-        self.unwrap_rewa_event(&caller, &wrapped_rewa_payment);
-
-        Ok(())
+        // 1 wrapped rEWA = 1 rEWA, so we pay back the same amount
+        let caller = self.blockchain().get_caller();
+        self.send().direct_rewa(&caller, &payment_amount, &[]);
     }
 
     #[view(getLockedRewaBalance)]
     fn get_locked_rewa_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&self.types().token_identifier_rewa(), 0)
+            .get_sc_balance(&TokenIdentifier::rewa(), 0)
     }
 
     // storage
 
     #[view(getWrappedRewaTokenIdentifier)]
-    #[storage_mapper("wrapped_rewa_token_id")]
+    #[storage_mapper("wrappedRewaTokenId")]
     fn wrapped_rewa_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
-
-    #[view(getUnusedWrappedRewa)]
-    #[storage_mapper("unused_wrapped_rewa")]
-    fn unused_wrapped_rewa(&self) -> SingleValueMapper<BigUint>;
 
     // events
 
@@ -238,15 +173,6 @@ pub trait RewaDcdtSwap {
 
     #[event("issue-failure")]
     fn issue_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &ManagedBuffer);
-
-    #[event("mint-started")]
-    fn mint_started_event(&self, #[indexed] caller: &ManagedAddress, amount: &BigUint);
-
-    #[event("mint-success")]
-    fn mint_success_event(&self, #[indexed] caller: &ManagedAddress);
-
-    #[event("mint-failure")]
-    fn mint_failure_event(&self, #[indexed] caller: &ManagedAddress, message: &ManagedBuffer);
 
     #[event("wrap-rewa")]
     fn wrap_rewa_event(&self, #[indexed] user: &ManagedAddress, amount: &BigUint);

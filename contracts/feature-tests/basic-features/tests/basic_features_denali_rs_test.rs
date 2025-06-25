@@ -1,14 +1,18 @@
-use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/basic-features");
 
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:output/basic-features.wasm",
-        Box::new(|context| Box::new(basic_features::contract_obj(context))),
+        basic_features::ContractBuilder,
     );
+    blockchain.register_contract_builder(
+        "file:../dcdt-system-sc-mock/output/dcdt-system-sc-mock.wasm",
+        dcdt_system_sc_mock::ContractBuilder,
+    );
+
     blockchain
 }
 
@@ -62,6 +66,11 @@ fn crypto_keccak256_rs() {
     numbat_wasm_debug::denali_rs("denali/crypto_keccak256.scen.json", world());
 }
 
+#[test]
+fn crypto_keccak256_legacy_rs() {
+    numbat_wasm_debug::denali_rs("denali/crypto_keccak256_legacy.scen.json", world());
+}
+
 // #[test]
 // fn crypto_ripemd160_rs() {
 //     numbat_wasm_debug::denali_rs("denali/crypto_ripemd160.scen.json", world());
@@ -72,6 +81,11 @@ fn crypto_sha256_rs() {
     numbat_wasm_debug::denali_rs("denali/crypto_sha256.scen.json", world());
 }
 
+#[test]
+fn crypto_sha256_legacy_rs() {
+    numbat_wasm_debug::denali_rs("denali/crypto_sha256_legacy.scen.json", world());
+}
+
 // #[test]
 // fn crypto_verify_funcs_rs() {
 //     numbat_wasm_debug::denali_rs("denali/crypto_verify_funcs.scen.json", world());
@@ -80,6 +94,11 @@ fn crypto_sha256_rs() {
 #[test]
 fn echo_array_u8_rs() {
     numbat_wasm_debug::denali_rs("denali/echo_array_u8.scen.json", world());
+}
+
+#[test]
+fn echo_arrayvec_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_arrayvec.scen.json", world());
 }
 
 #[test]
@@ -120,6 +139,11 @@ fn echo_i32_rs() {
 #[test]
 fn echo_i64_rs() {
     numbat_wasm_debug::denali_rs("denali/echo_i64.scen.json", world());
+}
+
+#[test]
+fn echo_ignore_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_ignore.scen.json", world());
 }
 
 #[test]
@@ -183,6 +207,16 @@ fn echo_varags_tuples_rs() {
 }
 
 #[test]
+fn echo_varargs_managed_eager_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_varargs_managed_eager.scen.json", world());
+}
+
+#[test]
+fn echo_varargs_managed_sum_rs() {
+    numbat_wasm_debug::denali_rs("denali/echo_varargs_managed_sum.scen.json", world());
+}
+
+#[test]
 fn echo_varargs_u32_rs() {
     numbat_wasm_debug::denali_rs("denali/echo_varargs_u32.scen.json", world());
 }
@@ -212,14 +246,15 @@ fn get_cumulated_validator_rewards_rs() {
     numbat_wasm_debug::denali_rs("denali/get_cumulated_validator_rewards.scen.json", world());
 }
 
-// TODO: uncomment after implemented the full DCDT format in denali-rs
-// #[test]
-// fn get_dcdt_local_roles_rs() {
-// 	numbat_wasm_debug::denali_rs(
-// 		"denali/get_dcdt_local_roles.scen.json",
-// 		world(),
-// 	);
-// }
+#[test]
+fn managed_address_array_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_address_array.scen.json", world());
+}
+
+#[test]
+fn managed_address_managed_buffer_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_address_managed_buffer.scen.json", world());
+}
 
 #[test]
 fn managed_buffer_concat_1_rs() {
@@ -240,6 +275,13 @@ fn managed_buffer_eq_rs() {
 fn managed_buffer_overwrite_rs() {
     numbat_wasm_debug::denali_rs("denali/managed_buffer_overwrite.scen.json", world());
 }
+
+/*
+#[test]
+fn managed_buffer_random_rs() {
+    numbat_wasm_debug::denali_rs("denali/managed_buffer_set_random.scen.json", world());
+}
+*/
 
 #[test]
 fn managed_buffer_slice_1_rs() {
@@ -328,6 +370,11 @@ fn storage_i64_bad_rs() {
 }
 
 #[test]
+fn storage_load_from_address_rs() {
+    numbat_wasm_debug::denali_rs("denali/storage_load_from_address.scen.json", world());
+}
+
+#[test]
 fn storage_map1_rs() {
     numbat_wasm_debug::denali_rs("denali/storage_map1.scen.json", world());
 }
@@ -342,14 +389,16 @@ fn storage_map3_rs() {
     numbat_wasm_debug::denali_rs("denali/storage_map3.scen.json", world());
 }
 
+/*
+#[test]
+fn storage_mapper_fungible_token_rs() {
+    numbat_wasm_debug::denali_rs("denali/storage_mapper_fungible_token.scen.json", world());
+}
+*/
+
 #[test]
 fn storage_mapper_linked_list_rs() {
     numbat_wasm_debug::denali_rs("denali/storage_mapper_linked_list.scen.json", world());
-}
-
-#[test]
-fn storage_mapper_queue_rs() {
-    numbat_wasm_debug::denali_rs("denali/storage_mapper_queue.scen.json", world());
 }
 
 #[test]
@@ -360,6 +409,21 @@ fn storage_mapper_map_rs() {
 #[test]
 fn storage_mapper_map_storage_rs() {
     numbat_wasm_debug::denali_rs("denali/storage_mapper_map_storage.scen.json", world());
+}
+
+/*
+#[test]
+fn storage_mapper_non_fungible_token_rs() {
+    numbat_wasm_debug::denali_rs(
+        "denali/storage_mapper_non_fungible_token.scen.json",
+        world(),
+    );
+}
+*/
+
+#[test]
+fn storage_mapper_queue_rs() {
+    numbat_wasm_debug::denali_rs("denali/storage_mapper_queue.scen.json", world());
 }
 
 #[test]
@@ -380,6 +444,11 @@ fn storage_mapper_token_attributes_rs() {
 #[test]
 fn storage_mapper_vec_rs() {
     numbat_wasm_debug::denali_rs("denali/storage_mapper_vec.scen.json", world());
+}
+
+#[test]
+fn storage_mapper_whitelist_rs() {
+    numbat_wasm_debug::denali_rs("denali/storage_mapper_whitelist.scen.json", world());
 }
 
 #[test]
@@ -415,4 +484,9 @@ fn storage_usize_bad_rs() {
 #[test]
 fn storage_vec_u8_rs() {
     numbat_wasm_debug::denali_rs("denali/storage_vec_u8.scen.json", world());
+}
+
+#[test]
+fn struct_eq_rs() {
+    numbat_wasm_debug::denali_rs("denali/struct_eq.scen.json", world());
 }

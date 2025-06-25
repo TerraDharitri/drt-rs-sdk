@@ -5,11 +5,11 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   adder
-   (
-        init
-        callBack
+    adder
+    (
         add
         getSum
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

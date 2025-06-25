@@ -14,7 +14,7 @@ pub struct Color {
 #[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Clone)]
 pub struct ComplexAttributes<M: ManagedTypeApi> {
     pub biguint: BigUint<M>,
-    pub vec_u8: Vec<u8>,
+    pub vec_u8: ManagedBuffer<M>,
     pub token_id: TokenIdentifier<M>,
     pub boolean: bool,
     pub boxed_bytes: ManagedBuffer<M>,
@@ -33,26 +33,17 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
 
     #[payable("*")]
     #[endpoint]
-    fn buy_nft(
-        &self,
-        //#[payment_token] payment_token: TokenIdentifier,
-        //#[payment_nonce] payment_nonce: u64,
-        //#[payment_amount] payment_amount: BigUint,
-        nft_id: TokenIdentifier,
-        nft_nonce: u64,
-        nft_amount: BigUint,
-    ) -> BigUint {
-        let (payment_amount, payment_token) = self.call_value().payment_token_pair();
-        let payment_nonce = self.call_value().dcdt_token_nonce();
+    fn buy_nft(&self, nft_id: TokenIdentifier, nft_nonce: u64, nft_amount: BigUint) -> BigUint {
+        let payment: DcdtTokenPayment<Self::Api> = self.call_value().payment();
 
         self.send().sell_nft(
             &nft_id,
             nft_nonce,
             &nft_amount,
             &self.blockchain().get_caller(),
-            &payment_token,
-            payment_nonce,
-            &payment_amount,
+            &payment.token_identifier,
+            payment.token_nonce,
+            &payment.amount,
         )
     }
 
@@ -63,7 +54,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
         #[payment] issue_cost: BigUint,
         token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
-    ) -> AsyncCall {
+    ) {
         let caller = self.blockchain().get_caller();
 
         self.send()
@@ -83,6 +74,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
             )
             .async_call()
             .with_callback(self.callbacks().nft_issue_callback(&caller))
+            .call_and_exit()
     }
 
     #[callback]
@@ -119,7 +111,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
         color: Color,
         uri: ManagedBuffer,
     ) -> u64 {
-        let mut uris = ManagedVec::new(self.type_manager());
+        let mut uris = ManagedVec::new();
         uris.push(uri);
         let token_nonce = self.send().dcdt_nft_create::<Color>(
             &token_identifier,
@@ -137,6 +129,59 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
     }
 
     #[endpoint]
+    fn nft_create_compact(&self, token_identifier: TokenIdentifier, amount: BigUint, color: Color) {
+        self.send()
+            .dcdt_nft_create_compact(&token_identifier, &amount, &color);
+    }
+
+    #[endpoint]
+    fn nft_create_on_caller_behalf(
+        &self,
+        token_identifier: TokenIdentifier,
+        amount: BigUint,
+        name: ManagedBuffer,
+        royalties: BigUint,
+        hash: ManagedBuffer,
+        color: Color,
+        uri: ManagedBuffer,
+    ) -> u64 {
+        let mut uris = ManagedVec::new();
+        uris.push(uri);
+
+        self.send().dcdt_nft_create_as_caller::<Color>(
+            &token_identifier,
+            &amount,
+            &name,
+            &royalties,
+            &hash,
+            &color,
+            &uris,
+        )
+    }
+
+    #[endpoint]
+    fn nft_add_uris(
+        &self,
+        token_identifier: TokenIdentifier,
+        nonce: u64,
+        #[var_args] uris: MultiValueEncoded<ManagedBuffer>,
+    ) {
+        self.send()
+            .nft_add_multiple_uri(&token_identifier, nonce, &uris.to_vec());
+    }
+
+    #[endpoint]
+    fn nft_update_attributes(
+        &self,
+        token_identifier: TokenIdentifier,
+        nonce: u64,
+        new_attributes: Color,
+    ) {
+        self.send()
+            .nft_update_attributes(&token_identifier, nonce, &new_attributes);
+    }
+
+    #[endpoint]
     fn nft_decode_complex_attributes(
         &self,
         token_identifier: TokenIdentifier,
@@ -145,8 +190,14 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
         royalties: BigUint,
         hash: ManagedBuffer,
         uri: ManagedBuffer,
-        #[var_args] attrs_arg: MultiArg5<BigUint, Vec<u8>, TokenIdentifier, bool, ManagedBuffer>,
-    ) -> SCResult<()> {
+        #[var_args] attrs_arg: MultiValue5<
+            BigUint,
+            ManagedBuffer,
+            TokenIdentifier,
+            bool,
+            ManagedBuffer,
+        >,
+    ) {
         let attrs_pieces = attrs_arg.into_tuple();
         let orig_attr = ComplexAttributes {
             biguint: attrs_pieces.0,
@@ -156,7 +207,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
             boxed_bytes: attrs_pieces.4,
         };
 
-        let mut uris = ManagedVec::new(self.type_manager());
+        let mut uris = ManagedVec::new();
         uris.push(uri);
         let token_nonce = self.send().dcdt_nft_create::<ComplexAttributes<Self::Api>>(
             &token_identifier,
@@ -174,7 +225,7 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
             token_nonce,
         );
 
-        let decoded_attr = token_info.decode_attributes::<ComplexAttributes<Self::Api>>()?;
+        let decoded_attr = token_info.decode_attributes::<ComplexAttributes<Self::Api>>();
 
         require!(
             orig_attr.biguint == decoded_attr.biguint
@@ -184,7 +235,6 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
                 && orig_attr.boxed_bytes == decoded_attr.boxed_bytes,
             "orig_attr != decoded_attr"
         );
-        Ok(())
     }
 
     #[endpoint]
@@ -220,9 +270,9 @@ pub trait ForwarderNftModule: storage::ForwarderStorageModule {
         nonce: u64,
         amount: BigUint,
         function: ManagedBuffer,
-        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
+        #[var_args] arguments: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let _ = self.raw_vm_api().direct_dcdt_nft_execute(
+        let _ = Self::Api::send_api_impl().direct_dcdt_nft_execute(
             &to,
             &token_identifier,
             nonce,

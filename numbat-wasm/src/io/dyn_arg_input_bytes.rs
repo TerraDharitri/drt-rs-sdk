@@ -1,65 +1,68 @@
-use alloc::vec::Vec;
+use core::marker::PhantomData;
+
+use alloc::{boxed::Box, vec::Vec};
+use numbat_codec::{DecodeError, DecodeErrorHandler, TopDecodeMultiInput};
 
 use crate::{
     api::{ErrorApi, ManagedTypeApi},
-    err_msg,
-    types::{BoxedBytes, ManagedBytesTopDecodeInput},
-    DynArgInput,
+    types::BoxedBytes,
 };
 
 /// Consumes a vector of `BoxedBytes` and deserializes from the vector one by one.
 pub struct BytesArgLoader<A>
 where
-    A: ManagedTypeApi + ErrorApi,
+    A: ManagedTypeApi,
 {
     bytes_vec: Vec<BoxedBytes>,
     next_index: usize,
-    api: A,
+    _phantom: PhantomData<A>,
 }
 
 impl<A> BytesArgLoader<A>
 where
-    A: ManagedTypeApi + ErrorApi,
+    A: ManagedTypeApi,
 {
-    pub fn new(api: A, bytes_vec: Vec<BoxedBytes>) -> Self {
+    pub fn new(bytes_vec: Vec<BoxedBytes>) -> Self {
         BytesArgLoader {
             bytes_vec,
             next_index: 0,
-            api,
+            _phantom: PhantomData,
         }
     }
 }
 
-impl<A> DynArgInput for BytesArgLoader<A>
+impl<A> TopDecodeMultiInput for BytesArgLoader<A>
 where
     A: ManagedTypeApi + ErrorApi,
 {
-    type ItemInput = ManagedBytesTopDecodeInput<A>;
+    type ValueInput = Box<[u8]>;
 
-    type ErrorApi = A;
-
-    #[inline]
-    fn dyn_arg_vm_api(&self) -> Self::ErrorApi {
-        self.api.clone()
-    }
-
-    #[inline]
     fn has_next(&self) -> bool {
         self.next_index < self.bytes_vec.len()
     }
 
-    fn next_arg_input(&mut self) -> ManagedBytesTopDecodeInput<A> {
-        if !self.has_next() {
-            self.dyn_arg_vm_api()
-                .signal_error(err_msg::ARG_WRONG_NUMBER);
+    fn next_value_input<H>(&mut self, h: H) -> Result<Self::ValueInput, H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
+        if self.has_next() {
+            // consume from the vector, get owned bytes
+            // no clone
+            // no vector resize
+            let boxed_bytes =
+                core::mem::replace(&mut self.bytes_vec[self.next_index], BoxedBytes::empty());
+            self.next_index += 1;
+            Ok(boxed_bytes.into_box())
+        } else {
+            Err(h.handle_error(DecodeError::MULTI_TOO_FEW_ARGS))
         }
+    }
 
-        // consume from the vector, get owned bytes
-        // no clone
-        // no vector resize
-        let boxed_bytes =
-            core::mem::replace(&mut self.bytes_vec[self.next_index], BoxedBytes::empty());
-        self.next_index += 1;
-        ManagedBytesTopDecodeInput::new(self.api.clone(), boxed_bytes)
+    fn flush_ignore<H>(&mut self, _h: H) -> Result<(), H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
+        self.next_index = self.bytes_vec.len();
+        Ok(())
     }
 }

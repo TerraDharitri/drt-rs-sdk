@@ -1,7 +1,9 @@
+use alloc::string::String;
+use numbat_codec::{EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput, Vec};
+
 use crate::{
     abi::{OutputAbi, TypeAbi, TypeDescriptionContainer},
-    api::{EndpointFinishApi, ManagedTypeApi},
-    EndpointResult, *,
+    api::EndpointFinishApi,
 };
 use core::{
     convert,
@@ -47,13 +49,13 @@ impl<T, E> SCResult<T, E> {
 
     #[inline]
     /// Returns the contained Ok value or signals the error and exits.
-    pub fn unwrap_or_signal_error<FA: EndpointFinishApi>(self, api: FA) -> T
+    pub fn unwrap_or_signal_error<FA: EndpointFinishApi>(self) -> T
     where
         E: SCError,
     {
         match self {
             SCResult::Ok(t) => t,
-            SCResult::Err(e) => e.finish_err(api),
+            SCResult::Err(e) => e.finish_err::<FA>(),
         }
     }
 
@@ -100,34 +102,28 @@ where
     FromErr: Into<StaticSCError>,
 {
     fn from_residual(residual: Result<convert::Infallible, FromErr>) -> Self {
-        match residual {
-            Ok(_) => unreachable!(),
-            Err(e) => SCResult::Err(e.into()),
-        }
+        let Err(e) = residual;
+        SCResult::Err(e.into())
     }
 }
 
-impl<T, E> EndpointResult for SCResult<T, E>
+impl<T, E> TopEncodeMulti for SCResult<T, E>
 where
-    T: EndpointResult,
-    E: SCError,
+    T: TopEncodeMulti,
+    E: TopEncodeMulti,
 {
     /// Error implies the transaction fails, so if there is a result,
     /// it is of type `T`.
     type DecodeAs = T::DecodeAs;
 
-    #[inline]
-    fn finish<FA>(&self, api: FA)
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
-        FA: ManagedTypeApi + EndpointFinishApi + Clone + 'static,
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
     {
         match self {
-            SCResult::Ok(t) => {
-                t.finish(api);
-            },
-            SCResult::Err(e) => {
-                e.finish_err(api);
-            },
+            SCResult::Ok(t) => t.multi_encode_or_handle_err(output, h),
+            SCResult::Err(e) => e.multi_encode_or_handle_err(output, h),
         }
     }
 }
@@ -194,7 +190,7 @@ mod tests {
         assert!(sc_result_ok.unwrap() == 5);
 
         let result_err: Result<i32, DecodeError> =
-            Result::Err(DecodeError::from(&b"Decode Error"[..]).into());
+            Result::Err(DecodeError::from("Decode Error").into());
         let sc_result_err: SCResult<i32> = result_err.into();
 
         assert!(sc_result_err.err().unwrap().as_bytes() == &b"Decode Error"[..]);

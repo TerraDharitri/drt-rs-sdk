@@ -5,10 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   payable_features
-   (
-        init
-        callBack
+    payable_features
+    (
         echo_call_value
         payable_any_1
         payable_any_2
@@ -23,5 +21,7 @@ numbat_wasm_node::wasm_endpoints! {
         payable_token_3
         payable_token_4
         payment_multiple
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

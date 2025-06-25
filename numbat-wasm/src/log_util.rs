@@ -1,20 +1,18 @@
-use numbat_codec::{EncodeError, TopEncode};
+use numbat_codec::TopEncode;
 
 use crate::{
-    api::{ErrorApi, LogApi, ManagedTypeApi},
+    api::{ErrorApi, LogApi, LogApiImpl, ManagedTypeApi},
+    contract_base::ExitCodecErrorHandler,
     err_msg,
     types::{ManagedBuffer, ManagedType, ManagedVec},
 };
 
-pub fn event_topic_accumulator<A>(
-    api: A,
-    event_identifier: &[u8],
-) -> ManagedVec<A, ManagedBuffer<A>>
+pub fn event_topic_accumulator<A>(event_identifier: &[u8]) -> ManagedVec<A, ManagedBuffer<A>>
 where
     A: ErrorApi + ManagedTypeApi,
 {
-    let mut accumulator = ManagedVec::new(api.clone());
-    accumulator.push(ManagedBuffer::new_from_bytes(api, event_identifier));
+    let mut accumulator = ManagedVec::new();
+    accumulator.push(ManagedBuffer::new_from_bytes(event_identifier));
     accumulator
 }
 
@@ -23,51 +21,30 @@ where
     A: ErrorApi + ManagedTypeApi,
     T: TopEncode,
 {
-    let mut topic_buffer = ManagedBuffer::new(accumulator.type_manager());
-    topic.top_encode_or_exit(
+    let mut topic_buffer = ManagedBuffer::new();
+    let Ok(()) = topic.top_encode_or_handle_err(
         &mut topic_buffer,
-        accumulator.type_manager(),
-        serialize_log_topic_exit,
+        ExitCodecErrorHandler::<A>::from(err_msg::LOG_TOPIC_ENCODE_ERROR),
     );
     accumulator.push(topic_buffer);
 }
 
-#[inline(always)]
-fn serialize_log_topic_exit<A>(api: A, encode_err: EncodeError) -> !
-where
-    A: ErrorApi + ManagedTypeApi + 'static,
-{
-    let mut message_buffer =
-        ManagedBuffer::new_from_bytes(api.clone(), err_msg::LOG_TOPIC_ENCODE_ERROR);
-    message_buffer.append_bytes(encode_err.message_bytes());
-    api.signal_error_from_buffer(message_buffer.get_raw_handle())
-}
-
-pub fn serialize_log_data<T, A>(api: A, data: T) -> ManagedBuffer<A>
+pub fn serialize_log_data<T, A>(data: T) -> ManagedBuffer<A>
 where
     T: TopEncode,
-    A: ErrorApi + ManagedTypeApi + Clone + 'static,
+    A: ErrorApi + ManagedTypeApi,
 {
-    let mut data_buffer = ManagedBuffer::new(api.clone());
-    data.top_encode_or_exit(&mut data_buffer, api, serialize_log_data_exit);
+    let mut data_buffer = ManagedBuffer::new();
+    let Ok(()) = data.top_encode_or_handle_err(
+        &mut data_buffer,
+        ExitCodecErrorHandler::<A>::from(err_msg::LOG_DATA_ENCODE_ERROR),
+    );
     data_buffer
 }
 
-#[inline(always)]
-fn serialize_log_data_exit<A>(api: A, encode_err: EncodeError) -> !
+pub fn write_log<A>(topics: &ManagedVec<A, ManagedBuffer<A>>, data: &ManagedBuffer<A>)
 where
-    A: ErrorApi + ManagedTypeApi + 'static,
+    A: LogApi + ManagedTypeApi,
 {
-    let mut message_buffer =
-        ManagedBuffer::new_from_bytes(api.clone(), err_msg::LOG_DATA_ENCODE_ERROR);
-    message_buffer.append_bytes(encode_err.message_bytes());
-    api.signal_error_from_buffer(message_buffer.get_raw_handle())
-}
-
-pub fn write_log<L, A>(api: L, topics: &ManagedVec<A, ManagedBuffer<A>>, data: &ManagedBuffer<A>)
-where
-    L: LogApi,
-    A: ErrorApi + ManagedTypeApi,
-{
-    api.managed_write_log(topics.get_raw_handle(), data.get_raw_handle());
+    A::log_api_impl().managed_write_log(topics.get_raw_handle(), data.get_raw_handle());
 }

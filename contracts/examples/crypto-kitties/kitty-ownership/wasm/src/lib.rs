@@ -5,9 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   kitty_ownership
-   (
-        init
+    kitty_ownership
+    (
         callBack
         allowAuctioning
         approve
@@ -30,5 +29,5 @@ numbat_wasm_node::wasm_endpoints! {
         totalSupply
         transfer
         transfer_from
-   )
+    )
 }

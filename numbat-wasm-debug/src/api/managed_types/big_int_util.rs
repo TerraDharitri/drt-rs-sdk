@@ -1,38 +1,54 @@
 use std::cmp::Ordering;
 
-use numbat_wasm::types::{ManagedBuffer, ManagedType};
+use numbat_wasm::{
+    api::{Handle, ManagedBufferApi},
+    types::{Address, ManagedBuffer, ManagedType},
+};
 use num_bigint::Sign;
 use num_traits::Zero;
 
 use crate::DebugApi;
 
 impl DebugApi {
-    pub fn insert_new_managed_buffer(&self, value: Vec<u8>) -> ManagedBuffer<Self> {
+    pub fn insert_new_managed_buffer(&self, value: Vec<u8>) -> Handle {
         let mut managed_types = self.m_types_borrow_mut();
-        let handle = managed_types.managed_buffer_map.insert_new_handle(value);
-        ManagedBuffer::from_raw_handle(self.clone(), handle)
+        managed_types.managed_buffer_map.insert_new_handle(value)
     }
 
-    pub fn insert_new_big_uint(
+    pub fn insert_new_managed_buffer_old(&self, value: Vec<u8>) -> ManagedBuffer<Self> {
+        let mut managed_types = self.m_types_borrow_mut();
+        let handle = managed_types.managed_buffer_map.insert_new_handle(value);
+        ManagedBuffer::from_raw_handle(handle)
+    }
+
+    pub fn address_handle_to_value(&self, address_handle: Handle) -> Address {
+        let mut address = Address::zero();
+        self.mb_load_slice(address_handle, 0, address.as_mut())
+            .unwrap();
+        address
+    }
+
+    pub fn insert_new_big_uint(&self, value: num_bigint::BigUint) -> Handle {
+        let mut managed_types = self.m_types_borrow_mut();
+        managed_types.big_int_map.insert_new_handle(value.into())
+    }
+
+    pub fn insert_new_big_uint_old(
         &self,
         value: num_bigint::BigUint,
     ) -> numbat_wasm::types::BigUint<Self> {
         let mut managed_types = self.m_types_borrow_mut();
         let handle = managed_types.big_int_map.insert_new_handle(value.into());
-        numbat_wasm::types::BigUint::from_raw_handle(self.clone(), handle)
+        numbat_wasm::types::BigUint::from_raw_handle(handle)
     }
 
-    pub fn insert_new_big_uint_zero(&self) -> numbat_wasm::types::BigUint<Self> {
+    pub fn insert_new_big_uint_zero(&self) -> Handle {
         self.insert_new_big_uint(num_bigint::BigUint::zero())
     }
 
-    pub fn big_uint_value(&self, bu: &numbat_wasm::types::BigUint<Self>) -> num_bigint::BigUint {
+    pub fn big_uint_handle_to_value(&self, bu_handle: Handle) -> num_bigint::BigUint {
         let managed_types = self.m_types_borrow();
-        managed_types
-            .big_int_map
-            .get(bu.get_raw_handle())
-            .magnitude()
-            .clone()
+        managed_types.big_int_map.get(bu_handle).magnitude().clone()
     }
 }
 

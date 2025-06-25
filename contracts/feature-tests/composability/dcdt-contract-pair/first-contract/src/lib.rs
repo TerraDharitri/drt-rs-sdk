@@ -24,7 +24,7 @@ pub trait FirstContract {
         &self,
         #[payment] dcdt_value: BigUint,
         #[payment_token] actual_token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
+    ) {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(dcdt_value > 0, "no dcdt transfered!");
@@ -37,13 +37,9 @@ pub trait FirstContract {
             &expected_token_identifier,
             &dcdt_value,
             &self.get_second_contract_address(),
-            &self
-                .types()
-                .managed_buffer_from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
-            &ManagedVec::new(self.type_manager()),
+            &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
+            &ManagedVec::new(),
         );
-
-        Ok(())
     }
 
     #[payable("*")]
@@ -52,7 +48,7 @@ pub trait FirstContract {
         &self,
         #[payment] dcdt_value: BigUint,
         #[payment_token] actual_token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
+    ) {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(dcdt_value > 0, "no dcdt transfered!");
@@ -65,13 +61,9 @@ pub trait FirstContract {
             &expected_token_identifier,
             &(dcdt_value / 2u32),
             &self.get_second_contract_address(),
-            &self
-                .types()
-                .managed_buffer_from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
-            &ManagedVec::new(self.type_manager()),
+            &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
+            &ManagedVec::new(),
         );
-
-        Ok(())
     }
 
     #[payable("*")]
@@ -80,7 +72,7 @@ pub trait FirstContract {
         &self,
         #[payment] dcdt_value: BigUint,
         #[payment_token] actual_token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
+    ) {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(dcdt_value > 0, "no dcdt transfered!");
@@ -93,13 +85,9 @@ pub trait FirstContract {
             &expected_token_identifier,
             &dcdt_value,
             &self.get_second_contract_address(),
-            &self
-                .types()
-                .managed_buffer_from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
-            &ManagedVec::new(self.type_manager()),
+            &ManagedBuffer::from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
+            &ManagedVec::new(),
         );
-
-        Ok(())
     }
 
     #[payable("*")]
@@ -108,28 +96,24 @@ pub trait FirstContract {
         &self,
         #[payment] dcdt_value: BigUint,
         #[payment_token] actual_token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
+    ) {
         let second_contract_address = self.get_second_contract_address();
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
-        require!(dcdt_value > 0, "no dcdt transfered!");
+        require!(dcdt_value > 0u32, "no dcdt transfered!");
         require!(
             actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
-        let _ = self.raw_vm_api().direct_dcdt_execute(
+        let _ = Self::Api::send_api_impl().direct_dcdt_execute(
             &second_contract_address,
             &expected_token_identifier,
             &dcdt_value,
             self.blockchain().get_gas_left(),
-            &self
-                .types()
-                .managed_buffer_from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
-            &ManagedArgBuffer::new_empty(self.type_manager()),
+            &ManagedBuffer::from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
+            &ManagedArgBuffer::new_empty(),
         );
-
-        Ok(())
     }
 
     #[payable("*")]
@@ -138,28 +122,24 @@ pub trait FirstContract {
         &self,
         #[payment] dcdt_value: BigUint,
         #[payment_token] actual_token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
+    ) {
         let second_contract_address = self.get_second_contract_address();
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
-        require!(dcdt_value > 0, "no dcdt transfered!");
+        require!(dcdt_value > 0u32, "no dcdt transfered!");
         require!(
             actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
-        let _ = self.raw_vm_api().direct_dcdt_execute(
+        let _ = Self::Api::send_api_impl().direct_dcdt_execute(
             &second_contract_address,
             &expected_token_identifier,
             &dcdt_value,
             self.blockchain().get_gas_left(),
-            &self
-                .types()
-                .managed_buffer_from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
-            &ManagedArgBuffer::new_empty(self.type_manager()),
+            &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
+            &ManagedArgBuffer::new_empty(),
         );
-
-        Ok(())
     }
 
     fn call_dcdt_second_contract(
@@ -170,7 +150,7 @@ pub trait FirstContract {
         func_name: &ManagedBuffer,
         args: &ManagedVec<Self::Api, ManagedBuffer>,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new_empty(self.type_manager());
+        let mut arg_buffer = ManagedArgBuffer::new_empty();
         arg_buffer.push_arg(dcdt_token_identifier);
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(func_name);
@@ -178,10 +158,10 @@ pub trait FirstContract {
             arg_buffer.push_arg_raw(arg);
         }
 
-        self.raw_vm_api().async_call_raw(
+        Self::Api::send_api_impl().async_call_raw(
             to,
-            &self.types().big_uint_zero(),
-            &self.types().managed_buffer_from(DCDT_TRANSFER_STRING),
+            &BigUint::zero(),
+            &ManagedBuffer::from(DCDT_TRANSFER_STRING),
             &arg_buffer,
         );
     }

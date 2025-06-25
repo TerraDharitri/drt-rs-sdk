@@ -1,6 +1,7 @@
 #![allow(stable_features)]
 // ensure we don't run out of macro stack
 #![recursion_limit = "1024"]
+#![feature(proc_macro_quote)]
 
 #[macro_use]
 extern crate syn;
@@ -9,10 +10,12 @@ extern crate syn;
 extern crate quote;
 
 mod contract_impl;
+mod format;
 mod generate;
 mod macro_contract;
 mod macro_module;
 mod macro_proxy;
+mod managed_vec_item_derive;
 mod model;
 mod parse;
 mod preprocessing;
@@ -48,4 +51,16 @@ pub fn type_abi_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStrea
     let ast = syn::parse(input).unwrap();
 
     type_abi_derive::type_abi_derive(&ast)
+}
+
+#[proc_macro_derive(ManagedVecItem)]
+pub fn managed_vec_item_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let ast = syn::parse(input).unwrap();
+
+    managed_vec_item_derive::managed_vec_item_derive(&ast)
+}
+
+#[proc_macro]
+pub fn format_receiver_args(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    format::format_receiver_args_macro(input)
 }

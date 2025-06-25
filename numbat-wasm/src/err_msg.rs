@@ -1,9 +1,11 @@
 pub const NON_PAYABLE_FUNC_REWA: &[u8] = b"function does not accept REWA payment";
 pub const NON_PAYABLE_FUNC_DCDT: &[u8] = b"function does not accept DCDT payment";
 pub const BAD_TOKEN_PROVIDED: &[u8] = b"bad call value token provided";
+pub const SINGLE_DCDT_EXPECTED: &[u8] = b"function expects single DCDT payment";
 pub const TOO_MANY_DCDT_TRANSFERS: &[u8] = b"too many DCDT transfers";
+pub const DCDT_INVALID_TOKEN_INDEX: &[u8] = b"invalid token index";
 
-pub const ARG_WRONG_NUMBER: &[u8] = b"wrong number of arguments";
+pub const ARG_WRONG_NUMBER: &str = "wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &[u8] = b"wrong number of arguments provided to async call";
 pub const ARG_ASYNC_RETURN_WRONG_NUMBER: &[u8] =
     b"wrong number of arguments returned by async call";
@@ -19,6 +21,7 @@ pub const STORAGE_VALUE_OUT_OF_RANGE: &[u8] = b"storage value out of range";
 pub const STORAGE_DECODE_ERROR: &[u8] = b"storage decode error: ";
 pub const STORAGE_ENCODE_ERROR: &[u8] = b"storage encode error: ";
 pub const STORAGE_KEY_ENCODE_ERROR: &[u8] = b"storage key encode error: ";
+pub const STORAGE_VALUE_EXCEEDS_BUFFER: &[u8] = b"storage value exceeds buffer";
 pub const FINISH_ENCODE_ERROR: &[u8] = b"endpoint result encode error: ";
 pub const SERIALIZER_DECODE_ERROR: &[u8] = b"serializer decode error: ";
 pub const SERIALIZER_ENCODE_ERROR: &[u8] = b"serializer encode error: ";
@@ -30,14 +33,13 @@ pub const VALUE_EXCEEDS_SLICE: &[u8] = b"value exceeds target slice";
 pub const BIG_UINT_EXCEEDS_SLICE: &[u8] = b"big uint as_bytes exceed target slice";
 pub const BIG_UINT_SUB_NEGATIVE: &[u8] = b"cannot subtract because result would be negative";
 
-pub const DESERIALIZATION_INVALID_BYTE: &[u8] =
-    b"call data deserialization error: not a valid byte";
-pub const DESERIALIZATION_NOT_32_BYTES: &[u8] =
-    b"call data deserialization error: 32 as_bytes expected";
-pub const DESERIALIZATION_ODD_DIGITS: &[u8] =
-    b"call data deserialization error: odd number of digits in hex representation";
-pub const DESERIALIZATION_ARG_OUT_OF_RANGE: &[u8] =
-    b"call data deserialization error: argument out of range";
+pub const DESERIALIZATION_INVALID_BYTE: &str = "call data deserialization error: not a valid byte";
+pub const DESERIALIZATION_NOT_32_BYTES: &str =
+    "call data deserialization error: 32 as_bytes expected";
+pub const DESERIALIZATION_ODD_DIGITS: &str =
+    "call data deserialization error: odd number of digits in hex representation";
+pub const DESERIALIZATION_ARG_OUT_OF_RANGE: &str =
+    "call data deserialization error: argument out of range";
 
 pub const CALLBACK_BAD_FUNC: &[u8] = b"no callback function with that name exists in contract";
 

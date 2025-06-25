@@ -14,7 +14,7 @@
             "tx": {
                 "from": "address:alice",
                 "to": "sc:multisig",
-                "function": "proposeSendRewa",
+                "function": "proposeTransferExecute",
                 "arguments": [
                     "sc:other-shard-1",
                     "0"
@@ -27,7 +27,7 @@
                     "1"
                 ],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }
@@ -48,7 +48,7 @@
             "expect": {
                 "out": [],
                 "status": "",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }

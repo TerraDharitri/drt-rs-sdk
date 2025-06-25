@@ -136,7 +136,7 @@ fn convert_denali_dcdt_to_world_mock(
 }
 
 fn convert_denali_dcdt_instance_to_world_mock(
-    denali_dcdt: &denali::model::Instance,
+    denali_dcdt: &denali::model::DcdtInstance,
 ) -> DcdtInstance {
     DcdtInstance {
         nonce: denali_dcdt
@@ -161,7 +161,11 @@ fn convert_denali_dcdt_instance_to_world_mock(
                 .map(|royalties| royalties.value)
                 .unwrap_or_default(),
             hash: denali_dcdt.hash.as_ref().map(|hash| hash.value.clone()),
-            uri: denali_dcdt.uri.as_ref().map(|uri| uri.value.clone()),
+            uri: denali_dcdt
+                .uri
+                .iter()
+                .map(|uri| uri.value.clone())
+                .collect(),
             attributes: denali_dcdt
                 .attributes
                 .as_ref()

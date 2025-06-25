@@ -1,10 +1,15 @@
+use core::marker::PhantomData;
+
+use numbat_codec::{
+    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput,
+};
+
 use super::StorageMapper;
 use crate::{
     abi::{TypeAbi, TypeName},
-    api::{EndpointFinishApi, ErrorApi, ManagedTypeApi, StorageReadApi, StorageWriteApi},
-    io::EndpointResult,
+    api::StorageMapperApi,
     storage::{storage_get, storage_get_len, storage_set, StorageKey},
-    types::{ManagedAddress, ManagedVec, MultiResultVec},
+    types::{ManagedAddress, ManagedType, ManagedVec, MultiResultVec},
 };
 
 const ADDRESS_TO_ID_SUFFIX: &[u8] = b"_address_to_id";
@@ -22,24 +27,27 @@ const COUNT_SUFFIX: &[u8] = b"_count";
 /// It also doesn't allow removing users. Once in, their ids are reserved forever.
 pub struct UserMapper<SA>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
 {
-    api: SA,
+    _phantom_api: PhantomData<SA>,
     base_key: StorageKey<SA>,
 }
 
 impl<SA> StorageMapper<SA> for UserMapper<SA>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
 {
-    fn new(api: SA, base_key: StorageKey<SA>) -> Self {
-        UserMapper { api, base_key }
+    fn new(base_key: StorageKey<SA>) -> Self {
+        UserMapper {
+            _phantom_api: PhantomData,
+            base_key,
+        }
     }
 }
 
 impl<SA> UserMapper<SA>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
 {
     fn get_user_id_key(&self, address: &ManagedAddress<SA>) -> StorageKey<SA> {
         let mut user_id_key = self.base_key.clone();
@@ -64,11 +72,11 @@ where
     /// Yields the user id for a given address.
     /// Will return 0 if the address is not known to the contract.
     pub fn get_user_id(&self, address: &ManagedAddress<SA>) -> usize {
-        storage_get(self.api.clone(), &self.get_user_id_key(address))
+        storage_get(self.get_user_id_key(address).as_ref())
     }
 
     fn set_user_id(&self, address: &ManagedAddress<SA>, id: usize) {
-        storage_set(self.api.clone(), &self.get_user_id_key(address), &id);
+        storage_set(self.get_user_id_key(address).as_ref(), &id);
     }
 
     /// Yields the user address for a given id, if the id is valid.
@@ -76,8 +84,8 @@ where
         let key = self.get_user_address_key(id);
         // TODO: optimize, storage_load_managed_buffer_len is currently called twice
 
-        if storage_get_len(self.api.clone(), &key) > 0 {
-            Some(storage_get(self.api.clone(), &key))
+        if storage_get_len(key.as_ref()) > 0 {
+            Some(storage_get(key.as_ref()))
         } else {
             None
         }
@@ -86,7 +94,7 @@ where
     /// Yields the user address for a given id.
     /// Will cause a deserialization error if the id is invalid.
     pub fn get_user_address_unchecked(&self, id: usize) -> ManagedAddress<SA> {
-        storage_get(self.api.clone(), &self.get_user_address_key(id))
+        storage_get(self.get_user_address_key(id).as_ref())
     }
 
     /// Yields the user address for a given id, if the id is valid.
@@ -94,24 +102,24 @@ where
     pub fn get_user_address_or_zero(&self, id: usize) -> ManagedAddress<SA> {
         let key = self.get_user_address_key(id);
         // TODO: optimize, storage_load_managed_buffer_len is currently called twice
-        if storage_get_len(self.api.clone(), &key) > 0 {
-            storage_get(self.api.clone(), &key)
+        if storage_get_len(key.as_ref()) > 0 {
+            storage_get(key.as_ref())
         } else {
-            ManagedAddress::zero(self.api.clone())
+            ManagedAddress::zero()
         }
     }
 
     fn set_user_address(&self, id: usize, address: &ManagedAddress<SA>) {
-        storage_set(self.api.clone(), &self.get_user_address_key(id), address);
+        storage_set(self.get_user_address_key(id).as_ref(), address);
     }
 
     /// Number of users.
     pub fn get_user_count(&self) -> usize {
-        storage_get(self.api.clone(), &self.get_user_count_key())
+        storage_get(self.get_user_count_key().as_ref())
     }
 
     fn set_user_count(&self, user_count: usize) {
-        storage_set(self.api.clone(), &self.get_user_count_key(), &user_count);
+        storage_set(self.get_user_count_key().as_ref(), &user_count);
     }
 
     /// Yields the user id for a given address, or creates a new user id if there isn't one.
@@ -159,7 +167,7 @@ where
     /// Can easily consume a lot of gas.
     pub fn get_all_addresses(&self) -> ManagedVec<SA, ManagedAddress<SA>> {
         let user_count = self.get_user_count();
-        let mut result = ManagedVec::new(self.api.clone());
+        let mut result = ManagedVec::new();
         for i in 1..=user_count {
             result.push(self.get_user_address_or_zero(i));
         }
@@ -169,33 +177,32 @@ where
 
 /// Behaves like a MultiResultVec<Address> when an endpoint result,
 /// and lists all users addresses.
-impl<SA> EndpointResult for UserMapper<SA>
+impl<SA> TopEncodeMulti for UserMapper<SA>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
 {
     type DecodeAs = MultiResultVec<ManagedAddress<SA>>;
 
-    fn finish<FA>(&self, api: FA)
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
-        FA: ManagedTypeApi + EndpointFinishApi + Clone + 'static,
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
     {
         let all_addresses = self.get_all_addresses();
-        for address in all_addresses.into_iter() {
-            address.finish(api.clone());
-        }
+        multi_encode_iter_or_handle_err(all_addresses.into_iter(), output, h)
     }
 }
 
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA> TypeAbi for UserMapper<SA>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
 {
     fn type_name() -> TypeName {
         crate::types::MultiResultVec::<ManagedAddress<SA>>::type_name()
     }
 
-    fn is_multi_arg_or_result() -> bool {
+    fn is_variadic() -> bool {
         true
     }
 }

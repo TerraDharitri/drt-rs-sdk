@@ -5,9 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   bonding_curve_contract
-   (
-        init
+    bonding_curve_contract
+    (
         callBack
         buyToken
         claim
@@ -19,5 +18,5 @@ numbat_wasm_node::wasm_endpoints! {
         setBondingCurve
         setLocalRoles
         unsetLocalRoles
-   )
+    )
 }

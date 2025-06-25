@@ -1,23 +1,19 @@
 use adder::*;
-use numbat_wasm::{contract_base::ContractBase, types::BigInt};
+use numbat_wasm::types::BigUint;
 use numbat_wasm_debug::DebugApi;
 
 #[test]
 fn test_add() {
-    let adder = adder::contract_obj(DebugApi::dummy());
+    let _ = DebugApi::dummy();
 
-    adder.init(BigInt::from_i64(adder.type_manager(), 5));
-    assert_eq!(BigInt::from_i64(adder.type_manager(), 5), adder.sum().get());
+    let adder = adder::contract_obj::<DebugApi>();
 
-    let _ = adder.add(BigInt::from_i64(adder.type_manager(), 7));
-    assert_eq!(
-        BigInt::from_i64(adder.type_manager(), 12),
-        adder.sum().get()
-    );
+    adder.init(BigUint::from(5u32));
+    assert_eq!(BigUint::from(5u32), adder.sum().get());
 
-    let _ = adder.add(BigInt::from_i64(adder.type_manager(), 1));
-    assert_eq!(
-        BigInt::from_i64(adder.type_manager(), 13),
-        adder.sum().get()
-    );
+    let _ = adder.add(BigUint::from(7u32));
+    assert_eq!(BigUint::from(12u32), adder.sum().get());
+
+    let _ = adder.add(BigUint::from(1u32));
+    assert_eq!(BigUint::from(13u32), adder.sum().get());
 }

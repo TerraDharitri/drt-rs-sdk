@@ -21,6 +21,16 @@ fn forw_raw_async_send_and_retrieve_multi_transfer_funds_go() {
 }
 
 #[test]
+fn forw_raw_builtin_nft_local_mint_via_async_call_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_builtin_nft_local_mint_via_async_call.scen.json");
+}
+
+#[test]
+fn forw_raw_builtin_nft_local_mint_via_sync_call_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_builtin_nft_local_mint_via_sync_call.scen.json");
+}
+
+#[test]
 fn forw_raw_call_async_retrieve_multi_transfer_go() {
     numbat_wasm_debug::denali_go("denali/forw_raw_call_async_retrieve_multi_transfer.scen.json");
 }
@@ -36,6 +46,11 @@ fn forw_raw_contract_upgrade_go() {
 }
 
 #[test]
+fn forw_raw_contract_upgrade_self_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_contract_upgrade_self.scen.json");
+}
+
+#[test]
 fn forw_raw_direct_rewa_go() {
     numbat_wasm_debug::denali_go("denali/forw_raw_direct_rewa.scen.json");
 }
@@ -43,6 +58,11 @@ fn forw_raw_direct_rewa_go() {
 #[test]
 fn forw_raw_direct_dcdt_go() {
     numbat_wasm_debug::denali_go("denali/forw_raw_direct_dcdt.scen.json");
+}
+
+#[test]
+fn forw_raw_direct_multi_dcdt_go() {
+    numbat_wasm_debug::denali_go("denali/forw_raw_direct_multi_dcdt.scen.json");
 }
 
 #[test]
@@ -93,6 +113,11 @@ fn forwarder_builtin_nft_burn_go() {
 #[test]
 fn forwarder_builtin_nft_create_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_create.scen.json");
+}
+
+#[test]
+fn forwarder_builtin_nft_create_by_caller_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_builtin_nft_create_by_caller.scen.json");
 }
 
 #[test]
@@ -248,8 +273,28 @@ fn forwarder_contract_upgrade_go() {
 }
 
 #[test]
+fn forwarder_get_dcdt_local_roles_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_get_dcdt_local_roles.scen.json");
+}
+
+#[test]
+fn forwarder_nft_add_uri_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_nft_add_uri.scen.json");
+}
+
+#[test]
+fn forwarder_nft_create_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_nft_create.scen.json");
+}
+
+#[test]
 fn forwarder_nft_create_and_send_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_nft_create_and_send.scen.json");
+}
+
+#[test]
+fn forwarder_nft_current_nonce_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_nft_current_nonce.scen.json");
 }
 
 #[test]
@@ -268,8 +313,18 @@ fn forwarder_nft_transfer_exec_go() {
 }
 
 #[test]
-fn forwarder_send_no_endpoint_go() {
+fn forwarder_nft_update_attributes_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_nft_update_attributes.scen.json");
+}
+
+#[test]
+fn forwarder_no_endpoint_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_no_endpoint.scen.json");
+}
+
+#[test]
+fn forwarder_retrieve_funds_with_accept_func_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_retrieve_funds_with_accept_func.scen.json");
 }
 
 #[test]
@@ -300,6 +355,11 @@ fn forwarder_sync_echo_range_go() {
 #[test]
 fn forwarder_tranfer_dcdt_with_fees_go() {
     numbat_wasm_debug::denali_go("denali/forwarder_tranfer_dcdt_with_fees.scen.json");
+}
+
+#[test]
+fn forwarder_validate_token_identifier_go() {
+    numbat_wasm_debug::denali_go("denali/forwarder_validate_token_identifier.scen.json");
 }
 
 #[test]

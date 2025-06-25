@@ -5,10 +5,10 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   forwarder
-   (
-        init
+    forwarder
+    (
         callBack
+        accept_funds_func
         buy_nft
         callback_data
         callback_data_at_index
@@ -30,6 +30,7 @@ numbat_wasm_node::wasm_endpoints! {
         forward_sync_accept_funds_then_read
         forward_sync_accept_funds_with_fees
         forward_sync_retrieve_funds
+        forward_sync_retrieve_funds_with_accept_func
         forward_transf_exec_accept_funds
         forward_transf_exec_accept_funds_multi_transfer
         forward_transf_exec_accept_funds_return_values
@@ -37,6 +38,7 @@ numbat_wasm_node::wasm_endpoints! {
         forward_transf_execu_accept_funds_with_fees
         getCurrentNftNonce
         getFungibleDcdtBalance
+        get_dcdt_local_roles
         get_nft_balance
         issue_fungible_token
         lastErrorMessage
@@ -45,10 +47,14 @@ numbat_wasm_node::wasm_endpoints! {
         local_mint
         multi_transfer_via_async
         nft_add_quantity
+        nft_add_uris
         nft_burn
         nft_create
+        nft_create_compact
+        nft_create_on_caller_behalf
         nft_decode_complex_attributes
         nft_issue
+        nft_update_attributes
         send_rewa
         send_dcdt
         send_dcdt_direct_multi_transfer
@@ -62,5 +68,6 @@ numbat_wasm_node::wasm_endpoints! {
         unsetLocalRoles
         upgradeVault
         upgrade_vault_from_source
-   )
+        validate_token_identifier
+    )
 }

@@ -5,10 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   nft_storage_prepay
-   (
-        init
-        callBack
+    nft_storage_prepay
+    (
         claim
         depositPaymentForStorage
         getCostForSize
@@ -17,5 +15,7 @@ numbat_wasm_node::wasm_endpoints! {
         reserveFunds
         setCostPerByte
         withdraw
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

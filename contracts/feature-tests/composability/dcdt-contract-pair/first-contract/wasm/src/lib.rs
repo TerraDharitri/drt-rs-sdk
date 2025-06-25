@@ -5,10 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   first_contract
-   (
-        init
-        callBack
+    first_contract
+    (
         getSecondContractAddress
         getdcdtTokenName
         transferToSecondContractFull
@@ -16,5 +14,7 @@ numbat_wasm_node::wasm_endpoints! {
         transferToSecondContractHalf
         transferToSecondContractRejected
         transferToSecondContractRejectedWithTransferAndExecute
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

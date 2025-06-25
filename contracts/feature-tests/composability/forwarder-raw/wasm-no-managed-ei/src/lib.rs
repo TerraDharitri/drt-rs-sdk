@@ -5,9 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   forwarder_raw
-   (
-        init
+    forwarder_raw
+    (
         callBack
         call_execute_on_dest_context
         call_execute_on_dest_context_by_caller
@@ -21,6 +20,7 @@ numbat_wasm_node::wasm_endpoints! {
         forward_async_call
         forward_async_call_half_payment
         forward_async_retrieve_multi_transfer_funds
+        forward_direct_dcdt_multi
         forward_direct_dcdt_via_transf_exec
         forward_payment
         forward_transf_exec
@@ -29,5 +29,5 @@ numbat_wasm_node::wasm_endpoints! {
         forwarder_async_send_and_retrieve_multi_transfer_funds
         upgrade
         upgrade_from_source
-   )
+    )
 }

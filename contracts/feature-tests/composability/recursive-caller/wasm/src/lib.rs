@@ -5,10 +5,9 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   recursive_caller
-   (
-        init
+    recursive_caller
+    (
         callBack
         recursive_send_funds
-   )
+    )
 }

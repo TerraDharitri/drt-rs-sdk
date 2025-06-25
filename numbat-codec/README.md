@@ -9,7 +9,7 @@ Designed to:
 
 Largely inspired by the Parity SCALE codec, but a completely different format and implementation.
 
-For more info about the serialization format, see [the developer reference](https://docs.numbat.com/developers/developer-reference/numbat-serialization-format/).
+For more info about the serialization format, see [the developer reference](https://docs.dharitri.org/developers/developer-reference/numbat-serialization-format/).
 
 # no-std
 

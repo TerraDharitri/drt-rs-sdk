@@ -2,13 +2,14 @@
 #![feature(new_uninit)]
 
 mod api;
-mod node_macros;
 pub mod error_hook;
+mod node_macros;
 
 extern crate alloc;
 pub use alloc::{boxed::Box, string::String, vec::Vec};
-
 pub use api::VmApiImpl;
+
+pub use numbat_wasm;
 
 /// Provides an API instance.
 pub fn vm_api() -> VmApiImpl {

@@ -87,52 +87,56 @@ pub trait ProxyTestFirst {
 
     #[payable("REWA")]
     #[endpoint(forwardToOtherContract)]
-    fn forward_to_other_contract(&self, #[payment] payment: BigUint) -> AsyncCall {
+    fn forward_to_other_contract(&self, #[payment] payment: BigUint) {
         let other_contract = self.get_other_contract();
         self.pay_me_proxy()
             .contract(other_contract)
             .pay_me(payment, 0x56)
             .async_call()
+            .call_and_exit()
     }
 
     #[payable("REWA")]
     #[endpoint(forwardToOtherContractWithCallback)]
-    fn forward_to_other_contract_with_callback(&self, #[payment] payment: BigUint) -> AsyncCall {
+    fn forward_to_other_contract_with_callback(&self, #[payment] payment: BigUint) {
         let other_contract = self.get_other_contract();
         self.pay_me_proxy()
             .contract(other_contract)
             .pay_me_with_result(payment, 0x56)
             .async_call()
             .with_callback(self.callbacks().pay_callback())
+            .call_and_exit()
     }
 
     #[endpoint(messageOtherContract)]
-    fn message_other_contract(&self) -> AsyncCall {
+    fn message_other_contract(&self) {
         let other_contract = self.get_other_contract();
         self.message_me_proxy()
             .contract(other_contract)
             .message_me(
                 0x01,
-                &self.types().big_uint_from(2u32),
+                &BigUint::from(2u32),
                 [3u8; 3].to_vec(),
                 &ManagedAddress::from(&HARDCODED_ADDRESS),
             )
             .async_call()
+            .call_and_exit()
     }
 
     #[endpoint(messageOtherContractWithCallback)]
-    fn message_other_contract_with_callback(&self) -> AsyncCall {
+    fn message_other_contract_with_callback(&self) {
         let other_contract = self.get_other_contract();
         self.message_me_proxy()
             .contract(other_contract)
             .message_me(
                 0x01,
-                &self.types().big_uint_from(2u32),
+                &BigUint::from(2u32),
                 [3u8; 3].to_vec(),
                 &ManagedAddress::from(&HARDCODED_ADDRESS),
             )
             .async_call()
             .with_callback(self.callbacks().message_callback())
+            .call_and_exit()
     }
 
     #[callback(payCallback)] // although uncommon, custom callback names are possible

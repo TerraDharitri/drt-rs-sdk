@@ -3,17 +3,27 @@ numbat_wasm::imports!();
 /// All crypto functions provided by Andes exposed here.
 #[numbat_wasm::module]
 pub trait CryptoFeatures {
-    #[endpoint(computeSha256)]
-    fn compute_sha256(&self, input: Vec<u8>) -> H256 {
+    #[endpoint]
+    fn compute_sha256_legacy(&self, input: Vec<u8>) -> H256 {
+        self.crypto().sha256_legacy_alloc(&input)
+    }
+
+    #[endpoint]
+    fn compute_sha256(&self, input: ManagedBuffer) -> ManagedByteArray<Self::Api, 32> {
         self.crypto().sha256(&input)
     }
 
-    #[endpoint(computeKeccak256)]
-    fn compute_keccak256(&self, input: Vec<u8>) -> H256 {
+    #[endpoint]
+    fn compute_keccak256_legacy(&self, input: Vec<u8>) -> H256 {
+        self.crypto().keccak256_legacy_alloc(&input)
+    }
+
+    #[endpoint]
+    fn compute_keccak256(&self, input: ManagedBuffer) -> ManagedByteArray<Self::Api, 32> {
         self.crypto().keccak256(&input)
     }
 
-    #[endpoint(computeRipemd160)]
+    #[endpoint]
     fn compute_ripemd160(&self, input: Vec<u8>) -> Box<[u8; 20]> {
         self.crypto().ripemd160(&input)
     }

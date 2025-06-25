@@ -5,10 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   ping_pong_rewa
-   (
-        init
-        callBack
+    ping_pong_rewa
+    (
         getActivationTimestamp
         getDeadline
         getMaxFunds
@@ -19,5 +17,7 @@ numbat_wasm_node::wasm_endpoints! {
         pong
         pongAll
         pongAllLastUser
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

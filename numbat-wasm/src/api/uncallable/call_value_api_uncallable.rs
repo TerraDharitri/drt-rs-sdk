@@ -1,24 +1,32 @@
 use crate::{
-    api::CallValueApi,
-    types::{BigUint, DcdtTokenType, TokenIdentifier},
+    api::{CallValueApi, CallValueApiImpl, Handle},
+    types::DcdtTokenType,
 };
 
 use super::UncallableApi;
 
 impl CallValueApi for UncallableApi {
+    type CallValueApiImpl = UncallableApi;
+
+    fn call_value_api_impl() -> Self::CallValueApiImpl {
+        unreachable!()
+    }
+}
+
+impl CallValueApiImpl for UncallableApi {
     fn check_not_payable(&self) {
         unreachable!()
     }
 
-    fn rewa_value(&self) -> BigUint<Self> {
+    fn rewa_value(&self) -> Handle {
         unreachable!()
     }
 
-    fn dcdt_value(&self) -> BigUint<Self> {
+    fn dcdt_value(&self) -> Handle {
         unreachable!()
     }
 
-    fn token(&self) -> TokenIdentifier<Self> {
+    fn token(&self) -> Handle {
         unreachable!()
     }
 
@@ -34,11 +42,11 @@ impl CallValueApi for UncallableApi {
         unreachable!()
     }
 
-    fn dcdt_value_by_index(&self, _index: usize) -> BigUint<Self> {
+    fn dcdt_value_by_index(&self, _index: usize) -> Handle {
         unreachable!()
     }
 
-    fn token_by_index(&self, _index: usize) -> TokenIdentifier<Self> {
+    fn token_by_index(&self, _index: usize) -> Handle {
         unreachable!()
     }
 

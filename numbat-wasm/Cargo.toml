@@ -1,32 +1,36 @@
 [package]
 name = "numbat-wasm"
-version = "0.0.15"
+version = "0.0.17"
 edition = "2018"
 
 authors = ["contact@dharitri.org"]
 license = "GPL-3.0-only"
 readme = "README.md"
 repository = "https://github.com/TerraDharitri/drt-rs-sdk"
-homepage = "https://numbat.com/"
-documentation = "https://docs.numbat.com/"
+homepage = "https://dharitri.org/"
+documentation = "https://docs.dharitri.org/"
 description = "Numbat WebAssembly smart contract API"
 keywords = ["numbat", "wasm", "webassembly", "blockchain", "contract"]
 categories = ["no-std", "wasm", "cryptography::cryptocurrencies", "development-tools"]
 
 [features]
-cb_closure_managed_deser = []
+cb_closure_unmanaged_deser = []
 
 [dependencies]
 wee_alloc = "0.4"
-arrayvec = { version = "0.7.1", default-features = false }
-hashbrown = "0.11.2"
 hex-literal = "0.3.1"
+bitflags = "1.3.2"
+# git-version = "0.3.5"
+
+[dependencies.drthashbrown]
+version = "=0.0.17"
+path = "../drthashbrown"
 
 [dependencies.numbat-wasm-derive]
-version = "=0.0.15"
+version = "=0.0.17"
 path = "../numbat-wasm-derive"
 
 [dependencies.numbat-codec]
-version = "0.0.15"
+version = "0.0.17"
 path = "../numbat-codec"
 features = ["derive"]

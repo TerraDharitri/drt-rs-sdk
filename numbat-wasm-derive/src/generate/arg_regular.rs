@@ -17,7 +17,7 @@ pub fn generate_load_single_arg(
                 // deserialize as boxed slice, so we have an owned object that we can reference
                 let slice_elem = &slice_type.elem;
                 quote! {
-                    numbat_wasm::load_single_arg::<Self::Api, Box<[#slice_elem]>>(self.raw_vm_api(), #arg_index_expr, #arg_name_expr)
+                    numbat_wasm::load_single_arg::<Self::Api, Box<[#slice_elem]>>(#arg_index_expr, #arg_name_expr)
                 }
             } else {
                 // deserialize as owned object, so we can then have a reference to it
@@ -27,20 +27,20 @@ pub fn generate_load_single_arg(
                         if *ident == "str" {
                             // TODO: generalize for all unsized types using Box
                             return quote! {
-                                numbat_wasm::load_single_arg::<Self::Api, Box<str>>(self.raw_vm_api(), #arg_index_expr, #arg_name_expr)
+                                numbat_wasm::load_single_arg::<Self::Api, Box<str>>(#arg_index_expr, #arg_name_expr)
                             };
                         }
                     }
                 }
 
                 quote! {
-                    numbat_wasm::load_single_arg::<Self::Api, #referenced_type>(self.raw_vm_api(), #arg_index_expr, #arg_name_expr)
+                    numbat_wasm::load_single_arg::<Self::Api, #referenced_type>(#arg_index_expr, #arg_name_expr)
                 }
             }
         },
         _ => {
             quote! {
-                numbat_wasm::load_single_arg::<Self::Api, #arg_ty>(self.raw_vm_api(), #arg_index_expr, #arg_name_expr)
+                numbat_wasm::load_single_arg::<Self::Api, #arg_ty>(#arg_index_expr, #arg_name_expr)
             }
         },
     }
@@ -61,12 +61,12 @@ pub fn generate_load_dyn_arg(
             );
             let referenced_type = &*type_reference.elem;
             quote! {
-                let #pat: & #referenced_type = &numbat_wasm::load_dyn_arg(#loader_expr, #arg_name_expr);
+                let #pat: & #referenced_type = &numbat_wasm::load_dyn_arg::<Self::Api, _, _>(#loader_expr, #arg_name_expr);
             }
         },
         _ => {
             quote! {
-                let #pat: #arg_ty = numbat_wasm::load_dyn_arg(#loader_expr, #arg_name_expr);
+                let #pat: #arg_ty = numbat_wasm::load_dyn_arg::<Self::Api, _, _>(#loader_expr, #arg_name_expr);
             }
         },
     }

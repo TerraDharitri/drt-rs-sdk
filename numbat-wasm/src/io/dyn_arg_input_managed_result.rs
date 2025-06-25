@@ -1,8 +1,8 @@
+use numbat_codec::{DecodeError, DecodeErrorHandler, TopDecodeMultiInput};
+
 use crate::{
     api::{ErrorApi, ManagedTypeApi},
-    err_msg,
-    types::{ManagedBuffer, ManagedType, ManagedVec},
-    DynArgInput,
+    types::{ManagedBuffer, ManagedVec},
 };
 
 pub struct ManagedResultArgLoader<A>
@@ -28,31 +28,25 @@ where
     }
 }
 
-impl<A> DynArgInput for ManagedResultArgLoader<A>
+impl<A> TopDecodeMultiInput for ManagedResultArgLoader<A>
 where
     A: ManagedTypeApi + ErrorApi,
 {
-    type ItemInput = ManagedBuffer<A>;
+    type ValueInput = ManagedBuffer<A>;
 
-    type ErrorApi = A;
-
-    #[inline]
-    fn dyn_arg_vm_api(&self) -> Self::ErrorApi {
-        self.data.type_manager()
-    }
-
-    #[inline]
     fn has_next(&self) -> bool {
         self.next_index < self.data_len
     }
 
-    fn next_arg_input(&mut self) -> Self::ItemInput {
-        if let Some(buffer) = self.data.get(self.next_index) {
+    fn next_value_input<H>(&mut self, h: H) -> Result<Self::ValueInput, H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
+        if let Some(buffer) = self.data.try_get(self.next_index) {
             self.next_index += 1;
-            buffer
+            Ok((*buffer).clone())
         } else {
-            self.dyn_arg_vm_api()
-                .signal_error(err_msg::ARG_WRONG_NUMBER)
+            Err(h.handle_error(DecodeError::MULTI_TOO_FEW_ARGS))
         }
     }
 }

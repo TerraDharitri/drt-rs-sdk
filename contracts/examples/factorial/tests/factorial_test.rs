@@ -1,33 +1,34 @@
-use numbat_wasm::contract_base::ContractBase;
+use numbat_wasm::types::BigUint;
 use numbat_wasm_debug::DebugApi;
 use factorial::*;
 
 #[test]
 fn test_factorial() {
-    let factorial = factorial::contract_obj(DebugApi::dummy());
+    let _ = DebugApi::dummy();
+    let factorial = factorial::contract_obj::<DebugApi>();
 
     assert_eq!(
-        factorial.types().big_uint_from(1u32),
-        factorial.factorial(factorial.types().big_uint_zero())
+        BigUint::<DebugApi>::from(1u32),
+        factorial.factorial(0u32.into())
     );
     assert_eq!(
-        factorial.types().big_uint_from(1u32),
-        factorial.factorial(factorial.types().big_uint_from(1u32))
+        BigUint::<DebugApi>::from(1u32),
+        factorial.factorial(1u32.into())
     );
     assert_eq!(
-        factorial.types().big_uint_from(2u32),
-        factorial.factorial(factorial.types().big_uint_from(2u32))
+        BigUint::<DebugApi>::from(2u32),
+        factorial.factorial(2u32.into())
     );
     assert_eq!(
-        factorial.types().big_uint_from(6u32),
-        factorial.factorial(factorial.types().big_uint_from(3u32))
+        BigUint::<DebugApi>::from(6u32),
+        factorial.factorial(3u32.into())
     );
     assert_eq!(
-        factorial.types().big_uint_from(24u32),
-        factorial.factorial(factorial.types().big_uint_from(4u32))
+        BigUint::<DebugApi>::from(24u32),
+        factorial.factorial(4u32.into())
     );
     assert_eq!(
-        factorial.types().big_uint_from(120u32),
-        factorial.factorial(factorial.types().big_uint_from(5u32))
+        BigUint::<DebugApi>::from(120u32),
+        factorial.factorial(5u32.into())
     );
 }

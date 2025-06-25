@@ -1,6 +1,5 @@
 {
     "comment": "add then check",
-    "gasSchedule": "v3",
     "steps": [
         {
             "step": "externalSteps",
@@ -24,7 +23,7 @@
                 "out": [],
                 "status": "4",
                 "message": "str:duplicate board member",
-                "logs": [],
+                "logs": "*",
                 "gas": "*",
                 "refund": "*"
             }

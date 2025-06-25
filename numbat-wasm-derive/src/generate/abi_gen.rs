@@ -1,11 +1,14 @@
 use super::util::*;
-use crate::model::{ContractTrait, EndpointMutabilityMetadata, Method, PublicRole};
+use crate::model::{
+    ContractTrait, EndpointLocationMetadata, EndpointMutabilityMetadata, Method, PublicRole,
+};
 
 fn generate_endpoint_snippet(
     m: &Method,
     endpoint_name: &str,
     only_owner: bool,
     mutability: EndpointMutabilityMetadata,
+    location: EndpointLocationMetadata,
 ) -> proc_macro2::TokenStream {
     let endpoint_docs = &m.docs;
     let payable_in_tokens = m.payable_metadata().abi_strings();
@@ -42,6 +45,7 @@ fn generate_endpoint_snippet(
         },
     };
     let mutability_tokens = mutability.to_tokens();
+    let location_tokens = location.to_tokens();
 
     quote! {
         let mut endpoint_abi = numbat_wasm::abi::EndpointAbi{
@@ -49,6 +53,7 @@ fn generate_endpoint_snippet(
             name: #endpoint_name,
             only_owner: #only_owner,
             mutability: #mutability_tokens,
+            location: #location_tokens,
             payable_in_tokens: &[ #(#payable_in_tokens),* ],
             inputs: Vec::new(),
             outputs: Vec::new(),
@@ -58,45 +63,54 @@ fn generate_endpoint_snippet(
     }
 }
 
-fn generate_abi_method_body(
-    contract: &ContractTrait,
-    is_contract_main: bool,
-) -> proc_macro2::TokenStream {
-    let endpoint_snippets: Vec<proc_macro2::TokenStream> = contract
+fn generate_endpoint_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
+    contract
         .methods
         .iter()
-        .filter_map(|m| {
-            if let PublicRole::Init(_) = &m.public_role {
+        .filter_map(|m| match &m.public_role {
+            PublicRole::Init(_) => {
                 let endpoint_def = generate_endpoint_snippet(
                     m,
                     "init",
                     false,
                     EndpointMutabilityMetadata::Mutable,
+                    EndpointLocationMetadata::MainContract,
                 );
                 Some(quote! {
                     #endpoint_def
-                    contract_abi.constructor = Some(endpoint_abi);
+                    contract_abi.constructors.push(endpoint_abi);
                 })
-            } else if let PublicRole::Endpoint(endpoint_metadata) = &m.public_role {
+            },
+            PublicRole::Endpoint(endpoint_metadata) => {
                 let endpoint_name_str = endpoint_metadata.public_name.to_string();
                 let endpoint_def = generate_endpoint_snippet(
                     m,
                     &endpoint_name_str,
                     endpoint_metadata.only_owner,
                     endpoint_metadata.mutability.clone(),
+                    endpoint_metadata.location.clone(),
                 );
                 Some(quote! {
                     #endpoint_def
                     contract_abi.endpoints.push(endpoint_abi);
                 })
-            } else {
-                None
-            }
+            },
+            _ => None,
         })
-        .collect();
+        .collect()
+}
 
-    let supertrait_snippets: Vec<proc_macro2::TokenStream> = if is_contract_main {
-        contract
+fn has_callback(contract: &ContractTrait) -> bool {
+    contract.methods.iter().any(|m| {
+        matches!(
+            m.public_role,
+            PublicRole::Callback(_) | PublicRole::CallbackRaw
+        )
+    })
+}
+
+fn generate_supertrait_snippets(contract: &ContractTrait) -> Vec<proc_macro2::TokenStream> {
+    contract
 			.supertraits
 			.iter()
 			.map(|supertrait| {
@@ -106,25 +120,37 @@ fn generate_abi_method_body(
 				}
 			})
 			.collect()
+}
+
+fn generate_abi_method_body(
+    contract: &ContractTrait,
+    is_contract_main: bool,
+) -> proc_macro2::TokenStream {
+    let contract_docs = &contract.docs;
+    let contract_name = &contract.trait_name.to_string();
+    let endpoint_snippets = generate_endpoint_snippets(contract);
+    let has_callbacks = has_callback(contract);
+    let supertrait_snippets: Vec<proc_macro2::TokenStream> = if is_contract_main {
+        generate_supertrait_snippets(contract)
     } else {
         Vec::new()
     };
 
-    let contract_docs = &contract.docs;
-    let contract_name = &contract.trait_name.to_string();
     quote! {
-        let mut contract_abi = numbat_wasm::abi::ContractAbi{
+        let mut contract_abi = numbat_wasm::abi::ContractAbi {
             build_info: numbat_wasm::abi::BuildInfoAbi {
                 contract_crate: numbat_wasm::abi::ContractCrateBuildAbi {
                     name: env!("CARGO_PKG_NAME"),
                     version: env!("CARGO_PKG_VERSION"),
+                    git_version: "N/A",
                 },
                 framework: numbat_wasm::abi::FrameworkBuildAbi::create(),
             },
             docs: &[ #(#contract_docs),* ],
             name: #contract_name,
-            constructor: None,
+            constructors: Vec::new(),
             endpoints: Vec::new(),
+            has_callback: #has_callbacks,
             type_descriptions: <numbat_wasm::abi::TypeDescriptionContainerImpl as numbat_wasm::abi::TypeDescriptionContainer>::new(),
         };
         #(#endpoint_snippets)*

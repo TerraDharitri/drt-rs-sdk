@@ -5,10 +5,10 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   panic_message_features
-   (
-        init
-        callBack
+    panic_message_features
+    (
         panicWithMessage
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

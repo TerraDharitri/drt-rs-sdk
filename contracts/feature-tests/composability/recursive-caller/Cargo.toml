@@ -12,15 +12,14 @@ path = "src/recursive_caller.rs"
 path = "../vault"
 
 [dependencies.numbat-wasm]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../numbat-wasm"
-features = ["cb_closure_managed_deser"]
 
 [dependencies.numbat-wasm-node]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../numbat-wasm-node"
 optional = true
 
 [dev-dependencies.numbat-wasm-debug]
-version = "0.0.15"
+version = "0.0.17"
 path = "../../../../numbat-wasm-debug"

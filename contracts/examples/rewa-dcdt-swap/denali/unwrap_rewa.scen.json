@@ -1,5 +1,6 @@
 {
     "name": "unwrap rewa",
+    "gasSchedule": "v4",
     "steps": [
         {
             "step": "externalSteps",
@@ -10,33 +11,22 @@
             "txId": "unwrap-rewa",
             "tx": {
                 "from": "address:user",
-                "to": "sc:rewa-dcdt-swap",
+                "to": "sc:rewa_dcdt_swap",
                 "dcdtValue": [
                     {
-                        "tokenIdentifier": "str:WREWA-abcdef",
+                        "tokenIdentifier": "str:REWA-abcdef",
                         "value": "300"
                     }
                 ],
                 "function": "unwrapRewa",
                 "arguments": [],
-                "gasLimit": "100,000,000",
+                "gasLimit": "5,000,000",
                 "gasPrice": "0"
             },
             "expect": {
                 "out": [],
                 "status": "0",
                 "message": "",
-                "logs": [
-                    {
-                        "address": "sc:rewa-dcdt-swap",
-                        "endpoint": "str:unwrapRewa",
-                        "topics": [
-                            "str:unwrap-rewa",
-                            "address:user"
-                        ],
-                        "data": "300"
-                    }
-                ],
                 "gas": "*",
                 "refund": "*"
             }
@@ -48,19 +38,29 @@
                     "nonce": "2",
                     "balance": "800",
                     "dcdt": {
-                        "str:WREWA-abcdef": "200"
+                        "str:REWA-abcdef": "200"
                     },
                     "storage": {}
                 },
-                "sc:rewa-dcdt-swap": {
+                "sc:rewa_dcdt_swap": {
                     "nonce": "0",
                     "balance": "200",
                     "dcdt": {
-                        "str:WREWA-abcdef": "1800"
+                        "str:REWA-abcdef": {
+                            "instances": [
+                                {
+                                    "nonce": "",
+                                    "balance": "1"
+                                }
+                            ],
+                            "roles": [
+                                "DCDTRoleLocalMint",
+                                "DCDTRoleLocalBurn"
+                            ]
+                        }
                     },
                     "storage": {
-                        "str:wrapped_rewa_token_id": "str:WREWA-abcdef",
-                        "str:unused_wrapped_rewa": "1800"
+                        "str:wrappedRewaTokenId": "str:REWA-abcdef"
                     },
                     "code": "file:../output/rewa-dcdt-swap.wasm"
                 }

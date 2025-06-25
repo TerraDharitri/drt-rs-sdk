@@ -12,23 +12,26 @@ build_and_copy() {
 
    drtpy --verbose contract build $contract_path || return 1
    mkdir -p $vm_contract_path/output
-   cp -R $contract_path/output/$contract_name.wasm \
+   cp $contract_path/output/$contract_name.wasm \
       $vm_contract_path/output/$contract_name.wasm
+   cp $contract_path/output/$contract_name-view.wasm \
+      $vm_contract_path/output/$contract_name-view.wasm
    cp -R $contract_path/denali \
       $vm_contract_path
 }
 
-# building all contracts takes a lot of time, only the ones for Andes are built below
+# building all contracts takes a lot of time, only the ones for the wasm-vm tests are built below
 # if you still want to build all:
 # ./build-wasm.sh
 
 build_and_copy ./contracts/examples/adder $VM_REPO_PATH/test/adder
 build_and_copy ./contracts/examples/crowdfunding-dcdt $VM_REPO_PATH/test/crowdfunding-dcdt
+build_and_copy ./contracts/examples/digital-cash $VM_REPO_PATH/test/digital-cash
 build_and_copy ./contracts/examples/ping-pong-rewa $VM_REPO_PATH/test/ping-pong-rewa
 build_and_copy ./contracts/examples/multisig $VM_REPO_PATH/test/multisig
 build_and_copy ./contracts/examples/rewa-dcdt-swap $VM_REPO_PATH/test/rewa-dcdt-swap
-build_and_copy ./contracts/examples/erc20 $VM_REPO_PATH/test/erc20-rust
 build_and_copy ./contracts/feature-tests/basic-features $VM_REPO_PATH/test/features/basic-features
+build_and_copy ./contracts/feature-tests/erc-style-contracts/erc20 $VM_REPO_PATH/test/erc20-rust
 build_and_copy ./contracts/feature-tests/payable-features $VM_REPO_PATH/test/features/payable-features
 
 build_and_copy_composability() {

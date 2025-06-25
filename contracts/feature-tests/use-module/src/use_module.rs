@@ -4,6 +4,9 @@ mod internal_mod_a;
 mod internal_mod_b;
 mod internal_mod_c;
 mod internal_mod_d;
+mod internal_mod_init;
+mod only_owner_derived_mod;
+mod only_owner_mod;
 
 numbat_wasm::imports!();
 
@@ -19,16 +22,17 @@ pub trait UseModule:
     internal_mod_a::InternalModuleA
     + internal_mod_b::InternalModuleB
     + internal_mod_c::InternalModuleC
-    + numbat_wasm_module_dns::DnsModule
-    + numbat_wasm_module_dcdt::DcdtModule
-    + numbat_wasm_module_features::FeaturesModule
-    + numbat_wasm_module_governance::GovernanceModule
-    + numbat_wasm_module_governance::governance_configurable::GovernanceConfigurablePropertiesModule
-    + numbat_wasm_module_pause::PauseModule
+    + internal_mod_init::InternalModuleInit
+    + only_owner_mod::OnlyOwnerModule
+    + only_owner_derived_mod::OnlyOwnerDerivedModule
+    + numbat_wasm_modules::dns::DnsModule
+    + numbat_wasm_modules::dcdt::DcdtModule
+    + numbat_wasm_modules::features::FeaturesModule
+    + numbat_wasm_modules::governance::GovernanceModule
+    + numbat_wasm_modules::governance::governance_configurable::GovernanceConfigurablePropertiesModule
+    + numbat_wasm_modules::pause::PauseModule
+    + numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
-    #[init]
-    fn init(&self) {}
-
     /// Validates that the "featureName" feature is on.
     /// Uses the `feature_guard!` macro.
     #[endpoint(checkFeatureGuard)]

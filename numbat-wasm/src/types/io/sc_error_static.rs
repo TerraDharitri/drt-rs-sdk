@@ -1,6 +1,6 @@
-use numbat_codec::{DecodeError, EncodeError};
+use numbat_codec::{DecodeError, EncodeError, TopEncodeMulti, TryStaticCast};
 
-use crate::api::EndpointFinishApi;
+use crate::api::{EndpointFinishApi, ErrorApiImpl};
 
 use super::SCError;
 
@@ -12,10 +12,12 @@ use super::SCError;
 pub struct StaticSCError(&'static [u8]);
 
 impl SCError for StaticSCError {
-    fn finish_err<FA: EndpointFinishApi>(&self, api: FA) -> ! {
-        api.signal_error(self.0)
+    fn finish_err<FA: EndpointFinishApi>(&self) -> ! {
+        FA::error_api_impl().signal_error(self.0)
     }
 }
+
+impl TryStaticCast for StaticSCError {}
 
 impl StaticSCError {
     #[inline]
@@ -55,5 +57,17 @@ impl From<DecodeError> for StaticSCError {
 impl From<!> for StaticSCError {
     fn from(_: !) -> Self {
         unreachable!()
+    }
+}
+
+impl TopEncodeMulti for StaticSCError {
+    type DecodeAs = Self;
+
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
+    where
+        O: numbat_codec::TopEncodeMultiOutput,
+        H: numbat_codec::EncodeErrorHandler,
+    {
+        output.push_multi_specialized(self, h)
     }
 }

@@ -5,9 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   basic_features
-   (
-        init
+    basic_features
+    (
         callBack
         add_assign_big_int
         add_assign_big_int_ref
@@ -17,12 +16,15 @@ numbat_wasm_node::wasm_endpoints! {
         add_big_int_ref
         add_big_uint
         add_big_uint_ref
+        add_to_whitelist
         big_int_from_biguint
         big_int_from_i64_1
         big_int_from_i64_2
         big_int_to_i64
         big_int_to_parts
         big_int_zero
+        big_uint_from_managed_buffer
+        big_uint_from_managed_buffer_ref
         big_uint_from_u64_1
         big_uint_from_u64_2
         big_uint_to_u64
@@ -42,6 +44,8 @@ numbat_wasm_node::wasm_endpoints! {
         boxed_bytes_concat_2
         boxed_bytes_split
         boxed_bytes_zeros
+        burn_fungible
+        check_contains
         clear_single_value_mapper
         clear_storage_value
         codec_err_contract_call
@@ -53,9 +57,6 @@ numbat_wasm_node::wasm_endpoints! {
         codec_err_storage_key
         codec_err_storage_set
         compare_h256
-        computeKeccak256
-        computeRipemd160
-        computeSha256
         compute_create_ec
         compute_ec_add
         compute_ec_double
@@ -64,11 +65,16 @@ numbat_wasm_node::wasm_endpoints! {
         compute_get_priv_key_byte_length
         compute_get_values
         compute_is_on_curve_ec
+        compute_keccak256
+        compute_keccak256_legacy
         compute_marshal_compressed_ec
         compute_marshal_ec
+        compute_ripemd160
         compute_scalar_base_mult
         compute_scalar_mult
         compute_secp256k1_der_signature
+        compute_sha256
+        compute_sha256_legacy
         compute_unmarshal_compressed_ec
         compute_unmarshal_ec
         count_ones
@@ -81,6 +87,7 @@ numbat_wasm_node::wasm_endpoints! {
         div_big_uint
         div_big_uint_ref
         echo_array_u8
+        echo_arrayvec
         echo_async_result_empty
         echo_big_int
         echo_big_int_option
@@ -110,6 +117,7 @@ numbat_wasm_node::wasm_endpoints! {
         echo_ser_example_2
         echo_simple_enum
         echo_slice_u8
+        echo_some_args_ignore_others
         echo_str
         echo_str_box
         echo_string
@@ -119,12 +127,17 @@ numbat_wasm_node::wasm_endpoints! {
         echo_u8
         echo_usize
         echo_varags_big_uint
+        echo_varags_managed_eager
+        echo_varags_managed_sum
         echo_varags_tuples
         echo_varags_u32
         echo_vec_of_managed_buffer
         echo_vec_u8
         finish_simple_enum_variant_1
+        getFungibleTokenId
         getListMapper
+        getNonFungibleTokenId
+        get_balance_fungible
         get_block_epoch
         get_block_nonce
         get_block_random_seed
@@ -132,7 +145,6 @@ numbat_wasm_node::wasm_endpoints! {
         get_block_timestamp
         get_caller
         get_cumulated_validator_rewards
-        get_dcdt_local_roles
         get_gas_left
         get_nr_to_clear
         get_owner_address
@@ -148,6 +160,8 @@ numbat_wasm_node::wasm_endpoints! {
         is_empty_opt_addr
         is_empty_single_value_mapper
         is_smart_contract
+        issue_fungible_custom_callback
+        issue_fungible_default_callback
         listMapperBack
         listMapperFront
         listMapperIterateByHand
@@ -160,10 +174,13 @@ numbat_wasm_node::wasm_endpoints! {
         listMapperPushFront
         listMapperRemoveNode
         listMapperRemoveNodeById
+        listMapperSetValue
+        listMapperSetValueById
         load_addr
         load_big_int
         load_big_uint
         load_bool
+        load_from_address_raw
         load_i64
         load_map1
         load_map2
@@ -177,16 +194,24 @@ numbat_wasm_node::wasm_endpoints! {
         log2_big_uint
         log2_big_uint_ref
         logEventA
+        logEventARepeat
         logEventB
         logLegacyEventA
         logLegacyEventB
+        maddress_from_array
+        maddress_from_managed_buffer
         managed_address_eq
         managed_address_from
         managed_address_zero
+        managed_struct_eq
         managed_vec_address_push
         managed_vec_biguint_eq
         managed_vec_biguint_push
+        managed_vec_contains
+        managed_vec_find
         managed_vec_new
+        managed_vec_remove
+        managed_vec_set
         map_mapper_contains_key
         map_mapper_entry_and_modify
         map_mapper_entry_or_default_update_increment
@@ -209,15 +234,27 @@ numbat_wasm_node::wasm_endpoints! {
         map_storage_mapper_insert_value
         map_storage_mapper_remove
         map_storage_mapper_view
+        mapper_get_token_attributes
+        mapper_nft_add_quantity
+        mapper_nft_add_quantity_and_send
+        mapper_nft_burn
+        mapper_nft_create
+        mapper_nft_create_and_send
+        mapper_nft_get_balance
+        mapper_nft_set_token_id
         mbuffer_concat_1
         mbuffer_concat_2
+        mbuffer_copy_slice
         mbuffer_eq
         mbuffer_from_boxed_bytes
         mbuffer_from_slice
+        mbuffer_load_slice
         mbuffer_new
         mbuffer_overwrite
-        mbuffer_slice_1
-        mbuffer_slice_2
+        mbuffer_set_random
+        mbuffer_set_slice
+        mint_and_send_fungible
+        mint_fungible
         mul_assign_big_int
         mul_assign_big_int_ref
         mul_assign_big_uint
@@ -252,7 +289,11 @@ numbat_wasm_node::wasm_endpoints! {
         rem_big_int_ref
         rem_big_uint
         rem_big_uint_ref
+        remove_from_whitelist
+        require_all_same_token_fungible
+        require_contains
         require_equals
+        require_same_token_fungible
         result_echo
         result_echo_2
         result_echo_3
@@ -263,6 +304,7 @@ numbat_wasm_node::wasm_endpoints! {
         result_err_from_string
         result_ok
         return_sc_error
+        set_local_roles_fungible
         set_mapper
         set_mapper_contains
         set_mapper_insert
@@ -322,5 +364,5 @@ numbat_wasm_node::wasm_endpoints! {
         verify_custom_secp256k1_signature
         verify_ed25519_signature
         verify_secp256k1_signature
-   )
+    )
 }

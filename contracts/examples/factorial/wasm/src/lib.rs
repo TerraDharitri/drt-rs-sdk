@@ -5,10 +5,10 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   factorial
-   (
-        init
-        callBack
+    factorial
+    (
         factorial
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

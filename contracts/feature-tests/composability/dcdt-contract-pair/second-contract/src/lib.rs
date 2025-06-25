@@ -11,22 +11,18 @@ pub trait SecondContract {
 
     #[payable("*")]
     #[endpoint(acceptDcdtPayment)]
-    fn accept_dcdt_payment(
-        &self,
-        #[payment_token] actual_token_identifier: TokenIdentifier,
-    ) -> SCResult<()> {
+    fn accept_dcdt_payment(&self, #[payment_token] actual_token_identifier: TokenIdentifier) {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
         require!(
             actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
-        Ok(())
     }
 
     #[payable("*")]
     #[endpoint(rejectDcdtPayment)]
-    fn reject_dcdt_payment(&self) -> SCResult<()> {
-        sc_error!("Rejected")
+    fn reject_dcdt_payment(&self) {
+        sc_panic!("Rejected")
     }
 
     // storage

@@ -18,11 +18,12 @@ mod dns_mock {
 
         #[payable("REWA")]
         #[endpoint]
-        fn register(&self, name: BoxedBytes, #[payment] _payment: BigUint) -> AsyncCall {
+        fn register(&self, name: BoxedBytes, #[payment] _payment: BigUint) {
             let address = self.blockchain().get_caller();
             self.user_builtin_proxy(address)
                 .set_user_name(&name)
                 .async_call()
+                .call_and_exit()
         }
     }
 }
@@ -31,15 +32,10 @@ use numbat_wasm_debug::*;
 
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
-    blockchain.register_contract(
-        "file:output/use-module.wasm",
-        Box::new(|context| Box::new(use_module::contract_obj(context))),
-    );
+    blockchain
+        .register_contract_builder("file:output/use-module.wasm", use_module::ContractBuilder);
 
-    blockchain.register_contract(
-        "file:test-wasm/dns.wasm",
-        Box::new(|context| Box::new(dns_mock::contract_obj(context))),
-    );
+    blockchain.register_contract_builder("file:test-wasm/dns.wasm", dns_mock::ContractBuilder);
 
     blockchain
 }

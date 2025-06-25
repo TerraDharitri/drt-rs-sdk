@@ -20,11 +20,11 @@ pub trait OrdersModule:
         payment: Payment<Self::Api>,
         params: OrderInputParams<Self::Api>,
         order_type: OrderType,
-    ) -> SCResult<()> {
+    ) {
         let caller = &self.blockchain().get_caller();
 
         let mut address_order_ids = self.get_address_order_ids(caller).into_vec();
-        self.require_not_max_size(&address_order_ids)?;
+        self.require_not_max_size(&address_order_ids);
 
         let new_order_id = self.get_and_increase_order_id_counter();
         let order = self.new_order(new_order_id, payment, params, order_type);
@@ -34,26 +34,24 @@ pub trait OrdersModule:
         self.address_order_ids(caller).set(&address_order_ids);
 
         self.emit_order_event(order);
-        Ok(())
     }
 
-    fn match_orders(&self, order_ids: Vec<u64>) -> SCResult<()> {
+    fn match_orders(&self, order_ids: Vec<u64>) {
         let orders = self.load_orders(&order_ids);
         require!(
             orders.len() == order_ids.len(),
             "Order vectors len mismatch"
         );
-        self.require_match_provider_empty_or_caller(&orders)?;
+        self.require_match_provider_empty_or_caller(&orders);
 
-        let transfers = self.create_transfers(&orders)?;
+        let transfers = self.create_transfers(&orders);
         self.clear_orders(&order_ids);
         self.execute_transfers(transfers);
 
         self.emit_match_order_events(orders);
-        Ok(())
     }
 
-    fn cancel_all_orders(&self) -> SCResult<()> {
+    fn cancel_all_orders(&self) {
         let caller = &self.blockchain().get_caller();
         let address_order_ids = self.get_address_order_ids(caller).into_vec();
 
@@ -63,13 +61,13 @@ pub trait OrdersModule:
             .copied()
             .collect::<Vec<u64>>();
 
-        self.cancel_orders(order_ids_not_empty)
+        self.cancel_orders(order_ids_not_empty);
     }
 
-    fn cancel_orders(&self, order_ids: Vec<u64>) -> SCResult<()> {
+    fn cancel_orders(&self, order_ids: Vec<u64>) {
         let caller = &self.blockchain().get_caller();
         let mut address_order_ids = self.get_address_order_ids(caller).into_vec();
-        self.require_contains_all(&address_order_ids, &order_ids)?;
+        self.require_contains_all(&address_order_ids, &order_ids);
 
         let first_token_id = &self.first_token_id().get();
         let second_token_id = &self.second_token_id().get();
@@ -83,21 +81,19 @@ pub trait OrdersModule:
 
         let mut orders = Vec::new();
         for &order_id in order_ids_not_empty.iter() {
-            let order =
-                self.cancel_order(order_id, caller, first_token_id, second_token_id, epoch)?;
+            let order = self.cancel_order(order_id, caller, first_token_id, second_token_id, epoch);
             address_order_ids.remove(order_id as usize);
             orders.push(order);
         }
         self.address_order_ids(caller).set(&address_order_ids);
 
         self.emit_cancel_order_events(orders);
-        Ok(())
     }
 
-    fn free_orders(&self, order_ids: Vec<u64>) -> SCResult<()> {
+    fn free_orders(&self, order_ids: Vec<u64>) {
         let caller = &self.blockchain().get_caller();
         let address_order_ids = self.get_address_order_ids(caller).into_vec();
-        self.require_contains_none(&address_order_ids, &order_ids)?;
+        self.require_contains_none(&address_order_ids, &order_ids);
 
         let first_token_id = &self.first_token_id().get();
         let second_token_id = &self.second_token_id().get();
@@ -111,13 +107,11 @@ pub trait OrdersModule:
 
         let mut orders = Vec::new();
         for &order_id in order_ids_not_empty.iter() {
-            let order =
-                self.free_order(order_id, caller, first_token_id, second_token_id, epoch)?;
+            let order = self.free_order(order_id, caller, first_token_id, second_token_id, epoch);
             orders.push(order);
         }
 
         self.emit_free_order_events(orders);
-        Ok(())
     }
 
     fn free_order(
@@ -127,7 +121,7 @@ pub trait OrdersModule:
         first_token_id: &TokenIdentifier,
         second_token_id: &TokenIdentifier,
         epoch: u64,
-    ) -> SCResult<Order<Self::Api>> {
+    ) -> Order<Self::Api> {
         let order = self.orders(order_id).get();
 
         let token_id = match &order.order_type {
@@ -143,8 +137,8 @@ pub trait OrdersModule:
 
         let penalty_percent = penalty_count * FEE_PENALTY_INCREASE_PERCENT;
         let penalty_amount = self.rule_of_three(
-            &self.types().big_uint_from(penalty_percent),
-            &self.types().big_uint_from(PERCENT_BASE_POINTS),
+            &BigUint::from(penalty_percent),
+            &BigUint::from(PERCENT_BASE_POINTS),
             &order.input_amount,
         );
         let amount = &order.input_amount - &penalty_amount;
@@ -167,7 +161,7 @@ pub trait OrdersModule:
         self.orders(order_id).clear();
         self.execute_transfers([creator_transfer, caller_transfer].to_vec());
 
-        Ok(order)
+        order
     }
 
     fn cancel_order(
@@ -177,7 +171,7 @@ pub trait OrdersModule:
         first_token_id: &TokenIdentifier,
         second_token_id: &TokenIdentifier,
         epoch: u64,
-    ) -> SCResult<Order<Self::Api>> {
+    ) -> Order<Self::Api> {
         let order = self.orders(order_id).get();
 
         let token_id = match &order.order_type {
@@ -188,8 +182,8 @@ pub trait OrdersModule:
         let penalty_count = (epoch - order.create_epoch) / FEE_PENALTY_INCREASE_EPOCHS;
         let penalty_percent = penalty_count * FEE_PENALTY_INCREASE_PERCENT;
         let penalty_amount = self.rule_of_three(
-            &self.types().big_uint_from(penalty_percent),
-            &self.types().big_uint_from(PERCENT_BASE_POINTS),
+            &BigUint::from(penalty_percent),
+            &BigUint::from(PERCENT_BASE_POINTS),
             &order.input_amount,
         );
         let amount = &order.input_amount - &penalty_amount;
@@ -202,7 +196,7 @@ pub trait OrdersModule:
         self.orders(order_id).clear();
         self.execute_transfers([transfer].to_vec());
 
-        Ok(order)
+        order
     }
 
     fn load_orders(&self, order_ids: &[u64]) -> Vec<Order<Self::Api>> {
@@ -213,7 +207,7 @@ pub trait OrdersModule:
             .collect()
     }
 
-    fn create_transfers(&self, orders: &[Order<Self::Api>]) -> SCResult<Vec<Transfer<Self::Api>>> {
+    fn create_transfers(&self, orders: &[Order<Self::Api>]) -> Vec<Transfer<Self::Api>> {
         let mut transfers = Vec::new();
         let first_token_id = self.first_token_id().get();
         let second_token_id = self.second_token_id().get();
@@ -251,7 +245,7 @@ pub trait OrdersModule:
         );
         transfers.append(&mut sellers_transfers);
 
-        Ok(transfers)
+        transfers
     }
 
     fn get_orders_with_type(
@@ -267,8 +261,8 @@ pub trait OrdersModule:
     }
 
     fn get_orders_sum_up(&self, orders: &[Order<Self::Api>]) -> (BigUint, BigUint) {
-        let mut amount_paid = self.types().big_uint_zero();
-        let mut amount_requested = self.types().big_uint_zero();
+        let mut amount_paid = BigUint::zero();
+        let mut amount_requested = BigUint::zero();
 
         orders.iter().for_each(|x| {
             amount_paid += &x.input_amount;
@@ -291,7 +285,7 @@ pub trait OrdersModule:
             to: self.blockchain().get_caller(),
             payment: Payment {
                 token_id: token_requested.clone(),
-                amount: self.types().big_uint_zero(),
+                amount: BigUint::zero(),
             },
         };
 
@@ -302,10 +296,8 @@ pub trait OrdersModule:
 
             let order_deal = self.rule_of_three(&order.input_amount, &total_paid, &leftover);
             let match_provider_deal_amount = self.rule_of_three(
-                &self
-                    .types()
-                    .big_uint_from(order.deal_config.match_provider_percent),
-                &self.types().big_uint_from(PERCENT_BASE_POINTS),
+                &order.deal_config.match_provider_percent.into(),
+                &PERCENT_BASE_POINTS.into(),
                 &order_deal,
             );
             let creator_deal_amount = &order_deal - &match_provider_deal_amount;
@@ -351,8 +343,8 @@ pub trait OrdersModule:
     }
 
     #[view(getAddressOrderIds)]
-    fn get_address_order_ids(&self, address: &ManagedAddress) -> MultiResultVec<u64> {
-        MultiResultVec::from_iter(
+    fn get_address_order_ids(&self, address: &ManagedAddress) -> MultiValueVec<u64> {
+        MultiValueVec::from_iter(
             self.address_order_ids(address)
                 .get()
                 .iter()

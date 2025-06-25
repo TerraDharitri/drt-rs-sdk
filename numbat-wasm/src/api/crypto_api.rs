@@ -1,12 +1,29 @@
-use crate::types::{BoxedBytes, MessageHashType, H256};
-use alloc::boxed::Box;
+use crate::types::{BoxedBytes, MessageHashType};
 
-pub trait CryptoApi {
-    fn sha256(&self, data: &[u8]) -> H256;
+use super::{Handle, ManagedTypeApi, ManagedTypeApiImpl};
 
-    fn keccak256(&self, data: &[u8]) -> H256;
+pub const SHA256_RESULT_LEN: usize = 32;
+pub const KECCAK256_RESULT_LEN: usize = 32;
+pub const RIPEMD_RESULT_LEN: usize = 20;
+pub const ED25519_KEY_BYTE_LEN: usize = 32;
+pub const ED25519_SIGNATURE_BYTE_LEN: usize = 64;
 
-    fn ripemd160(&self, data: &[u8]) -> Box<[u8; 20]>;
+pub trait CryptoApi: ManagedTypeApi {
+    type CryptoApiImpl: CryptoApiImpl;
+
+    fn crypto_api_impl() -> Self::CryptoApiImpl;
+}
+
+pub trait CryptoApiImpl: ManagedTypeApiImpl {
+    fn sha256_legacy(&self, data: &[u8]) -> [u8; SHA256_RESULT_LEN];
+
+    fn sha256(&self, data_handle: Handle) -> Handle;
+
+    fn keccak256_legacy(&self, data: &[u8]) -> [u8; KECCAK256_RESULT_LEN];
+
+    fn keccak256(&self, data_handle: Handle) -> Handle;
+
+    fn ripemd160(&self, data: &[u8]) -> [u8; RIPEMD_RESULT_LEN];
 
     fn verify_bls(&self, key: &[u8], message: &[u8], signature: &[u8]) -> bool;
 

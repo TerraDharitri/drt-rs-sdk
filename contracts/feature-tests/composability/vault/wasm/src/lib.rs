@@ -5,10 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   vault
-   (
-        init
-        callBack
+    vault
+    (
         accept_funds
         accept_funds_echo_payment
         accept_funds_multi_transfer
@@ -21,6 +19,9 @@ numbat_wasm_node::wasm_endpoints! {
         just_accept_funds
         reject_funds
         retrieve_funds
+        retrieve_funds_with_transfer_exec
         retrieve_multi_funds_async
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

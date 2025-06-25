@@ -1,6 +1,6 @@
 use super::*;
 use alloc::string::String;
-use hashbrown::HashMap;
+use drthashbrown::HashMap;
 
 pub trait TypeDescriptionContainer {
     fn new() -> Self;
@@ -18,7 +18,7 @@ pub trait TypeDescriptionContainer {
     fn insert_all(&mut self, other: &Self);
 }
 
-#[derive(Debug)]
+#[derive(Clone, Default, Debug)]
 pub struct TypeDescriptionContainerImpl(pub HashMap<String, TypeDescription>);
 
 impl TypeDescriptionContainer for TypeDescriptionContainerImpl {

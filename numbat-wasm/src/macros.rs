@@ -12,24 +12,26 @@ macro_rules! imports {
         };
         use numbat_wasm::{
             api::{
-                BigIntApi, BlockchainApi, CallValueApi, CryptoApi, EllipticCurveApi, ErrorApi,
-                LogApi, ManagedTypeApi, SendApi,
+                BigIntApi, BlockchainApi, BlockchainApiImpl, CallValueApi, CallValueApiImpl,
+                CryptoApi, CryptoApiImpl, EllipticCurveApi, ErrorApi, ErrorApiImpl, LogApi,
+                LogApiImpl, ManagedTypeApi, PrintApi, PrintApiImpl, SendApi, SendApiImpl,
             },
+            arrayvec::ArrayVec,
             contract_base::{ContractBase, ProxyObjBase},
-            numbat_codec::{DecodeError, NestedDecode, NestedEncode, TopDecode},
+            numbat_codec::{multi_types::*, DecodeError, NestedDecode, NestedEncode, TopDecode},
             err_msg,
             dcdt::*,
             io::*,
             non_zero_usize,
             non_zero_util::*,
-            only_owner, require, sc_error,
+            require, require_old, sc_error, sc_panic, sc_print,
             storage::mappers::*,
             types::{
                 SCResult::{Err, Ok},
                 *,
             },
             Box, Vec,
-        }; // TODO: remove at some point, they shouldn't be public
+        };
     };
 }
 
@@ -38,7 +40,7 @@ macro_rules! imports {
 macro_rules! derive_imports {
     () => {
         use numbat_wasm::{
-            derive::TypeAbi,
+            derive::{ManagedVecItem, TypeAbi},
             numbat_codec,
             numbat_codec::numbat_codec_derive::{
                 NestedDecode, NestedEncode, TopDecode, TopDecodeOrDefault, TopEncode,
@@ -56,6 +58,89 @@ macro_rules! sc_error {
     };
 }
 
+/// Allows us to write Solidity style `require!(<condition>, <error_msg>)` and avoid if statements.
+///
+/// It can only be used in a function that returns `SCResult<_>` where _ can be any type.
+///
+/// Example:
+///
+/// ```rust
+/// # use numbat_wasm::require_old;
+/// # use numbat_wasm::types::{*, SCResult::Ok};
+/// # pub trait ExampleContract: numbat_wasm::contract_base::ContractBase
+/// # {
+/// fn only_accept_positive_old(&self, x: i32) -> SCResult<()> {
+///     require_old!(x > 0, "only positive values accepted");
+///     Ok(())
+/// }
+/// # }
+/// ```
+#[macro_export]
+macro_rules! require_old {
+    ($expression:expr, $error_msg:expr) => {
+        if (!($expression)) {
+            return numbat_wasm::sc_error!($error_msg);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! sc_panic {
+    ($msg:tt, $($arg:expr),+ $(,)?) => {{
+        let mut ___buffer___ =
+            numbat_wasm::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
+        numbat_wasm::derive::format_receiver_args!(___buffer___, $msg, $($arg),+);
+        numbat_wasm::contract_base::ErrorHelper::<Self::Api>::signal_error_with_message(___buffer___.into_managed_buffer());
+    }};
+    ($msg:expr $(,)?) => {
+        numbat_wasm::contract_base::ErrorHelper::<Self::Api>::signal_error_with_message($msg);
+    };
+}
+
+/// Allows us to write Solidity style `require!(<condition>, <error_msg>)` and avoid if statements.
+///
+/// The most common way to use it is to provide a string message with optional format arguments.
+///
+/// It is also possible to give the error as a variable of types such as `&str`, `&[u8]` or `ManagedBuffer`.
+///
+/// Examples:
+///
+/// ```rust
+/// # use numbat_wasm::{types::ManagedBuffer, require};
+/// # pub trait ExampleContract: numbat_wasm::contract_base::ContractBase
+/// # {
+/// fn only_accept_positive(&self, x: i32) {
+///     require!(x > 0, "only positive values accepted");
+/// }
+///
+/// fn only_accept_negative(&self, x: i32) {
+///     require!(x < 0, "only negative values accepted, {:x} is not negative", x);
+/// }
+///
+/// fn only_accept_zero(&self, x: i32, message: &ManagedBuffer<Self::Api>) {
+///     require!(x == 0, message,);
+/// }
+/// # }
+/// ```
+#[macro_export]
+macro_rules! require {
+    ($expression:expr, $($msg_tokens:tt),+  $(,)?) => {
+        if (!($expression)) {
+            numbat_wasm::sc_panic!($($msg_tokens),+);
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! sc_print {
+    ($msg:tt, $($arg:expr),* $(,)?) => {{
+        let mut ___buffer___ =
+            numbat_wasm::types::ManagedBufferCachedBuilder::<Self::Api>::new_from_slice(&[]);
+        numbat_wasm::derive::format_receiver_args!(___buffer___, $msg, $($arg),*);
+        <Self::Api as numbat_wasm::api::PrintApi>::print_api_impl().print_managed_buffer(___buffer___.into_managed_buffer().get_raw_handle());
+    }};
+}
+
 /// Equivalent to the `?` operator for SCResult.
 #[deprecated(
     since = "0.16.0",
@@ -69,31 +154,6 @@ macro_rules! sc_try {
             numbat_wasm::types::SCResult::Err(e) => {
                 return numbat_wasm::types::SCResult::Err(e);
             },
-        }
-    };
-}
-
-/// Allows us to write Solidity style `require!(<condition>, <error_msg>)` and avoid if statements.
-///
-/// It can only be used in a function that returns `SCResult<_>` where _ can be any type.
-///
-/// ```rust
-/// # use numbat_wasm::*;
-/// # use numbat_wasm::api::BlockchainApi;
-/// # use numbat_wasm::types::{*, SCResult::Ok};
-/// # pub trait ExampleContract: numbat_wasm::contract_base::ContractBase
-/// # {
-/// fn only_callable_by_owner(&self) -> SCResult<()> {
-///     require!(self.blockchain().get_caller() == self.blockchain().get_owner_address(), "Caller must be owner");
-///     Ok(())
-/// }
-/// # }
-/// ```
-#[macro_export]
-macro_rules! require {
-    ($expression:expr, $error_msg:expr) => {
-        if (!($expression)) {
-            return sc_error!($error_msg);
         }
     };
 }
@@ -114,6 +174,10 @@ macro_rules! require {
 /// }
 /// # }
 /// ```
+#[deprecated(
+    since = "0.26.0",
+    note = "Replace with the `#[only_owner]` attribute that can be placed on an endpoint. That one is more compact and shows up in the ABI."
+)]
 #[macro_export]
 macro_rules! only_owner {
     ($trait_self: expr, $error_msg:expr) => {

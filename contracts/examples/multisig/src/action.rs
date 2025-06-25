@@ -1,13 +1,17 @@
 use numbat_wasm::{
-    api::{EndpointFinishApi, ManagedTypeApi, SendApi, StorageWriteApi},
-    io::EndpointResult,
-    types::{
-        BigUint, CodeMetadata, DcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec,
-        OptionalResult,
-    },
+    api::ManagedTypeApi,
+    types::{BigUint, CodeMetadata, ManagedAddress, ManagedBuffer, ManagedVec},
 };
 
 numbat_wasm::derive_imports!();
+
+#[derive(NestedEncode, NestedDecode, TypeAbi)]
+pub struct CallActionData<M: ManagedTypeApi> {
+    pub to: ManagedAddress<M>,
+    pub rewa_amount: BigUint<M>,
+    pub endpoint_name: ManagedBuffer<M>,
+    pub arguments: ManagedVec<M, ManagedBuffer<M>>,
+}
 
 #[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub enum Action<M: ManagedTypeApi> {
@@ -16,34 +20,11 @@ pub enum Action<M: ManagedTypeApi> {
     AddProposer(ManagedAddress<M>),
     RemoveUser(ManagedAddress<M>),
     ChangeQuorum(usize),
-    SendREWA {
-        to: ManagedAddress<M>,
-        amount: BigUint<M>,
-        endpoint_name: ManagedBuffer<M>,
-        arguments: ManagedVec<M, ManagedBuffer<M>>,
-    },
-    SendDCDT {
-        to: ManagedAddress<M>,
-        dcdt_payments: ManagedVec<M, DcdtTokenPayment<M>>,
-        endpoint_name: ManagedBuffer<M>,
-        arguments: ManagedVec<M, ManagedBuffer<M>>,
-    },
-    SCDeploy {
-        amount: BigUint<M>,
-        code: ManagedBuffer<M>,
-        code_metadata: CodeMetadata,
-        arguments: ManagedVec<M, ManagedBuffer<M>>,
-    },
+    SendTransferExecute(CallActionData<M>),
+    SendAsyncCall(CallActionData<M>),
     SCDeployFromSource {
         amount: BigUint<M>,
         source: ManagedAddress<M>,
-        code_metadata: CodeMetadata,
-        arguments: ManagedVec<M, ManagedBuffer<M>>,
-    },
-    SCUpgrade {
-        sc_address: ManagedAddress<M>,
-        amount: BigUint<M>,
-        code: ManagedBuffer<M>,
         code_metadata: CodeMetadata,
         arguments: ManagedVec<M, ManagedBuffer<M>>,
     },
@@ -71,34 +52,6 @@ pub struct ActionFullInfo<M: ManagedTypeApi> {
     pub action_id: usize,
     pub action_data: Action<M>,
     pub signers: ManagedVec<M, ManagedAddress<M>>,
-}
-
-#[derive(TypeAbi)]
-pub enum PerformActionResult<SA>
-where
-    SA: SendApi + ManagedTypeApi + StorageWriteApi + 'static,
-{
-    Nothing,
-    DeployResult(ManagedAddress<SA>),
-    ExecOnDestContext(ManagedVec<SA, ManagedBuffer<SA>>),
-}
-
-impl<SA> EndpointResult for PerformActionResult<SA>
-where
-    SA: SendApi + StorageWriteApi + Clone + 'static,
-{
-    type DecodeAs = OptionalResult<ManagedAddress<SA>>;
-
-    fn finish<FA>(&self, api: FA)
-    where
-        FA: ManagedTypeApi + EndpointFinishApi + Clone + 'static,
-    {
-        match self {
-            PerformActionResult::Nothing => (),
-            PerformActionResult::DeployResult(address) => address.finish(api),
-            PerformActionResult::ExecOnDestContext(exec) => exec.finish(api),
-        }
-    }
 }
 
 #[cfg(test)]

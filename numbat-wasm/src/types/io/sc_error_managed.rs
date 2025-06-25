@@ -1,8 +1,9 @@
 use alloc::{string::String, vec::Vec};
+use numbat_codec::{EncodeErrorHandler, TopEncodeMulti, TopEncodeMultiOutput, TryStaticCast};
 
 use crate::{
-    api::{EndpointFinishApi, ErrorApi, ManagedTypeApi},
-    types::{BoxedBytes, ManagedBuffer, ManagedFrom, ManagedType},
+    api::{EndpointFinishApi, ErrorApi, ErrorApiImpl, ManagedTypeApi},
+    types::{BoxedBytes, ManagedBuffer, ManagedType},
 };
 
 use super::SCError;
@@ -20,26 +21,28 @@ impl<M> SCError for ManagedSCError<M>
 where
     M: ManagedTypeApi + ErrorApi,
 {
-    fn finish_err<FA: EndpointFinishApi>(&self, api: FA) -> ! {
-        api.signal_error_from_buffer(self.buffer.get_raw_handle())
+    fn finish_err<FA: EndpointFinishApi>(&self) -> ! {
+        M::error_api_impl().signal_error_from_buffer(self.buffer.get_raw_handle())
     }
 }
+
+impl<M> TryStaticCast for ManagedSCError<M> where M: ManagedTypeApi + ErrorApi {}
 
 impl<M> ManagedSCError<M>
 where
     M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
-    pub fn new_empty(api: M) -> Self {
+    pub fn new_empty() -> Self {
         ManagedSCError {
-            buffer: ManagedBuffer::new(api),
+            buffer: ManagedBuffer::new(),
         }
     }
 
     #[inline(always)]
-    pub fn new_from_bytes(api: M, bytes: &[u8]) -> Self {
+    pub fn new_from_bytes(bytes: &[u8]) -> Self {
         ManagedSCError {
-            buffer: ManagedBuffer::new_from_bytes(api, bytes),
+            buffer: ManagedBuffer::new_from_bytes(bytes),
         }
     }
 
@@ -50,68 +53,81 @@ where
 
     #[inline]
     pub fn exit_now(&self) -> ! {
-        self.buffer
-            .api
-            .signal_error_from_buffer(self.buffer.get_raw_handle())
+        M::error_api_impl().signal_error_from_buffer(self.buffer.get_raw_handle())
     }
 }
 
-impl<M> ManagedFrom<M, &[u8]> for ManagedSCError<M>
+impl<M> From<&[u8]> for ManagedSCError<M>
 where
-    M: ManagedTypeApi,
+    M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
-    fn managed_from(api: M, message: &[u8]) -> Self {
-        Self::new_from_bytes(api, message)
+    fn from(message: &[u8]) -> Self {
+        Self::new_from_bytes(message)
     }
 }
 
-impl<M> ManagedFrom<M, BoxedBytes> for ManagedSCError<M>
+impl<M> From<BoxedBytes> for ManagedSCError<M>
 where
-    M: ManagedTypeApi,
+    M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
-    fn managed_from(api: M, message: BoxedBytes) -> Self {
-        Self::new_from_bytes(api, message.as_slice())
+    fn from(message: BoxedBytes) -> Self {
+        Self::new_from_bytes(message.as_slice())
     }
 }
 
-impl<M> ManagedFrom<M, &str> for ManagedSCError<M>
+impl<M> From<&str> for ManagedSCError<M>
 where
-    M: ManagedTypeApi,
+    M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
-    fn managed_from(api: M, message: &str) -> Self {
-        Self::new_from_bytes(api, message.as_bytes())
+    fn from(message: &str) -> Self {
+        Self::new_from_bytes(message.as_bytes())
     }
 }
 
-impl<M> ManagedFrom<M, String> for ManagedSCError<M>
+impl<M> From<String> for ManagedSCError<M>
 where
-    M: ManagedTypeApi,
+    M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
-    fn managed_from(api: M, message: String) -> Self {
-        Self::new_from_bytes(api, message.as_bytes())
+    fn from(message: String) -> Self {
+        Self::new_from_bytes(message.as_bytes())
     }
 }
 
-impl<M> ManagedFrom<M, Vec<u8>> for ManagedSCError<M>
+impl<M> From<Vec<u8>> for ManagedSCError<M>
 where
-    M: ManagedTypeApi,
+    M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
-    fn managed_from(api: M, message: Vec<u8>) -> Self {
-        Self::new_from_bytes(api, message.as_slice())
+    fn from(message: Vec<u8>) -> Self {
+        Self::new_from_bytes(message.as_slice())
     }
 }
 
 impl<M> From<ManagedBuffer<M>> for ManagedSCError<M>
 where
-    M: ManagedTypeApi,
+    M: ManagedTypeApi + ErrorApi,
 {
     #[inline]
     fn from(message: ManagedBuffer<M>) -> Self {
         ManagedSCError { buffer: message }
+    }
+}
+
+impl<M> TopEncodeMulti for ManagedSCError<M>
+where
+    M: ManagedTypeApi + ErrorApi,
+{
+    type DecodeAs = Self;
+
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
+    where
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
+    {
+        output.push_multi_specialized(self, h)
     }
 }

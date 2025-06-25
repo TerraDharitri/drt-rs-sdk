@@ -43,9 +43,15 @@ fn crypto_elliptic_curves_go() {
     numbat_wasm_debug::denali_go("denali/crypto_elliptic_curves.scen.json");
 }
 
+// TODO: enable after new VM release is out.
+// #[test]
+// fn crypto_keccak256_go() {
+//     numbat_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
+// }
+
 #[test]
-fn crypto_keccak256_go() {
-    numbat_wasm_debug::denali_go("denali/crypto_keccak256.scen.json");
+fn crypto_keccak256_legacy_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_keccak256_legacy.scen.json");
 }
 
 #[test]
@@ -53,9 +59,15 @@ fn crypto_ripemd160_go() {
     numbat_wasm_debug::denali_go("denali/crypto_ripemd160.scen.json");
 }
 
+// TODO: enable after new VM release is out.
+// #[test]
+// fn crypto_sha256_go() {
+//     numbat_wasm_debug::denali_go("denali/crypto_sha256.scen.json");
+// }
+
 #[test]
-fn crypto_sha256_go() {
-    numbat_wasm_debug::denali_go("denali/crypto_sha256.scen.json");
+fn crypto_sha256_legacy_go() {
+    numbat_wasm_debug::denali_go("denali/crypto_sha256_legacy.scen.json");
 }
 
 #[test]
@@ -66,6 +78,11 @@ fn crypto_verify_funcs_go() {
 #[test]
 fn echo_array_u8_go() {
     numbat_wasm_debug::denali_go("denali/echo_array_u8.scen.json");
+}
+
+#[test]
+fn echo_arrayvec_go() {
+    numbat_wasm_debug::denali_go("denali/echo_arrayvec.scen.json");
 }
 
 #[test]
@@ -106,6 +123,11 @@ fn echo_i32_go() {
 #[test]
 fn echo_i64_go() {
     numbat_wasm_debug::denali_go("denali/echo_i64.scen.json");
+}
+
+#[test]
+fn echo_ignore_go() {
+    numbat_wasm_debug::denali_go("denali/echo_ignore.scen.json");
 }
 
 #[test]
@@ -169,6 +191,16 @@ fn echo_varags_tuples_go() {
 }
 
 #[test]
+fn echo_varargs_managed_eager_go() {
+    numbat_wasm_debug::denali_go("denali/echo_varargs_managed_eager.scen.json");
+}
+
+#[test]
+fn echo_varargs_managed_sum_go() {
+    numbat_wasm_debug::denali_go("denali/echo_varargs_managed_sum.scen.json");
+}
+
+#[test]
 fn echo_varargs_u32_go() {
     numbat_wasm_debug::denali_go("denali/echo_varargs_u32.scen.json");
 }
@@ -199,8 +231,13 @@ fn get_cumulated_validator_rewards_go() {
 }
 
 #[test]
-fn get_dcdt_local_roles_go() {
-    numbat_wasm_debug::denali_go("denali/get_dcdt_local_roles.scen.json");
+fn managed_address_array_go() {
+    numbat_wasm_debug::denali_go("denali/managed_address_array.scen.json");
+}
+
+#[test]
+fn managed_address_managed_buffer_go() {
+    numbat_wasm_debug::denali_go("denali/managed_address_managed_buffer.scen.json");
 }
 
 #[test]
@@ -221,6 +258,11 @@ fn managed_buffer_eq_go() {
 #[test]
 fn managed_buffer_overwrite_go() {
     numbat_wasm_debug::denali_go("denali/managed_buffer_overwrite.scen.json");
+}
+
+#[test]
+fn managed_buffer_set_random_go() {
+    numbat_wasm_debug::denali_go("denali/managed_buffer_set_random.scen.json");
 }
 
 #[test]
@@ -309,6 +351,11 @@ fn storage_i64_bad_go() {
 }
 
 #[test]
+fn storage_load_from_address_go() {
+    numbat_wasm_debug::denali_go("denali/storage_load_from_address.scen.json");
+}
+
+#[test]
 fn storage_map1_go() {
     numbat_wasm_debug::denali_go("denali/storage_map1.scen.json");
 }
@@ -324,6 +371,11 @@ fn storage_map3_go() {
 }
 
 #[test]
+fn storage_mapper_fungible_token_go() {
+    numbat_wasm_debug::denali_go("denali/storage_mapper_fungible_token.scen.json");
+}
+
+#[test]
 fn storage_mapper_linked_list_go() {
     numbat_wasm_debug::denali_go("denali/storage_mapper_linked_list.scen.json");
 }
@@ -336,6 +388,11 @@ fn storage_mapper_map_go() {
 #[test]
 fn storage_mapper_map_storage_go() {
     numbat_wasm_debug::denali_go("denali/storage_mapper_map_storage.scen.json");
+}
+
+#[test]
+fn storage_mapper_non_fungible_token_go() {
+    numbat_wasm_debug::denali_go("denali/storage_mapper_non_fungible_token.scen.json");
 }
 
 #[test]
@@ -361,6 +418,11 @@ fn storage_mapper_token_attributes_go() {
 #[test]
 fn storage_mapper_vec_go() {
     numbat_wasm_debug::denali_go("denali/storage_mapper_vec.scen.json");
+}
+
+#[test]
+fn storage_mapper_whitelist_go() {
+    numbat_wasm_debug::denali_go("denali/storage_mapper_whitelist.scen.json");
 }
 
 #[test]
@@ -396,4 +458,9 @@ fn storage_usize_bad_go() {
 #[test]
 fn storage_vec_u8_go() {
     numbat_wasm_debug::denali_go("denali/storage_vec_u8.scen.json");
+}
+
+#[test]
+fn struct_eq_go() {
+    numbat_wasm_debug::denali_go("denali/struct_eq.scen.json");
 }

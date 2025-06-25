@@ -1,14 +1,16 @@
 use super::{StorageClearable, StorageMapper};
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
-    api::{EndpointFinishApi, ErrorApi, ManagedTypeApi, StorageReadApi, StorageWriteApi},
-    io::EndpointResult,
+    api::{ErrorApiImpl, StorageMapperApi},
     storage::{storage_clear, storage_get, storage_get_len, storage_set, StorageKey},
-    types::MultiResultVec,
+    types::{ManagedType, MultiResultVec},
 };
 use alloc::vec::Vec;
 use core::{marker::PhantomData, usize};
-use numbat_codec::{TopDecode, TopEncode};
+use numbat_codec::{
+    multi_encode_iter_or_handle_err, EncodeErrorHandler, TopDecode, TopEncode, TopEncodeMulti,
+    TopEncodeMultiOutput,
+};
 
 const ITEM_SUFFIX: &[u8] = b".item";
 const LEN_SUFFIX: &[u8] = b".len";
@@ -21,36 +23,36 @@ const LEN_SUFFIX: &[u8] = b".len";
 /// The count is always kept in sync automatically.
 pub struct VecMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
-    api: SA,
+    _phantom_api: PhantomData<SA>,
     base_key: StorageKey<SA>,
     len_key: StorageKey<SA>,
-    _phantom: core::marker::PhantomData<T>,
+    _phantom_item: PhantomData<T>,
 }
 
 impl<SA, T> StorageMapper<SA> for VecMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
-    fn new(api: SA, base_key: StorageKey<SA>) -> Self {
+    fn new(base_key: StorageKey<SA>) -> Self {
         let mut len_key = base_key.clone();
         len_key.append_bytes(LEN_SUFFIX);
 
         VecMapper {
-            api,
+            _phantom_api: PhantomData,
             base_key,
             len_key,
-            _phantom: PhantomData,
+            _phantom_item: PhantomData,
         }
     }
 }
 
 impl<SA, T> StorageClearable for VecMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
     fn clear(&mut self) {
@@ -60,7 +62,7 @@ where
 
 impl<SA, T> VecMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
     fn item_key(&self, index: usize) -> StorageKey<SA> {
@@ -70,13 +72,13 @@ where
         item_key
     }
 
-    pub(crate) fn save_count(&self, new_len: usize) {
-        storage_set(self.api.clone(), &self.len_key, &new_len);
+    fn save_count(&self, new_len: usize) {
+        storage_set(self.len_key.as_ref(), &new_len);
     }
 
     /// Number of items managed by the mapper.
     pub fn len(&self) -> usize {
-        storage_get(self.api.clone(), &self.len_key)
+        storage_get(self.len_key.as_ref())
     }
 
     /// True if no items present in the mapper.
@@ -89,7 +91,7 @@ where
     pub fn push(&mut self, item: &T) -> usize {
         let mut len = self.len();
         len += 1;
-        storage_set(self.api.clone(), &self.item_key(len), item);
+        storage_set(self.item_key(len).as_ref(), item);
         self.save_count(len);
         len
     }
@@ -101,7 +103,7 @@ where
         let mut len = self.len();
         for item in items {
             len += 1;
-            storage_set(self.api.clone(), &self.item_key(len), item);
+            storage_set(self.item_key(len).as_ref(), item);
         }
         self.save_count(len);
         len
@@ -111,7 +113,7 @@ where
     /// Index must be valid (1 <= index <= count).
     pub fn get(&self, index: usize) -> T {
         if index == 0 || index > self.len() {
-            self.api.signal_error(&b"index out of range"[..]);
+            SA::error_api_impl().signal_error(&b"index out of range"[..]);
         }
         self.get_unchecked(index)
     }
@@ -120,7 +122,7 @@ where
     /// There are no restrictions on the index,
     /// calling for an invalid index will simply return the zero-value.
     pub fn get_unchecked(&self, index: usize) -> T {
-        storage_get(self.api.clone(), &self.item_key(index))
+        storage_get(self.item_key(index).as_ref())
     }
 
     /// Get item at index from storage.
@@ -139,14 +141,14 @@ where
     /// There are no restrictions on the index,
     /// calling for an invalid index will simply return `true`.
     pub fn item_is_empty_unchecked(&self, index: usize) -> bool {
-        storage_get_len(self.api.clone(), &self.item_key(index)) == 0
+        storage_get_len(self.item_key(index).as_ref()) == 0
     }
 
     /// Checks whether or not there is anything ins storage at index.
     /// Index must be valid (1 <= index <= count).
     pub fn item_is_empty(&self, index: usize) -> bool {
         if index == 0 || index > self.len() {
-            self.api.signal_error(&b"index out of range"[..]);
+            SA::error_api_impl().signal_error(&b"index out of range"[..]);
         }
         self.item_is_empty_unchecked(index)
     }
@@ -155,21 +157,21 @@ where
     /// Index must be valid (1 <= index <= count).
     pub fn set(&self, index: usize, item: &T) {
         if index == 0 || index > self.len() {
-            self.api.signal_error(&b"index out of range"[..]);
+            SA::error_api_impl().signal_error(&b"index out of range"[..]);
         }
         self.set_unchecked(index, item);
     }
 
     /// Keeping `set_unchecked` private on purpose, so developers don't write out of index limits by accident.
     fn set_unchecked(&self, index: usize, item: &T) {
-        storage_set(self.api.clone(), &self.item_key(index), item);
+        storage_set(self.item_key(index).as_ref(), item);
     }
 
     /// Clears item at index from storage.
     /// Index must be valid (1 <= index <= count).
     pub fn clear_entry(&self, index: usize) {
         if index == 0 || index > self.len() {
-            self.api.signal_error(&b"index out of range"[..]);
+            SA::error_api_impl().signal_error(&b"index out of range"[..]);
         }
         self.clear_entry_unchecked(index)
     }
@@ -178,7 +180,31 @@ where
     /// There are no restrictions on the index,
     /// calling for an invalid index will simply do nothing.
     pub fn clear_entry_unchecked(&self, index: usize) {
-        storage_clear(self.api.clone(), &self.item_key(index));
+        storage_clear(self.item_key(index).as_ref());
+    }
+
+    /// Clears item at index from storage by swap remove
+    /// last item takes the index of the item to remove
+    /// and we remove the last index.
+    pub fn swap_remove(&mut self, index: usize) {
+        let _ = self.swap_remove_and_get_old_last(index);
+    }
+
+    pub(crate) fn swap_remove_and_get_old_last(&mut self, index: usize) -> Option<T> {
+        let last_item_index = self.len();
+        if index == 0 || index > last_item_index {
+            SA::error_api_impl().signal_error(&b"index out of range"[..]);
+        }
+
+        let mut last_item_as_option = Option::None;
+        if index != last_item_index {
+            let last_item = self.get(last_item_index);
+            self.set(index, &last_item);
+            last_item_as_option = Some(last_item);
+        }
+        self.clear_entry(last_item_index);
+        self.save_count(last_item_index - 1);
+        last_item_as_option
     }
 
     /// Loads all items from storage and places them in a Vec.
@@ -192,7 +218,7 @@ where
     pub fn clear(&mut self) {
         let len = self.len();
         for i in 1..=len {
-            storage_clear(self.api.clone(), &self.item_key(i));
+            storage_clear(self.item_key(i).as_ref());
         }
         self.save_count(0);
     }
@@ -209,7 +235,7 @@ where
 /// documentation for more.
 pub struct Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
     index: usize,
@@ -219,7 +245,7 @@ where
 
 impl<'a, SA, T> Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
     fn new(vec: &'a VecMapper<SA, T>) -> Iter<'a, SA, T> {
@@ -233,7 +259,7 @@ where
 
 impl<'a, SA, T> Iterator for Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
     type Item = T;
@@ -250,26 +276,26 @@ where
 }
 
 /// Behaves like a MultiResultVec when an endpoint result.
-impl<SA, T> EndpointResult for VecMapper<SA, T>
+impl<SA, T> TopEncodeMulti for VecMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
-    T: TopEncode + TopDecode + EndpointResult,
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
 {
-    type DecodeAs = MultiResultVec<T::DecodeAs>;
+    type DecodeAs = MultiResultVec<T>;
 
-    fn finish<FA>(&self, api: FA)
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
-        FA: ManagedTypeApi + EndpointFinishApi + Clone + 'static,
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
     {
-        let v = self.load_as_vec();
-        MultiResultVec::<T>::from(v).finish(api);
+        multi_encode_iter_or_handle_err(self.iter(), output, h)
     }
 }
 
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA, T> TypeAbi for VecMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + TypeAbi,
 {
     fn type_name() -> TypeName {
@@ -280,7 +306,7 @@ where
         T::provide_type_descriptions(accumulator);
     }
 
-    fn is_multi_arg_or_result() -> bool {
+    fn is_variadic() -> bool {
         true
     }
 }

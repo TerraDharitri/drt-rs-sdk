@@ -5,10 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   order_book_pair
-   (
-        init
-        callBack
+    order_book_pair
+    (
         cancelAllOrders
         cancelOrders
         createBuyOrder
@@ -22,5 +20,7 @@ numbat_wasm_node::wasm_endpoints! {
         matchOrders
         startGlobalOperation
         stopGlobalOperation
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

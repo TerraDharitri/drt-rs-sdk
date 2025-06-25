@@ -5,22 +5,23 @@ use crate::{
 };
 use numbat_wasm::{
     api::{
-        BlockchainApi, SendApi, StorageReadApi, StorageWriteApi, DCDT_MULTI_TRANSFER_FUNC_NAME,
-        DCDT_NFT_TRANSFER_FUNC_NAME, DCDT_TRANSFER_FUNC_NAME, UPGRADE_CONTRACT_FUNC_NAME,
+        BlockchainApiImpl, ManagedTypeApi, SendApi, SendApiImpl, StorageReadApiImpl,
+        StorageWriteApiImpl, DCDT_MULTI_TRANSFER_FUNC_NAME, DCDT_NFT_TRANSFER_FUNC_NAME,
+        DCDT_TRANSFER_FUNC_NAME, UPGRADE_CONTRACT_FUNC_NAME,
     },
     numbat_codec::top_encode_to_vec_u8,
     types::{
         Address, BigUint, CodeMetadata, DcdtTokenPayment, ManagedAddress, ManagedArgBuffer,
-        ManagedBuffer, ManagedFrom, ManagedInto, ManagedVec, TokenIdentifier,
+        ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier,
     },
 };
 use num_traits::Zero;
 
 impl DebugApi {
-    fn append_endpoint_name_and_args(
+    fn append_endpoint_name_and_args<M: ManagedTypeApi>(
         args: &mut Vec<Vec<u8>>,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) {
         if !endpoint_name.is_empty() {
             args.push(endpoint_name.to_boxed_bytes().into_vec());
@@ -126,16 +127,16 @@ impl DebugApi {
         std::panic::panic_any(tx_result)
     }
 
-    fn perform_upgrade_contract(
+    fn perform_upgrade_contract<M: ManagedTypeApi>(
         &self,
-        sc_address: &ManagedAddress<Self>,
-        amount: &BigUint<Self>,
+        sc_address: &ManagedAddress<M>,
+        amount: &BigUint<M>,
         contract_code: Vec<u8>,
         code_metadata: CodeMetadata,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) -> ! {
         let recipient = sc_address.to_address();
-        let call_value = self.big_uint_value(amount);
+        let call_value = self.big_uint_handle_to_value(amount.get_raw_handle());
         let contract_address = self.input_ref().to.clone();
         let tx_hash = self.get_tx_hash_legacy();
 
@@ -164,11 +165,20 @@ impl DebugApi {
 }
 
 impl SendApi for DebugApi {
-    fn direct_rewa<D>(&self, to: &ManagedAddress<Self>, amount: &BigUint<Self>, _data: D)
+    type SendApiImpl = DebugApi;
+
+    fn send_api_impl() -> Self::SendApiImpl {
+        DebugApi::new_from_static()
+    }
+}
+
+impl SendApiImpl for DebugApi {
+    fn direct_rewa<M, D>(&self, to: &ManagedAddress<M>, amount: &BigUint<M>, _data: D)
     where
-        D: ManagedInto<Self, ManagedBuffer<Self>>,
+        M: ManagedTypeApi,
+        D: Into<ManagedBuffer<M>>,
     {
-        let amount_value = self.big_uint_value(amount);
+        let amount_value = self.big_uint_handle_to_value(amount.get_raw_handle());
         let available_rewa_balance =
             self.with_contract_account(|account| account.rewa_balance.clone());
         if amount_value > available_rewa_balance {
@@ -187,15 +197,15 @@ impl SendApi for DebugApi {
             .increase_rewa_balance(recipient, &amount_value);
     }
 
-    fn direct_rewa_execute(
+    fn direct_rewa_execute<M: ManagedTypeApi>(
         &self,
-        to: &ManagedAddress<Self>,
-        amount: &BigUint<Self>,
+        to: &ManagedAddress<M>,
+        amount: &BigUint<M>,
         _gas_limit: u64,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) -> Result<(), &'static [u8]> {
-        let rewa_value = self.big_uint_value(amount);
+        let rewa_value = self.big_uint_handle_to_value(amount.get_raw_handle());
         let recipient = to.to_address();
 
         let _ = self.perform_execute_on_dest_context(
@@ -208,14 +218,14 @@ impl SendApi for DebugApi {
         Ok(())
     }
 
-    fn direct_dcdt_execute(
+    fn direct_dcdt_execute<M: ManagedTypeApi>(
         &self,
-        to: &ManagedAddress<Self>,
-        token: &TokenIdentifier<Self>,
-        amount: &BigUint<Self>,
+        to: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
+        amount: &BigUint<M>,
         _gas_limit: u64,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) -> Result<(), &'static [u8]> {
         let recipient = to.to_address();
         let token_bytes = top_encode_to_vec_u8(token).unwrap();
@@ -234,15 +244,15 @@ impl SendApi for DebugApi {
         Ok(())
     }
 
-    fn direct_dcdt_nft_execute(
+    fn direct_dcdt_nft_execute<M: ManagedTypeApi>(
         &self,
-        to: &ManagedAddress<Self>,
-        token: &TokenIdentifier<Self>,
+        to: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
         nonce: u64,
-        amount: &BigUint<Self>,
+        amount: &BigUint<M>,
         _gas_limit: u64,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) -> Result<(), &'static [u8]> {
         let contract_address = self.input_ref().to.clone();
         let recipient = to.to_address();
@@ -270,13 +280,13 @@ impl SendApi for DebugApi {
         Ok(())
     }
 
-    fn direct_multi_dcdt_transfer_execute(
+    fn direct_multi_dcdt_transfer_execute<M: ManagedTypeApi>(
         &self,
-        to: &ManagedAddress<Self>,
-        payments: &ManagedVec<Self, DcdtTokenPayment<Self>>,
+        to: &ManagedAddress<M>,
+        payments: &ManagedVec<M, DcdtTokenPayment<M>>,
         _gas_limit: u64,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) -> Result<(), &'static [u8]> {
         let contract_address = self.input_ref().to.clone();
         let recipient = to.to_address();
@@ -314,14 +324,14 @@ impl SendApi for DebugApi {
         Ok(())
     }
 
-    fn async_call_raw(
+    fn async_call_raw<M: ManagedTypeApi>(
         &self,
-        to: &ManagedAddress<Self>,
-        amount: &BigUint<Self>,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        to: &ManagedAddress<M>,
+        amount: &BigUint<M>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) -> ! {
-        let amount_value = self.big_uint_value(amount);
+        let amount_value = self.big_uint_handle_to_value(amount.get_raw_handle());
         let contract_address = self.input_ref().to.clone();
         let recipient = to.to_address();
         let tx_hash = self.get_tx_hash_legacy();
@@ -336,34 +346,31 @@ impl SendApi for DebugApi {
         self.perform_async_call(call)
     }
 
-    fn deploy_contract(
+    fn deploy_contract<M: ManagedTypeApi>(
         &self,
         _gas: u64,
-        amount: &BigUint<Self>,
-        code: &ManagedBuffer<Self>,
+        amount: &BigUint<M>,
+        code: &ManagedBuffer<M>,
         _code_metadata: CodeMetadata,
-        arg_buffer: &ManagedArgBuffer<Self>,
-    ) -> (ManagedAddress<Self>, ManagedVec<Self, ManagedBuffer<Self>>) {
-        let rewa_value = self.big_uint_value(amount);
+        arg_buffer: &ManagedArgBuffer<M>,
+    ) -> (ManagedAddress<M>, ManagedVec<M, ManagedBuffer<M>>) {
+        let rewa_value = self.big_uint_handle_to_value(amount.get_raw_handle());
         let contract_code = code.to_boxed_bytes().into_vec();
         let (new_address, result) =
             self.perform_deploy(contract_code, rewa_value, arg_buffer.to_raw_args_vec());
 
-        (
-            ManagedAddress::managed_from(self.clone(), new_address),
-            ManagedVec::managed_from(self.clone(), result),
-        )
+        (ManagedAddress::from(new_address), ManagedVec::from(result))
     }
 
-    fn deploy_from_source_contract(
+    fn deploy_from_source_contract<M: ManagedTypeApi>(
         &self,
         _gas: u64,
-        amount: &BigUint<Self>,
-        source_contract_address: &ManagedAddress<Self>,
+        amount: &BigUint<M>,
+        source_contract_address: &ManagedAddress<M>,
         _code_metadata: CodeMetadata,
-        arg_buffer: &ManagedArgBuffer<Self>,
-    ) -> (ManagedAddress<Self>, ManagedVec<Self, ManagedBuffer<Self>>) {
-        let rewa_value = self.big_uint_value(amount);
+        arg_buffer: &ManagedArgBuffer<M>,
+    ) -> (ManagedAddress<M>, ManagedVec<M, ManagedBuffer<M>>) {
+        let rewa_value = self.big_uint_handle_to_value(amount.get_raw_handle());
         let source_contract_code = self.get_contract_code(&source_contract_address.to_address());
         let (new_address, result) = self.perform_deploy(
             source_contract_code,
@@ -371,47 +378,44 @@ impl SendApi for DebugApi {
             arg_buffer.to_raw_args_vec(),
         );
 
-        (
-            ManagedAddress::managed_from(self.clone(), new_address),
-            ManagedVec::managed_from(self.clone(), result),
-        )
+        (ManagedAddress::from(new_address), ManagedVec::from(result))
     }
 
-    fn upgrade_contract(
+    fn upgrade_contract<M: ManagedTypeApi>(
         &self,
-        sc_address: &ManagedAddress<Self>,
+        sc_address: &ManagedAddress<M>,
         _gas: u64,
-        amount: &BigUint<Self>,
-        code: &ManagedBuffer<Self>,
+        amount: &BigUint<M>,
+        code: &ManagedBuffer<M>,
         code_metadata: CodeMetadata,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) {
         let contract_code = code.to_boxed_bytes().into_vec();
         self.perform_upgrade_contract(sc_address, amount, contract_code, code_metadata, arg_buffer)
     }
 
-    fn upgrade_from_source_contract(
+    fn upgrade_from_source_contract<M: ManagedTypeApi>(
         &self,
-        sc_address: &ManagedAddress<Self>,
+        sc_address: &ManagedAddress<M>,
         _gas: u64,
-        amount: &BigUint<Self>,
-        source_contract_address: &ManagedAddress<Self>,
+        amount: &BigUint<M>,
+        source_contract_address: &ManagedAddress<M>,
         code_metadata: CodeMetadata,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        arg_buffer: &ManagedArgBuffer<M>,
     ) {
         let contract_code = self.get_contract_code(&source_contract_address.to_address());
         self.perform_upgrade_contract(sc_address, amount, contract_code, code_metadata, arg_buffer)
     }
 
-    fn execute_on_dest_context_raw(
+    fn execute_on_dest_context_raw<M: ManagedTypeApi>(
         &self,
         _gas: u64,
-        to: &ManagedAddress<Self>,
-        value: &BigUint<Self>,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
-    ) -> ManagedVec<Self, ManagedBuffer<Self>> {
-        let rewa_value = self.big_uint_value(value);
+        to: &ManagedAddress<M>,
+        value: &BigUint<M>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
+    ) -> ManagedVec<M, ManagedBuffer<M>> {
+        let rewa_value = self.big_uint_handle_to_value(value.get_raw_handle());
         let recipient = to.to_address();
 
         let result = self.perform_execute_on_dest_context(
@@ -421,22 +425,23 @@ impl SendApi for DebugApi {
             arg_buffer.to_raw_args_vec(),
         );
 
-        ManagedVec::managed_from(self.clone(), result)
+        ManagedVec::from(result)
     }
 
-    fn execute_on_dest_context_raw_custom_result_range<F>(
+    fn execute_on_dest_context_raw_custom_result_range<M, F>(
         &self,
         _gas: u64,
-        to: &ManagedAddress<Self>,
-        value: &BigUint<Self>,
-        endpoint_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
+        to: &ManagedAddress<M>,
+        value: &BigUint<M>,
+        endpoint_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
         range_closure: F,
-    ) -> ManagedVec<Self, ManagedBuffer<Self>>
+    ) -> ManagedVec<M, ManagedBuffer<M>>
     where
+        M: ManagedTypeApi,
         F: FnOnce(usize, usize) -> (usize, usize),
     {
-        let rewa_value = self.big_uint_value(value);
+        let rewa_value = self.big_uint_handle_to_value(value.get_raw_handle());
         let recipient = to.to_address();
 
         let num_return_data_before = self.result_borrow_mut().result_values.len();
@@ -454,61 +459,58 @@ impl SendApi for DebugApi {
             num_return_data_after as usize,
         );
 
-        ManagedVec::managed_from(
-            self.clone(),
-            result[result_start_index..result_end_index].to_vec(),
-        )
+        ManagedVec::from(result[result_start_index..result_end_index].to_vec())
     }
 
-    fn execute_on_dest_context_by_caller_raw(
+    fn execute_on_dest_context_by_caller_raw<M: ManagedTypeApi>(
         &self,
         _gas: u64,
-        _to: &ManagedAddress<Self>,
-        _value: &BigUint<Self>,
-        _endpoint_name: &ManagedBuffer<Self>,
-        _arg_buffer: &ManagedArgBuffer<Self>,
-    ) -> ManagedVec<Self, ManagedBuffer<Self>> {
+        _to: &ManagedAddress<M>,
+        _value: &BigUint<M>,
+        _endpoint_name: &ManagedBuffer<M>,
+        _arg_buffer: &ManagedArgBuffer<M>,
+    ) -> ManagedVec<M, ManagedBuffer<M>> {
         panic!("execute_on_dest_context_by_caller_raw not implemented yet!");
     }
 
-    fn execute_on_same_context_raw(
+    fn execute_on_same_context_raw<M: ManagedTypeApi>(
         &self,
         _gas: u64,
-        _to: &ManagedAddress<Self>,
-        _value: &BigUint<Self>,
-        _endpoint_name: &ManagedBuffer<Self>,
-        _arg_buffer: &ManagedArgBuffer<Self>,
-    ) -> ManagedVec<Self, ManagedBuffer<Self>> {
+        _to: &ManagedAddress<M>,
+        _value: &BigUint<M>,
+        _endpoint_name: &ManagedBuffer<M>,
+        _arg_buffer: &ManagedArgBuffer<M>,
+    ) -> ManagedVec<M, ManagedBuffer<M>> {
         panic!("execute_on_same_context_raw not implemented yet!");
     }
 
-    fn execute_on_dest_context_readonly_raw(
+    fn execute_on_dest_context_readonly_raw<M: ManagedTypeApi>(
         &self,
         _gas: u64,
-        _to: &ManagedAddress<Self>,
-        _endpoint_name: &ManagedBuffer<Self>,
-        _arg_buffer: &ManagedArgBuffer<Self>,
-    ) -> ManagedVec<Self, ManagedBuffer<Self>> {
+        _to: &ManagedAddress<M>,
+        _endpoint_name: &ManagedBuffer<M>,
+        _arg_buffer: &ManagedArgBuffer<M>,
+    ) -> ManagedVec<M, ManagedBuffer<M>> {
         panic!("execute_on_dest_context_readonly_raw not implemented yet!");
     }
 
-    fn storage_store_tx_hash_key(&self, data: &ManagedBuffer<Self>) {
+    fn storage_store_tx_hash_key<M: ManagedTypeApi>(&self, data: &ManagedBuffer<M>) {
         let tx_hash = self.get_tx_hash_legacy();
         self.storage_store_slice_u8(tx_hash.as_bytes(), data.to_boxed_bytes().as_slice());
     }
 
-    fn storage_load_tx_hash_key(&self) -> ManagedBuffer<Self> {
+    fn storage_load_tx_hash_key<M: ManagedTypeApi>(&self) -> ManagedBuffer<M> {
         let tx_hash = self.get_tx_hash_legacy();
         let bytes = self.storage_load_boxed_bytes(tx_hash.as_bytes());
-        ManagedBuffer::new_from_bytes(self.clone(), bytes.as_slice())
+        ManagedBuffer::new_from_bytes(bytes.as_slice())
     }
 
-    fn call_local_dcdt_built_in_function(
+    fn call_local_dcdt_built_in_function<M: ManagedTypeApi>(
         &self,
         _gas: u64,
-        function_name: &ManagedBuffer<Self>,
-        arg_buffer: &ManagedArgBuffer<Self>,
-    ) -> ManagedVec<Self, ManagedBuffer<Self>> {
+        function_name: &ManagedBuffer<M>,
+        arg_buffer: &ManagedArgBuffer<M>,
+    ) -> ManagedVec<M, ManagedBuffer<M>> {
         let contract_address = &self.input_ref().to;
 
         let result = self.perform_execute_on_dest_context(
@@ -518,6 +520,6 @@ impl SendApi for DebugApi {
             arg_buffer.to_raw_args_vec(),
         );
 
-        ManagedVec::managed_from(self.clone(), result)
+        ManagedVec::from(result)
     }
 }

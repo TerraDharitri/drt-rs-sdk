@@ -1,16 +1,17 @@
+use core::marker::PhantomData;
+
 use super::{StorageClearable, StorageMapper};
 use crate::{
     abi::{TypeAbi, TypeDescriptionContainer, TypeName},
-    api::{EndpointFinishApi, ErrorApi, ManagedTypeApi, StorageReadApi, StorageWriteApi},
-    io::EndpointResult,
+    api::StorageMapperApi,
     storage::{storage_get, storage_set, StorageKey},
-    types::{BoxedBytes, MultiResultVec},
+    types::{ManagedType, MultiResultVec},
 };
 use alloc::vec::Vec;
-use core::marker::PhantomData;
 use numbat_codec::{
     numbat_codec_derive::{TopDecode, TopDecodeOrDefault, TopEncode, TopEncodeOrDefault},
-    DecodeDefault, EncodeDefault, TopDecode, TopEncode,
+    multi_encode_iter_or_handle_err, DecodeDefault, EncodeDefault, EncodeErrorHandler, TopDecode,
+    TopEncode, TopEncodeMulti, TopEncodeMultiOutput,
 };
 
 const NULL_ENTRY: u32 = 0;
@@ -62,31 +63,31 @@ impl QueueMapperInfo {
 /// in constant time.
 pub struct QueueMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
-    api: SA,
+    _phantom_api: PhantomData<SA>,
     base_key: StorageKey<SA>,
-    _phantom: core::marker::PhantomData<T>,
+    _phantom_item: PhantomData<T>,
 }
 
 impl<SA, T> StorageMapper<SA> for QueueMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
-    fn new(api: SA, base_key: StorageKey<SA>) -> Self {
+    fn new(base_key: StorageKey<SA>) -> Self {
         QueueMapper {
-            api,
+            _phantom_api: PhantomData,
             base_key,
-            _phantom: PhantomData,
+            _phantom_item: PhantomData,
         }
     }
 }
 
 impl<SA, T> StorageClearable for QueueMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
     fn clear(&mut self) {
@@ -104,7 +105,7 @@ where
 
 impl<SA, T> QueueMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode,
 {
     fn build_node_id_named_key(&self, name: &[u8], node_id: u32) -> StorageKey<SA> {
@@ -121,44 +122,40 @@ where
     }
 
     fn get_info(&self) -> QueueMapperInfo {
-        storage_get(self.api.clone(), &self.build_name_key(INFO_IDENTIFIER))
+        storage_get(self.build_name_key(INFO_IDENTIFIER).as_ref())
     }
 
     fn set_info(&mut self, value: QueueMapperInfo) {
-        storage_set(
-            self.api.clone(),
-            &self.build_name_key(INFO_IDENTIFIER),
-            &value,
-        );
+        storage_set(self.build_name_key(INFO_IDENTIFIER).as_ref(), &value);
     }
 
     fn get_node(&self, node_id: u32) -> Node {
         storage_get(
-            self.api.clone(),
-            &self.build_node_id_named_key(NODE_IDENTIFIER, node_id),
+            self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
+                .as_ref(),
         )
     }
 
     fn set_node(&mut self, node_id: u32, item: Node) {
         storage_set(
-            self.api.clone(),
-            &self.build_node_id_named_key(NODE_IDENTIFIER, node_id),
+            self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
+                .as_ref(),
             &item,
         );
     }
 
     fn clear_node(&mut self, node_id: u32) {
         storage_set(
-            self.api.clone(),
-            &self.build_node_id_named_key(NODE_IDENTIFIER, node_id),
-            &BoxedBytes::empty(),
+            self.build_node_id_named_key(NODE_IDENTIFIER, node_id)
+                .as_ref(),
+            &(),
         );
     }
 
     fn get_value(&self, node_id: u32) -> T {
         storage_get(
-            self.api.clone(),
-            &self.build_node_id_named_key(VALUE_IDENTIFIER, node_id),
+            self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
+                .as_ref(),
         )
     }
 
@@ -171,17 +168,17 @@ where
 
     fn set_value(&mut self, node_id: u32, value: &T) {
         storage_set(
-            self.api.clone(),
-            &self.build_node_id_named_key(VALUE_IDENTIFIER, node_id),
+            self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
+                .as_ref(),
             value,
         )
     }
 
     fn clear_value(&mut self, node_id: u32) {
         storage_set(
-            self.api.clone(),
-            &self.build_node_id_named_key(VALUE_IDENTIFIER, node_id),
-            &BoxedBytes::empty(),
+            self.build_node_id_named_key(VALUE_IDENTIFIER, node_id)
+                .as_ref(),
+            &(),
         )
     }
 
@@ -413,7 +410,7 @@ where
 /// documentation for more.
 pub struct Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
     node_id: u32,
@@ -422,7 +419,7 @@ where
 
 impl<'a, SA, T> Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
     fn new(queue: &'a QueueMapper<SA, T>) -> Iter<'a, SA, T> {
@@ -435,7 +432,7 @@ where
 
 impl<'a, SA, T> Iterator for Iter<'a, SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + 'static,
 {
     type Item = T;
@@ -452,26 +449,26 @@ where
 }
 
 /// Behaves like a MultiResultVec when an endpoint result.
-impl<SA, T> EndpointResult for QueueMapper<SA, T>
+impl<SA, T> TopEncodeMulti for QueueMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
-    T: TopEncode + TopDecode + EndpointResult,
+    SA: StorageMapperApi,
+    T: TopEncode + TopDecode,
 {
-    type DecodeAs = MultiResultVec<T::DecodeAs>;
+    type DecodeAs = MultiResultVec<T>;
 
-    fn finish<FA>(&self, api: FA)
+    fn multi_encode_or_handle_err<O, H>(&self, output: &mut O, h: H) -> Result<(), H::HandledErr>
     where
-        FA: ManagedTypeApi + EndpointFinishApi + Clone + 'static,
+        O: TopEncodeMultiOutput,
+        H: EncodeErrorHandler,
     {
-        let v: Vec<T> = self.iter().collect();
-        MultiResultVec::<T>::from(v).finish(api);
+        multi_encode_iter_or_handle_err(self.iter(), output, h)
     }
 }
 
 /// Behaves like a MultiResultVec when an endpoint result.
 impl<SA, T> TypeAbi for QueueMapper<SA, T>
 where
-    SA: StorageReadApi + StorageWriteApi + ManagedTypeApi + ErrorApi + Clone + 'static,
+    SA: StorageMapperApi,
     T: TopEncode + TopDecode + TypeAbi,
 {
     fn type_name() -> TypeName {
@@ -482,7 +479,7 @@ where
         T::provide_type_descriptions(accumulator);
     }
 
-    fn is_multi_arg_or_result() -> bool {
+    fn is_variadic() -> bool {
         true
     }
 }

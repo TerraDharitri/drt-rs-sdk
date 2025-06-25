@@ -2,12 +2,27 @@ use crate::{
     world_mock::{is_smart_contract_address, DcdtInstance},
     DebugApi,
 };
-use numbat_wasm::types::{
-    Address, BigUint, DcdtTokenData, DcdtTokenType, ManagedAddress, ManagedBuffer, ManagedVec,
-    TokenIdentifier, H256,
+use numbat_wasm::{
+    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedBufferApi, ManagedTypeApi},
+    types::{
+        Address, BigUint, DcdtLocalRole, DcdtLocalRoleFlags, DcdtTokenData, DcdtTokenType,
+        ManagedAddress, ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier, H256,
+    },
 };
 
-impl numbat_wasm::api::BlockchainApi for DebugApi {
+impl BlockchainApi for DebugApi {
+    type BlockchainApiImpl = DebugApi;
+
+    fn blockchain_api_impl() -> Self::BlockchainApiImpl {
+        DebugApi::new_from_static()
+    }
+}
+
+impl BlockchainApiImpl for DebugApi {
+    fn get_caller_legacy(&self) -> Address {
+        self.input_ref().from.clone()
+    }
+
     fn get_sc_address_legacy(&self) -> Address {
         self.input_ref().to.clone()
     }
@@ -29,11 +44,7 @@ impl numbat_wasm::api::BlockchainApi for DebugApi {
         is_smart_contract_address(address)
     }
 
-    fn get_caller_legacy(&self) -> Address {
-        self.input_ref().from.clone()
-    }
-
-    fn get_balance_legacy(&self, address: &Address) -> BigUint<Self> {
+    fn get_balance_legacy(&self, address: &Address) -> Handle {
         assert!(
             address == &self.get_sc_address_legacy(),
             "get balance not yet implemented for accounts other than the contract itself"
@@ -100,9 +111,13 @@ impl numbat_wasm::api::BlockchainApi for DebugApi {
             .clone()
     }
 
-    fn get_current_dcdt_nft_nonce(&self, address: &Address, token: &TokenIdentifier<Self>) -> u64 {
+    fn get_current_dcdt_nft_nonce<M: ManagedTypeApi>(
+        &self,
+        address: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
+    ) -> u64 {
         assert!(
-            address == &self.get_sc_address_legacy(),
+            self.mb_eq(address.get_raw_handle(), self.get_sc_address_handle()),
             "get_current_dcdt_nft_nonce not yet implemented for accounts other than the contract itself"
         );
 
@@ -114,14 +129,14 @@ impl numbat_wasm::api::BlockchainApi for DebugApi {
         })
     }
 
-    fn get_dcdt_balance(
+    fn get_dcdt_balance<M: ManagedTypeApi>(
         &self,
-        address: &ManagedAddress<Self>,
-        token: &TokenIdentifier<Self>,
+        address: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
         nonce: u64,
-    ) -> BigUint<Self> {
+    ) -> BigUint<M> {
         assert!(
-            address == &self.get_sc_address(),
+            self.mb_eq(address.get_raw_handle(), self.get_sc_address_handle()),
             "get_dcdt_balance not yet implemented for accounts other than the contract itself"
         );
 
@@ -130,15 +145,15 @@ impl numbat_wasm::api::BlockchainApi for DebugApi {
                 .dcdt
                 .get_dcdt_balance(token.to_dcdt_identifier().as_slice(), nonce)
         });
-        self.insert_new_big_uint(dcdt_balance)
+        BigUint::from_raw_handle(self.insert_new_big_uint(dcdt_balance))
     }
 
-    fn get_dcdt_token_data(
+    fn get_dcdt_token_data<M: ManagedTypeApi>(
         &self,
-        address: &ManagedAddress<Self>,
-        token: &TokenIdentifier<Self>,
+        address: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
         nonce: u64,
-    ) -> DcdtTokenData<Self> {
+    ) -> DcdtTokenData<M> {
         self.blockchain_cache()
             .with_account(&address.to_address(), |account| {
                 let instance = account
@@ -152,36 +167,63 @@ impl numbat_wasm::api::BlockchainApi for DebugApi {
                 self.dcdt_token_data_from_instance(nonce, instance)
             })
     }
+
+    fn get_dcdt_local_roles<M: ManagedTypeApi>(
+        &self,
+        token_id: &TokenIdentifier<M>,
+    ) -> DcdtLocalRoleFlags {
+        let sc_address = self.input_ref().to.clone();
+        self.blockchain_cache()
+            .with_account(&sc_address, |account| {
+                let mut result = DcdtLocalRoleFlags::NONE;
+                if let Some(dcdt_data) = account
+                    .dcdt
+                    .get_by_identifier(token_id.to_dcdt_identifier().as_slice())
+                {
+                    for role_name in dcdt_data.roles.get() {
+                        result |= DcdtLocalRole::from(role_name.as_slice()).to_flag();
+                    }
+                }
+
+                result
+            })
+    }
 }
 
 impl DebugApi {
-    fn dcdt_token_data_from_instance(
+    fn dcdt_token_data_from_instance<M: ManagedTypeApi>(
         &self,
         nonce: u64,
         instance: &DcdtInstance,
-    ) -> DcdtTokenData<Self> {
+    ) -> DcdtTokenData<M> {
         let creator = if let Some(creator) = &instance.metadata.creator {
-            ManagedAddress::from_address(self.clone(), creator)
+            ManagedAddress::from_address(creator)
         } else {
-            ManagedAddress::zero(self.clone())
+            ManagedAddress::zero()
         };
 
-        let mut uris = ManagedVec::new(self.clone());
-        if let Some(uri) = &instance.metadata.uri {
-            uris.push(ManagedBuffer::new_from_bytes(self.clone(), uri.as_slice()));
+        let mut uris = ManagedVec::new();
+        for uri in &instance.metadata.uri {
+            uris.push(ManagedBuffer::new_from_bytes(uri.as_slice()));
         }
 
         DcdtTokenData {
             token_type: DcdtTokenType::based_on_token_nonce(nonce),
-            amount: self.insert_new_big_uint(instance.balance.clone()),
+            amount: BigUint::from_raw_handle(self.insert_new_big_uint(instance.balance.clone())),
             frozen: false,
-            hash: self
-                .insert_new_managed_buffer(instance.metadata.hash.clone().unwrap_or_default()),
-            name: self.insert_new_managed_buffer(instance.metadata.name.clone()),
-            attributes: self.insert_new_managed_buffer(instance.metadata.attributes.clone()),
+            hash: ManagedBuffer::from_raw_handle(
+                self.insert_new_managed_buffer(instance.metadata.hash.clone().unwrap_or_default()),
+            ),
+            name: ManagedBuffer::from_raw_handle(
+                self.insert_new_managed_buffer(instance.metadata.name.clone()),
+            ),
+            attributes: ManagedBuffer::from_raw_handle(
+                self.insert_new_managed_buffer(instance.metadata.attributes.clone()),
+            ),
             creator,
-            royalties: self
-                .insert_new_big_uint(num_bigint::BigUint::from(instance.metadata.royalties)),
+            royalties: BigUint::from_raw_handle(
+                self.insert_new_big_uint(num_bigint::BigUint::from(instance.metadata.royalties)),
+            ),
             uris,
         }
     }

@@ -10,8 +10,8 @@ pub trait Vault {
     #[init]
     fn init(
         &self,
-        #[var_args] opt_arg_to_echo: OptionalArg<ManagedBuffer>,
-    ) -> OptionalResult<ManagedBuffer> {
+        #[var_args] opt_arg_to_echo: OptionalValue<ManagedBuffer>,
+    ) -> OptionalValue<ManagedBuffer> {
         opt_arg_to_echo
     }
 
@@ -24,10 +24,10 @@ pub trait Vault {
     #[endpoint]
     fn echo_arguments(
         &self,
-        #[var_args] args: ManagedVarArgs<ManagedBuffer>,
-    ) -> SCResult<ManagedMultiResultVec<ManagedBuffer>> {
+        #[var_args] args: MultiValueEncoded<ManagedBuffer>,
+    ) -> MultiValueEncoded<ManagedBuffer> {
         self.call_counts(b"echo_arguments").update(|c| *c += 1);
-        Ok(args)
+        args
     }
 
     #[endpoint]
@@ -70,9 +70,11 @@ pub trait Vault {
 
     #[payable("*")]
     #[endpoint]
-    fn accept_multi_funds_echo(&self) -> MultiResultVec<MultiArg3<TokenIdentifier, u64, BigUint>> {
+    fn accept_multi_funds_echo(
+        &self,
+    ) -> MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>> {
         let payments = self.call_value().all_dcdt_transfers();
-        let mut result = Vec::new();
+        let mut result = MultiValueEncoded::new();
 
         for payment in payments.into_iter() {
             result.push(
@@ -85,7 +87,7 @@ pub trait Vault {
             );
         }
 
-        result.into()
+        result
     }
 
     #[payable("*")]
@@ -95,7 +97,7 @@ pub trait Vault {
         #[payment_token] token_identifier: TokenIdentifier,
         #[payment_amount] token_payment: BigUint,
         #[payment_nonce] token_nonce: u64,
-    ) -> SCResult<MultiResult4<TokenIdentifier, BoxedBytes, BigUint, u64>> {
+    ) -> MultiValue4<TokenIdentifier, ManagedBuffer, BigUint, u64> {
         let token_type = self.call_value().dcdt_token_type();
 
         self.accept_funds_event(
@@ -108,24 +110,44 @@ pub trait Vault {
         self.call_counts(b"accept_funds_echo_payment")
             .update(|c| *c += 1);
 
-        Ok((
+        (
             token_identifier,
-            BoxedBytes::from(token_type.as_type_name()),
+            token_type.as_type_name().into(),
             token_payment,
             token_nonce,
         )
-            .into())
+            .into()
     }
 
     #[payable("*")]
     #[endpoint]
-    fn reject_funds(
-        &self,
-        #[payment_token] token: TokenIdentifier,
-        #[payment] payment: BigUint,
-    ) -> SCResult<()> {
+    fn reject_funds(&self, #[payment_token] token: TokenIdentifier, #[payment] payment: BigUint) {
         self.reject_funds_event(&token, &payment);
-        sc_error!("reject_funds")
+        sc_panic!("reject_funds")
+    }
+
+    #[payable("*")]
+    #[endpoint]
+    fn retrieve_funds_with_transfer_exec(
+        &self,
+        #[payment_multi] _payments: ManagedVec<DcdtTokenPayment<Self::Api>>,
+        token: TokenIdentifier,
+        amount: BigUint,
+        #[var_args] opt_receive_func: OptionalValue<ManagedBuffer>,
+    ) {
+        let caller = self.blockchain().get_caller();
+        let func_name = opt_receive_func.into_option().unwrap_or_default();
+
+        Self::Api::send_api_impl()
+            .direct_dcdt_execute(
+                &caller,
+                &token,
+                &amount,
+                50_000_000,
+                &func_name,
+                &ManagedArgBuffer::new_empty(),
+            )
+            .unwrap_or_else(|_| sc_panic!("DCDT transfer failed"));
     }
 
     #[endpoint]
@@ -134,14 +156,14 @@ pub trait Vault {
         token: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
-        #[var_args] return_message: OptionalArg<ManagedBuffer>,
+        #[var_args] return_message: OptionalValue<ManagedBuffer>,
     ) {
         self.retrieve_funds_event(&token, nonce, &amount);
 
         let caller = self.blockchain().get_caller();
         let data = match return_message {
-            OptionalArg::Some(data) => data,
-            OptionalArg::None => ManagedBuffer::new(),
+            OptionalValue::Some(data) => data,
+            OptionalValue::None => ManagedBuffer::new(),
         };
 
         if token.is_rewa() {
@@ -155,10 +177,10 @@ pub trait Vault {
     #[endpoint]
     fn retrieve_multi_funds_async(
         &self,
-        #[var_args] token_payments: ManagedVarArgs<MultiArg3<TokenIdentifier, u64, BigUint>>,
+        #[var_args] token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
         let caller = self.blockchain().get_caller();
-        let mut all_payments = Vec::new();
+        let mut all_payments = ManagedVec::new();
 
         for multi_arg in token_payments.into_iter() {
             let (token_id, nonce, amount) = multi_arg.into_tuple();
@@ -171,21 +193,18 @@ pub trait Vault {
             });
         }
 
-        self.send().transfer_multiple_dcdt_via_async_call(
-            &caller,
-            &all_payments.managed_into(self.raw_vm_api()),
-            b"",
-        );
+        self.send()
+            .transfer_multiple_dcdt_via_async_call(&caller, &all_payments, b"");
     }
 
     #[payable("*")]
     #[endpoint]
     fn burn_and_create_retrive_async(&self) {
         let payments = self.call_value().all_dcdt_transfers();
-        let mut uris = ManagedVec::new(self.type_manager());
+        let mut uris = ManagedVec::new();
         uris.push(ManagedBuffer::new());
 
-        let mut new_tokens = Vec::new();
+        let mut new_tokens = ManagedVec::new();
 
         for payment in payments.into_iter() {
             // burn old tokens
@@ -200,7 +219,7 @@ pub trait Vault {
                 &payment.token_identifier,
                 &payment.amount,
                 &ManagedBuffer::new(),
-                &self.types().big_uint_zero(),
+                &BigUint::zero(),
                 &ManagedBuffer::new(),
                 &(),
                 &uris,
@@ -216,7 +235,7 @@ pub trait Vault {
 
         self.send().transfer_multiple_dcdt_via_async_call(
             &self.blockchain().get_caller(),
-            &new_tokens.managed_into(self.raw_vm_api()),
+            &new_tokens,
             &[],
         );
     }

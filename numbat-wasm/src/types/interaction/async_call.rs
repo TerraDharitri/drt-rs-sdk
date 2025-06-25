@@ -1,7 +1,8 @@
+use core::marker::PhantomData;
+
 use crate::{
     abi::{OutputAbi, TypeAbi, TypeDescriptionContainer},
-    api::{ManagedTypeApi, SendApi, StorageWriteApi},
-    io::EndpointResult,
+    api::{CallTypeApi, SendApiImpl, StorageWriteApi},
     types::{BigUint, CallbackClosure, ManagedAddress, ManagedArgBuffer, ManagedBuffer},
 };
 use alloc::{string::String, vec::Vec};
@@ -9,9 +10,9 @@ use alloc::{string::String, vec::Vec};
 #[must_use]
 pub struct AsyncCall<SA>
 where
-    SA: SendApi + ManagedTypeApi + 'static,
+    SA: CallTypeApi + 'static,
 {
-    pub(crate) api: SA,
+    pub(crate) _phantom: PhantomData<SA>,
     pub(crate) to: ManagedAddress<SA>,
     pub(crate) rewa_payment: BigUint<SA>,
     pub(crate) endpoint_name: ManagedBuffer<SA>,
@@ -19,9 +20,10 @@ where
     pub(crate) callback_call: Option<CallbackClosure<SA>>,
 }
 
+#[allow(clippy::return_self_not_must_use)]
 impl<SA> AsyncCall<SA>
 where
-    SA: SendApi + 'static,
+    SA: CallTypeApi,
 {
     pub fn with_callback(self, callback_call: CallbackClosure<SA>) -> Self {
         AsyncCall {
@@ -31,32 +33,29 @@ where
     }
 }
 
-impl<SA> EndpointResult for AsyncCall<SA>
+impl<SA> AsyncCall<SA>
 where
-    SA: SendApi + ManagedTypeApi + StorageWriteApi + 'static,
+    SA: CallTypeApi + StorageWriteApi,
 {
-    type DecodeAs = ();
-
-    #[inline]
-    fn finish<FA>(&self, _api: FA) {
+    pub fn call_and_exit(&self) -> ! {
         // first, save the callback closure
         if let Some(callback_call) = &self.callback_call {
-            callback_call.save_to_storage(self.api.clone());
+            callback_call.save_to_storage::<SA>();
         }
 
         // last, send the async call, which will kill the execution
-        self.api.async_call_raw(
+        SA::send_api_impl().async_call_raw(
             &self.to,
             &self.rewa_payment,
             &self.endpoint_name,
             &self.arg_buffer,
-        );
+        )
     }
 }
 
 impl<SA> TypeAbi for AsyncCall<SA>
 where
-    SA: SendApi + 'static,
+    SA: CallTypeApi + 'static,
 {
     fn type_name() -> String {
         "AsyncCall".into()

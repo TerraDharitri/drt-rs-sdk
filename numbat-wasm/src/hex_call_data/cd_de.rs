@@ -1,37 +1,7 @@
 use super::SEPARATOR;
-use crate::{err_msg, types::StaticSCError};
-use alloc::vec::Vec;
-
-fn hex_digit_to_half_byte(digit: u8) -> Option<u8> {
-    if (b'0'..=b'9').contains(&digit) {
-        return Some(digit - b'0');
-    }
-    if (b'a'..=b'f').contains(&digit) {
-        return Some(digit - b'a' + 0xau8);
-    }
-    None
-}
-
-fn hex_to_byte(digit1: u8, digit2: u8) -> Option<u8> {
-    let mut result: u8;
-    match hex_digit_to_half_byte(digit1) {
-        None => {
-            return None;
-        },
-        Some(num) => {
-            result = num << 4;
-        },
-    };
-    match hex_digit_to_half_byte(digit2) {
-        None => {
-            return None;
-        },
-        Some(num) => {
-            result |= num;
-        },
-    };
-    Some(result)
-}
+use crate::{err_msg, hex_util::hex_digits_to_byte};
+use alloc::{boxed::Box, vec::Vec};
+use numbat_codec::{DecodeError, DecodeErrorHandler, TopDecodeMultiInput};
 
 /// Deserializes from Numbat's smart contract call format.
 ///
@@ -42,7 +12,9 @@ fn hex_to_byte(digit1: u8, digit2: u8) -> Option<u8> {
 ///
 /// HexCallDataDeserializer borrows its input and will allocate new Vecs for each output.
 ///
-/// Converting from bytes to specific argument types is not in scope. Use the `serializer` module for that.
+/// Converting from bytes to specific argument types is not in scope. The `TopDecodeMulti` trait deals with that.
+///
+/// Currently not used anywhere in the framework, but the functionality is available for anyone who needs it.
 ///
 pub struct HexCallDataDeserializer<'a> {
     source: &'a [u8],
@@ -103,19 +75,19 @@ impl<'a> HexCallDataDeserializer<'a> {
     }
 
     /// Gets the next argument, deserializes from hex and returns the resulting bytes.
-    pub fn next_argument(&mut self) -> Result<Option<Vec<u8>>, StaticSCError> {
+    pub fn next_argument(&mut self) -> Result<Option<Vec<u8>>, &'static str> {
         match self.next_argument_hex() {
             None => Ok(None),
             Some(arg_hex) => {
                 if arg_hex.len() % 2 != 0 {
-                    return Err(StaticSCError::from(err_msg::DESERIALIZATION_ODD_DIGITS));
+                    return Err(err_msg::DESERIALIZATION_ODD_DIGITS);
                 }
                 let res_len = arg_hex.len() / 2;
                 let mut res_vec = Vec::with_capacity(res_len);
                 for i in 0..res_len {
-                    match hex_to_byte(arg_hex[2 * i], arg_hex[2 * i + 1]) {
+                    match hex_digits_to_byte(arg_hex[2 * i], arg_hex[2 * i + 1]) {
                         None => {
-                            return Err(StaticSCError::from(err_msg::DESERIALIZATION_INVALID_BYTE));
+                            return Err(err_msg::DESERIALIZATION_INVALID_BYTE);
                         },
                         Some(byte) => {
                             res_vec.push(byte);
@@ -124,6 +96,25 @@ impl<'a> HexCallDataDeserializer<'a> {
                 }
                 Ok(Some(res_vec))
             },
+        }
+    }
+}
+
+impl<'a> TopDecodeMultiInput for HexCallDataDeserializer<'a> {
+    type ValueInput = Box<[u8]>;
+
+    fn has_next(&self) -> bool {
+        self.has_next()
+    }
+
+    fn next_value_input<H>(&mut self, h: H) -> Result<Self::ValueInput, H::HandledErr>
+    where
+        H: DecodeErrorHandler,
+    {
+        match self.next_argument() {
+            Ok(Some(arg_bytes)) => Ok(arg_bytes.into_boxed_slice()),
+            Ok(None) => Err(h.handle_error(DecodeError::MULTI_TOO_FEW_ARGS)),
+            Err(sc_err) => Err(h.handle_error(DecodeError::from(sc_err))),
         }
     }
 }
@@ -239,10 +230,7 @@ mod tests {
         let input: &[u8] = b"func@123";
         let mut de = HexCallDataDeserializer::new(input);
         assert_eq!(de.get_func_name(), &b"func"[..]);
-        assert_eq!(
-            de.next_argument(),
-            Err(StaticSCError::from(err_msg::DESERIALIZATION_ODD_DIGITS))
-        );
+        assert_eq!(de.next_argument(), Err(err_msg::DESERIALIZATION_ODD_DIGITS));
         assert_eq!(de.next_argument(), Ok(None));
         assert_eq!(de.next_argument(), Ok(None));
     }

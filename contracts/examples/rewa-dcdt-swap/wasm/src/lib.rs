@@ -5,16 +5,14 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   rewa_dcdt_swap
-   (
-        init
+    rewa_dcdt_swap
+    (
         callBack
         getLockedRewaBalance
-        getUnusedWrappedRewa
         getWrappedRewaTokenIdentifier
         issueWrappedRewa
-        mintWrappedRewa
+        setLocalRoles
         unwrapRewa
         wrapRewa
-   )
+    )
 }

@@ -5,10 +5,10 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   send_tx_repeat
-   (
-        init
-        callBack
+    send_tx_repeat
+    (
         repeat
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

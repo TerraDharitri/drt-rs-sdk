@@ -5,9 +5,8 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   proxy_test_first
-   (
-        init
+    proxy_test_first
+    (
         callBack
         deploySecondContract
         forwardToOtherContract
@@ -15,5 +14,5 @@ numbat_wasm_node::wasm_endpoints! {
         messageOtherContract
         messageOtherContractWithCallback
         upgradeSecondContract
-   )
+    )
 }

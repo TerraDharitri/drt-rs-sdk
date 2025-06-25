@@ -1,12 +1,10 @@
-use numbat_wasm::*;
 use numbat_wasm_debug::*;
 
-#[allow(unused)]
 fn world() -> BlockchainMock {
     let mut blockchain = BlockchainMock::new();
-    blockchain.register_contract(
+    blockchain.register_contract_builder(
         "file:output/rewa-dcdt-swap.wasm",
-        Box::new(|context| Box::new(rewa_dcdt_swap::contract_obj(context))),
+        rewa_dcdt_swap::ContractBuilder,
     );
     blockchain
 }

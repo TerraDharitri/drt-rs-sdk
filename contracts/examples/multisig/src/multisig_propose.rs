@@ -1,14 +1,12 @@
-use crate::action::Action;
+use crate::action::{Action, CallActionData};
 
 numbat_wasm::imports!();
 
 /// Contains all events that can be emitted by the contract.
 #[numbat_wasm::module]
 pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
-    fn propose_action(&self, action: Action<Self::Api>) -> SCResult<usize> {
-        let caller_address = self.blockchain().get_caller();
-        let caller_id = self.user_mapper().get_user_id(&caller_address);
-        let caller_role = self.get_user_id_to_role(caller_id);
+    fn propose_action(&self, action: Action<Self::Api>) -> usize {
+        let (caller_id, caller_role) = self.get_caller_id_and_role();
         require!(
             caller_role.can_propose(),
             "only board members and proposers can propose"
@@ -21,94 +19,84 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
             self.action_signer_ids(action_id).insert(caller_id);
         }
 
-        Ok(action_id)
+        action_id
     }
 
     /// Initiates board member addition process.
     /// Can also be used to promote a proposer to board member.
     #[endpoint(proposeAddBoardMember)]
-    fn propose_add_board_member(&self, board_member_address: ManagedAddress) -> SCResult<usize> {
+    fn propose_add_board_member(&self, board_member_address: ManagedAddress) -> usize {
         self.propose_action(Action::AddBoardMember(board_member_address))
     }
 
     /// Initiates proposer addition process..
     /// Can also be used to demote a board member to proposer.
     #[endpoint(proposeAddProposer)]
-    fn propose_add_proposer(&self, proposer_address: ManagedAddress) -> SCResult<usize> {
+    fn propose_add_proposer(&self, proposer_address: ManagedAddress) -> usize {
         self.propose_action(Action::AddProposer(proposer_address))
     }
 
     /// Removes user regardless of whether it is a board member or proposer.
     #[endpoint(proposeRemoveUser)]
-    fn propose_remove_user(&self, user_address: ManagedAddress) -> SCResult<usize> {
+    fn propose_remove_user(&self, user_address: ManagedAddress) -> usize {
         self.propose_action(Action::RemoveUser(user_address))
     }
 
     #[endpoint(proposeChangeQuorum)]
-    fn propose_change_quorum(&self, new_quorum: usize) -> SCResult<usize> {
+    fn propose_change_quorum(&self, new_quorum: usize) -> usize {
         self.propose_action(Action::ChangeQuorum(new_quorum))
     }
 
-    /// Propose a transaction in which the contract can send REWA
-    /// and optionally execute a contract endpoint or builtin function.
-    #[endpoint(proposeSendRewa)]
-    fn propose_send_rewa(
+    fn prepare_call_data(
         &self,
         to: ManagedAddress,
-        amount: BigUint,
-        #[var_args] opt_function: OptionalArg<ManagedBuffer>,
-        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
-    ) -> SCResult<usize> {
+        rewa_amount: BigUint,
+        opt_function: OptionalValue<ManagedBuffer>,
+        arguments: MultiValueEncoded<ManagedBuffer>,
+    ) -> CallActionData<Self::Api> {
         let endpoint_name = match opt_function {
-            OptionalArg::Some(data) => data,
-            OptionalArg::None => ManagedBuffer::new(),
+            OptionalValue::Some(data) => data,
+            OptionalValue::None => ManagedBuffer::new(),
         };
-        self.propose_action(Action::SendREWA {
+        CallActionData {
             to,
-            amount,
+            rewa_amount,
             endpoint_name,
             arguments: arguments.into_vec_of_buffers(),
-        })
-    }
-
-    #[endpoint(proposeSendDcdt)]
-    fn propose_send_dcdt(
-        &self,
-        to: ManagedAddress,
-        dcdt_payment_args: ManagedCountedVarArgs<DcdtTokenPaymentMultiArg<Self::Api>>,
-        #[var_args] opt_function: OptionalArg<ManagedBuffer>,
-        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
-    ) -> SCResult<usize> {
-        let mut dcdt_payments_vec = ManagedVec::new();
-        for payment_args in dcdt_payment_args.into_vec().into_iter() {
-            dcdt_payments_vec.push(payment_args.into_dcdt_token_payment());
         }
-        let endpoint_name = match opt_function {
-            OptionalArg::Some(data) => data,
-            OptionalArg::None => ManagedBuffer::new(),
-        };
-        self.propose_action(Action::SendDCDT {
-            to,
-            dcdt_payments: dcdt_payments_vec,
-            endpoint_name,
-            arguments: arguments.into_vec_of_buffers(),
-        })
     }
 
-    #[endpoint(proposeSCDeploy)]
-    fn propose_sc_deploy(
+    /// Propose a transaction in which the contract will perform a transfer-execute call.
+    /// Can send REWA without calling anything.
+    /// Can call smart contract endpoints directly.
+    /// Doesn't really work with builtin functions.
+    #[endpoint(proposeTransferExecute)]
+    fn propose_transfer_execute(
         &self,
-        amount: BigUint,
-        code: ManagedBuffer,
-        code_metadata: CodeMetadata,
-        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
-    ) -> SCResult<usize> {
-        self.propose_action(Action::SCDeploy {
-            amount,
-            code,
-            code_metadata,
-            arguments: arguments.into_vec_of_buffers(),
-        })
+        to: ManagedAddress,
+        rewa_amount: BigUint,
+        #[var_args] opt_function: OptionalValue<ManagedBuffer>,
+        #[var_args] arguments: MultiValueEncoded<ManagedBuffer>,
+    ) -> usize {
+        let call_data = self.prepare_call_data(to, rewa_amount, opt_function, arguments);
+        self.propose_action(Action::SendTransferExecute(call_data))
+    }
+
+    /// Propose a transaction in which the contract will perform a transfer-execute call.
+    /// Can call smart contract endpoints directly.
+    /// Can use DCDTTransfer/DCDTNFTTransfer/MultiDCDTTransfer to send tokens, while also optionally calling endpoints.
+    /// Works well with builtin functions.
+    /// Cannot simply send REWA directly without calling anything.
+    #[endpoint(proposeAsyncCall)]
+    fn propose_async_call(
+        &self,
+        to: ManagedAddress,
+        rewa_amount: BigUint,
+        #[var_args] opt_function: OptionalValue<ManagedBuffer>,
+        #[var_args] arguments: MultiValueEncoded<ManagedBuffer>,
+    ) -> usize {
+        let call_data = self.prepare_call_data(to, rewa_amount, opt_function, arguments);
+        self.propose_action(Action::SendAsyncCall(call_data))
     }
 
     #[endpoint(proposeSCDeployFromSource)]
@@ -117,29 +105,11 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         amount: BigUint,
         source: ManagedAddress,
         code_metadata: CodeMetadata,
-        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
-    ) -> SCResult<usize> {
+        #[var_args] arguments: MultiValueEncoded<ManagedBuffer>,
+    ) -> usize {
         self.propose_action(Action::SCDeployFromSource {
             amount,
             source,
-            code_metadata,
-            arguments: arguments.into_vec_of_buffers(),
-        })
-    }
-
-    #[endpoint(proposeSCUpgrade)]
-    fn propose_sc_upgrade(
-        &self,
-        sc_address: ManagedAddress,
-        amount: BigUint,
-        code: ManagedBuffer,
-        code_metadata: CodeMetadata,
-        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
-    ) -> SCResult<usize> {
-        self.propose_action(Action::SCUpgrade {
-            sc_address,
-            amount,
-            code,
             code_metadata,
             arguments: arguments.into_vec_of_buffers(),
         })
@@ -152,8 +122,8 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         amount: BigUint,
         source: ManagedAddress,
         code_metadata: CodeMetadata,
-        #[var_args] arguments: ManagedVarArgs<ManagedBuffer>,
-    ) -> SCResult<usize> {
+        #[var_args] arguments: MultiValueEncoded<ManagedBuffer>,
+    ) -> usize {
         self.propose_action(Action::SCUpgradeFromSource {
             sc_address,
             amount,

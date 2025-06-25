@@ -1,6 +1,11 @@
-use crate::api::managed_types::managed_buffer_api_node::unsafe_buffer_load_address;
+use crate::{
+    api::managed_types::managed_buffer_api_node::{
+        unsafe_buffer_load_address, unsafe_buffer_load_token_identifier,
+    },
+    VmApiImpl,
+};
 use numbat_wasm::{
-    api::BlockchainApi,
+    api::{BlockchainApi, BlockchainApiImpl, Handle, ManagedTypeApi},
     types::{
         Address, BigUint, Box, DcdtTokenData, DcdtTokenType, ManagedAddress, ManagedBuffer,
         ManagedType, ManagedVec, TokenIdentifier, H256,
@@ -114,6 +119,8 @@ extern "C" {
         nonce: i64,
     ) -> i32;
 
+    fn getDCDTLocalRoles(tokenhandle: i32) -> i64;
+
     #[cfg(not(feature = "unmanaged-ei"))]
     fn managedGetDCDTTokenData(
         addressHandle: i32,
@@ -130,7 +137,16 @@ extern "C" {
     );
 }
 
-impl BlockchainApi for crate::VmApiImpl {
+impl BlockchainApi for VmApiImpl {
+    type BlockchainApiImpl = VmApiImpl;
+
+    #[inline]
+    fn blockchain_api_impl() -> Self::BlockchainApiImpl {
+        VmApiImpl {}
+    }
+}
+
+impl BlockchainApiImpl for VmApiImpl {
     #[inline]
     fn get_sc_address_legacy(&self) -> Address {
         unsafe {
@@ -142,11 +158,11 @@ impl BlockchainApi for crate::VmApiImpl {
 
     #[inline]
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_sc_address(&self) -> ManagedAddress<Self> {
+    fn get_sc_address_handle(&self) -> Handle {
         unsafe {
             let handle = mBufferNew();
             managedSCAddress(handle);
-            ManagedAddress::from_raw_handle(self.clone(), handle)
+            handle
         }
     }
 
@@ -161,11 +177,11 @@ impl BlockchainApi for crate::VmApiImpl {
 
     #[inline]
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_owner_address(&self) -> ManagedAddress<Self> {
+    fn get_owner_address_handle(&self) -> Handle {
         unsafe {
             let handle = mBufferNew();
             managedOwnerAddress(handle);
-            ManagedAddress::from_raw_handle(self.clone(), handle)
+            handle
         }
     }
 
@@ -175,8 +191,8 @@ impl BlockchainApi for crate::VmApiImpl {
     }
 
     #[inline]
-    fn get_shard_of_address(&self, address: &ManagedAddress<Self>) -> u32 {
-        unsafe { getShardOfAddress(unsafe_buffer_load_address(address.get_raw_handle())) as u32 }
+    fn get_shard_of_address(&self, address_handle: Handle) -> u32 {
+        unsafe { getShardOfAddress(unsafe_buffer_load_address(address_handle)) as u32 }
     }
 
     #[inline]
@@ -185,8 +201,8 @@ impl BlockchainApi for crate::VmApiImpl {
     }
 
     #[inline]
-    fn is_smart_contract(&self, address: &ManagedAddress<Self>) -> bool {
-        unsafe { isSmartContract(unsafe_buffer_load_address(address.get_raw_handle())) > 0 }
+    fn is_smart_contract(&self, address_handle: Handle) -> bool {
+        unsafe { isSmartContract(unsafe_buffer_load_address(address_handle)) > 0 }
     }
 
     #[inline]
@@ -200,30 +216,27 @@ impl BlockchainApi for crate::VmApiImpl {
 
     #[inline]
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_caller(&self) -> ManagedAddress<Self> {
+    fn get_caller_handle(&self) -> Handle {
         unsafe {
             let handle = mBufferNew();
             managedCaller(handle);
-            ManagedAddress::from_raw_handle(self.clone(), handle)
+            handle
         }
     }
 
-    fn get_balance_legacy(&self, address: &Address) -> BigUint<Self> {
+    fn get_balance_legacy(&self, address: &Address) -> Handle {
         unsafe {
             let balance_handle = bigIntNew(0);
             bigIntGetExternalBalance(address.as_ref().as_ptr(), balance_handle);
-            BigUint::from_raw_handle(self.clone(), balance_handle)
+            balance_handle
         }
     }
 
-    fn get_balance(&self, address: &ManagedAddress<Self>) -> BigUint<Self> {
+    fn get_balance_handle(&self, address_handle: Handle) -> Handle {
         unsafe {
             let balance_handle = bigIntNew(0);
-            bigIntGetExternalBalance(
-                unsafe_buffer_load_address(address.get_raw_handle()),
-                balance_handle,
-            );
-            BigUint::from_raw_handle(self.clone(), balance_handle)
+            bigIntGetExternalBalance(unsafe_buffer_load_address(address_handle), balance_handle);
+            balance_handle
         }
     }
 
@@ -238,11 +251,13 @@ impl BlockchainApi for crate::VmApiImpl {
 
     #[inline]
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_state_root_hash(&self) -> numbat_wasm::types::ManagedByteArray<Self, 32> {
+    fn get_state_root_hash<M: ManagedTypeApi>(
+        &self,
+    ) -> numbat_wasm::types::ManagedByteArray<M, 32> {
         unsafe {
             let result_handle = mBufferNew();
             managedGetStateRootHash(result_handle);
-            numbat_wasm::types::ManagedByteArray::from_raw_handle(self.clone(), result_handle)
+            numbat_wasm::types::ManagedByteArray::from_raw_handle(result_handle)
         }
     }
 
@@ -257,11 +272,11 @@ impl BlockchainApi for crate::VmApiImpl {
 
     #[inline]
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_tx_hash(&self) -> numbat_wasm::types::ManagedByteArray<Self, 32> {
+    fn get_tx_hash<M: ManagedTypeApi>(&self) -> numbat_wasm::types::ManagedByteArray<M, 32> {
         unsafe {
             let result_handle = mBufferNew();
             managedGetOriginalTxHash(result_handle);
-            numbat_wasm::types::ManagedByteArray::from_raw_handle(self.clone(), result_handle)
+            numbat_wasm::types::ManagedByteArray::from_raw_handle(result_handle)
         }
     }
 
@@ -301,11 +316,13 @@ impl BlockchainApi for crate::VmApiImpl {
 
     #[inline]
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_block_random_seed(&self) -> numbat_wasm::types::ManagedByteArray<Self, 48> {
+    fn get_block_random_seed<M: ManagedTypeApi>(
+        &self,
+    ) -> numbat_wasm::types::ManagedByteArray<M, 48> {
         unsafe {
             let result_handle = mBufferNew();
             managedGetBlockRandomSeed(result_handle);
-            numbat_wasm::types::ManagedByteArray::from_raw_handle(self.clone(), result_handle)
+            numbat_wasm::types::ManagedByteArray::from_raw_handle(result_handle)
         }
     }
 
@@ -340,54 +357,58 @@ impl BlockchainApi for crate::VmApiImpl {
 
     #[inline]
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_prev_block_random_seed(&self) -> numbat_wasm::types::ManagedByteArray<Self, 48> {
+    fn get_prev_block_random_seed<M: ManagedTypeApi>(
+        &self,
+    ) -> numbat_wasm::types::ManagedByteArray<M, 48> {
         unsafe {
             let result_handle = mBufferNew();
             managedGetPrevBlockRandomSeed(result_handle);
-            numbat_wasm::types::ManagedByteArray::from_raw_handle(self.clone(), result_handle)
+            numbat_wasm::types::ManagedByteArray::from_raw_handle(result_handle)
         }
     }
 
     #[inline]
-    fn get_current_dcdt_nft_nonce(&self, address: &Address, token: &TokenIdentifier<Self>) -> u64 {
+    fn get_current_dcdt_nft_nonce<M: ManagedTypeApi>(
+        &self,
+        address: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
+    ) -> u64 {
         unsafe {
             getCurrentDCDTNFTNonce(
-                address.as_ref().as_ptr(),
-                token.to_dcdt_identifier().as_ptr(),
+                unsafe_buffer_load_address(address.get_raw_handle()),
+                unsafe_buffer_load_token_identifier(token.get_raw_handle()),
                 token.len() as i32,
             ) as u64
         }
     }
 
-    #[inline]
-    fn get_dcdt_balance(
+    fn get_dcdt_balance<M: ManagedTypeApi>(
         &self,
-        m_address: &ManagedAddress<Self>,
-        token: &TokenIdentifier<Self>,
+        address: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
         nonce: u64,
-    ) -> BigUint<Self> {
-        let address = m_address.to_address();
+    ) -> BigUint<M> {
         unsafe {
             let balance_handle = bigIntNew(0);
             bigIntGetDCDTExternalBalance(
-                address.as_ref().as_ptr(),
-                token.to_dcdt_identifier().as_ptr(),
+                unsafe_buffer_load_address(address.get_raw_handle()),
+                unsafe_buffer_load_token_identifier(token.get_raw_handle()),
                 token.len() as i32,
                 nonce as i64,
                 balance_handle,
             );
 
-            BigUint::from_raw_handle(self.clone(), balance_handle)
+            BigUint::from_raw_handle(balance_handle)
         }
     }
 
     #[cfg(feature = "unmanaged-ei")]
-    fn get_dcdt_token_data(
+    fn get_dcdt_token_data<M: ManagedTypeApi>(
         &self,
-        m_address: &ManagedAddress<Self>,
-        token: &TokenIdentifier<Self>,
+        m_address: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
         nonce: u64,
-    ) -> DcdtTokenData<Self> {
+    ) -> DcdtTokenData<M> {
         use numbat_wasm::types::BoxedBytes;
         let address = m_address.to_address();
         unsafe {
@@ -455,33 +476,30 @@ impl BlockchainApi for crate::VmApiImpl {
             // Token is frozen if properties are not 0
             let frozen = properties[0] == 0 && properties[1] == 0;
 
-            let mut uris_vec = ManagedVec::new(self.clone());
-            uris_vec.push(ManagedBuffer::new_from_bytes(
-                self.clone(),
-                uri_bytes.as_slice(),
-            ));
+            let mut uris_vec = ManagedVec::new();
+            uris_vec.push(ManagedBuffer::new_from_bytes(uri_bytes.as_slice()));
 
             DcdtTokenData {
                 token_type,
-                amount: BigUint::from_raw_handle(self.clone(), value_handle),
+                amount: BigUint::from_raw_handle(value_handle),
                 frozen,
-                hash: ManagedBuffer::new_from_bytes(self.clone(), hash.as_slice()),
-                name: ManagedBuffer::new_from_bytes(self.clone(), name_bytes.as_slice()),
-                attributes: ManagedBuffer::new_from_bytes(self.clone(), attr_bytes.as_slice()),
-                creator: ManagedAddress::from_address(self.clone(), &creator),
-                royalties: BigUint::from_raw_handle(self.clone(), royalties_handle),
+                hash: ManagedBuffer::new_from_bytes(hash.as_slice()),
+                name: ManagedBuffer::new_from_bytes(name_bytes.as_slice()),
+                attributes: ManagedBuffer::new_from_bytes(attr_bytes.as_slice()),
+                creator: ManagedAddress::from_address(&creator),
+                royalties: BigUint::from_raw_handle(royalties_handle),
                 uris: uris_vec,
             }
         }
     }
 
     #[cfg(not(feature = "unmanaged-ei"))]
-    fn get_dcdt_token_data(
+    fn get_dcdt_token_data<M: ManagedTypeApi>(
         &self,
-        address: &ManagedAddress<Self>,
-        token: &TokenIdentifier<Self>,
+        address: &ManagedAddress<M>,
+        token: &TokenIdentifier<M>,
         nonce: u64,
-    ) -> DcdtTokenData<Self> {
+    ) -> DcdtTokenData<M> {
         let managed_token_id = token.as_managed_buffer();
         unsafe {
             let value_handle = bigIntNew(0);
@@ -514,22 +532,82 @@ impl BlockchainApi for crate::VmApiImpl {
             };
 
             // here we trust Andes that it always gives us a properties buffer of length 2
-            let properties_buffer = ManagedBuffer::from_raw_handle(self.clone(), properties_handle);
+            let properties_buffer = ManagedBuffer::<Self>::from_raw_handle(properties_handle);
             let mut properties_bytes = [0u8; 2];
             let _ = properties_buffer.load_slice(0, &mut properties_bytes[..]);
             let frozen = properties_bytes[0] == 0 && properties_bytes[1] == 0; // token is frozen if properties are not 0
 
             DcdtTokenData {
                 token_type,
-                amount: BigUint::from_raw_handle(self.clone(), value_handle),
+                amount: BigUint::from_raw_handle(value_handle),
                 frozen,
-                hash: ManagedBuffer::from_raw_handle(self.clone(), hash_handle),
-                name: ManagedBuffer::from_raw_handle(self.clone(), name_handle),
-                attributes: ManagedBuffer::from_raw_handle(self.clone(), attributes_handle),
-                creator: ManagedAddress::from_raw_handle(self.clone(), creator_handle),
-                royalties: BigUint::from_raw_handle(self.clone(), royalties_handle),
-                uris: ManagedVec::from_raw_handle(self.clone(), uris_handle),
+                hash: ManagedBuffer::from_raw_handle(hash_handle),
+                name: ManagedBuffer::from_raw_handle(name_handle),
+                attributes: ManagedBuffer::from_raw_handle(attributes_handle),
+                creator: ManagedAddress::from_raw_handle(creator_handle),
+                royalties: BigUint::from_raw_handle(royalties_handle),
+                uris: ManagedVec::from_raw_handle(uris_handle),
             }
+        }
+    }
+
+    #[cfg(not(feature = "vm-dcdt-local-roles"))]
+    fn get_dcdt_local_roles<M: ManagedTypeApi>(
+        &self,
+        token_id: &TokenIdentifier<M>,
+    ) -> numbat_wasm::types::DcdtLocalRoleFlags {
+        use numbat_wasm::{
+            api::{ErrorApiImpl, ManagedBufferApi, StorageReadApiImpl},
+            storage::StorageKey,
+            types::{DcdtLocalRole, DcdtLocalRoleFlags},
+        };
+
+        let mut key =
+            StorageKey::new(numbat_wasm::storage::protected_keys::NUMBAT_DCDT_LOCAL_ROLES_KEY);
+        key.append_managed_buffer(token_id.as_managed_buffer());
+        let value_handle = self.storage_load_managed_buffer_raw(key.get_raw_handle());
+        let value_len = self.mb_len(value_handle);
+        const DATA_MAX_LEN: usize = 300;
+        if value_len > DATA_MAX_LEN {
+            self.signal_error(numbat_wasm::err_msg::STORAGE_VALUE_EXCEEDS_BUFFER);
+        }
+        let mut data_buffer = [0u8; DATA_MAX_LEN];
+        // let _ = value_mb.load_slice(0, );
+        let _ = self.mb_load_slice(value_handle, 0, &mut data_buffer[..value_len]);
+
+        let mut current_index = 0;
+
+        let mut result = DcdtLocalRoleFlags::NONE;
+
+        while current_index < value_len {
+            // first character before each role is a \n, so we skip it
+            current_index += 1;
+
+            // next is the length of the role as string
+            let role_len = data_buffer[current_index];
+            current_index += 1;
+
+            // next is role's ASCII string representation
+            let end_index = current_index + role_len as usize;
+            let role_name = &data_buffer[current_index..end_index];
+            current_index = end_index;
+
+            result |= DcdtLocalRole::from(role_name).to_flag();
+        }
+
+        result
+    }
+
+    #[cfg(feature = "vm-dcdt-local-roles")]
+    fn get_dcdt_local_roles<M: ManagedTypeApi>(
+        &self,
+        token_id: &TokenIdentifier<M>,
+    ) -> numbat_wasm::types::DcdtLocalRoleFlags {
+        let managed_token_id = token_id.as_managed_buffer();
+        unsafe {
+            numbat_wasm::types::DcdtLocalRoleFlags::from_bits_unchecked(getDCDTLocalRoles(
+                managed_token_id.get_raw_handle(),
+            ) as u64)
         }
     }
 }

@@ -42,14 +42,4 @@ pub trait BlockchainApiFeatures {
     fn get_cumulated_validator_rewards(&self) -> BigUint {
         self.blockchain().get_cumulated_validator_rewards()
     }
-
-    #[endpoint]
-    fn get_dcdt_local_roles(&self, token_id: TokenIdentifier) -> MultiResultVec<BoxedBytes> {
-        let roles = self.blockchain().get_dcdt_local_roles(&token_id);
-        let role_names: Vec<BoxedBytes> = roles
-            .iter()
-            .map(|role| BoxedBytes::from(role.as_role_name()))
-            .collect();
-        role_names.into()
-    }
 }

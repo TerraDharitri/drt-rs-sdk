@@ -1,0 +1,12 @@
+[package]
+name = "crypto-bubbles-legacy-meta"
+version = "0.0.0"
+edition = "2018"
+publish = false
+
+[dependencies.crypto-bubbles-legacy]
+path = ".."
+
+[dependencies.numbat-wasm-debug]
+version = "0.0.17"
+path = "../../../../../numbat-wasm-debug"

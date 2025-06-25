@@ -5,38 +5,28 @@
 #![no_std]
 
 numbat_wasm_node::wasm_endpoints! {
-   multisig
-   (
-        init
-        callBack
+    multisig
+    (
         deposit
         discardAction
-        getActionData
         getActionLastIndex
-        getActionSignerCount
-        getActionSigners
-        getActionValidSignerCount
-        getAllBoardMembers
-        getAllProposers
         getNumBoardMembers
         getNumProposers
-        getPendingActionFullInfo
         getQuorum
         performAction
         proposeAddBoardMember
         proposeAddProposer
+        proposeAsyncCall
         proposeChangeQuorum
         proposeRemoveUser
-        proposeSCDeploy
         proposeSCDeployFromSource
-        proposeSCUpgrade
         proposeSCUpgradeFromSource
-        proposeSendRewa
-        proposeSendDcdt
+        proposeTransferExecute
         quorumReached
         sign
         signed
         unsign
-        userRole
-   )
+    )
 }
+
+numbat_wasm_node::wasm_empty_callback! {}

@@ -1,0 +1,21 @@
+[package]
+name = "erc1155-marketplace"
+version = "0.0.0"
+authors = ["contact@dharitri.org"]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+
+[dependencies.erc1155]
+path = "../erc1155"
+
+[dependencies.numbat-wasm]
+version = "0.0.17"
+path = "../../../../numbat-wasm"
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.17"
+path = "../../../../numbat-wasm-debug"
