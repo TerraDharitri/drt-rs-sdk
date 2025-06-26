@@ -1,3 +1,5 @@
+use dharitri_sc_derive::ManagedVecItem;
+
 use crate::{
     api::ManagedTypeApi,
     codec,
@@ -14,7 +16,9 @@ use crate::derive::TypeAbi;
 
 const DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding DCDT attributes: ";
 
-#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug)]
+#[derive(
+    Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem,
+)]
 pub struct DcdtTokenData<M: ManagedTypeApi> {
     pub token_type: DcdtTokenType,
     pub amount: BigUint<M>,

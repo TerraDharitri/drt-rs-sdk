@@ -22,7 +22,7 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           default: true
-          toolchain: nightly-2023-08-08
+          toolchain: nightly-2023-05-26
           target: wasm32-unknown-unknown
 
       - name: Setup the PATH variable
@@ -31,7 +31,7 @@ jobs:
 
       - name: Install prerequisites
         run: |
-          pip3 install dharitri-sdk-cli==v6.0.0
+          pip3 install dharitri-sdk-cli==v0.0.2
           mkdir $HOME/dharitri-sdk
           python3 -m dharitri_sdk_cli.cli deps install vmtools --tag v1.4.60
           
@@ -44,12 +44,6 @@ jobs:
           which wasm-opt
           which wasm2wat
           which run-scenarios
-
-      - name: Install libtinfo5
-        if: inputs.install-libtinfo5
-        run: |
-          sudo apt update
-          sudo apt install -y libtinfo5
 
       - name: Run template tool test
         run: |

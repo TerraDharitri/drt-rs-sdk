@@ -212,6 +212,16 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         });
     }
 
+    fn managed_get_back_transfers(
+        &self,
+        dcdt_transfer_value_handle: RawHandle,
+        call_value_handle: RawHandle,
+    ) {
+        self.with_vm_hooks(|vh| {
+            vh.managed_get_back_transfers(dcdt_transfer_value_handle, call_value_handle)
+        });
+    }
+
     fn check_dcdt_frozen(
         &self,
         address_handle: Self::ManagedBufferHandle,

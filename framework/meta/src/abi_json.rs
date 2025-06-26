@@ -1,12 +1,16 @@
 mod build_info_abi_json;
 mod contract_abi_json;
 mod endpoint_abi_json;
+mod dcdt_attribute_abi_json;
+mod dcdt_attribute_json;
 mod event_abi_json;
 mod type_abi_json;
 
 pub use build_info_abi_json::{BuildInfoAbiJson, RustcAbiJson};
 pub use contract_abi_json::*;
 pub use endpoint_abi_json::*;
+pub use dcdt_attribute_abi_json::DcdtAttributeAbiJson;
+pub use dcdt_attribute_json::DcdtAttributeJson;
 pub use event_abi_json::*;
 use dharitri_sc::{abi::ContractAbi, contract_base::ContractAbiProvider};
 pub use type_abi_json::*;

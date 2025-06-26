@@ -126,6 +126,14 @@ impl BlockchainApiImpl for UncallableApi {
         unreachable!()
     }
 
+    fn managed_get_back_transfers(
+        &self,
+        _dcdt_transfer_value_handle: RawHandle,
+        _call_value_handle: RawHandle,
+    ) {
+        unreachable!()
+    }
+
     fn check_dcdt_frozen(
         &self,
         _address_handle: Self::ManagedBufferHandle,

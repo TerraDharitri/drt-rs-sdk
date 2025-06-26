@@ -1,7 +1,7 @@
 use forwarder::nft::{Color, ForwarderNftModule};
 use dharitri_sc::{contract_base::ContractBase, types::Address};
 use dharitri_sc_scenario::{
-    managed_address, managed_biguint, managed_token_id, rust_biguint,
+    managed_address, managed_biguint, managed_token_id,
     scenario_model::{
         Account, AddressValue, CheckAccount, CheckStateStep, ScCallStep, SetStateStep,
     },
@@ -40,7 +40,7 @@ fn test_nft_update_attributes_and_send() {
                 FORWARDER_ADDRESS_EXPR,
                 Account::new()
                     .nonce(1)
-                    .code(forwarder_code.clone())
+                    .code(forwarder_code)
                     .dcdt_roles(NFT_TOKEN_ID_EXPR, roles),
             ),
     );
@@ -88,7 +88,7 @@ fn test_nft_update_attributes_and_send() {
         &forwarder_whitebox,
         ScCallStep::new()
             .from(USER_ADDRESS_EXPR)
-            .dcdt_transfer(NFT_TOKEN_ID, 1, rust_biguint!(1)),
+            .dcdt_transfer(NFT_TOKEN_ID, 1, "1"),
         |sc| {
             sc.nft_update_attributes(managed_token_id!(NFT_TOKEN_ID), 1, new_attributes);
 

@@ -23,7 +23,7 @@ pub use rewa_or_dcdt_token_payment::RewaOrDcdtTokenPayment;
 pub use rewa_or_multi_dcdt_payment::RewaOrMultiDcdtPayment;
 pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 pub use dcdt_token_data::DcdtTokenData;
-pub use dcdt_token_payment::DcdtTokenPayment;
+pub use dcdt_token_payment::{DcdtTokenPayment, MultiDcdtPayment};
 pub use managed_address::ManagedAddress;
 pub use managed_buffer_cached_builder::ManagedBufferCachedBuilder;
 pub(crate) use managed_byte_array::ManagedBufferSizeContext;

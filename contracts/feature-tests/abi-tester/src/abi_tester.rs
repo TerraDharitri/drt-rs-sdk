@@ -16,6 +16,12 @@ use only_nested::*;
 /// Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,
 /// including Rust docs.
 #[dharitri_sc::contract]
+#[dcdt_attribute("TICKER1", BigUint)]
+#[dcdt_attribute("TICKER2", ManagedBuffer)]
+#[dcdt_attribute("TICKER3", u32)]
+#[dcdt_attribute("STRUCT1", AbiEnum)]
+#[dcdt_attribute("STRUCT2", AbiManagedType<Self::Api>)]
+#[dcdt_attribute("OnlyInDcdt", OnlyShowsUpInDcdtAttr)]
 pub trait AbiTester {
     /// Contract constructor.
     #[init]

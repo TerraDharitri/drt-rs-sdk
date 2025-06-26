@@ -3,7 +3,7 @@ use dharitri_sc::types::{
 };
 use dharitri_sc_modules::transfer_role_proxy::TransferRoleProxyModule;
 use dharitri_sc_scenario::{
-    managed_address, managed_biguint, managed_buffer, managed_token_id, rust_biguint,
+    managed_address, managed_biguint, managed_buffer, managed_token_id,
     scenario_model::{
         Account, AddressValue, CheckAccount, CheckStateStep, ScCallStep, ScDeployStep, SetStateStep,
     },
@@ -59,10 +59,10 @@ fn test_transfer_role() {
     const VAULT_PATH_EXPR: &str = "file:../vault/output/vault.wasm";
 
     world.register_contract(VAULT_PATH_EXPR, vault::ContractBuilder);
-    world.set_state_step(SetStateStep::new().put_account(
-        VAULT_ADDRESS_EXPR,
-        Account::new().nonce(1).code(vault_code.clone()),
-    ));
+    world.set_state_step(
+        SetStateStep::new()
+            .put_account(VAULT_ADDRESS_EXPR, Account::new().nonce(1).code(vault_code)),
+    );
 
     let transfer_role_features_whitebox = WhiteboxContract::new(
         TRANSFER_ROLE_FEATURES_ADDRESS_EXPR,
@@ -92,11 +92,9 @@ fn test_transfer_role() {
     // transfer to user - ok
     world.whitebox_call(
         &transfer_role_features_whitebox,
-        ScCallStep::new().from(USER_ADDRESS_EXPR).dcdt_transfer(
-            TRANSFER_TOKEN_ID,
-            0,
-            rust_biguint!(100),
-        ),
+        ScCallStep::new()
+            .from(USER_ADDRESS_EXPR)
+            .dcdt_transfer(TRANSFER_TOKEN_ID, 0, "100"),
         |sc| {
             let payments = ManagedVec::from_single_item(DcdtTokenPayment::new(
                 managed_token_id!(TRANSFER_TOKEN_ID),
@@ -114,11 +112,11 @@ fn test_transfer_role() {
 
     world.check_state_step(CheckStateStep::new().put_account(
         USER_ADDRESS_EXPR,
-        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, &rust_biguint!(900)),
+        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, "900"),
     ));
     world.check_state_step(CheckStateStep::new().put_account(
         OWNER_ADDRESS_EXPR,
-        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, &rust_biguint!(100)),
+        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, "100"),
     ));
 
     // transfer to user - err, not whitelisted
@@ -126,7 +124,7 @@ fn test_transfer_role() {
         &transfer_role_features_whitebox,
         ScCallStep::new()
             .from(USER_ADDRESS_EXPR)
-            .dcdt_transfer(TRANSFER_TOKEN_ID, 0, rust_biguint!(100))
+            .dcdt_transfer(TRANSFER_TOKEN_ID, 0, "100")
             .no_expect(),
         |sc| {
             let payments = ManagedVec::from_single_item(DcdtTokenPayment::new(
@@ -149,11 +147,9 @@ fn test_transfer_role() {
     // transfer to sc - ok
     world.whitebox_call(
         &transfer_role_features_whitebox,
-        ScCallStep::new().from(USER_ADDRESS_EXPR).dcdt_transfer(
-            TRANSFER_TOKEN_ID,
-            0,
-            rust_biguint!(100),
-        ),
+        ScCallStep::new()
+            .from(USER_ADDRESS_EXPR)
+            .dcdt_transfer(TRANSFER_TOKEN_ID, 0, "100"),
         |sc| {
             let payments = ManagedVec::from_single_item(DcdtTokenPayment::new(
                 managed_token_id!(TRANSFER_TOKEN_ID),
@@ -173,21 +169,19 @@ fn test_transfer_role() {
 
     world.check_state_step(CheckStateStep::new().put_account(
         USER_ADDRESS_EXPR,
-        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, &rust_biguint!(800)),
+        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, "800"),
     ));
     world.check_state_step(CheckStateStep::new().put_account(
         VAULT_ADDRESS_EXPR,
-        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, &rust_biguint!(100)),
+        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, "100"),
     ));
 
     // transfer to sc - reject
     world.whitebox_call(
         &transfer_role_features_whitebox,
-        ScCallStep::new().from(USER_ADDRESS_EXPR).dcdt_transfer(
-            TRANSFER_TOKEN_ID,
-            0,
-            rust_biguint!(100),
-        ),
+        ScCallStep::new()
+            .from(USER_ADDRESS_EXPR)
+            .dcdt_transfer(TRANSFER_TOKEN_ID, 0, "100"),
         |sc| {
             let payments = ManagedVec::from_single_item(DcdtTokenPayment::new(
                 managed_token_id!(TRANSFER_TOKEN_ID),
@@ -207,11 +201,11 @@ fn test_transfer_role() {
 
     world.check_state_step(CheckStateStep::new().put_account(
         USER_ADDRESS_EXPR,
-        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, &rust_biguint!(800)),
+        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, "800"),
     ));
     world.check_state_step(CheckStateStep::new().put_account(
         VAULT_ADDRESS_EXPR,
-        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, &rust_biguint!(100)),
+        CheckAccount::new().dcdt_balance(TRANSFER_TOKEN_ID_EXPR, "100"),
     ));
 }
 

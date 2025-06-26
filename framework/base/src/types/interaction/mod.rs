@@ -1,5 +1,6 @@
 mod async_call;
 mod async_call_promises;
+mod back_transfers;
 mod callback_closure;
 mod callback_selector_result;
 mod contract_call_convert;
@@ -11,10 +12,12 @@ mod contract_call_with_rewa;
 mod contract_call_with_rewa_or_single_dcdt;
 mod contract_call_with_multi_dcdt;
 mod contract_deploy;
+mod function_call;
 mod managed_arg_buffer;
 
 pub use async_call::AsyncCall;
 pub use async_call_promises::AsyncCallPromises;
+pub use back_transfers::BackTransfers;
 pub use callback_closure::{
     new_callback_call, CallbackClosure, CallbackClosureForDeser, CallbackClosureMatcher,
 };
@@ -26,4 +29,5 @@ pub use contract_call_with_rewa::ContractCallWithRewa;
 pub use contract_call_with_rewa_or_single_dcdt::ContractCallWithRewaOrSingleDcdt;
 pub use contract_call_with_multi_dcdt::ContractCallWithMultiDcdt;
 pub use contract_deploy::{new_contract_deploy, ContractDeploy};
+pub use function_call::FunctionCall;
 pub use managed_arg_buffer::ManagedArgBuffer;

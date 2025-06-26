@@ -90,8 +90,29 @@ impl ScCallStep {
         self
     }
 
+    pub fn multi_dcdt_transfer<T>(mut self, tokens: T) -> Self
+    where
+        T: IntoIterator<Item = TxDCDT>,
+    {
+        if self.tx.rewa_value.value > 0u32.into() {
+            panic!("Cannot transfer both REWA and DCDT");
+        }
+
+        self.tx.dcdt_value.extend(tokens);
+
+        self
+    }
+
     pub fn function(mut self, expr: &str) -> Self {
         self.tx.function = expr.to_string();
+        self
+    }
+
+    pub fn tx_hash<T>(mut self, tx_hash_expr: T) -> Self
+    where
+        H256: From<T>,
+    {
+        self.explicit_tx_hash = Some(tx_hash_expr.into());
         self
     }
 
@@ -213,13 +234,14 @@ where
     let function = String::from_utf8(
         normalized_cc
             .basic
-            .endpoint_name
+            .function_call
+            .function_name
             .to_boxed_bytes()
             .into_vec(),
     )
     .unwrap();
     let rewa_value_expr = BigUintValue::from(normalized_cc.rewa_payment);
-    let scenario_args = convert_call_args(&normalized_cc.basic.arg_buffer);
+    let scenario_args = convert_call_args(&normalized_cc.basic.function_call.arg_buffer);
     (to_str, function, rewa_value_expr, scenario_args)
 }
 

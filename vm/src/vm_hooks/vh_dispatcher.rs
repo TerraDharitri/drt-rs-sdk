@@ -28,7 +28,6 @@ fn bool_to_i32(b: bool) -> i32 {
 
 #[allow(unused)]
 impl VMHooks for VMHooksDispatcher {
-    
     fn set_vm_hooks_ptr(&mut self, _vm_hooks_ptr: *mut c_void) {}
 
     fn get_gas_left(&self) -> i64 {
@@ -696,6 +695,11 @@ impl VMHooks for VMHooksDispatcher {
             royalties_handle,
             uris_handle,
         );
+    }
+
+    fn managed_get_back_transfers(&self, dcdt_transfer_value_handle: i32, call_value_handle: i32) {
+        self.handler
+            .managed_get_back_transfers(dcdt_transfer_value_handle, call_value_handle);
     }
 
     fn managed_async_call(

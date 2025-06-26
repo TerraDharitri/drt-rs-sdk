@@ -26,12 +26,47 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 1.4.10] - 2023-09-18
+## [sc 1.6.2, codec 1.6.2] - 2023-11-24
+- Fixed sc-meta standalone install backwards compatibility.
+- Better hygiene in codec derive.
+
+## [sc 0.45.0, vm 1.6.2, scenario-format 1.6.2, sdk 1.6.2] - 2023-11-24
+- Replicated VM 1.5 in the Rust VM. This includes support for:
+	- promises,
+	- back-transfers,
+	- modified event logs.
+- New endpoint annotation, `#[upgrade]`. Contract variants with upgrade endpoint, but without init now allowed.
+- Build system:
+	- `wasm` crates now fully generated based on data from `sc-config.toml` and root `Cargo.toml`.
+	- Setting wasm target dir automatically, if not specified, based on workspace.
+
+## [sc 0.44.0, vm 0.6.0] - 2023-11-03
+- Back-transfer:
+	- API support in framework (not yet implemented in the Rust VM);
+	- Feature flag: `"back-transfers"`;
+	- EI updated.
+- DCDT attribute ABI annotation and generator.
+- Multiple var-args disallowed, unless annotating endpoint with `#[allow_multiple_var_args]`.
+- Build system updates:
+	- `multicontract.toml` renamed to `sc-config.toml`;
+	- `add-unlabelled` default true.
+- New `FunctionCall` object & refactoring. Can be used as multi-value to pass contract call info to contracts.
+- `AddressToId` storage mapper.
+
+
+## [sc 0.43.5] - 2023-10-16
+- Meta crate: removed external dependencies to `wasm2wat` and `wasm-objdump`, replaces with internal implementation.
+- NFT subscription module.
+- DcdtTokenData implements `ManagedVecItem`.
+- Contract call `argument` method.
+- `SendRawWrapper` made public.
+
+## [sc 0.43.4] - 2023-09-18
 - Bugfix in `sc-meta`: fixed `--locked argument` in `all` command.
 - Template fix: added `dharitri.json` files.
 - Testing framework: check NFT balances and attributes.
 
-## [sc 0.43.3, vm 1.4.10] - 2023-09-08
+## [sc 0.43.3, vm 0.5.2] - 2023-09-08
 - Added several new methods in the `SendWrapper`, which perform REWA & DCDT transfers but don't do anything if the value is zero.
 - Added the `DeleteUsername` builtin function to the VM.
 - Minor fixes in API wrapper constructors.
@@ -46,7 +81,7 @@ They are:
 	- Various bugfixes.
 - VM implementation for `get_shard_of_address` VM hook.
 
-## [sc 0.43.0, codec 1.4.10, vm 0.5.0] - 2023-08-16
+## [sc 0.43.0, codec 0.18.1, vm 0.5.0] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
 	- pre-rustc-1.71;
 	- between rustc-1.71 and rustc-1.73;
@@ -60,7 +95,7 @@ They are:
 - Arguments `--target-dir-wasm`, `--target-dir-meta`, and `--target-dir-all` in the `dharitri-sc-meta` CLI.
 - Fixed an issue with contract calls and DCDT transfers in the `StaticApi` environment.
 
-## [sc 0.42.0, codec 0.18.0, vm 0.4.0, scenario-format 1.4.10, sdk 1.4.10] - 2023-07-15
+## [sc 0.42.0, codec 0.18.0, vm 0.4.0, scenario-format 0.20.0, sdk 0.2.0] - 2023-07-15
 - Multi-endpoints in multi-contracts:
 	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
 	- We can also have multiple versions of the constructor.
@@ -105,7 +140,7 @@ They are:
 ## [sc 0.41.1, vm 0.3.1] - 2023-05-15
 - Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
 
-## [sc 0.41.0, vm 0.3.0] - 2023-05-05
+## [sc 0.41.0, vm 1.6.2] - 2023-05-05
 - Fixed compatibility with rustc v1.71.0.
 - Allocator system:
 	- Contracts can now choose their own allocator. This works in multi-contract contexts.
@@ -122,7 +157,7 @@ They are:
 - Building contracts also triggers an EI check, which verifies compatibility with various VM versions. It currently only issues warnings.
 - `ManagedVecItem` implementation for arrays.
 
-## [sc 0.40.0, vm 1.4.10] - 2023-04-20
+## [sc 0.40.0, vm 0.2.0] - 2023-04-20
 - Call value `rewa_value` and `all_dcdt_transfers` methods return `ManagedRef` instead of owned objects, because they are cached (to avoid accidental corruption of the underlying cache).
 
 ## [sc 0.39.8, vm 0.1.8] - 2023-03-29
@@ -451,7 +486,7 @@ They are:
 - Debugger builtin function mocks check for DCDT roles
 - ABI provides definitions for DcdtTokenPayment, DcdtTokenData, DcdtTokenType
 
-## [numbat-wasm 0.21.0, numbat-codec 0.8.0, denali 0.11.0] - 2021-10-22
+## [numbat-wasm 1.6.2, numbat-codec 0.8.0, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `numbat-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -468,7 +503,7 @@ They are:
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [numbat-wasm 1.4.10, numbat-codec 0.7.0, denali 0.10.0] - 2021-10-02
+## [numbat-wasm 0.20.0, numbat-codec 1.6.2, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -507,10 +542,10 @@ They are:
 	- Support for DCDT multi-transfer.
 
 
-## [numbat-wasm 0.18.2] - 2021-08-20
+## [numbat-wasm 1.6.2] - 2021-08-20
 - Crypto API: `ripemd160` function, custom secp256k1 signature verification (`verify_custom_secp256k1`) and signature generation (`encode_secp256k1_der_signature`).
 
-## [numbat-wasm 1.4.10] - 2021-08-05
+## [numbat-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
 ## [numbat-wasm 0.18.0, denali 0.8.0] - 2021-07-28
@@ -554,7 +589,7 @@ They are:
 ## [numbat-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [numbat-wasm 0.16.0, denali 0.7.0, numbat-codec 0.5.3] - 2021-05-14
+## [numbat-wasm 0.16.0, denali 1.6.2, numbat-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -573,7 +608,7 @@ They are:
 ## [numbat-wasm 0.15.1] - 2021-04-30
 - Mitigating nested sync calls with Send API `execute_on_dest_context_raw_custom_result_range`
 
-## [numbat-wasm 0.15.0, numbat-codec 1.4.10] - 2021-04-19
+## [numbat-wasm 0.15.0, numbat-codec 0.5.2] - 2021-04-19
 - ABI
 	- Constructor representation
 	- Simplified ABI syntax for tuples and fixed-size arrays
@@ -691,7 +726,7 @@ They are:
 ## [numbat-wasm 0.9.8, numbat-codec 0.3.2, denali 0.3.1] - 2020-11-23
 - SC deploy API
 
-## [numbat-wasm 0.9.7, numbat-codec 0.3.1, denali 0.3.0] - 2020-11-11
+## [numbat-wasm 0.9.7, numbat-codec 0.3.1, denali 1.6.2] - 2020-11-11
 - Monomorphization via codec trait instead of TypeInfo for arguments and storage
 - Reorganized all contracts in the `contracts` folder
 
@@ -716,12 +751,12 @@ They are:
 ## [numbat-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 1.4.10] - 2020-11-04
+## [numbat-wasm 0.9.0, numbat-codec 1.6.2, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from numbat-wasm 0.8.0.
 
-## [numbat-wasm 0.8.0, numbat-codec 1.4.10] - 2020-11-02
+## [numbat-wasm 0.8.0, numbat-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.
@@ -734,7 +769,7 @@ They are:
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [numbat-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [numbat-wasm 1.6.2, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -764,7 +799,7 @@ They are:
 - Extracted numbat-codec to separate crate
 - Fixed non_snake_case endpoint handling
 
-## [numbat-wasm 1.4.10] - 2020-07-09
+## [numbat-wasm 0.5.2] - 2020-07-09
 - Queue type
 
 ## [numbat-wasm 0.5.1] - 2020-07-02
@@ -819,13 +854,13 @@ They are:
 ## [numbat-wasm 0.3.2] - 2020-04-13
 - Fixes in the macro-based argument handling
 
-## [numbat-wasm 0.3.0] - 2020-04-03
+## [numbat-wasm 1.6.2] - 2020-04-03
 - Raw callback support
 - `storage_load_len` hook
 - Multi args
 - Multi args in async calls
 
-## [numbat-wasm 1.4.10] - 2020-03-18
+## [numbat-wasm 0.2.0] - 2020-03-18
 - BigUint trait created, added operators (including bitwise)
 - BigUint used for balances
 

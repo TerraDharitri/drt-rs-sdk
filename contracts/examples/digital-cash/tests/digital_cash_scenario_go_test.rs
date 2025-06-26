@@ -40,6 +40,21 @@ fn set_accounts_go() {
 }
 
 #[test]
+fn whitelist_blacklist_fee_token_go() {
+    world().run("scenarios/whitelist-blacklist-fee-tokens.scen.json");
+}
+
+#[test]
+fn pay_fee_and_fund_dcdt_go() {
+    world().run("scenarios/pay-fee-and-fund-dcdt.scen.json");
+}
+
+#[test]
+fn pay_fee_and_fund_rewa_go() {
+    world().run("scenarios/pay-fee-and-fund-rewa.scen.json");
+}
+
+#[test]
 fn withdraw_rewa_go() {
     world().run("scenarios/withdraw-rewa.scen.json");
 }

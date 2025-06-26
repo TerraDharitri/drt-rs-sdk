@@ -32,6 +32,11 @@ path = "recursive-caller"
 [dev-dependencies.vault]
 path = "vault"
 
+[dependencies.dharitri-sc]
+version = "1.6.2"
+path = "../../../framework/base"
+features = ["promises", "back-transfers"]
+
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.4.10"
+version = "1.6.2"
 path = "../../../framework/scenario"

@@ -1,3 +1,5 @@
+use dharitri_sc_derive::ManagedVecItem;
+
 use crate::codec::*;
 
 const DCDT_TYPE_FUNGIBLE: &[u8] = b"FungibleDCDT";
@@ -10,7 +12,7 @@ use crate as dharitri_sc; // needed by the TypeAbi generated code
 use crate::derive::TypeAbi;
 
 // Note: In the current implementation, SemiFungible is never returned
-#[derive(Clone, PartialEq, Eq, Debug, TypeAbi)]
+#[derive(Clone, PartialEq, Eq, Debug, TypeAbi, ManagedVecItem)]
 pub enum DcdtTokenType {
     Fungible,
     NonFungible,

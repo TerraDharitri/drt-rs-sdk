@@ -13,12 +13,17 @@ use crate::{
     derive::TypeAbi,
 };
 
+use super::ManagedVec;
+
 #[derive(TopEncode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug)]
 pub struct DcdtTokenPayment<M: ManagedTypeApi> {
     pub token_identifier: TokenIdentifier<M>,
     pub token_nonce: u64,
     pub amount: BigUint<M>,
 }
+
+/// Alias for a list of payments.
+pub type MultiDcdtPayment<Api> = ManagedVec<Api, DcdtTokenPayment<Api>>;
 
 impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
     #[inline]

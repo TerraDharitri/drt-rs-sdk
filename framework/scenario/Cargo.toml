@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-scenario"
-version = "1.4.10"
+version = "1.6.2"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -24,9 +24,9 @@ sha2 = "0.10.6"
 serde = "1.0"
 serde_json = "1.0"
 pathdiff = "0.2.1"
-itertools = "0.10.3"
+itertools = "0.11"
 colored = "2.0"
-clap = { version = "4.1.0", features = ["derive", "cargo"] }
+clap = { version = "4.4.7", features = ["derive"] }
 tokio = { version = "1.24", features = ["full"] }
 
 [[bin]]
@@ -37,24 +37,25 @@ path = "src/main.rs"
 run-go-tests = []
 
 [dependencies.dharitri-sc]
-version = "=1.4.10"
+version = "=1.6.2"
+features = ["alloc", "num-bigint"]
 path = "../base"
 
 [dependencies.dharitri-sc-meta]
-version = "=1.4.10"
+version = "=1.6.2"
 path = "../meta"
 
 [dependencies.dharitri-chain-scenario-format]
-version = "1.4.10"
+version = "1.6.2"
 path = "../../sdk/scenario-format"
 
 [dependencies.dharitri-vm-executor]
-version = "=1.0.1"
+version = "=1.0.2"
 
 [dependencies.dharitri-chain-vm]
-version = "=1.4.10"
+version = "=1.6.2"
 path = "../../vm"
 
 [dependencies.dharitri-sdk]
-version = "=1.4.10"
+version = "=1.6.2"
 path = "../../sdk/core"
