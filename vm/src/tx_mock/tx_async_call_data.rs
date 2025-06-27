@@ -93,9 +93,7 @@ fn extract_callback_payments(
             if !token_transfers.is_empty() {
                 callback_payments.dcdt_values = token_transfers.transfers;
             } else {
-                callback_payments
-                    .rewa_value
-                    .clone_from(&async_call.call_value);
+                callback_payments.rewa_value = async_call.call_value.clone();
             }
             break;
         }

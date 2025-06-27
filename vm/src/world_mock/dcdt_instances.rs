@@ -57,9 +57,9 @@ impl DcdtInstances {
             .0
             .entry(nonce)
             .and_modify(|instance| {
-                instance.balance.clone_from(value);
+                instance.balance = value.clone();
                 instance.nonce = nonce;
-                instance.metadata.clone_from(&metadata);
+                instance.metadata = metadata.clone();
             })
             .or_insert_with(|| DcdtInstance {
                 nonce,

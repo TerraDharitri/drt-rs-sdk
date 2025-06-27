@@ -6,6 +6,7 @@ use crate::{
     codec::{
         DecodeError, DecodeErrorHandler, EncodeErrorHandler, NestedDecode, NestedDecodeInput,
         NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode, TopEncodeOutput,
+        TryStaticCast,
     },
     formatter::{hex_util::encode_bytes_as_hex, FormatByteReceiver, SCLowerHex},
     types::{heap::Address, ManagedBuffer, ManagedByteArray, ManagedType},
@@ -198,6 +199,11 @@ where
         })
     }
 }
+
+#[derive(Clone)]
+pub(crate) struct ManagedBufferSizeContext(pub usize);
+
+impl TryStaticCast for ManagedBufferSizeContext {}
 
 impl<M> NestedEncode for ManagedAddress<M>
 where

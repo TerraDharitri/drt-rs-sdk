@@ -2,7 +2,7 @@ use dharitri_chain_vm::world_mock::BlockchainState;
 
 use crate::{
     scenario::{run_trace::ScenarioTrace, run_vm::ScenarioVMRunner},
-    vm_go_tool::run_drt_go_scenario,
+    vm_go_tool::run_drt_scenario_go,
 };
 use dharitri_sc_meta::find_workspace::find_current_workspace;
 use std::path::{Path, PathBuf};
@@ -65,7 +65,7 @@ impl ScenarioWorld {
                 debugger.run_scenario_file(&absolute_path);
             },
             Backend::VmGoBackend => {
-                run_drt_go_scenario(&absolute_path);
+                run_drt_scenario_go(&absolute_path);
             },
         }
     }

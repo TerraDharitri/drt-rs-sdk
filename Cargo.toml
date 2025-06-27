@@ -16,7 +16,6 @@ members = [
   "sdk/scenario-format",
 
   "tools/drtpy-snippet-generator",
-  "tools/payload-macro-generator",
 
   "vm",
 

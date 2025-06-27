@@ -1,7 +1,7 @@
 [package]
 name = "multisig-interact"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
+authors = ["Andrei Marinica <andrei.marinica@dharitri.com>"]
 edition = "2021"
 publish = false
 
@@ -18,17 +18,17 @@ toml = "0.8.6"
 path = ".."
 
 [dependencies.dharitri-sc-modules]
-version = "1.11.2"
+version = "0.50.0"
 path = "../../../../contracts/modules"
 
 [dependencies.dharitri-sc-snippets]
-version = "1.11.2"
+version = "0.50.0"
 path = "../../../../framework/snippets"
 
 [dependencies.dharitri-sc-scenario]
-version = "=1.11.2"
+version = "=0.50.0"
 path = "../../../../framework/scenario"
 
 [dependencies.dharitri-sc]
-version = "=1.11.2"
+version = "=0.50.0"
 path = "../../../../framework/base"

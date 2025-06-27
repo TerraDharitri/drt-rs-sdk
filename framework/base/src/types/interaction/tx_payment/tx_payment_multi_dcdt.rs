@@ -63,7 +63,7 @@ where
             1 => self.get(0).as_refs().with_normalized(env, from, to, fc, f),
             _ => to.with_address_ref(env, |to_addr| {
                 let fc_conv = fc.convert_to_multi_transfer_dcdt_call(to_addr, self);
-                f(&from.resolve_address(env), &*BigUint::zero_ref(), fc_conv)
+                f(&from.resolve_address(env), &BigUint::zero(), fc_conv)
             }),
         }
     }
@@ -80,12 +80,10 @@ impl<'a, Env> TxPayment<Env> for ManagedRef<'a, Env::Api, MultiDcdtPayment<Env::
 where
     Env: TxEnv,
 {
-    #[inline]
     fn is_no_payment(&self, _env: &Env) -> bool {
         self.deref().is_empty()
     }
 
-    #[inline]
     fn perform_transfer_execute(
         self,
         env: &Env,
@@ -97,7 +95,6 @@ where
             .perform_transfer_execute(env, to, gas_limit, fc)
     }
 
-    #[inline]
     fn with_normalized<From, To, F, R>(
         self,
         env: &Env,
@@ -123,12 +120,10 @@ impl<Env> TxPayment<Env> for MultiDcdtPayment<Env::Api>
 where
     Env: TxEnv,
 {
-    #[inline]
     fn is_no_payment(&self, _env: &Env) -> bool {
         self.is_empty()
     }
 
-    #[inline]
     fn perform_transfer_execute(
         self,
         env: &Env,
@@ -139,7 +134,6 @@ where
         (&self).perform_transfer_execute(env, to, gas_limit, fc);
     }
 
-    #[inline]
     fn with_normalized<From, To, F, R>(
         self,
         env: &Env,

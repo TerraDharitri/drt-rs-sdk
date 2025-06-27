@@ -1,4 +1,4 @@
-gateway = 'https://testnet-gateway.dharitri.org'
+gateway = 'https://testnet-gateway.dharitri.com'
 call_type = "LegacyAsync" # Sync / LegacyAsync / TransferExecute
 # token_id = "CMPT-4e9332"
 token_id = "REWA"

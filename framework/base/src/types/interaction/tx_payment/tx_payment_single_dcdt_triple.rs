@@ -12,7 +12,6 @@ where
         self.2 == 0u32
     }
 
-    #[inline]
     fn perform_transfer_execute(
         self,
         env: &Env,
@@ -23,7 +22,6 @@ where
         DcdtTokenPayment::from(self).perform_transfer_execute(env, to, gas_limit, fc)
     }
 
-    #[inline]
     fn with_normalized<From, To, F, R>(
         self,
         env: &Env,
@@ -40,7 +38,6 @@ where
         DcdtTokenPayment::from(self).with_normalized(env, from, to, fc, f)
     }
 
-    #[inline]
     fn into_full_payment_data(self, env: &Env) -> FullPaymentData<Env::Api> {
         DcdtTokenPayment::from(self).into_full_payment_data(env)
     }

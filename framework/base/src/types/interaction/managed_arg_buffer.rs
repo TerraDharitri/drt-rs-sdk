@@ -319,6 +319,6 @@ where
     }
 
     fn type_name_rust() -> TypeName {
-        "ManagedArgBuffer<$API>".into()
+        "ManagedArgBufer<$API>".into()
     }
 }

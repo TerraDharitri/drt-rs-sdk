@@ -1,7 +1,7 @@
 [package]
 name = "alloc-features"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
+authors = ["Andrei Marinica <andrei.marinica@dharitri.com>"]
 edition = "2021"
 publish = false
 
@@ -9,12 +9,12 @@ publish = false
 path = "src/alloc_features_main.rs"
 
 [dependencies.dharitri-sc]
-version = "1.11.2"
+version = "0.50.0"
 path = "../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.11.2"
+version = "0.50.0"
 path = "../../../framework/scenario"
 
 [dev-dependencies.dcdt-system-sc-mock]

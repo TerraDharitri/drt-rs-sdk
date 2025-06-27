@@ -101,7 +101,7 @@ where
         token_ticker: &ManagedBuffer<Env::Api>,
         properties: NonFungibleTokenProperties,
     ) -> IssueCall<Env, From, To, Gas> {
-        let zero = BigUint::zero_ref();
+        let zero = BigUint::zero();
         self.issue(
             issue_cost,
             DcdtTokenType::NonFungible,

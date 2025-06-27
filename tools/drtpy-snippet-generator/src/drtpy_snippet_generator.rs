@@ -133,7 +133,7 @@ impl DrtpySnippetGenerator {
     }
 
     pub fn set_rewa_value(&mut self, rewa_value: &num_bigint::BigUint) {
-        self.rewa_value.clone_from(rewa_value);
+        self.rewa_value = rewa_value.clone();
     }
 
     pub fn add_dcdt_transfer(

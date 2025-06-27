@@ -239,7 +239,7 @@ where
         let mut opt_new_node_parent = None;
         let mut opt_current_node = self.get_root();
         while opt_current_node.is_some() {
-            opt_new_node_parent.clone_from(&opt_current_node);
+            opt_new_node_parent = opt_current_node.clone();
 
             let current_node = unsafe { opt_current_node.unwrap_unchecked() };
             if new_node.data == current_node.data {

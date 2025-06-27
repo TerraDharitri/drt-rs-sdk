@@ -21,7 +21,6 @@ where
     /// Avoids a clone when performing transfer-execute.
     ///
     /// Other than that, does thesame as `AnnotatedValue::into_value`.
-    #[inline]
     fn with_address_ref<F, R>(&self, env: &Env, f: F) -> R
     where
         F: FnOnce(&ManagedAddress<Env::Api>) -> R,

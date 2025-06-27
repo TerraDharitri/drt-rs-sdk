@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                            4
+// Endpoints:                            2
 // Async Callback (empty):               1
-// Total number of exported functions:   7
+// Total number of exported functions:   5
 
 #![no_std]
 
@@ -22,8 +22,6 @@ dharitri_sc_wasm_adapter::endpoints! {
         upgrade => upgrade
         getSum => sum
         add => add
-        multi_param => multi_param
-        multi_return => multi_return
     )
 }
 

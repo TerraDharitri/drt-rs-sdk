@@ -19,7 +19,6 @@ pub struct LeakingAllocator {
 unsafe impl Sync for LeakingAllocator {}
 
 impl LeakingAllocator {
-    #[allow(clippy::new_without_default)]
     pub const fn new() -> Self {
         LeakingAllocator {
             used: UnsafeCell::new(0),

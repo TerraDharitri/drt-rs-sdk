@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use super::edwards25519::{sc_mul_add, sc_reduce};
 use crate::crypto::edwards25519::extended_group_element::ExtendedGroupElement;
 use anyhow::{anyhow, Result};
@@ -128,9 +126,9 @@ impl PrivateKey {
     }
 }
 
-impl Display for PrivateKey {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        hex::encode(&self.0[..32]).fmt(f)
+impl ToString for PrivateKey {
+    fn to_string(&self) -> String {
+        hex::encode(&self.0[..32])
     }
 }
 

@@ -9,7 +9,6 @@ use codec::{
 // to test, run the following command in the crate folder:
 // cargo expand --test struct_with_generic_derive_test > expanded.rs
 
-#[allow(dead_code)]
 trait SimpleTrait {
     fn simple_function(&self);
 }

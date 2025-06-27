@@ -8,12 +8,10 @@ impl<Env> TxPayment<Env> for DcdtTokenPayment<Env::Api>
 where
     Env: TxEnv,
 {
-    #[inline]
     fn is_no_payment(&self, _env: &Env) -> bool {
         self.amount == 0u32
     }
 
-    #[inline]
     fn perform_transfer_execute(
         self,
         env: &Env,
@@ -25,7 +23,6 @@ where
             .perform_transfer_execute(env, to, gas_limit, fc);
     }
 
-    #[inline]
     fn with_normalized<From, To, F, R>(
         self,
         env: &Env,

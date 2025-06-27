@@ -17,7 +17,7 @@ fn test_with_multi_contract_same_shard_tx_that_has_no_sc_result() {
                   "round": 7646960,
                   "epoch": 6339,
                   "value": "0",
-                  "receiver": "drt1qqqqqqqqqqqqqpgqshqmekudxlxwp0d9j368etjamr5dw7k45u7qmfcdef",
+                  "receiver": "drt1llllllllllllllllllllllllllllllllllllllllllllllllluqqh8x2vh",
                   "sender": "drt1uh67c2lkhyj4vh73akv7jky9sfgvus8awwcj64uju69mmfne5u7qhejgak",
                   "gasPrice": 1000000000,
                   "gasLimit": 600000000,
@@ -38,10 +38,10 @@ fn test_with_multi_contract_same_shard_tx_that_has_no_sc_result() {
                   "hyperblockHash": "12df3fe65cacde2c9742b9506ac2261d34f3c72d690301192fd8016430d51913",
                   "timestamp": 1694433360,
                   "logs": {
-                    "address": "drt1qqqqqqqqqqqqqpgqshqmekudxlxwp0d9j368etjamr5dw7k45u7qmfcdef",
+                    "address": "drt1llllllllllllllllllllllllllllllllllllllllllllllllluqqh8x2vh",
                     "events": [
                       {
-                        "address": "drt1qqqqqqqqqqqqqpgqshqmekudxlxwp0d9j368etjamr5dw7k45u7qmfcdef",
+                        "address": "drt1llllllllllllllllllllllllllllllllllllllllllllllllluqqh8x2vh",
                         "identifier": "writeLog",
                         "topics": [
                           "5fXsK/a5JVZf0e2Z6ViFglDOQP1zsS1XkuaLvaZ5pzw=",
@@ -50,7 +50,7 @@ fn test_with_multi_contract_same_shard_tx_that_has_no_sc_result() {
                         "data": "QDZmNmJAMGFAMDIxODcxMWEwMA=="
                       },
                       {
-                        "address": "drt1qqqqqqqqqqqqqpgqshqmekudxlxwp0d9j368etjamr5dw7k45u7qmfcdef",
+                        "address": "drt1llllllllllllllllllllllllllllllllllllllllllllllllluqqh8x2vh",
                         "identifier": "completedTxEvent",
                         "topics": [
                           "6RSFfxv9ADukEbrjciZnA+X3BvpBLDeP6zf6peGMPXM="
