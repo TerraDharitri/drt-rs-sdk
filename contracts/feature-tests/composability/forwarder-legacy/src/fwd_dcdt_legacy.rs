@@ -1,6 +1,6 @@
 dharitri_sc::imports!();
 
-use super::storage;
+use super::fwd_storage_legacy;
 
 const PERCENTAGE_TOTAL: u64 = 10_000; // 100%
 
@@ -17,7 +17,7 @@ pub type DcdtTokenDataMultiValue<M> = MultiValue9<
 >;
 
 #[dharitri_sc::module]
-pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
+pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
     #[view(getFungibleDcdtBalance)]
     fn get_fungible_dcdt_balance(&self, token_identifier: &TokenIdentifier) -> BigUint {
         self.blockchain()
@@ -32,10 +32,7 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
 
     #[endpoint]
     fn send_dcdt(&self, to: &ManagedAddress, token_id: TokenIdentifier, amount: &BigUint) {
-        self.tx()
-            .to(to)
-            .single_dcdt(&token_id, 0, amount)
-            .transfer();
+        self.send().direct_dcdt(to, &token_id, 0, amount);
     }
 
     #[payable("*")]
@@ -45,10 +42,7 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
         let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = payment - fees;
 
-        self.tx()
-            .to(&to)
-            .single_dcdt(&token_id, 0, &amount_to_send)
-            .transfer();
+        self.send().direct_dcdt(&to, &token_id, 0, &amount_to_send);
     }
 
     #[endpoint]
@@ -59,14 +53,9 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
         amount_first_time: &BigUint,
         amount_second_time: &BigUint,
     ) {
-        self.tx()
-            .to(to)
-            .single_dcdt(&token_id, 0, amount_first_time)
-            .transfer();
-        self.tx()
-            .to(to)
-            .single_dcdt(&token_id, 0, amount_second_time)
-            .transfer();
+        self.send().direct_dcdt(to, &token_id, 0, amount_first_time);
+        self.send()
+            .direct_dcdt(to, &token_id, 0, amount_second_time);
     }
 
     #[endpoint]
@@ -84,7 +73,13 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
             all_token_payments.push(payment);
         }
 
-        self.tx().to(&to).payment(all_token_payments).transfer();
+        let _ = self.send_raw().multi_dcdt_transfer_execute(
+            &to,
+            &all_token_payments,
+            self.blockchain().get_gas_left(),
+            &ManagedBuffer::new(),
+            &ManagedArgBuffer::new(),
+        );
     }
 
     #[payable("REWA")]
@@ -140,7 +135,7 @@ pub trait ForwarderDcdtModule: storage::ForwarderStorageModule {
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.tx().to(caller).rewa(&returned_tokens).transfer();
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);

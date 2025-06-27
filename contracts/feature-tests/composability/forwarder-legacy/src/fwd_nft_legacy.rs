@@ -1,7 +1,7 @@
 dharitri_sc::imports!();
 dharitri_sc::derive_imports!();
 
-use super::storage_legacy;
+use super::fwd_storage_legacy;
 
 // used as mock attributes for NFTs
 #[derive(TopEncode, TopDecode, TypeAbi, Clone, Copy, PartialEq, Debug)]
@@ -21,7 +21,7 @@ pub struct ComplexAttributes<M: ManagedTypeApi> {
 }
 
 #[dharitri_sc::module]
-pub trait ForwarderNftModule: storage_legacy::ForwarderStorageModule {
+pub trait ForwarderNftModule: fwd_storage_legacy::ForwarderStorageModule {
     #[view]
     fn get_nft_balance(&self, token_identifier: &TokenIdentifier, nonce: u64) -> BigUint {
         self.blockchain().get_dcdt_balance(

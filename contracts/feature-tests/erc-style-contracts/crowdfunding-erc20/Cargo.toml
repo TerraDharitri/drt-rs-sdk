@@ -12,10 +12,10 @@ path = "src/crowdfunding_erc20.rs"
 path = "../erc20"
 
 [dependencies.dharitri-sc]
-version = "1.11.2"
+version = "1.11.4"
 path = "../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.11.2"
+version = "1.11.4"
 path = "../../../../framework/scenario"
 

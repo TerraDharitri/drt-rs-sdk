@@ -8,7 +8,6 @@ const WASM_PATH_EXPR: &str = "drtsc:output/linked-list-repeat.drtsc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.set_current_dir_from_workspace("contracts/benchmarks/mappers/linked-list-repeat");
 
     blockchain.register_contract(WASM_PATH_EXPR, linked_list_repeat::ContractBuilder);
     blockchain

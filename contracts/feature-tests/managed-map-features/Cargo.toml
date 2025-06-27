@@ -9,11 +9,11 @@ publish = false
 path = "src/mmap_features.rs"
 
 [dependencies.dharitri-sc]
-version = "1.11.2"
+version = "1.11.4"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.11.2"
+version = "1.11.4"
 path = "../../../framework/scenario"
 
 [dev-dependencies.dcdt-system-sc-mock]

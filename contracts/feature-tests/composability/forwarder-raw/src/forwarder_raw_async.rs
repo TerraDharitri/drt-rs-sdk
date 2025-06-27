@@ -66,8 +66,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
     ) {
         let (token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         self.forward_contract_call(to, token, payment, endpoint_name, args)
-            .async_call()
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     #[endpoint]
@@ -81,8 +80,7 @@ pub trait ForwarderRawAsync: super::forwarder_raw_common::ForwarderRawCommon {
         let (token, payment) = self.call_value().rewa_or_single_fungible_dcdt();
         let half_payment = payment / 2u32;
         self.forward_contract_call(to, token, half_payment, endpoint_name, args)
-            .async_call()
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     #[endpoint]

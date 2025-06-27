@@ -2,6 +2,7 @@
 #![allow(clippy::type_complexity)]
 
 dharitri_sc::imports!();
+pub mod transfer_role_proxy;
 
 #[dharitri_sc::contract]
 pub trait TransferRoleFeatures:

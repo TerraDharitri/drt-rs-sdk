@@ -15,6 +15,12 @@ pub struct Rewa<RewaValue>(pub RewaValue);
 
 pub type RewaPayment<Api> = Rewa<BigUint<Api>>;
 
+impl<RewaValue: Clone> Clone for Rewa<RewaValue> {
+    fn clone(&self) -> Self {
+        Rewa(self.0.clone())
+    }
+}
+
 impl<Env, RewaValue> TxPayment<Env> for Rewa<RewaValue>
 where
     Env: TxEnv,

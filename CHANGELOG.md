@@ -26,14 +26,25 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 1.11.2] - 2024-05-16
+
+## [sc 1.11.4] - 2024-05-24
+- Unified transaction syntax:
+	- Better compilation error messages for malformed transactions;
+	- Deprecated methods `async_call` and `async_call_promises`, which are kept for backwards compatibility, but causing confusion among developers;
+	- Contract upgrade available in tests.
+- `sc-meta` proxy compare option, which checks that proxies are up to date. Useful for CI.
+- `TypeAbi` - removed `Unmanaged` associated type trait bounds, and implemented it for more types.
+- Removed jitter from interactor transaction fetch.
+- Fixed an issue in the snippets generator.
+
+## [sc 0.50.1] - 2024-05-16
 - `sc-meta all snippets` generates unified syntax.
 - Proxy generator can reference multi-contract variant.
 - Fixes:
 	- `BoxedBytes` - fixed memory leak.
 	- `ManagedVecItem` - allowing larger payloads (up to 128 bytes).
 
-## [sc 0.50.0, codec 1.11.2, vm 1.11.2, sdk 1.11.2] - 2024-05-10
+## [sc 0.50.0, codec 1.11.4, vm 1.11.4, sdk 0.4.1] - 2024-05-10
 - Framework now runs on **stable** Rust. All unstable features were removed. The most important changes enabling this:
 	- `CodecFrom` completely removed, `TypeAbiFrom` was used instead since 0.49.0.
 	- `ManagedVecItem` payload redesigned.
@@ -96,7 +107,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Support for reading from another contract for the following storage mappers: `AddressToIdMapper`, `BiDiMapper`, `LinkedListMapper`, `SetMapper`, `SingleValueMapper`, `UniqueIdMapper`, `UnorderedSetMapper`, `UserMapper`, `VecMapper`, `WhitelistMapper`.
 - Additional methods to access data nodes directly in the `SetMapper` and `QueueMapper`.
 
-## [sc 0.47.2, codec 0.18.6, vm 0.8.2, scenario-format 1.11.2] - 2024-02-02
+## [sc 0.47.2, codec 0.18.6, vm 0.8.2, scenario-format 1.11.4] - 2024-02-02
 - Scenario testing infrastructure:
 	- The Rust VM can generate mock addresses, if not specified in advance.
 	- The `sc:` syntax now generates addresses with VM type 0x0500, same as the latest version of drt-go-scenario.
@@ -315,7 +326,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Many depedencies updates across the repo.
 - Updated readme files.
 
-## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 1.11.2, sdk 0.1.0] - 2023-01-12
+## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 1.11.4, sdk 0.1.0] - 2023-01-12
 - All crates were renamed, in line with the DharitrI brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
@@ -485,7 +496,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Trailing commas are allowed in `sc_panic!`, `require!` and `sc_print!`.
 - DcdtTokenData `decode_attributes_or_exit` for easier error handling.
 
-## [numbat-wasm 0.27.2, numbat-codec 1.11.2] - 2022-01-27
+## [numbat-wasm 0.27.2, numbat-codec 1.11.4] - 2022-01-27
 - Added missing non-specialized decode implementations for managed types.
 
 ## [numbat-wasm 0.27.1] - 2022-01-27
@@ -571,7 +582,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.22.3] - 2021-11-10
 - Memory allocation optimisations.
 
-## [numbat-wasm 1.11.2] - 2021-11-06
+## [numbat-wasm 1.11.4] - 2021-11-06
 - Callback endpoint automatically created empty for contracts that have no callbacks. This is determined by the `meta` crate, based on the ABI of the contract and its modules.
 - `UnorderedSetMapper`
 - `IgnoreVarArgs` variadic argument type that ignores input
@@ -623,7 +634,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [numbat-wasm 1.11.2, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
+## [numbat-wasm 1.11.4, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Andes minimum version is `v1.4.10`.
 	- Redesigned parts of the numbat-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -824,7 +835,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.10.2, numbat-codec 0.4.2] - 2020-12-28
 - Codec type hygene
 
-## [numbat-wasm 0.10.1, numbat-codec 1.11.2, denali 1.11.2] - 2020-12-23
+## [numbat-wasm 0.10.1, numbat-codec 0.4.1, denali 0.4.1] - 2020-12-23
 - Minor fixes, support for strings
 
 ## [numbat-wasm 0.10.0, numbat-codec 0.4.0] - 2020-12-21
@@ -950,7 +961,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.4.2] - 2020-05-07
 - Tutorial setup (later abandoned)
 
-## [numbat-wasm 1.11.2] - 2020-05-06
+## [numbat-wasm 0.4.1] - 2020-05-06
 - Direct storage conversion for simple types
 - Block info hooks
 

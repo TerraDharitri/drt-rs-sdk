@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-chain-vm"
-version = "1.11.2"
+version = "1.11.4"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]

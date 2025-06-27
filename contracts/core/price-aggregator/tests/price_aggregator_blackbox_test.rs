@@ -24,7 +24,6 @@ const PRICE_AGGREGATOR_PATH: DrtscPath =
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
-    blockchain.set_current_dir_from_workspace("contracts/core/price-aggregator");
     blockchain.register_contract(
         PRICE_AGGREGATOR_PATH,
         dharitri_sc_price_aggregator::ContractBuilder,
@@ -46,11 +45,7 @@ impl PriceAggregatorTestState {
         world.account(OWNER_ADDRESS).nonce(1);
         world.current_block().block_timestamp(100);
 
-        world.set_state_step(SetStateStep::new()).new_address(
-            OWNER_ADDRESS,
-            1,
-            PRICE_AGGREGATOR_ADDRESS,
-        );
+        world.new_address(OWNER_ADDRESS, 1, PRICE_AGGREGATOR_ADDRESS);
 
         let mut oracles = Vec::new();
         for i in 1..=NR_ORACLES {

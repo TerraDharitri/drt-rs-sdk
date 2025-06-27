@@ -8,6 +8,6 @@ publish = false
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "1.11.2"
+version = "1.11.4"
 path = "../../../../framework/meta"
 default-features = false

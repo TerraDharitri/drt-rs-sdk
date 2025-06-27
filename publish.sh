@@ -25,7 +25,7 @@
 # 4. Run `cargo test`, to make sure nothing was broken and all dependencies still work fine.
 #
 # 5. Commit changes. The name of the commit should be the released crates and versions, same as the changelog title,
-# e.g. `sc 0.39.0, codec 0.17.0, chain-vm 0.1.0, chain-scenario-format 1.11.2, sdk 0.1.0`.
+# e.g. `sc 0.39.0, codec 0.17.0, chain-vm 0.1.0, chain-scenario-format 1.11.4, sdk 0.1.0`.
 # The branch doesn't need to be published for the following steps to work.
 #
 # 6. Make sure that the contract upgrade tool is still sound.
@@ -60,57 +60,57 @@
 #
 
 cd vm
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ..
 
 cd sdk/core
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd sdk/scenario-format/
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd data/codec-derive
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd data/codec
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/derive
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/base
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/meta
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/scenario
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/snippets
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/wasm-adapter
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd contracts/modules
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../..
 
 cd contracts/core/price-aggregator
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../../..
 
 cd contracts/core/wrewa-swap
-cargo publish --allow-dirty  || return 1
+cargo publish --allow-dirty || return 1
 cd ../../..

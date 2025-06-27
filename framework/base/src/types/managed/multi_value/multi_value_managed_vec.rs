@@ -222,6 +222,10 @@ where
     M: ManagedTypeApi,
     T: ManagedVecItem,
 {
+    #[cfg(feature = "alloc")]
+    type Unmanaged = dharitri_sc_codec::multi_types::MultiValueVec<T::Unmanaged>;
+
+    #[cfg(not(feature = "alloc"))]
     type Unmanaged = Self;
 
     fn type_name() -> TypeName {

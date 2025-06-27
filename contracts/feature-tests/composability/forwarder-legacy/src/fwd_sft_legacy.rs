@@ -1,9 +1,9 @@
 dharitri_sc::imports!();
 
-use super::storage;
+use super::fwd_storage_legacy;
 
 #[dharitri_sc::module]
-pub trait ForwarderSftModule: storage::ForwarderStorageModule {
+pub trait ForwarderSftModule: fwd_storage_legacy::ForwarderStorageModule {
     #[payable("REWA")]
     #[endpoint]
     fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
@@ -47,7 +47,7 @@ pub trait ForwarderSftModule: storage::ForwarderStorageModule {
                 let (token_identifier, returned_tokens) =
                     self.call_value().rewa_or_single_fungible_dcdt();
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.tx().to(caller).rewa(&returned_tokens).transfer();
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);
