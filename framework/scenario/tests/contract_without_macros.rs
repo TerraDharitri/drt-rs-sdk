@@ -387,16 +387,10 @@ mod sample_adder {
                 false,
             );
             let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
-                &[],
                 "getSum",
                 "sum",
-                false,
-                false,
                 dharitri_sc::abi::EndpointMutabilityAbi::Readonly,
                 dharitri_sc::abi::EndpointTypeAbi::Endpoint,
-                &[],
-                &[],
-                false,
             );
             endpoint_abi
             .add_output::<
@@ -408,47 +402,30 @@ mod sample_adder {
             >();
             contract_abi.endpoints.push(endpoint_abi);
             let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
-                &[],
                 "init",
                 "init",
-                false,
-                false,
                 dharitri_sc::abi::EndpointMutabilityAbi::Mutable,
                 dharitri_sc::abi::EndpointTypeAbi::Init,
-                &[],
-                &[],
-                false,
             );
             endpoint_abi.add_input::<dharitri_sc::types::BigUint<Self::Api>>("initial_value");
             contract_abi.add_type_descriptions::<dharitri_sc::types::BigUint<Self::Api>>();
             contract_abi.constructors.push(endpoint_abi);
             let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
-                &[],
                 "upgrade",
                 "upgrade",
-                false,
-                false,
                 dharitri_sc::abi::EndpointMutabilityAbi::Mutable,
                 dharitri_sc::abi::EndpointTypeAbi::Upgrade,
-                &[],
-                &[],
-                false,
             );
             endpoint_abi.add_input::<dharitri_sc::types::BigUint<Self::Api>>("initial_value");
             contract_abi.add_type_descriptions::<dharitri_sc::types::BigUint<Self::Api>>();
             contract_abi.upgrade_constructors.push(endpoint_abi);
             let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
-                &["Add desired amount to the storage variable."],
                 "add",
                 "add",
-                false,
-                false,
                 dharitri_sc::abi::EndpointMutabilityAbi::Mutable,
                 dharitri_sc::abi::EndpointTypeAbi::Endpoint,
-                &[],
-                &[],
-                false,
-            );
+            )
+            .with_docs("Add desired amount to the storage variable.");
             endpoint_abi.add_input::<dharitri_sc::types::BigUint<Self::Api>>("value");
             contract_abi.add_type_descriptions::<dharitri_sc::types::BigUint<Self::Api>>();
             contract_abi.endpoints.push(endpoint_abi);
@@ -806,6 +783,7 @@ fn contract_without_macros_basic() {
 
 fn world() -> dharitri_sc_scenario::ScenarioWorld {
     let mut blockchain = dharitri_sc_scenario::ScenarioWorld::new();
+    blockchain.set_current_dir_from_workspace("framework/scenario");
     blockchain.register_contract(
         "drtsc:../../contracts/examples/adder/output/adder.drtsc.json",
         sample_adder::ContractBuilder,

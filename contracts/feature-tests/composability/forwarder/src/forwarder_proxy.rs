@@ -120,6 +120,42 @@ where
             .original_result()
     }
 
+    pub fn forward_sync_accept_funds_rh_rewa<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        to: Arg0,
+    ) -> TxTypedCall<Env, From, To, (), Gas, BigUint<Env::Api>> {
+        self.wrapped_tx
+            .raw_call("forward_sync_accept_funds_rh_rewa")
+            .argument(&to)
+            .original_result()
+    }
+
+    pub fn forward_sync_accept_funds_rh_single_dcdt<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        to: Arg0,
+    ) -> TxTypedCall<Env, From, To, (), Gas, DcdtTokenPayment<Env::Api>> {
+        self.wrapped_tx
+            .raw_call("forward_sync_accept_funds_rh_single_dcdt")
+            .argument(&to)
+            .original_result()
+    }
+
+    pub fn forward_sync_accept_funds_rh_multi_dcdt<
+        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
+    >(
+        self,
+        to: Arg0,
+    ) -> TxTypedCall<Env, From, To, (), Gas, ManagedVec<Env::Api, DcdtTokenPayment<Env::Api>>> {
+        self.wrapped_tx
+            .raw_call("forward_sync_accept_funds_rh_multi_dcdt")
+            .argument(&to)
+            .original_result()
+    }
+
     pub fn forward_sync_accept_funds_with_fees<
         Arg0: ProxyArg<ManagedAddress<Env::Api>>,
         Arg1: ProxyArg<BigUint<Env::Api>>,

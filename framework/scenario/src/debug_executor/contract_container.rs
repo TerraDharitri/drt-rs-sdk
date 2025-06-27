@@ -1,6 +1,6 @@
 use dharitri_chain_vm::tx_mock::{TxContextRef, TxFunctionName, TxPanic};
 use dharitri_vm_executor::{BreakpointValue, ExecutorError, Instance, MemLength, MemPtr};
-use dharitri_sc::contract_base::CallableContract;
+use dharitri_sc::{chain_core::types::ReturnCode, contract_base::CallableContract};
 use std::sync::Arc;
 
 use super::{catch_tx_panic, StaticVarStack};
@@ -81,7 +81,10 @@ impl Instance for ContractContainerRef {
             if call_successful {
                 Ok(())
             } else {
-                Err(TxPanic::new(1, "invalid function (not found)"))
+                Err(TxPanic::new(
+                    ReturnCode::FunctionNotFound,
+                    "invalid function (not found)",
+                ))
             }
         });
 

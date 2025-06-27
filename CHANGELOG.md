@@ -23,11 +23,64 @@ They are:
 - `dharitri-sc-codec`, in short `codec`, the serializer/deserializer, 2 crates:
 	- `dharitri-sc-codec`
 	- `dharitri-sc-codec-derive`
-- `dharitri-chain-vm`, in short `vm`, a Rust VM implementation, 1 crate.
+- Chain crates, in short `chain`. Formerly it was only the VM (`vm`). 2 crates:
+	- `dharitri-chain-core` - *a common crate for chain types, constants, flags*
+	- `dharitri-chain-vm` - *a Rust VM implementation*
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
-- `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
+- `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 3 crates:
+	- `dharitri-sdk`
+	- `dharitri-sdk-http`
+	- `dharitri-sdk-dapp`
 
-## [sc 1.14.0 codec 1.14.0, vm 1.14.0, sdk 1.14.0, scenario-format 1.14.0] - 2024-09-04
+
+## [sc 1.15.0, sdk 1.15.0, chain 1.15.0] - 2024-11-06
+- New crate, `dharitri-chain-core`, to be used in both framework and Rust VM. It contains common types, flags, and constants that refer to the protocol.
+- Major SDK/interactor refactor:
+	- Added support for Chain Simulator in interactors:
+		- Added chain-simulator-specific endpoints: feed account, advance blocks
+		- Added a system to set up accounts in the chain simulator from the interactor;
+		- Support for advancing blocks in the interactor;
+	- Split SDK crate into:
+		- `dharitri-sdk` - only contains the specifications of the gateway API, without a mechanism to call the API;
+		- `dharitri-sdk-http` - functionality to call the gateway via reqwest;
+		- `dharitri-sdk-dapp` - functionality to call the gateway via wasm-bindgen, to be used in WebAssembly front-ends;
+	- Major improvements in the retrieving of transactions and other blockchain data fron the API, many bugs fixed;
+	- Support for writing integration tests for interactors, using the Chain Simulator;
+		- Also added support for test-related `chain-simulator-tests` feature flag in `sc-meta`;
+	- Interactors on the front-end:
+		- Interactor type made generic over the gateway API implementation, so that it can be used in both front-end and back-end, with no change in the code base;
+		- Support for custom random number generation for the front-end;
+	- Mechanism for fixing file paths in the interactor context;
+	- Fixed an issue with the account tool;
+	- Adjusted `sc-meta snippets` for the new syntax and the chain simulator support;
+- Unified syntax:
+	- `ReturnsHandledOrError` result handler, which can gracefully deal with failed transactions;
+	- `ReturnsGasUsed` result handler;
+	- `PassValue` result handler for providing a closure-like context for multi-transaction call/deploy;
+	- More specific back transfer result handlers: `ReturnsBackTransfersREWA`, `ReturnsBackTransfersMultiDCDT`, `ReturnsBackTransfersSingleDCDT`;
+	- Fixed an issue with the update functionality not being general enough;
+	- Deprecated `prepare_async()`, developers can now call `run()` directly, asynchronously;
+- `sc-meta` improvements:
+	- New mechanism for detecting and warning about storage writes in readonly endpoints, integrated into the build system;
+	- Support for referencing the framework via git commit, branch, or tag, to make it easier to try out unreleased versions;
+	- Support for `default-features`;
+	- Better representation in console of the contract/lib folders, as well as better error messages.
+	- Refactoring of the dependency handling logic.
+- Fixed the debugger, following changes in the Rust debug tooling.
+- `ManagedVec` `set` always consumes ownership. Preparations for a profound memory management cleanup.
+- ABI:
+	- `title` field and annotation;
+	- Refactoring.
+
+## [sc 0.53.2] - 2024-10-02
+- `StakingModule` fix.
+
+## [sc 0.53.1, sdk 0.6.1] - 2024-10-01
+- Interactor: 
+  - Allow signature to be empty in TransactionOnNetwork;
+  - Allow return data to be empty in VMOutputApi.
+
+## [sc 0.53.0 codec 1.15.0, vm 0.10.0, sdk 0.6.0, scenario-format 1.15.0] - 2024-09-04
 - Unified syntax:
   -  Whitebox testing;
   -  Proxy fix for ManagedOption;
@@ -235,7 +288,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Fixed sc-meta standalone install backwards compatibility.
 - Better hygiene in codec derive.
 
-## [sc 0.45.0, vm 0.7.0, scenario-format 1.14.0, sdk 0.3.0] - 2023-11-24
+## [sc 0.45.0, vm 1.15.0, scenario-format 1.15.0, sdk 0.3.0] - 2023-11-24
 - Replicated VM 1.5 in the Rust VM. This includes support for:
 	- promises,
 	- back-transfers,
@@ -245,7 +298,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- `wasm` crates now fully generated based on data from `sc-config.toml` and root `Cargo.toml`.
 	- Setting wasm target dir automatically, if not specified, based on workspace.
 
-## [sc 0.44.0, vm 1.14.0] - 2023-11-03
+## [sc 0.44.0, vm 0.6.0] - 2023-11-03
 - Back-transfer:
 	- API support in framework (not yet implemented in the Rust VM);
 	- Feature flag: `"back-transfers"`;
@@ -525,7 +578,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.31.1, denali 0.13.1] - 2022-05-04
 - Bugfix - formatter single char issue.
 
-## [numbat-wasm 0.31.0, numbat-codec 0.11.0, denali 0.13.0] - 2022-05-02
+## [numbat-wasm 0.31.0, numbat-codec 1.15.0, denali 0.13.0] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -537,7 +590,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Fixed behavior of blockchain API `get_dcdt_token_data`.
 - Git tag/commit info in ABI (fixed & reintroduced).
 
-## [numbat-wasm 0.30.0, numbat-codec 1.14.0] - 2022-03-17
+## [numbat-wasm 0.30.0, numbat-codec 0.10.0] - 2022-03-17
 - Feature flags in `numbat-wasm`:
 	- `alloc` allows contracts to use the heap allocator. It is not a hard restriction, there is still access to the implementations of the heap-allocated types, but they are not imported. Some methods are only available with this flag.
 	- `ei-1-1` allows contracts to use VM endpoints that are not yet available on the mainnet.
@@ -629,7 +682,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - `ArrayVec` serialization
 - `ManagedAddress` additional conversions
 
-## [numbat-wasm 1.14.0] - 2021-11-23
+## [numbat-wasm 1.15.0] - 2021-11-23
 - Static access to API. Static thread-local context stack in the debugger.
 
 ## [numbat-wasm 0.22.11] - 2021-11-17
@@ -691,7 +744,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Debugger builtin function mocks check for DCDT roles
 - ABI provides definitions for DcdtTokenPayment, DcdtTokenData, DcdtTokenType
 
-## [numbat-wasm 1.14.0, numbat-codec 0.8.0, denali 0.11.0] - 2021-10-22
+## [numbat-wasm 1.15.0, numbat-codec 0.8.0, denali 1.15.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `numbat-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -708,7 +761,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [numbat-wasm 0.20.0, numbat-codec 0.7.0, denali 1.14.0] - 2021-10-02
+## [numbat-wasm 0.20.0, numbat-codec 1.15.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -719,7 +772,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [numbat-wasm 0.19.0, numbat-codec 1.14.0, denali 0.9.0] - 2021-09-10
+## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Andes minimum version is `v1.4.10`.
 	- Redesigned parts of the numbat-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -794,7 +847,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [numbat-wasm 0.16.0, denali 0.7.0, numbat-codec 0.5.3] - 2021-05-14
+## [numbat-wasm 0.16.0, denali 1.15.0, numbat-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -828,7 +881,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [numbat-wasm 0.14.0, denali 1.14.0, numbat-codec 0.5.1] - 2021-03-22
+## [numbat-wasm 0.14.0, denali 0.6.0, numbat-codec 0.5.1] - 2021-03-22
 - DCDT functionality:
 	- DCDT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCDT system smart contract proxy
@@ -867,7 +920,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [numbat-wasm 0.11.0, numbat-codec 0.5.0, denali 0.5.0] - 2021-02-05
+## [numbat-wasm 1.15.0, numbat-codec 0.5.0, denali 0.5.0] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
@@ -923,7 +976,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.10.1, numbat-codec 0.4.1, denali 0.4.1] - 2020-12-23
 - Minor fixes, support for strings
 
-## [numbat-wasm 1.14.0, numbat-codec 0.4.0] - 2020-12-21
+## [numbat-wasm 0.10.0, numbat-codec 0.4.0] - 2020-12-21
 - Codec derive
 - ABI generation framework
 - New example contracts
@@ -974,7 +1027,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 
-## [numbat-wasm 0.7.0, denali 0.1.0] - 2020-10-06
+## [numbat-wasm 1.15.0, denali 0.1.0] - 2020-10-06
 - Code coverage now possible
 - Denali in Rust
 - Modules properly integrated in the build process
@@ -987,7 +1040,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Specialized small int top encoding/decoding
 - `only_owner!` macro
 
-## [numbat-wasm 1.14.0, numbat-codec 0.1.2] - 2020-08-25
+## [numbat-wasm 0.6.0, numbat-codec 0.1.2] - 2020-08-25
 - Redesigned the entire build process with wasm crates
 - Standard modules
 - Moved all example contracts from sc-examples-rs to the framework

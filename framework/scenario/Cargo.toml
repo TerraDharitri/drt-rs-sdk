@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-scenario"
-version = "1.14.0"
+version = "1.15.0"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -34,21 +34,21 @@ wasm-incompatible = ["dharitri-chain-vm/wasm-incompatible"]
 run-go-tests = []
 
 [dependencies.dharitri-sc]
-version = "=1.14.0"
+version = "=1.15.0"
 features = ["alloc", "num-bigint"]
 path = "../base"
 
 [dependencies.dharitri-sc-meta-lib]
-version = "=1.14.0"
+version = "=1.15.0"
 path = "../meta-lib"
 
 [dependencies.dharitri-chain-scenario-format]
-version = "1.14.0"
+version = "1.15.0"
 path = "../../sdk/scenario-format"
 
 [dependencies.dharitri-vm-executor]
 version = "=1.0.2"
 
 [dependencies.dharitri-chain-vm]
-version = "=1.14.0"
-path = "../../vm"
+version = "=1.15.0"
+path = "../../chain/vm"

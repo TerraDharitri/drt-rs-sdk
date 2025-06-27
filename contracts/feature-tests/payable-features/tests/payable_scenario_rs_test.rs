@@ -2,6 +2,7 @@ use dharitri_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
+    blockchain.set_current_dir_from_workspace("contracts/feature-tests/payable-features");
     blockchain.register_contract(
         "drtsc:output/payable-features.drtsc.json",
         payable_features::ContractBuilder,

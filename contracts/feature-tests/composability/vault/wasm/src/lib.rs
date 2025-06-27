@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           15
+// Endpoints:                           18
 // Async Callback (empty):               1
-// Total number of exported functions:  18
+// Total number of exported functions:  21
 
 #![no_std]
 
@@ -29,8 +29,11 @@ dharitri_sc_wasm_adapter::endpoints! {
         reject_funds => reject_funds
         retrieve_funds_with_transfer_exec => retrieve_funds_with_transfer_exec
         retrieve_funds => retrieve_funds
+        retrieve_funds_rewa_or_single_dcdt => retrieve_funds_rewa_or_single_dcdt
+        retrieve_funds_multi_dcdt => retrieve_funds_multi_dcdt
         retrieve_multi_funds_async => retrieve_multi_funds_async
         burn_and_create_retrieve_async => burn_and_create_retrieve_async
+        explicit_panic => explicit_panic
         get_owner_address => get_owner_address
         call_counts => call_counts
         num_called_retrieve_funds_promises => num_called_retrieve_funds_promises

@@ -7,7 +7,7 @@ use super::{
     upgrade_print::*,
 };
 use crate::folder_structure::{DirectoryType, RelevantDirectory};
-use dharitri_sc_meta_lib::cargo_toml_contents::CargoTomlContents;
+use dharitri_sc_meta_lib::cargo_toml::CargoTomlContents;
 use ruplacer::Query;
 use toml::{value::Table, Value};
 

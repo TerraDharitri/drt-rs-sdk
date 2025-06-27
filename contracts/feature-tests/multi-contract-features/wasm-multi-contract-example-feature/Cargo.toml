@@ -27,9 +27,10 @@ panic = "abort"
 [dependencies.multi-contract-features]
 path = ".."
 features = ["example_feature"]
+default-features = false
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "1.14.0"
+version = "1.15.0"
 path = "../../../../framework/wasm-adapter"
 
 [workspace]

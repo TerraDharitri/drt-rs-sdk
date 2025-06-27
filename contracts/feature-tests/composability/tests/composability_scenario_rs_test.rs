@@ -2,6 +2,7 @@ use dharitri_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
+    blockchain.set_current_dir_from_workspace("contracts/feature-tests/composability");
 
     blockchain.register_contract(
         "drtsc:builtin-func-features/output/builtin-func-features.drtsc.json",
@@ -490,6 +491,12 @@ fn promises_call_callback_directly_rs() {
 #[test]
 fn promises_multi_transfer_rs() {
     world().run("scenarios/promises_multi_transfer.scen.json");
+}
+
+#[test]
+#[ignore = "TODO - some log is missing"]
+fn promises_multi_transfer_err_rs() {
+    world().run("scenarios/promises_multi_transfer_err.scen.json");
 }
 
 #[test]

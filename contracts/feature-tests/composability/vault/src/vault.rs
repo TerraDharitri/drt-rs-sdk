@@ -171,6 +171,30 @@ pub trait Vault {
     }
 
     #[endpoint]
+    #[payable("*")]
+    fn retrieve_funds_rewa_or_single_dcdt(&self) {
+        let token = self.call_value().rewa_or_single_dcdt();
+        self.retrieve_funds_event(&token.token_identifier, token.token_nonce, &token.amount);
+
+        if let Some(dcdt_token_id) = token.token_identifier.into_dcdt_option() {
+            self.tx()
+                .to(ToCaller)
+                .dcdt((dcdt_token_id, token.token_nonce, token.amount))
+                .transfer();
+        } else {
+            self.tx().to(ToCaller).rewa(token.amount).transfer();
+        }
+    }
+
+    #[endpoint]
+    #[payable("*")]
+    fn retrieve_funds_multi_dcdt(&self) {
+        let tokens = self.call_value().all_dcdt_transfers().clone_value();
+
+        self.tx().to(ToCaller).multi_dcdt(tokens).transfer();
+    }
+
+    #[endpoint]
     fn retrieve_multi_funds_async(
         &self,
         token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
@@ -223,6 +247,12 @@ pub trait Vault {
         }
 
         self.tx().to(ToCaller).payment(new_tokens).transfer();
+    }
+
+    #[endpoint]
+    #[payable("*")]
+    fn explicit_panic(&self) {
+        sc_panic!("explicit panic");
     }
 
     #[event("accept_funds")]

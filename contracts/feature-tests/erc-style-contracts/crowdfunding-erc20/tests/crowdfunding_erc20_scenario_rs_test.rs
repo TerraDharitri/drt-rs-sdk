@@ -2,6 +2,9 @@ use dharitri_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
+    blockchain.set_current_dir_from_workspace(
+        "contracts/feature-tests/erc-style-contracts/crowdfunding-erc20",
+    );
     blockchain.register_contract(
         "drtsc:output/crowdfunding-erc20.drtsc.json",
         crowdfunding_erc20::ContractBuilder,

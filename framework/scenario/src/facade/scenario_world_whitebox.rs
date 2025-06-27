@@ -13,7 +13,7 @@ use super::whitebox_contract::WhiteboxContract;
 
 impl ScenarioWorld {
     #[deprecated(
-        since = "1.14.0",
+        since = "0.53.0",
         note = "Please use method `whitebox`, as part of the unified transaction syntax."
     )]
     pub fn whitebox_query<ContractObj, F>(
@@ -31,7 +31,7 @@ impl ScenarioWorld {
     }
 
     #[deprecated(
-        since = "1.14.0",
+        since = "0.53.0",
         note = "Please use method `whitebox`, as part of the unified transaction syntax."
     )]
     pub fn whitebox_query_check<ContractObj, F, C>(
@@ -61,7 +61,7 @@ impl ScenarioWorld {
     }
 
     #[deprecated(
-        since = "1.14.0",
+        since = "0.53.0",
         note = "Please use method `whitebox`, as part of the unified transaction syntax."
     )]
     pub fn whitebox_call<ContractObj, F>(
@@ -80,7 +80,7 @@ impl ScenarioWorld {
     }
 
     #[deprecated(
-        since = "1.14.0",
+        since = "0.53.0",
         note = "Please use method `whitebox`, as part of the unified transaction syntax."
     )]
     pub fn whitebox_call_check<ContractObj, F, C>(
@@ -118,7 +118,7 @@ impl ScenarioWorld {
     }
 
     #[deprecated(
-        since = "1.14.0",
+        since = "0.53.0",
         note = "Please use method `whitebox`, as part of the unified transaction syntax."
     )]
     pub fn whitebox_deploy<ContractObj, F>(
@@ -137,7 +137,7 @@ impl ScenarioWorld {
     }
 
     #[deprecated(
-        since = "1.14.0",
+        since = "0.53.0",
         note = "Please use method `whitebox`, as part of the unified transaction syntax."
     )]
     pub fn whitebox_deploy_check<ContractObj, F, C>(

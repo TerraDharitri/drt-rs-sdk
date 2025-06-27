@@ -1,6 +1,7 @@
-use dharitri_sc_scenario::imports::Address;
+use dharitri_sc_scenario::imports::{Address, ReturnCode};
 use dharitri_sc_snippets::network_response;
-use dharitri_sdk::data::transaction::{TransactionInfo, TransactionOnNetwork};
+use dharitri_sc_snippets::sdk::data::transaction::{TransactionInfo, TransactionOnNetwork};
+use dharitri_sdk::bech32;
 
 #[test]
 fn test_deployed_address() {
@@ -53,12 +54,10 @@ fn test_deployed_address() {
         .data
         .unwrap()
         .transaction;
-    let tx_response = network_response::parse_tx_response(tx_on_network);
-    let opt_address = tx_response.new_deployed_address.map(|e| {
-        dharitri_sdk::data::address::Address::from_bytes(*e.as_array())
-            .to_bech32_string()
-            .unwrap()
-    });
+    let tx_response = network_response::parse_tx_response(tx_on_network, ReturnCode::Success);
+    let opt_address = tx_response
+        .new_deployed_address
+        .map(|address| bech32::encode(&address));
 
     let expected =
         Some("drt1qqqqqqqqqqqqqpgqwpdf84ggxzqzmr2zmw959q4nlf9nz562q33sq2ahp8".to_string());
@@ -124,7 +123,7 @@ fn test_deployed_address_should_be_none_if_not_a_sc_deployment_tx() {
         .data
         .unwrap()
         .transaction;
-    let tx_response = network_response::parse_tx_response(tx_on_network);
+    let tx_response = network_response::parse_tx_response(tx_on_network, ReturnCode::Success);
     let opt_address = tx_response.new_deployed_address;
 
     let expected: Option<Address> = None;

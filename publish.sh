@@ -60,23 +60,27 @@
 # 15. Write a release announcement in Confluence.
 #
 
-cd vm
+cd data/codec-derive
 cargo publish --allow-dirty || return 1
-cd ..
+cd ../..
+
+cd data/codec
+cargo publish --allow-dirty || return 1
+cd ../..
+
+cd chain/core
+cargo publish --allow-dirty || return 1
+cd ../..
+
+cd chain/vm
+cargo publish --allow-dirty || return 1
+cd ../..
 
 cd sdk/core
 cargo publish --allow-dirty || return 1
 cd ../..
 
 cd sdk/scenario-format/
-cargo publish --allow-dirty || return 1
-cd ../..
-
-cd data/codec-derive
-cargo publish --allow-dirty || return 1
-cd ../..
-
-cd data/codec
 cargo publish --allow-dirty || return 1
 cd ../..
 

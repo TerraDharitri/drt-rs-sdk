@@ -108,6 +108,11 @@ fn find_drtsc_files(path: &PathBuf) -> Vec<PathBuf> {
     let mut drtsc_files = Vec::new();
     for entry in read_dir(path).unwrap() {
         let file_path = entry.unwrap().path();
+
+        if file_path.to_str().unwrap().ends_with("-dbg.drtsc.json") {
+            continue;
+        }
+
         if file_path.to_str().unwrap().ends_with(".drtsc.json") {
             drtsc_files.push(file_path);
         }

@@ -24,6 +24,7 @@ const PRICE_AGGREGATOR_PATH: DrtscPath =
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
+    blockchain.set_current_dir_from_workspace("contracts/core/price-aggregator");
     blockchain.register_contract(
         PRICE_AGGREGATOR_PATH,
         dharitri_sc_price_aggregator::ContractBuilder,

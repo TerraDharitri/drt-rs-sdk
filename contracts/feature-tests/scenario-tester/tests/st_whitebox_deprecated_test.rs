@@ -8,6 +8,7 @@ const ADDER_PATH_EXPR: &str = "drtsc:output/scenario-tester.drtsc.json";
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
+    blockchain.set_current_dir_from_workspace("contracts/feature-tests");
     blockchain.register_contract(
         "drtsc:output/scenario-tester.drtsc.json",
         scenario_tester::ContractBuilder,

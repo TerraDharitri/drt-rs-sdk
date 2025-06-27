@@ -55,12 +55,14 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
     }
 
     #[view(getLockedRewaBalance)]
+    #[title("lockedRewaBalance")]
     fn get_locked_rewa_balance(&self) -> BigUint {
         self.blockchain()
             .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
     }
 
     #[view(getWrappedRewaTokenId)]
+    #[title("wrappedRewaTokenId")]
     #[storage_mapper("wrappedRewaTokenId")]
     fn wrapped_rewa_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
 }

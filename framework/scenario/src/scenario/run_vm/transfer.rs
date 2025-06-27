@@ -18,7 +18,7 @@ impl ScenarioVMRunner {
 
     pub fn perform_validator_reward(&mut self, validator_rewards_step: &ValidatorRewardStep) {
         self.blockchain_mock.state.increase_validator_reward(
-            &validator_rewards_step.tx.to.to_vm_address(),
+            &validator_rewards_step.tx.to.to_address(),
             &validator_rewards_step.tx.rewa_value.value,
         );
     }
@@ -26,8 +26,8 @@ impl ScenarioVMRunner {
 
 fn tx_input_from_transfer(tx_transfer: &TxTransfer) -> TxInput {
     TxInput {
-        from: tx_transfer.from.to_vm_address(),
-        to: tx_transfer.to.to_vm_address(),
+        from: tx_transfer.from.to_address(),
+        to: tx_transfer.to.to_address(),
         rewa_value: tx_transfer.rewa_value.value.clone(),
         dcdt_values: tx_dcdt_transfers_from_scenario(tx_transfer.dcdt_value.as_slice()),
         func_name: TxFunctionName::EMPTY,
