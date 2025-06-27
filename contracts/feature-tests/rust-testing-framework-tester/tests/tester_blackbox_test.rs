@@ -1,5 +1,5 @@
-use dharitri_sc_scenario::{api::StaticApi, scenario_model::*, *};
-use rust_testing_framework_tester::*; // TODO: clean up imports
+use dharitri_sc_scenario::imports::*;
+use rust_testing_framework_tester::*;
 
 const WASM_PATH_EXPR: &str = "drtsc:output/rust-testing-framework-tester.drtsc.json";
 
@@ -16,6 +16,7 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
+#[allow(deprecated)]
 fn tester_deploy_test() {
     let mut world = world();
     let code = world.code_expression(WASM_PATH_EXPR);
@@ -45,6 +46,7 @@ fn tester_deploy_test() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn tester_deploy_test_spawned_thread() {
     let handler = std::thread::spawn(|| {
         let mut world = world();

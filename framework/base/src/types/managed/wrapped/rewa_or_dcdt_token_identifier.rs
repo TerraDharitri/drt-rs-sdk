@@ -1,9 +1,10 @@
 use crate::{
-    abi::{TypeAbi, TypeName},
+    abi::{TypeAbi, TypeAbiFrom, TypeName},
     api::{HandleConstraints, ManagedTypeApi},
     codec::*,
     derive::ManagedVecItem,
     formatter::{FormatByteReceiver, SCDisplay, SCLowerHex},
+    proxy_imports::TestTokenIdentifier,
     types::{ManagedBuffer, ManagedOption, ManagedRef, ManagedType, TokenIdentifier},
 };
 
@@ -26,7 +27,7 @@ use crate as dharitri_sc; // required by the ManagedVecItem derive
 #[repr(transparent)]
 #[derive(ManagedVecItem, Clone)]
 pub struct RewaOrDcdtTokenIdentifier<M: ManagedTypeApi> {
-    data: ManagedOption<M, TokenIdentifier<M>>,
+    pub(crate) data: ManagedOption<M, TokenIdentifier<M>>,
 }
 
 impl<M: ManagedTypeApi> RewaOrDcdtTokenIdentifier<M> {
@@ -81,8 +82,9 @@ impl<M: ManagedTypeApi> RewaOrDcdtTokenIdentifier<M> {
     #[inline]
     pub fn into_name(self) -> ManagedBuffer<M> {
         self.map_or_else(
-            || ManagedBuffer::from(&Self::REWA_REPRESENTATION[..]),
-            |token_identifier| token_identifier.into_managed_buffer(),
+            (),
+            |()| ManagedBuffer::from(&Self::REWA_REPRESENTATION[..]),
+            |(), token_identifier| token_identifier.into_managed_buffer(),
         )
     }
 
@@ -91,25 +93,26 @@ impl<M: ManagedTypeApi> RewaOrDcdtTokenIdentifier<M> {
     /// Will fail if it encodes an invalid DCDT token identifier.
     pub fn is_valid(&self) -> bool {
         self.map_ref_or_else(
-            || true,
-            |token_identifier| token_identifier.is_valid_dcdt_identifier(),
+            (),
+            |()| true,
+            |(), token_identifier| token_identifier.is_valid_dcdt_identifier(),
         )
     }
 
-    pub fn map_or_else<U, D, F>(self, for_rewa: D, for_dcdt: F) -> U
+    pub fn map_or_else<Context, D, F, R>(self, context: Context, for_rewa: D, for_dcdt: F) -> R
     where
-        D: FnOnce() -> U,
-        F: FnOnce(TokenIdentifier<M>) -> U,
+        D: FnOnce(Context) -> R,
+        F: FnOnce(Context, TokenIdentifier<M>) -> R,
     {
-        self.data.map_or_else(for_rewa, for_dcdt)
+        self.data.map_or_else(context, for_rewa, for_dcdt)
     }
 
-    pub fn map_ref_or_else<U, D, F>(&self, for_rewa: D, for_dcdt: F) -> U
+    pub fn map_ref_or_else<Context, D, F, R>(&self, context: Context, for_rewa: D, for_dcdt: F) -> R
     where
-        D: FnOnce() -> U,
-        F: FnOnce(&TokenIdentifier<M>) -> U,
+        D: FnOnce(Context) -> R,
+        F: FnOnce(Context, &TokenIdentifier<M>) -> R,
     {
-        self.data.map_ref_or_else(for_rewa, for_dcdt)
+        self.data.map_ref_or_else(context, for_rewa, for_dcdt)
     }
 
     pub fn unwrap_dcdt(self) -> TokenIdentifier<M> {
@@ -142,8 +145,9 @@ impl<M: ManagedTypeApi> PartialEq<TokenIdentifier<M>> for RewaOrDcdtTokenIdentif
     #[inline]
     fn eq(&self, other: &TokenIdentifier<M>) -> bool {
         self.map_ref_or_else(
-            || false,
-            |self_dcdt_token_identifier| self_dcdt_token_identifier == other,
+            (),
+            |()| false,
+            |(), self_dcdt_token_identifier| self_dcdt_token_identifier == other,
         )
     }
 }
@@ -202,17 +206,32 @@ impl<M: ManagedTypeApi> TopDecode for RewaOrDcdtTokenIdentifier<M> {
     }
 }
 
-impl<M> CodecFromSelf for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
+impl<M> TypeAbiFrom<TokenIdentifier<M>> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
+impl<M> TypeAbiFrom<&TokenIdentifier<M>> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
+impl<M> TypeAbiFrom<&[u8]> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
+impl<M> TypeAbiFrom<&str> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
 
-impl<M> CodecFrom<TokenIdentifier<M>> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
-impl<M> CodecFrom<&TokenIdentifier<M>> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
+impl<'a, M> TypeAbiFrom<TestTokenIdentifier<'a>> for RewaOrDcdtTokenIdentifier<M> where
+    M: ManagedTypeApi
+{
+}
+impl<'a, M> TypeAbiFrom<&TestTokenIdentifier<'a>> for RewaOrDcdtTokenIdentifier<M> where
+    M: ManagedTypeApi
+{
+}
 
-impl<M> CodecFrom<&[u8]> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
-impl<M> CodecFrom<&str> for RewaOrDcdtTokenIdentifier<M> where M: ManagedTypeApi {}
+impl<M: ManagedTypeApi> TypeAbiFrom<Self> for RewaOrDcdtTokenIdentifier<M> {}
+impl<M: ManagedTypeApi> TypeAbiFrom<&Self> for RewaOrDcdtTokenIdentifier<M> {}
 
 impl<M: ManagedTypeApi> TypeAbi for RewaOrDcdtTokenIdentifier<M> {
+    type Unmanaged = Self;
+
     fn type_name() -> TypeName {
         "RewaOrDcdtTokenIdentifier".into()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "RewaOrDcdtTokenIdentifier<$API>".into()
     }
 }
 
@@ -228,7 +247,7 @@ impl<M: ManagedTypeApi> SCDisplay for RewaOrDcdtTokenIdentifier<M> {
     }
 }
 
-const REWA_REPRESENTATION_HEX: &[u8] = b"52455741";
+const REWA_REPRESENTATION_HEX: &[u8] = b"45474C44";
 
 impl<M: ManagedTypeApi> SCLowerHex for RewaOrDcdtTokenIdentifier<M> {
     fn fmt<F: FormatByteReceiver>(&self, f: &mut F) {

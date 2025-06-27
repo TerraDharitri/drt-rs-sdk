@@ -9,11 +9,13 @@ use crate::{
 pub trait HelpersModule: storage::StorageModule {
     fn send_fee_to_address(&self, fee: &RewaOrDcdtTokenPayment, address: &ManagedAddress) {
         if fee.token_identifier == RewaOrDcdtTokenIdentifier::rewa() {
-            self.send().direct_rewa(address, &fee.amount);
+            self.tx().to(address).rewa(&fee.amount).transfer();
         } else {
             let dcdt_fee = fee.clone().unwrap_dcdt();
-            self.send()
-                .direct_dcdt(address, &dcdt_fee.token_identifier, 0, &dcdt_fee.amount);
+            self.tx()
+                .to(address)
+                .single_dcdt(&dcdt_fee.token_identifier, 0, &dcdt_fee.amount)
+                .transfer();
         }
     }
 

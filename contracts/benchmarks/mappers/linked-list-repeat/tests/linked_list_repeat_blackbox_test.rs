@@ -1,7 +1,8 @@
+#![allow(deprecated)] // TODO: unified syntax
+
 use benchmark_common::ExampleStruct;
 use linked_list_repeat::ProxyTrait;
-use dharitri_sc::types::{MultiValueEncoded, TokenIdentifier};
-use dharitri_sc_scenario::{api::StaticApi, scenario_model::*, *};
+use dharitri_sc_scenario::imports::*;
 
 const WASM_PATH_EXPR: &str = "drtsc:output/linked-list-repeat.drtsc.json";
 

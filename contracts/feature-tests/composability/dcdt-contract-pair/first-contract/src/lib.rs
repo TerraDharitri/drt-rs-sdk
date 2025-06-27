@@ -2,9 +2,9 @@
 
 dharitri_sc::imports!();
 
-const DCDT_TRANSFER_STRING: &[u8] = b"DCDTTransfer";
-const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &[u8] = b"acceptDcdtPayment";
-const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &[u8] = b"rejectDcdtPayment";
+const DCDT_TRANSFER_STRING: &str = "DCDTTransfer";
+const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &str = "acceptDcdtPayment";
+const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &str = "rejectDcdtPayment";
 
 #[dharitri_sc::contract]
 pub trait FirstContract {
@@ -90,14 +90,13 @@ pub trait FirstContract {
             "Wrong dcdt token"
         );
 
-        let _ = self.send_raw().transfer_dcdt_execute(
-            &second_contract_address,
-            &expected_token_identifier,
-            &dcdt_value,
-            self.blockchain().get_gas_left(),
-            &ManagedBuffer::from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
-            &ManagedArgBuffer::new(),
-        );
+        let gas_left = self.blockchain().get_gas_left();
+        self.tx()
+            .to(&second_contract_address)
+            .gas(gas_left)
+            .raw_call(SECOND_CONTRACT_REJECT_DCDT_PAYMENT)
+            .single_dcdt(&expected_token_identifier, 0u64, &dcdt_value)
+            .transfer_execute();
     }
 
     #[payable("*")]
@@ -112,14 +111,13 @@ pub trait FirstContract {
             "Wrong dcdt token"
         );
 
-        let _ = self.send_raw().transfer_dcdt_execute(
-            &second_contract_address,
-            &expected_token_identifier,
-            &dcdt_value,
-            self.blockchain().get_gas_left(),
-            &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
-            &ManagedArgBuffer::new(),
-        );
+        let gas_left = self.blockchain().get_gas_left();
+        self.tx()
+            .to(&second_contract_address)
+            .gas(gas_left)
+            .raw_call(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT)
+            .single_dcdt(&expected_token_identifier, 0u64, &dcdt_value)
+            .transfer_execute();
     }
 
     fn call_dcdt_second_contract(
@@ -138,12 +136,11 @@ pub trait FirstContract {
             arg_buffer.push_arg_raw(arg);
         }
 
-        self.send_raw().async_call_raw(
-            to,
-            &BigUint::zero(),
-            &ManagedBuffer::from(DCDT_TRANSFER_STRING),
-            &arg_buffer,
-        );
+        self.tx()
+            .to(to)
+            .raw_call(DCDT_TRANSFER_STRING)
+            .arguments_raw(arg_buffer)
+            .async_call_and_exit();
     }
 
     // storage

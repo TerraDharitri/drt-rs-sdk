@@ -1,6 +1,5 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
-#![allow(clippy::let_unit_value)]
 
 pub mod call_async;
 pub mod call_sync;
@@ -9,10 +8,12 @@ pub mod contract_change_owner;
 pub mod contract_deploy;
 pub mod contract_upgrade;
 pub mod dcdt;
+pub mod forwarder_proxy;
 pub mod nft;
 pub mod roles;
 pub mod sft;
 pub mod storage;
+pub mod vault_proxy;
 
 dharitri_sc::imports!();
 
@@ -36,6 +37,6 @@ pub trait Forwarder:
 
     #[endpoint]
     fn send_rewa(&self, to: &ManagedAddress, amount: &BigUint) {
-        self.send().direct_rewa(to, amount);
+        self.tx().to(to).rewa(amount).transfer();
     }
 }

@@ -2,14 +2,11 @@ use dharitri_sc_price_aggregator::{
     price_aggregator_data::{OracleStatus, TimestampedPrice, TokenPair},
     PriceAggregator, MAX_ROUND_DURATION_SECONDS,
 };
-use dharitri_sc::types::{RewaOrDcdtTokenIdentifier, MultiValueEncoded};
 use dharitri_sc_modules::{
     pause::EndpointWrappers as PauseEndpointWrappers,
     staking::EndpointWrappers as StakingEndpointWrappers,
 };
-use dharitri_sc_scenario::{
-    managed_address, managed_biguint, managed_buffer, scenario_model::*, WhiteboxContract, *,
-};
+use dharitri_sc_scenario::imports::*;
 
 pub const DECIMALS: u8 = 0;
 pub const REWA_TICKER: &[u8] = b"REWA";

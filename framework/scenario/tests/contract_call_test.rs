@@ -3,6 +3,7 @@ use dharitri_sc_scenario::scenario_model::ScCallStep;
 use num_traits::Zero;
 
 #[test]
+#[allow(deprecated)]
 fn test_contract_call_multi_dcdt() {
     let tx = ScCallStep::new()
         .from("address:sender")

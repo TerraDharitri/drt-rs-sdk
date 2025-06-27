@@ -1,20 +1,9 @@
-#![allow(deprecated)] // TODO: migrate tests
-
-use adder::*;
-use forwarder::call_sync::*;
+use dharitri_sc_scenario::imports::*;
 use num_traits::ToPrimitive;
 
+use adder::*;
 use basic_features::BasicFeatures;
-use dharitri_sc::{
-    codec::Empty,
-    contract_base::ContractBase,
-    err_msg,
-    types::{Address, BigUint, DcdtLocalRole, DcdtTokenPayment, ManagedVec, TokenIdentifier},
-};
-use dharitri_sc_scenario::{
-    api::DebugApi, assert_values_eq, managed_address, managed_biguint, managed_buffer,
-    managed_token_id, rust_biguint, testing_framework::*,
-};
+use forwarder::call_sync::*;
 use rust_testing_framework_tester::{dummy_module::DummyModule, *};
 
 const TEST_OUTPUT_PATH: &str = "test.scen.json";

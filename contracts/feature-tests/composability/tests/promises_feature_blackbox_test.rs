@@ -1,9 +1,7 @@
+#![allow(deprecated)] // TODO: unified syntax
+
 use dharitri_sc::types::BigUint;
-use dharitri_sc_scenario::{
-    api::StaticApi,
-    scenario_model::{Account, CheckAccount, CheckStateStep, ScCallStep, SetStateStep},
-    ContractInfo, ScenarioWorld,
-};
+use dharitri_sc_scenario::imports::*;
 
 use promises_features::call_sync_bt::ProxyTrait;
 

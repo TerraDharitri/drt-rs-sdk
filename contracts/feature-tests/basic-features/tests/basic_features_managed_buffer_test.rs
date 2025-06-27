@@ -1,5 +1,4 @@
-use dharitri_sc::types::{ManagedAddress, ManagedBuffer};
-use dharitri_sc_scenario::{api::StaticApi, *};
+use dharitri_sc_scenario::imports::*;
 
 use basic_features::managed_buffer_features::ManagedBufferFeatures;
 

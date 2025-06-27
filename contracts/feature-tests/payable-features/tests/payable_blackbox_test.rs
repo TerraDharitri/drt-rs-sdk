@@ -1,4 +1,4 @@
-use dharitri_sc_scenario::{scenario_model::*, *};
+use dharitri_sc_scenario::imports::*;
 
 const PF_PATH_EXPR: &str = "drtsc:output/payable-features.drtsc.json";
 

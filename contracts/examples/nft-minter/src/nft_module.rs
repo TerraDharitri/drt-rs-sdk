@@ -88,21 +88,14 @@ pub trait NftModule {
         self.price_tag(nft_nonce).clear();
 
         let nft_token_id = self.nft_token_id().get();
-        let caller = self.blockchain().get_caller();
-        self.send().direct_dcdt(
-            &caller,
-            &nft_token_id,
-            nft_nonce,
-            &BigUint::from(NFT_AMOUNT),
-        );
+
+        self.tx()
+            .to(ToCaller)
+            .single_dcdt(&nft_token_id, nft_nonce, &BigUint::from(NFT_AMOUNT))
+            .transfer();
 
         let owner = self.blockchain().get_owner_address();
-        self.send().direct(
-            &owner,
-            &payment.token_identifier,
-            payment.token_nonce,
-            &payment.amount,
-        );
+        self.tx().to(owner).payment(payment).transfer();
     }
 
     // views
@@ -135,11 +128,9 @@ pub trait NftModule {
                 self.nft_token_id().set(&token_id.unwrap_dcdt());
             },
             ManagedAsyncCallResult::Err(_) => {
-                let caller = self.blockchain().get_owner_address();
                 let returned = self.call_value().rewa_or_single_dcdt();
                 if returned.token_identifier.is_rewa() && returned.amount > 0 {
-                    self.send()
-                        .direct(&caller, &returned.token_identifier, 0, &returned.amount);
+                    self.tx().to(ToCaller).rewa(returned.amount).transfer();
                 }
             },
         }

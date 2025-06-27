@@ -1,6 +1,6 @@
 #![no_std]
 
-use kitty::{kitty_genes::*, Kitty};
+use kitty::{Kitty, KittyGenes};
 use random::Random;
 
 #[dharitri_sc::contract]

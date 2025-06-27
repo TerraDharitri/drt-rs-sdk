@@ -1,2 +1,3 @@
-gateway = 'https://testnet-gateway.dharitri.org'
+gateway = 'https://devnet-gateway.dharitri.com'
 quorum = 2
+wrewa_address = "drt1qqqqqqqqqqqqqpgqqkwzsxkjc83vlfex9dmznwm7tjvxlqqkpauqmnyay5"

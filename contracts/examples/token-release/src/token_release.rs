@@ -312,8 +312,10 @@ pub trait TokenRelease {
         address: &ManagedAddress,
         amount: &BigUint,
     ) {
-        self.send()
-            .direct_dcdt(address, token_identifier, 0, amount);
+        self.tx()
+            .to(address)
+            .single_dcdt(token_identifier, 0, amount)
+            .transfer();
     }
 
     fn mint_all_tokens(&self, token_identifier: &TokenIdentifier, amount: &BigUint) {

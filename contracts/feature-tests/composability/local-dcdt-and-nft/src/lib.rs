@@ -138,8 +138,10 @@ pub trait LocalDcdtAndDcdtNft {
         nonce: u64,
         amount: BigUint,
     ) {
-        self.send()
-            .transfer_dcdt_via_async_call(to, token_identifier, nonce, amount);
+        self.tx()
+            .to(to)
+            .dcdt((token_identifier, nonce, amount))
+            .async_call_and_exit();
     }
 
     #[endpoint]
@@ -157,15 +159,15 @@ pub trait LocalDcdtAndDcdtNft {
             arg_buffer.push_arg_raw(arg);
         }
 
-        let _ = self.send_raw().transfer_dcdt_nft_execute(
-            &to,
-            &token_identifier,
-            nonce,
-            &amount,
-            self.blockchain().get_gas_left(),
-            &function,
-            &arg_buffer,
-        );
+        let gas_left = self.blockchain().get_gas_left();
+
+        self.tx()
+            .to(&to)
+            .gas(gas_left)
+            .raw_call(function)
+            .arguments_raw(arg_buffer)
+            .single_dcdt(&token_identifier, nonce, &amount)
+            .transfer_execute();
     }
 
     // Semi-Fungible
@@ -287,7 +289,7 @@ pub trait LocalDcdtAndDcdtNft {
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens);
+                    self.tx().to(caller).rewa(&returned_tokens).transfer();
                 }
 
                 self.last_error_message().set(&message.err_msg);
@@ -311,7 +313,7 @@ pub trait LocalDcdtAndDcdtNft {
                 let (token_identifier, returned_tokens) =
                     self.call_value().rewa_or_single_fungible_dcdt();
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens);
+                    self.tx().to(caller).rewa(&returned_tokens).transfer();
                 }
 
                 self.last_error_message().set(&message.err_msg);

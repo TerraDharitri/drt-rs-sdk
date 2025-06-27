@@ -1,12 +1,6 @@
-use dharitri_sc::{codec::multi_types::MultiValueVec, types::Address};
-use dharitri_sc_scenario::{
-    api::StaticApi,
-    scenario_model::{
-        Account, AddressValue, CheckAccount, CheckStateStep, ScCallStep, ScDeployStep,
-        SetStateStep, TxExpect,
-    },
-    ContractInfo, ScenarioWorld,
-};
+#![allow(deprecated)] // TODO: unified syntax
+
+use dharitri_sc_scenario::imports::*;
 use transfer_role_features::ProxyTrait as _;
 
 const ACCEPT_FUNDS_FUNC_NAME: &[u8] = b"accept_funds";

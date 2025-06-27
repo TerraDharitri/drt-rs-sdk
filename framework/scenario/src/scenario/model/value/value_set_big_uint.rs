@@ -95,10 +95,21 @@ impl From<&BigUint> for BigUintValue {
 
 impl<M: ManagedTypeApi> From<crate::dharitri_sc::types::BigUint<M>> for BigUintValue {
     fn from(from: crate::dharitri_sc::types::BigUint<M>) -> Self {
-        let value = BigUint::from_bytes_be(from.to_bytes_be().as_slice());
+        let value = from.to_alloc();
         BigUintValue {
             original: ValueSubTree::Str(value.to_string()),
             value,
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> From<crate::dharitri_sc::types::AnnotatedRewaPayment<M>>
+    for BigUintValue
+{
+    fn from(from: crate::dharitri_sc::types::AnnotatedRewaPayment<M>) -> Self {
+        BigUintValue {
+            value: from.value.to_alloc(),
+            original: ValueSubTree::Str(from.annotation.to_string()),
         }
     }
 }

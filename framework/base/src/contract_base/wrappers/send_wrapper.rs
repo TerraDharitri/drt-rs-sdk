@@ -3,18 +3,13 @@ use core::marker::PhantomData;
 use crate::codec::Empty;
 
 use crate::{
-    api::{
-        BlockchainApi, BlockchainApiImpl, CallTypeApi, StorageReadApi,
-        CHANGE_OWNER_BUILTIN_FUNC_NAME, CLAIM_DEVELOPER_REWARDS_FUNC_NAME,
-        DCDT_LOCAL_BURN_FUNC_NAME, DCDT_LOCAL_MINT_FUNC_NAME, DCDT_NFT_ADD_QUANTITY_FUNC_NAME,
-        DCDT_NFT_ADD_URI_FUNC_NAME, DCDT_NFT_BURN_FUNC_NAME, DCDT_NFT_CREATE_FUNC_NAME,
-        DCDT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME,
-    },
+    api::{BlockchainApi, CallTypeApi, StorageReadApi},
     codec,
-    dcdt::DCDTSystemSmartContractProxy,
     types::{
-        BigUint, ContractCall, ContractCallNoPayment, RewaOrDcdtTokenIdentifier, DcdtTokenPayment,
-        ManagedAddress, ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, TokenIdentifier,
+        system_proxy, BigUint, ContractCallNoPayment, DCDTSystemSCAddress,
+        RewaOrDcdtTokenIdentifier, DcdtTokenPayment, FunctionCall, GasLeft, ManagedAddress,
+        ManagedArgBuffer, ManagedBuffer, ManagedType, ManagedVec, NotPayable, OriginalResultMarker,
+        ReturnsRawResult, ReturnsResult, ToSelf, TokenIdentifier, Tx, TxScEnv,
     },
 };
 
@@ -50,12 +45,21 @@ where
         SendRawWrapper::new()
     }
 
-    /// A proxy for calling the system smart contract.
-    ///
-    /// Use the methods of this proxy to launch contract calls to the system SC.
-    #[inline]
-    pub fn dcdt_system_sc_proxy(&self) -> DCDTSystemSmartContractProxy<A> {
-        DCDTSystemSmartContractProxy::new_proxy_obj()
+    /// Backwards compatibility, synonymous to `dcdt_system_sc_tx`, which is the more appropriate name now.
+    pub fn dcdt_system_sc_proxy(
+        &self,
+    ) -> system_proxy::DCDTSystemSCProxyMethods<TxScEnv<A>, (), DCDTSystemSCAddress, ()> {
+        self.dcdt_system_sc_tx()
+    }
+
+    /// Prepares a proxy object to call the system SC.
+    /// It has the destination address set, as well as the contract type (as specified in the proxy).
+    pub fn dcdt_system_sc_tx(
+        &self,
+    ) -> system_proxy::DCDTSystemSCProxyMethods<TxScEnv<A>, (), DCDTSystemSCAddress, ()> {
+        Tx::new_tx_from_sc()
+            .to(DCDTSystemSCAddress)
+            .typed(system_proxy::DCDTSystemSCProxy)
     }
 
     /// Convenient way to quickly instance a minimal contract call (with no REWA, no arguments, etc.)
@@ -74,7 +78,7 @@ where
     /// Used especially for sending REWA to regular accounts.
     #[inline]
     pub fn direct_rewa(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
-        self.send_raw_wrapper().direct_rewa(to, amount, Empty)
+        Tx::new_tx_from_sc().to(to).rewa(amount).transfer();
     }
 
     /// Sends REWA to a given address, directly.
@@ -82,11 +86,10 @@ where
     ///
     /// If the amount is 0, it returns without error.
     pub fn direct_non_zero_rewa(&self, to: &ManagedAddress<A>, amount: &BigUint<A>) {
-        if amount == &0 {
-            return;
-        }
-
-        self.direct_rewa(to, amount)
+        Tx::new_tx_from_sc()
+            .to(to)
+            .rewa(amount)
+            .transfer_if_not_empty();
     }
 
     /// Sends either REWA, DCDT or NFT to the target address,
@@ -188,16 +191,17 @@ where
     }
 
     /// Sends a single DCDT transfer to target address.
-    #[inline]
-    #[allow(clippy::too_many_arguments)]
     pub fn direct_dcdt(
         &self,
         to: &ManagedAddress<A>,
         token_identifier: &TokenIdentifier<A>,
-        nonce: u64,
+        token_nonce: u64,
         amount: &BigUint<A>,
     ) {
-        self.direct_dcdt_with_gas_limit(to, token_identifier, nonce, amount, 0, Empty, &[]);
+        Tx::new_tx_from_sc()
+            .to(to)
+            .single_dcdt(token_identifier, token_nonce, amount)
+            .transfer();
     }
 
     /// Sends a single DCDT transfer to target address.
@@ -290,13 +294,7 @@ where
         to: &ManagedAddress<A>,
         payments: &ManagedVec<A, DcdtTokenPayment<A>>,
     ) {
-        let _ = self.send_raw_wrapper().multi_dcdt_transfer_execute(
-            to,
-            payments,
-            0,
-            &ManagedBuffer::new(),
-            &ManagedArgBuffer::new(),
-        );
+        Tx::new_tx_from_sc().to(to).payment(payments).transfer();
     }
 
     /// Performs a simple DCDT/NFT transfer, but via async call.  
@@ -314,10 +312,10 @@ where
         nonce: u64,
         amount: BigUint<A>,
     ) -> ! {
-        ContractCallNoPayment::<A, ()>::new(to, ManagedBuffer::new())
-            .with_dcdt_transfer((token, nonce, amount))
-            .async_call()
-            .call_and_exit_ignore_callback()
+        Tx::new_tx_from_sc()
+            .to(to)
+            .dcdt((token, nonce, amount))
+            .async_call_and_exit()
     }
 
     /// Performs a simple DCDT/NFT transfer, but via async call.  
@@ -339,10 +337,7 @@ where
         if amount == 0 {
             return;
         }
-        ContractCallNoPayment::<A, ()>::new(to, ManagedBuffer::new())
-            .with_dcdt_transfer((token, nonce, amount))
-            .async_call()
-            .call_and_exit_ignore_callback()
+        self.transfer_dcdt_via_async_call(to, token, nonce, amount)
     }
 
     /// Sends multiple DCDT tokens to a target address, via an async call.
@@ -351,32 +346,51 @@ where
         to: ManagedAddress<A>,
         payments: ManagedVec<A, DcdtTokenPayment<A>>,
     ) -> ! {
-        ContractCallNoPayment::<A, ()>::new(to, ManagedBuffer::new())
-            .with_multi_token_transfer(payments)
-            .async_call()
-            .call_and_exit_ignore_callback()
+        Tx::new_tx_from_sc()
+            .to(to)
+            .payment(payments)
+            .async_call_and_exit()
     }
 
     /// Creates a call to the `ClaimDeveloperRewards` builtin function.
-    ///
-    /// In itself, this does nothing. You need to then call turn the contract call into an async call.
+    #[allow(clippy::type_complexity)]
     pub fn claim_developer_rewards(
         &self,
         child_sc_address: ManagedAddress<A>,
-    ) -> ContractCallNoPayment<A, ()> {
-        ContractCallNoPayment::new(child_sc_address, CLAIM_DEVELOPER_REWARDS_FUNC_NAME)
+    ) -> Tx<
+        TxScEnv<A>,
+        (),
+        ManagedAddress<A>,
+        NotPayable,
+        (),
+        FunctionCall<A>,
+        OriginalResultMarker<()>,
+    > {
+        Tx::new_tx_from_sc()
+            .to(child_sc_address)
+            .typed(system_proxy::UserBuiltinProxy)
+            .claim_developer_rewards()
     }
 
     /// Creates a call to the `ChangeOwnerAddress` builtin function.
-    ///
-    /// In itself, this does nothing. You need to then call turn the contract call into an async call.
+    #[allow(clippy::type_complexity)]
     pub fn change_owner_address(
         &self,
         child_sc_address: ManagedAddress<A>,
         new_owner: &ManagedAddress<A>,
-    ) -> ContractCallNoPayment<A, ()> {
-        self.contract_call(child_sc_address, CHANGE_OWNER_BUILTIN_FUNC_NAME)
-            .argument(&new_owner)
+    ) -> Tx<
+        TxScEnv<A>,
+        (),
+        ManagedAddress<A>,
+        NotPayable,
+        (),
+        FunctionCall<A>,
+        OriginalResultMarker<()>,
+    > {
+        Tx::new_tx_from_sc()
+            .to(child_sc_address)
+            .typed(system_proxy::UserBuiltinProxy)
+            .change_owner_address(new_owner)
     }
 
     /// Allows synchronously calling a local function by name. Execution is resumed afterwards.
@@ -385,11 +399,16 @@ where
     pub fn call_local_dcdt_built_in_function(
         &self,
         gas: u64,
-        endpoint_name: &ManagedBuffer<A>,
-        arg_buffer: &ManagedArgBuffer<A>,
+        endpoint_name: ManagedBuffer<A>,
+        arg_buffer: ManagedArgBuffer<A>,
     ) -> ManagedVec<A, ManagedBuffer<A>> {
-        self.send_raw_wrapper()
-            .call_local_dcdt_built_in_function(gas, endpoint_name, arg_buffer)
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(gas)
+            .raw_call(endpoint_name)
+            .arguments_raw(arg_buffer)
+            .returns(ReturnsRawResult)
+            .sync_call()
     }
 
     /// Allows synchronous minting of DCDT/SFT (depending on nonce). Execution is resumed afterwards.
@@ -401,25 +420,12 @@ where
     ///
     /// This function cannot be used for NFTs.
     pub fn dcdt_local_mint(&self, token: &TokenIdentifier<A>, nonce: u64, amount: &BigUint<A>) {
-        let mut arg_buffer = ManagedArgBuffer::new();
-        let func_name: &str;
-
-        arg_buffer.push_arg(token);
-
-        if nonce == 0 {
-            func_name = DCDT_LOCAL_MINT_FUNC_NAME;
-        } else {
-            func_name = DCDT_NFT_ADD_QUANTITY_FUNC_NAME;
-            arg_buffer.push_arg(nonce);
-        }
-
-        arg_buffer.push_arg(amount);
-
-        let _ = self.call_local_dcdt_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(GasLeft)
+            .typed(system_proxy::UserBuiltinProxy)
+            .dcdt_local_mint(token, nonce, amount)
+            .sync_call()
     }
 
     /// Allows synchronous minting of DCDT/SFT (depending on nonce). Execution is resumed afterwards.
@@ -448,24 +454,12 @@ where
     /// Note that the SC must have the DCDTLocalBurn or DCDTNftBurn roles set,
     /// or this will fail with "action is not allowed".
     pub fn dcdt_local_burn(&self, token: &TokenIdentifier<A>, nonce: u64, amount: &BigUint<A>) {
-        let mut arg_buffer = ManagedArgBuffer::new();
-        let func_name: &str;
-
-        arg_buffer.push_arg(token);
-        if nonce == 0 {
-            func_name = DCDT_LOCAL_BURN_FUNC_NAME;
-        } else {
-            func_name = DCDT_NFT_BURN_FUNC_NAME;
-            arg_buffer.push_arg(nonce);
-        }
-
-        arg_buffer.push_arg(amount);
-
-        let _ = self.call_local_dcdt_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(func_name),
-            &arg_buffer,
-        );
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(GasLeft)
+            .typed(system_proxy::UserBuiltinProxy)
+            .dcdt_local_burn(token, nonce, amount)
+            .sync_call()
     }
 
     /// Allows synchronous burning of DCDT/SFT/NFT (depending on nonce). Execution is resumed afterwards.
@@ -533,36 +527,13 @@ where
         attributes: &T,
         uris: &ManagedVec<A, ManagedBuffer<A>>,
     ) -> u64 {
-        let mut arg_buffer = ManagedArgBuffer::new();
-        arg_buffer.push_arg(token);
-        arg_buffer.push_arg(amount);
-        arg_buffer.push_arg(name);
-        arg_buffer.push_arg(royalties);
-        arg_buffer.push_arg(hash);
-        arg_buffer.push_arg(attributes);
-
-        if uris.is_empty() {
-            // at least one URI is required, so we push an empty one
-            arg_buffer.push_arg(codec::Empty);
-        } else {
-            // The API function has the last argument as variadic,
-            // so we top-encode each and send as separate argument
-            for uri in uris {
-                arg_buffer.push_arg(uri);
-            }
-        }
-
-        let output = self.call_local_dcdt_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(DCDT_NFT_CREATE_FUNC_NAME),
-            &arg_buffer,
-        );
-
-        if let Some(first_result_bytes) = output.try_get(0) {
-            first_result_bytes.parse_as_u64().unwrap_or_default()
-        } else {
-            0
-        }
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(GasLeft)
+            .typed(system_proxy::UserBuiltinProxy)
+            .dcdt_nft_create(token, amount, name, royalties, hash, attributes, uris)
+            .returns(ReturnsResult)
+            .sync_call()
     }
 
     /// Creates a new NFT token of a certain type (determined by `token_identifier`).
@@ -767,19 +738,12 @@ where
             return;
         }
 
-        let mut arg_buffer = ManagedArgBuffer::new();
-        arg_buffer.push_arg(token_id);
-        arg_buffer.push_arg(nft_nonce);
-
-        for uri in new_uris {
-            arg_buffer.push_arg(uri);
-        }
-
-        let _ = self.call_local_dcdt_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(DCDT_NFT_ADD_URI_FUNC_NAME),
-            &arg_buffer,
-        );
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(GasLeft)
+            .typed(system_proxy::UserBuiltinProxy)
+            .nft_add_multiple_uri(token_id, nft_nonce, new_uris)
+            .sync_call()
     }
 
     /// Changes attributes of an NFT, via a synchronous builtin function call.
@@ -789,15 +753,11 @@ where
         nft_nonce: u64,
         new_attributes: &T,
     ) {
-        let mut arg_buffer = ManagedArgBuffer::new();
-        arg_buffer.push_arg(token_id);
-        arg_buffer.push_arg(nft_nonce);
-        arg_buffer.push_arg(new_attributes);
-
-        let _ = self.call_local_dcdt_built_in_function(
-            A::blockchain_api_impl().get_gas_left(),
-            &ManagedBuffer::from(DCDT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME),
-            &arg_buffer,
-        );
+        Tx::new_tx_from_sc()
+            .to(ToSelf)
+            .gas(GasLeft)
+            .typed(system_proxy::UserBuiltinProxy)
+            .nft_update_attributes(token_id, nft_nonce, new_attributes)
+            .sync_call()
     }
 }

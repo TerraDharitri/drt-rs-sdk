@@ -1,6 +1,6 @@
 use crate::{
     api::StaticApi,
-    dharitri_sc::types::{ContractCall, ContractCallWithRewa, DcdtTokenPayment},
+    dharitri_sc::types::{ContractCall, DcdtTokenPayment},
     scenario::model::{AddressValue, BigUintValue, BytesValue, U64Value},
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -87,8 +87,13 @@ impl IntoRaw<TxCallRaw> for TxCall {
 }
 
 impl TxCall {
-    pub fn to_contract_call(&self) -> ContractCallWithRewa<StaticApi, ()> {
-        let mut contract_call = ContractCallWithRewa::new(
+    #[deprecated(
+        since = "0.49.0",
+        note = "Please use the unified transaction syntax instead."
+    )]
+    #[allow(deprecated)]
+    pub fn to_contract_call(&self) -> dharitri_sc::types::ContractCallWithRewa<StaticApi, ()> {
+        let mut contract_call = dharitri_sc::types::ContractCallWithRewa::new(
             (&self.to.value).into(),
             self.function.as_bytes(),
             (&self.rewa_value.value).into(),

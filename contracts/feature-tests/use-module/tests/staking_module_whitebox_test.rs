@@ -1,12 +1,5 @@
-use dharitri_sc::types::{Address, RewaOrDcdtTokenIdentifier, ManagedVec};
 use dharitri_sc_modules::staking::StakingModule;
-use dharitri_sc_scenario::{
-    managed_address, managed_biguint, managed_token_id,
-    scenario_model::{
-        Account, AddressValue, CheckAccount, CheckStateStep, ScCallStep, ScDeployStep, SetStateStep,
-    },
-    ScenarioWorld, WhiteboxContract,
-};
+use dharitri_sc_scenario::imports::*;
 
 const STAKING_TOKEN_ID_EXPR: &str = "str:STAKE-123456";
 const STAKING_TOKEN_ID: &[u8] = b"STAKE-123456";

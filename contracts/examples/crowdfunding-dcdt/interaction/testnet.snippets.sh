@@ -5,6 +5,7 @@ ADDRESS=$(drtpy data load --key=address-testnet)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)
 PROXY=https://testnet-api.dharitri.org
 
+
 DEPLOY_GAS="80000000"
 TARGET=10
 DEADLINE_UNIX_TIMESTAMP=1609452000 # Fri Jan 01 2021 00:00:00 GMT+0200 (Eastern European Standard Time)

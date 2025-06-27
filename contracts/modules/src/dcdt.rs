@@ -64,9 +64,10 @@ pub trait DcdtModule {
                 // return payment to initial caller
                 let initial_caller = self.blockchain().get_owner_address();
                 let rewa_returned = self.call_value().rewa_value();
-                if *rewa_returned > 0u32 {
-                    self.send().direct_rewa(&initial_caller, &rewa_returned);
-                }
+                self.tx()
+                    .to(&initial_caller)
+                    .rewa(rewa_returned)
+                    .transfer_if_not_empty();
             },
         }
     }

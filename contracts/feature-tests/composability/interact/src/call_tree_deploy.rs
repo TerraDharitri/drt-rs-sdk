@@ -1,19 +1,9 @@
 use crate::{call_tree::CallState, comp_interact_controller::ComposabilityInteract};
 
 use forwarder_queue::ProxyTrait as _;
-use dharitri_sc_snippets::{
-    dharitri_sc::{
-        codec::multi_types::OptionalValue,
-        types::{BoxedBytes, ManagedBuffer},
-    },
-    dharitri_sc_scenario::{
-        api::StaticApi,
-        bech32,
-        scenario_model::{ScDeployStep, TypedScDeploy},
-    },
-    StepBuffer,
-};
 use vault::ProxyTrait as _;
+
+use dharitri_sc_snippets::imports::*;
 
 impl ComposabilityInteract {
     pub async fn deploy_call_tree_contracts(&mut self, call_state: &CallState) {

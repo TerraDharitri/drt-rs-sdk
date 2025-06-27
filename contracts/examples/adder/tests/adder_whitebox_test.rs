@@ -1,5 +1,5 @@
 use adder::*;
-use dharitri_sc_scenario::{scenario_model::*, *};
+use dharitri_sc_scenario::imports::*;
 
 const ADDER_PATH_EXPR: &str = "drtsc:output/adder.drtsc.json";
 

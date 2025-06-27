@@ -1,3 +1,5 @@
+use dharitri_sc::{api::ManagedTypeApi, types::DcdtTokenPayment};
+
 use crate::{
     scenario::model::{BigUintValue, BytesValue, U64Value},
     scenario_format::{
@@ -29,6 +31,18 @@ impl IntoRaw<TxDCDTRaw> for TxDCDT {
             token_identifier: Some(self.dcdt_token_identifier.into_raw()),
             nonce: self.nonce.into_raw_opt(),
             value: self.dcdt_value.into_raw(),
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> From<DcdtTokenPayment<M>> for TxDCDT {
+    fn from(value: DcdtTokenPayment<M>) -> Self {
+        TxDCDT {
+            dcdt_token_identifier: BytesValue::from(
+                value.token_identifier.as_managed_buffer().to_vec(),
+            ),
+            nonce: U64Value::from(value.token_nonce),
+            dcdt_value: BigUintValue::from(value.amount),
         }
     }
 }

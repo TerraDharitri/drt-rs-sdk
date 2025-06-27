@@ -1,5 +1,4 @@
 #![allow(clippy::type_complexity)]
-#![feature(exhaustive_patterns)]
 
 pub mod api;
 pub mod bech32;
@@ -8,7 +7,7 @@ pub mod display_util;
 mod facade;
 pub mod managed_test_util;
 pub mod scenario;
-mod scenario_macros;
+pub mod scenario_macros;
 pub mod standalone;
 pub mod test_wallets;
 mod vm_go_tool;
@@ -39,9 +38,12 @@ pub use crate::scenario as denali_system;
 // Re-exporting the whole denali crate for easier use in tests.
 pub use dharitri_chain_scenario_format as scenario_format;
 
-pub use facade::{ContractInfo, ScenarioWorld, WhiteboxContract};
+pub use facade::{result_handlers::*, world_tx::*, ContractInfo, ScenarioWorld, WhiteboxContract};
 
 use std::path::Path;
+
+/// Imports normally needed in integration tests, grouped together.
+pub mod imports;
 
 /// Legacy function for running a scenario test using the Go VM tool.
 ///

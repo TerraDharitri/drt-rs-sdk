@@ -16,9 +16,8 @@ use dharitri_chain_scenario_format::interpret_trait::InterpretableFrom;
 use dharitri_chain_vm::{
     tx_mock::{TxContext, TxContextStack, TxFunctionName, TxResult},
     types::VMAddress,
-    world_mock::DcdtInstanceMetadata,
 };
-use dharitri_sc::types::H256;
+use dharitri_sc::types::{BigUint, H256};
 use num_traits::Zero;
 
 use super::{
@@ -180,7 +179,8 @@ impl BlockchainStateWrapper {
 impl BlockchainStateWrapper {
     pub fn create_user_account(&mut self, rewa_balance: &num_bigint::BigUint) -> Address {
         let address = self.address_factory.new_address();
-        self.create_account_raw(&address, rewa_balance, None, None, None);
+        self.world
+            .create_account_raw(&address, BigUint::from(rewa_balance));
 
         address
     }
@@ -190,7 +190,8 @@ impl BlockchainStateWrapper {
         address: &Address,
         rewa_balance: &num_bigint::BigUint,
     ) {
-        self.create_account_raw(address, rewa_balance, None, None, None);
+        self.world
+            .create_account_raw(address, BigUint::from(rewa_balance));
     }
 
     pub fn create_sc_account<CB, ContractObjBuilder>(
@@ -288,15 +289,8 @@ impl BlockchainStateWrapper {
         _sc_identifier: Option<Vec<u8>>,
         _sc_denali_path_expr: Option<Vec<u8>>,
     ) {
-        let vm_address = to_vm_address(address);
-        if self.world.get_state().account_exists(&vm_address) {
-            panic!("Address already used: {:?}", address_to_hex(address));
-        }
-
-        let account = Account::new().balance(rewa_balance);
-
         self.world
-            .set_state_step(SetStateStep::new().put_account(address, account));
+            .create_account_raw(address, BigUint::from(rewa_balance));
     }
 
     // Has to be used before perfoming a deploy from a SC
@@ -344,19 +338,7 @@ impl BlockchainStateWrapper {
     }
 
     pub fn set_rewa_balance(&mut self, address: &Address, balance: &num_bigint::BigUint) {
-        let vm_address = to_vm_address(address);
-        match self.world.get_mut_state().accounts.get_mut(&vm_address) {
-            Some(acc) => {
-                acc.rewa_balance = balance.clone();
-
-                self.add_denali_set_account(address);
-            },
-
-            None => panic!(
-                "set_rewa_balance: Account {:?} does not exist",
-                address_to_hex(address)
-            ),
-        }
+        self.world.set_rewa_balance(address, BigUint::from(balance));
     }
 
     pub fn set_dcdt_balance(
@@ -365,23 +347,8 @@ impl BlockchainStateWrapper {
         token_id: &[u8],
         balance: &num_bigint::BigUint,
     ) {
-        let vm_address = to_vm_address(address);
-        match self.world.get_mut_state().accounts.get_mut(&vm_address) {
-            Some(acc) => {
-                acc.dcdt.set_dcdt_balance(
-                    token_id.to_vec(),
-                    0,
-                    balance,
-                    DcdtInstanceMetadata::default(),
-                );
-
-                self.add_denali_set_account(address);
-            },
-            None => panic!(
-                "set_dcdt_balance: Account {:?} does not exist",
-                address_to_hex(address)
-            ),
-        }
+        self.world
+            .set_dcdt_balance(address, token_id, BigUint::from(balance));
     }
 
     pub fn set_nft_balance<T: TopEncode>(
@@ -392,14 +359,14 @@ impl BlockchainStateWrapper {
         balance: &num_bigint::BigUint,
         attributes: &T,
     ) {
-        self.set_nft_balance_all_properties(
+        self.world.set_nft_balance_all_properties(
             address,
             token_id,
             nonce,
-            balance,
+            BigUint::from(balance),
             attributes,
             0,
-            None,
+            None::<Address>,
             None,
             None,
             &[],
@@ -411,18 +378,8 @@ impl BlockchainStateWrapper {
         address: &Address,
         developer_rewards: num_bigint::BigUint,
     ) {
-        let vm_address: VMAddress = to_vm_address(address);
-        match self.world.get_mut_state().accounts.get_mut(&vm_address) {
-            Some(acc) => {
-                acc.developer_rewards = developer_rewards;
-
-                self.add_denali_set_account(address);
-            },
-            None => panic!(
-                "set_developer_rewards: Account {:?} does not exist",
-                address_to_hex(address)
-            ),
-        }
+        self.world
+            .set_developer_rewards(address, &developer_rewards);
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -439,30 +396,18 @@ impl BlockchainStateWrapper {
         hash: Option<&[u8]>,
         uris: &[Vec<u8>],
     ) {
-        let vm_address = to_vm_address(address);
-        match self.world.get_mut_state().accounts.get_mut(&vm_address) {
-            Some(acc) => {
-                acc.dcdt.set_dcdt_balance(
-                    token_id.to_vec(),
-                    nonce,
-                    balance,
-                    DcdtInstanceMetadata {
-                        creator: creator.map(to_vm_address),
-                        attributes: serialize_attributes(attributes),
-                        royalties,
-                        name: name.unwrap_or_default().to_vec(),
-                        hash: hash.map(|h| h.to_vec()),
-                        uri: uris.to_vec(),
-                    },
-                );
-
-                self.add_denali_set_account(address);
-            },
-            None => panic!(
-                "set_nft_balance: Account {:?} does not exist",
-                address_to_hex(address)
-            ),
-        }
+        self.world.set_nft_balance_all_properties(
+            address,
+            token_id,
+            nonce,
+            BigUint::from(balance),
+            attributes,
+            royalties,
+            creator,
+            name,
+            hash,
+            uris,
+        );
     }
 
     pub fn set_dcdt_local_roles(
@@ -471,22 +416,7 @@ impl BlockchainStateWrapper {
         token_id: &[u8],
         roles: &[DcdtLocalRole],
     ) {
-        let vm_address = to_vm_address(address);
-        match self.world.get_mut_state().accounts.get_mut(&vm_address) {
-            Some(acc) => {
-                let mut roles_raw = Vec::new();
-                for role in roles {
-                    roles_raw.push(role.as_role_name().to_vec());
-                }
-                acc.dcdt.set_roles(token_id.to_vec(), roles_raw);
-
-                self.add_denali_set_account(address);
-            },
-            None => panic!(
-                "set_dcdt_local_roles: Account {:?} does not exist",
-                address_to_hex(address)
-            ),
-        }
+        self.world.set_dcdt_local_roles(address, token_id, roles);
     }
 
     pub fn set_block_epoch(&mut self, block_epoch: u64) {
@@ -854,15 +784,6 @@ impl BlockchainStateWrapper {
 
 fn address_to_hex(address: &Address) -> String {
     hex::encode(address.as_bytes())
-}
-
-fn serialize_attributes<T: TopEncode>(attributes: &T) -> Vec<u8> {
-    let mut serialized_attributes = Vec::new();
-    if let Result::Err(err) = attributes.top_encode(&mut serialized_attributes) {
-        panic!("Failed to encode attributes: {err:?}")
-    }
-
-    serialized_attributes
 }
 
 fn print_token_balance_raw(

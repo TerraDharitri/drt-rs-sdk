@@ -2,25 +2,12 @@
 
 use rust_snippets_generator_test::{ProxyTrait as _, *};
 
-use dharitri_sc_snippets::{
-    env_logger,
-    drtrs::wallet::Wallet,
-    dharitri_sc::{codec::multi_types::*, types::*},
-    dharitri_sc_scenario::{
-        api::StaticApi,
-        bech32,
-        scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext},
-        scenario_model::*,
-        ContractInfo,
-    },
-    sdk, tokio, Interactor,
-};
+use dharitri_sc_snippets::imports::*;
 
 const GATEWAY: &str = sdk::blockchain::DEVNET_GATEWAY;
 const PEM: &str = "alice.pem";
 const SC_ADDRESS: &str = "";
 
-const SYSTEM_SC_BECH32: &str = "drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2";
 const DEFAULT_ADDRESS_EXPR: &str =
     "0x0000000000000000000000000000000000000000000000000000000000000000";
 const TOKEN_ISSUE_COST: u64 = 50_000_000_000_000_000;

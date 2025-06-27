@@ -42,7 +42,7 @@ pub trait NftStoragePrepay {
         self.total_reserved().clear();
 
         let owner = self.blockchain().get_caller();
-        self.send().direct_rewa(&owner, &total_reserved);
+        self.tx().to(&owner).rewa(&total_reserved).transfer();
     }
 
     // endpoints
@@ -71,7 +71,7 @@ pub trait NftStoragePrepay {
         user_deposit -= &amount;
         self.deposit(&caller).set(&user_deposit);
 
-        self.send().direct_rewa(&caller, &amount);
+        self.tx().to(&caller).rewa(&amount).transfer();
     }
 
     // views

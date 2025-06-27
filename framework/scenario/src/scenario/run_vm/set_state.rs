@@ -1,7 +1,7 @@
 use crate::scenario::model::SetStateStep;
 
 use dharitri_chain_vm::{
-    types::{VMAddress, VMCodeMetadata},
+    types::VMCodeMetadata,
     world_mock::{
         AccountData, AccountDcdt, BlockInfo as CrateBlockInfo, BlockchainState, DcdtData,
         DcdtInstance, DcdtInstanceMetadata, DcdtInstances, DcdtRoles,
@@ -155,7 +155,7 @@ fn convert_scenario_dcdt_instance_to_world_mock(
             creator: scenario_dcdt
                 .creator
                 .as_ref()
-                .map(|creator| VMAddress::from_slice(creator.value.as_slice())),
+                .map(|creator| creator.to_vm_address()),
             royalties: scenario_dcdt
                 .royalties
                 .as_ref()

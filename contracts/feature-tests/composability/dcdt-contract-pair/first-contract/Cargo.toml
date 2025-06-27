@@ -1,19 +1,18 @@
 [package]
 name = "first-contract"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
+authors = ["Dorin Iancu <dorin.iancu@dharitri.com>"]
 edition = "2021"
 publish = false
 
 [lib]
 path = "src/lib.rs"
 
-
 [dependencies.dharitri-sc]
-version = "1.9.0"
+version = "0.50.0"
 path = "../../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.9.0"
+version = "0.50.0"
 path = "../../../../../framework/scenario"
 

@@ -5,6 +5,7 @@ use dharitri_sc::imports::*;
 
 mod constants;
 mod deposit_info;
+pub mod digital_cash_proxy;
 mod helpers;
 mod pay_fee_and_fund;
 mod signature_operations;
@@ -54,15 +55,17 @@ pub trait DigitalCash:
                 continue;
             }
             if token == RewaOrDcdtTokenIdentifier::rewa() {
-                self.send().direct_rewa(&caller_address, &fee);
+                self.tx().to(&caller_address).rewa(&fee).transfer();
             } else {
                 let collected_fee = DcdtTokenPayment::new(token.unwrap_dcdt(), 0, fee);
                 collected_dcdt_fees.push(collected_fee);
             }
         }
         if !collected_dcdt_fees.is_empty() {
-            self.send()
-                .direct_multi(&caller_address, &collected_dcdt_fees);
+            self.tx()
+                .to(&caller_address)
+                .payment(&collected_dcdt_fees)
+                .transfer();
         }
     }
 

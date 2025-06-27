@@ -1,14 +1,14 @@
 use dharitri_sc::{
     codec::multi_types::OptionalValue,
-    dcdt::DCDTSystemSmartContractProxy,
     types::{
         heap::{Address, BoxedBytes},
-        BigFloat, BigInt, BigUint, RewaOrDcdtTokenIdentifier, DcdtTokenPayment, ManagedAddress,
-        ManagedBuffer, ManagedByteArray, ManagedOption, ManagedType, ManagedVec, TokenIdentifier,
+        BigFloat, BigInt, BigUint, DCDTSystemSCAddress, RewaOrDcdtTokenIdentifier,
+        DcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedByteArray, ManagedOption,
+        ManagedType, ManagedVec, TokenIdentifier,
     },
 };
 use dharitri_sc_scenario::{
-    api::{DebugHandle, DebugApi},
+    api::{DebugApi, DebugHandle},
     num_bigint::{BigInt as RustBigInt, BigUint as RustBigUint},
 };
 
@@ -65,8 +65,7 @@ fn main() {
     let token_identifier: TokenIdentifier<DebugApi> = TokenIdentifier::from("MYTOK-123456");
     push!(to_check, token_identifier, "\"MYTOK-123456\"");
 
-    let system_sc = DCDTSystemSmartContractProxy::<DebugApi>::new_proxy_obj();
-    let managed_address = system_sc.dcdt_system_sc_address();
+    let managed_address = DCDTSystemSCAddress.to_managed_address::<DebugApi>();
     push!(
         to_check,
         managed_address,

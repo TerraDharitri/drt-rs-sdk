@@ -1,11 +1,13 @@
-use crate::{
-    codec,
-    codec::derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
-};
-
 use super::DcdtLocalRoleFlags;
 use crate as dharitri_sc;
-use crate::{derive::TypeAbi, types::ManagedVecItem};
+use crate::{
+    codec::{
+        self,
+        derive::{NestedDecode, NestedEncode, TopDecode, TopEncode},
+    },
+    derive::type_abi,
+    types::{ManagedVecItem, ManagedVecItemPayloadBuffer},
+};
 
 static DCDT_ROLE_NONE: &[u8] = &[];
 static DCDT_ROLE_LOCAL_MINT: &[u8] = b"DCDTRoleLocalMint";
@@ -17,9 +19,8 @@ static DCDT_ROLE_NFT_ADD_URI: &[u8] = b"DCDTRoleNFTAddURI";
 static DCDT_ROLE_NFT_UPDATE_ATTRIBUTES: &[u8] = b"DCDTRoleNFTUpdateAttributes";
 static DCDT_ROLE_TRANSFER: &[u8] = b"DCDTTransferRole";
 
-#[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug, Copy,
-)]
+#[type_abi]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug, Copy)]
 pub enum DcdtLocalRole {
     None,
     Mint,
@@ -138,7 +139,7 @@ impl<'a> From<&'a [u8]> for DcdtLocalRole {
 }
 
 impl ManagedVecItem for DcdtLocalRole {
-    const PAYLOAD_SIZE: usize = 1;
+    type PAYLOAD = ManagedVecItemPayloadBuffer<1>;
     const SKIPS_RESERIALIZATION: bool = false; // TODO: might be ok to be true, but needs testing
     type Ref<'a> = Self;
 

@@ -19,7 +19,7 @@ macro_rules! derive_imports {
 
 /// Compact way of returning a static error message.
 #[deprecated(
-    since = "1.9.0",
+    since = "0.48.0",
     note = "Use `sc_panic!` instead, which terminates immediately."
 )]
 #[macro_export]
@@ -47,7 +47,7 @@ macro_rules! sc_error {
 /// # }
 /// ```
 #[deprecated(
-    since = "1.9.0",
+    since = "0.48.0",
     note = "Use `require!` instead, which terminates immediately."
 )]
 #[macro_export]

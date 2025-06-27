@@ -1,4 +1,5 @@
 use dharitri_sc_derive::ManagedVecItem;
+use unwrap_infallible::UnwrapInfallible;
 
 use crate::{
     api::ManagedTypeApi,
@@ -12,13 +13,12 @@ use crate::{
 };
 
 use crate as dharitri_sc; // needed by the TypeAbi generated code
-use crate::derive::TypeAbi;
+use crate::derive::type_abi;
 
 const DECODE_ATTRIBUTE_ERROR_PREFIX: &[u8] = b"error decoding DCDT attributes: ";
 
-#[derive(
-    Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Debug, ManagedVecItem,
-)]
+#[type_abi]
+#[derive(Clone, TopDecode, TopEncode, NestedDecode, NestedEncode, Debug, ManagedVecItem)]
 pub struct DcdtTokenData<M: ManagedTypeApi> {
     pub token_type: DcdtTokenType,
     pub amount: BigUint<M>,
@@ -53,10 +53,10 @@ impl<M: ManagedTypeApi> DcdtTokenData<M> {
     }
 
     pub fn decode_attributes<T: TopDecode>(&self) -> T {
-        let Ok(value) = T::top_decode_or_handle_err(
+        T::top_decode_or_handle_err(
             self.attributes.clone(), // TODO: remove clone
             ExitCodecErrorHandler::<M>::from(DECODE_ATTRIBUTE_ERROR_PREFIX),
-        );
-        value
+        )
+        .unwrap_infallible()
     }
 }

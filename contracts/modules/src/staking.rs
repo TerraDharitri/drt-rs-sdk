@@ -90,8 +90,10 @@ pub trait StakingModule {
         staked_amount_mapper.set(&leftover_amount);
 
         let staking_token = self.staking_token().get();
-        self.send()
-            .direct(&caller, &staking_token, 0, &unstake_amount);
+        self.tx()
+            .to(caller)
+            .rewa_or_single_dcdt(&staking_token, 0, &unstake_amount)
+            .transfer();
     }
 
     #[endpoint(voteSlashMember)]

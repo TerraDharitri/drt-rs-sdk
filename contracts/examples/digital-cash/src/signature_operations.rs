@@ -33,13 +33,17 @@ pub trait SignatureOperationsModule: storage::StorageModule + helpers::HelpersMo
         }
 
         if rewa_funds > 0 {
-            self.send()
-                .direct_rewa(&deposit.depositor_address, &rewa_funds);
+            self.tx()
+                .to(&deposit.depositor_address)
+                .rewa(&rewa_funds)
+                .transfer();
         }
 
         if !dcdt_funds.is_empty() {
-            self.send()
-                .direct_multi(&deposit.depositor_address, &dcdt_funds);
+            self.tx()
+                .to(&deposit.depositor_address)
+                .payment(dcdt_funds)
+                .transfer();
         }
     }
 
@@ -71,12 +75,16 @@ pub trait SignatureOperationsModule: storage::StorageModule + helpers::HelpersMo
             .update(|collected_fees| *collected_fees += fee_cost);
 
         if deposit.rewa_funds > 0 {
-            self.send()
-                .direct_rewa(&caller_address, &deposit.rewa_funds);
+            self.tx()
+                .to(&caller_address)
+                .rewa(&deposit.rewa_funds)
+                .transfer();
         }
         if !deposit.dcdt_funds.is_empty() {
-            self.send()
-                .direct_multi(&caller_address, &deposit.dcdt_funds);
+            self.tx()
+                .to(&caller_address)
+                .payment(&deposit.dcdt_funds)
+                .transfer();
         }
         if deposited_fee.amount > 0 {
             self.send_fee_to_address(&deposited_fee, &deposit.depositor_address);

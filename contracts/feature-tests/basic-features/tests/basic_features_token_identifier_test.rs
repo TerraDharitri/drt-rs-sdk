@@ -1,5 +1,4 @@
-use dharitri_sc::types::{RewaOrDcdtTokenIdentifier, ManagedBuffer, TokenIdentifier};
-use dharitri_sc_scenario::{api::StaticApi, *};
+use dharitri_sc_scenario::imports::*;
 
 use basic_features::token_identifier_features::TokenIdentifierFeatures;
 

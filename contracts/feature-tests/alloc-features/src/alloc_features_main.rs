@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(never_type)]
 
 dharitri_sc::imports!();
 

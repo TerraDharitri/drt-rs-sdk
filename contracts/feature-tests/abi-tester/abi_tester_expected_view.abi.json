@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-sc",
-            "version": "1.9.0"
+            "version": "0.50.0"
         }
     },
     "docs": [
@@ -585,6 +585,23 @@
                 {
                     "name": "field",
                     "type": "OnlyShowsUpAsNested10"
+                }
+            ]
+        },
+        "OperationCompletionStatus": {
+            "type": "explicit-enum",
+            "variants": [
+                {
+                    "docs": [
+                        "indicates that operation was completed"
+                    ],
+                    "name": "completed"
+                },
+                {
+                    "docs": [
+                        "indicates that operation was interrupted prematurely, due to low gas"
+                    ],
+                    "name": "interrupted"
                 }
             ]
         }

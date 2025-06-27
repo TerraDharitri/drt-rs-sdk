@@ -57,7 +57,7 @@ pub(crate) fn create_snippets_cargo_toml(
         r#"[package]
 name = "rust-interact"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
+authors = ["you"]
 edition = "2021"
 publish = false
 
@@ -69,7 +69,7 @@ path = "src/{SNIPPETS_SOURCE_FILE_NAME}"
 path = ".."
 
 [dependencies.dharitri-sc-snippets]
-version = "1.9.0"
+version = "0.50.0"
 
 # [workspace]
 

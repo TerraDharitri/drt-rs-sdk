@@ -1,22 +1,9 @@
 use std::time::Duration;
 
-use dharitri_sc_scenario::dharitri_sc::types::FunctionCall;
-#[allow(unused_imports)]
-use dharitri_sc_snippets::dharitri_sc::types::{
-    DcdtTokenPayment, MultiValueEncoded, TokenIdentifier,
-};
-use dharitri_sc_snippets::{
-    dharitri_sc::types::{ContractCall, ContractCallNoPayment},
-    dharitri_sc_scenario::{
-        denali_system::ScenarioRunner, scenario_format::interpret_trait::InterpretableFrom,
-        standalone::retrieve_account_as_scenario_set_state,
-    },
-};
+use dharitri_sc_snippets::imports::*;
 
 use super::*;
 
-const WREWA_SWAP_SC_BECH32: &str = "drt1qqqqqqqqqqqqqpgqcy2wua5cq59y6sxqj2ka3scayh5e5ms7cthq2hs9gl";
-const WREWA_TOKEN_IDENTIFIER: &str = "WREWA-6cf38e";
 const WRAP_AMOUNT: u64 = 50000000000000000; // 0.05 REWA
 const UNWRAP_AMOUNT: u64 = 25000000000000000; // 0.025 WREWA
 
@@ -34,7 +21,7 @@ impl MultisigInteract {
         let action_id = self.propose_wrap_rewa().await;
 
         println!("perfoming wrap rewa action `{action_id}`...");
-        self.perform_action(action_id, "15,000,000").await;
+        self.perform_action(action_id, 15_000_000u64).await;
     }
 
     pub async fn unwrap_rewa(&mut self) {
@@ -42,71 +29,84 @@ impl MultisigInteract {
         let action_id = self.propose_unwrap_rewa().await;
 
         println!("perfoming unwrap rewa action `{action_id}`...");
-        self.perform_action(action_id, "15,000,000").await;
+        self.perform_action(action_id, 15_000_000u64).await;
     }
 
     pub async fn wrewa_swap_set_state(&mut self) {
-        let scenario_raw = retrieve_account_as_scenario_set_state(
-            Config::load_config().gateway().to_string(),
-            WREWA_SWAP_SC_BECH32.to_string(),
-            true,
-        )
-        .await;
-
-        let scenario = Scenario::interpret_from(scenario_raw, &InterpreterContext::default());
-
-        self.interactor.pre_runners.run_scenario(&scenario);
-        self.interactor.post_runners.run_scenario(&scenario);
+        self.interactor
+            .retrieve_account(&self.config.wrewa_address)
+            .await;
     }
 
     async fn propose_wrap_rewa(&mut self) -> usize {
+        let function_call = self
+            .interactor
+            .tx()
+            .to(&self.config.wrewa_address)
+            .typed(wrewa_proxy::RewaDcdtSwapProxy)
+            .wrap_rewa()
+            .into_function_call();
+
         let action_id = self
             .interactor
-            .sc_call_get_result(
-                ScCallStep::new()
-                    .call(self.state.multisig().propose_async_call(
-                        bech32::decode(WREWA_SWAP_SC_BECH32),
-                        WRAP_AMOUNT,
-                        FunctionCall::new("wrapRewa"),
-                    ))
-                    .from(&self.wallet_address)
-                    .gas_limit("10,000,000"),
-            )
-            .await
-            .result
-            .unwrap();
+            .tx()
+            .from(&self.wallet_address)
+            .to(self.state.current_multisig_address())
+            .gas(NumExpr("10,000,000"))
+            .typed(multisig_proxy::MultisigProxy)
+            .propose_async_call(&self.config.wrewa_address, WRAP_AMOUNT, function_call)
+            .returns(ReturnsResult)
+            .prepare_async()
+            .run()
+            .await;
 
         println!("successfully proposed wrap rewa action `{action_id}`");
         action_id
     }
 
+    pub async fn query_wrewa_token_identifier(&mut self) -> TokenIdentifier<StaticApi> {
+        let wrewa_token_id = self
+            .interactor
+            .query()
+            .to(&self.config.wrewa_address)
+            .typed(wrewa_proxy::RewaDcdtSwapProxy)
+            .wrapped_rewa_token_id()
+            .returns(ReturnsResult)
+            .prepare_async()
+            .run()
+            .await;
+
+        println!("WREWA token identifier: {wrewa_token_id}");
+
+        wrewa_token_id
+    }
+
     async fn propose_unwrap_rewa(&mut self) -> usize {
-        let contract_call = ContractCallNoPayment::<StaticApi, ()>::new(
-            bech32::decode(WREWA_SWAP_SC_BECH32).into(),
-            "unwrapRewa",
-        )
-        .with_dcdt_transfer(DcdtTokenPayment::new(
-            TokenIdentifier::from(WREWA_TOKEN_IDENTIFIER),
-            0u64,
-            UNWRAP_AMOUNT.into(),
-        ))
-        .into_normalized();
+        let wrewa_token_id = self.query_wrewa_token_identifier().await;
+
+        let normalized_tx = self
+            .interactor
+            .tx()
+            .to(&self.config.wrewa_address)
+            .typed(wrewa_proxy::RewaDcdtSwapProxy)
+            .unwrap_rewa()
+            .single_dcdt(&wrewa_token_id, 0u64, &UNWRAP_AMOUNT.into())
+            .normalize();
+        let normalized_to = normalized_tx.to;
+        let normalized_data = normalized_tx.data;
 
         let action_id = self
             .interactor
-            .sc_call_get_result(
-                ScCallStep::new()
-                    .call(self.state.multisig().propose_async_call(
-                        contract_call.basic.to,
-                        0u64,
-                        contract_call.basic.function_call,
-                    ))
-                    .from(&self.wallet_address)
-                    .gas_limit("10,000,000"),
-            )
-            .await
-            .result
-            .unwrap();
+            .tx()
+            .from(&self.wallet_address)
+            .to(self.state.current_multisig_address())
+            .gas(NumExpr("10,000,000"))
+            .typed(multisig_proxy::MultisigProxy)
+            .propose_async_call(normalized_to, 0u64, normalized_data)
+            .returns(ReturnsResult)
+            .prepare_async()
+            .run()
+            .await;
 
         println!("successfully proposed unwrap rewa action `{action_id}`");
         action_id

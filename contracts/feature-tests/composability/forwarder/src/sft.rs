@@ -47,7 +47,7 @@ pub trait ForwarderSftModule: storage::ForwarderStorageModule {
                 let (token_identifier, returned_tokens) =
                     self.call_value().rewa_or_single_fungible_dcdt();
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens);
+                    self.tx().to(caller).rewa(&returned_tokens).transfer();
                 }
 
                 self.last_error_message().set(&message.err_msg);
