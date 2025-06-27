@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-chain-scenario-format"
-version = "1.15.4"
+version = "1.15.6"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]

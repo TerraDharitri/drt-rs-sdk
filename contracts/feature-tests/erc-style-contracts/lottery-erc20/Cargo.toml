@@ -12,10 +12,10 @@ path = "src/lottery.rs"
 path = "../erc20"
 
 [dependencies.dharitri-sc]
-version = "1.15.4"
+version = "1.15.6"
 path = "../../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.15.4"
+version = "1.15.6"
 path = "../../../../framework/scenario"

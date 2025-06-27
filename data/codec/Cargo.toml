@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-codec"
-version = "1.15.4"
+version = "1.15.6"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -18,7 +18,7 @@ derive = ["dharitri-sc-codec-derive"]
 
 [dependencies.dharitri-sc-codec-derive]
 path = "../codec-derive"
-version = "=1.15.4"
+version = "=1.15.6"
 optional = true
 
 [dependencies]
@@ -28,4 +28,4 @@ unwrap-infallible = "0.1.5"
 
 [dev-dependencies.dharitri-sc-codec-derive]
 path = "../codec-derive"
-version = "=1.15.4"
+version = "=1.15.6"

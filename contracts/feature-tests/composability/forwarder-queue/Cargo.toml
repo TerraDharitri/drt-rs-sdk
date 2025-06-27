@@ -9,14 +9,14 @@ publish = false
 path = "src/forwarder_queue.rs"
 
 [dependencies.dharitri-sc]
-version = "1.15.4"
+version = "1.15.6"
 path = "../../../../framework/base"
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "1.15.4"
+version = "1.15.6"
 path = "../../../../framework/wasm-adapter"
 optional = true
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.15.4"
+version = "1.15.6"
 path = "../../../../framework/scenario"
