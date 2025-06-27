@@ -9,14 +9,14 @@ publish = false
 path = "src/abi_tester.rs"
 
 [dependencies.dharitri-sc]
-version = "1.6.2"
+version = "1.6.4"
 path = "../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.6.2"
+version = "1.6.4"
 path = "../../../framework/scenario"
 
 [dev-dependencies.dharitri-sc-meta]
-version = "1.6.2"
+version = "1.6.4"
 path = "../../../framework/meta"

@@ -9,9 +9,9 @@ publish = false
 path = "src/crypto_bubbles.rs"
 
 [dependencies.dharitri-sc]
-version = "1.6.2"
+version = "1.6.4"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.6.2"
+version = "1.6.4"
 path = "../../../framework/scenario"

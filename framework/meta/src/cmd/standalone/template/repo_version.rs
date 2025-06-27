@@ -1,3 +1,5 @@
+use crate::version_history::LAST_TEMPLATE_VERSION;
+
 pub enum RepoVersion {
     Main,
     Tag(String),
@@ -21,6 +23,13 @@ impl RepoVersion {
             RepoVersion::Tag(tag) => {
                 format!("drt-rs-sdk-{tag}")
             },
+        }
+    }
+
+    pub fn get_tag(&self) -> String {
+        match self {
+            RepoVersion::Main => LAST_TEMPLATE_VERSION.to_string(),
+            RepoVersion::Tag(tag) => tag.to_string(),
         }
     }
 }

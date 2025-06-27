@@ -264,6 +264,7 @@ impl<VHB: VMHooksApiBackend> BlockchainApiImpl for VMHooksApi<VHB> {
         let result = self.with_vm_hooks(|vh| {
             vh.get_dcdt_local_roles(token_id_handle.get_raw_handle_unchecked())
         });
-        unsafe { DcdtLocalRoleFlags::from_bits_unchecked(result as u64) }
+
+        dharitri_sc::types::DcdtLocalRoleFlags::from_bits_retain(result as u64)
     }
 }

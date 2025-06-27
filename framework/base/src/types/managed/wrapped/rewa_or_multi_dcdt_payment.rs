@@ -16,7 +16,7 @@ use crate::derive::TypeAbi;
 /// - REWA (can be zero in case of no payment whatsoever);
 /// - Multi-DCDT (one or more DCDT transfers).
 #[derive(
-    TopDecode, TopEncode, NestedDecode, NestedEncode, TypeAbi, Clone, PartialEq, Eq, Debug,
+    TopDecode, TopEncode, TypeAbi, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug,
 )]
 pub enum RewaOrMultiDcdtPayment<M: ManagedTypeApi> {
     Rewa(BigUint<M>),

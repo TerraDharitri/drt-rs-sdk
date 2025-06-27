@@ -9,6 +9,6 @@ authors = ["contact@dharitri.org"]
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "1.6.2"
+version = "1.6.4"
 path = "../../../../framework/meta"
 default-features = false

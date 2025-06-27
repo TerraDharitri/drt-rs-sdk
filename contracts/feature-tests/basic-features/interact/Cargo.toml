@@ -18,5 +18,5 @@ toml = "0.8.6"
 path = ".."
 
 [dependencies.dharitri-sc-snippets]
-version = "1.6.2"
+version = "1.6.4"
 path = "../../../../framework/snippets"
