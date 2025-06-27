@@ -123,7 +123,7 @@ pub trait NftModule {
     ) {
         match result {
             ManagedAsyncCallResult::Ok(token_id) => {
-                self.nft_token_id().set(&token_id.unwrap_dcdt());
+                self.nft_token_id().set(token_id.unwrap_dcdt());
             },
             ManagedAsyncCallResult::Err(_) => {
                 let returned = self.call_value().rewa_or_single_dcdt();

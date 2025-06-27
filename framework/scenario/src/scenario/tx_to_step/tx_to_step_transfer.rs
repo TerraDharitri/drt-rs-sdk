@@ -1,6 +1,6 @@
 use dharitri_sc::types::{Tx, TxEnv, TxFromSpecified, TxGas, TxPayment, TxToSpecified};
 
-use crate::scenario_model::TransferStep;
+use crate::{imports::TxDCDT, scenario_model::TransferStep};
 
 use super::{address_annotated, gas_annotated, StepWrapper, TxToStep};
 
@@ -48,6 +48,12 @@ where
     let full_payment_data = payment.into_full_payment_data(env);
     if let Some(annotated_rewa_payment) = full_payment_data.rewa {
         step.tx.rewa_value = annotated_rewa_payment.into();
+    } else {
+        step.tx.dcdt_value = full_payment_data
+            .multi_dcdt
+            .iter()
+            .map(TxDCDT::from)
+            .collect();
     }
 
     step

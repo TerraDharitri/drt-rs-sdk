@@ -1,3 +1,4 @@
+mod test_dcdt_transfer;
 mod tx_payment_rewa;
 mod tx_payment_rewa_or_dcdt;
 mod tx_payment_rewa_or_dcdt_refs;
@@ -11,6 +12,7 @@ mod tx_payment_single_dcdt;
 mod tx_payment_single_dcdt_ref;
 mod tx_payment_single_dcdt_triple;
 
+pub use test_dcdt_transfer::TestDcdtTransfer;
 pub use tx_payment_rewa::{Rewa, RewaPayment};
 pub use tx_payment_rewa_value::TxRewaValue;
 pub use tx_payment_multi_dcdt::TxPaymentMultiDcdt;

@@ -13,10 +13,10 @@ path = "src/lib.rs"
 path = "../erc1155"
 
 [dependencies.dharitri-sc]
-version = "1.13.6"
+version = "1.14.0"
 path = "../../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.13.6"
+version = "1.14.0"
 path = "../../../../framework/scenario"

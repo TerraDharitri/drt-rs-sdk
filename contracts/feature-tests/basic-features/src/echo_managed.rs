@@ -1,4 +1,4 @@
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 /// Test endpoint argument and result serialization.
 #[dharitri_sc::module]
@@ -21,6 +21,12 @@ pub trait EchoManagedTypes {
     #[endpoint]
     fn echo_managed_address(&self, ma: ManagedAddress) -> ManagedAddress {
         ma
+    }
+
+    /// This tests how is generated type name in proxy
+    #[endpoint]
+    fn echo_managed_option(&self, mo: ManagedOption<BigUint>) -> ManagedOption<BigUint> {
+        mo
     }
 
     /// This tests that nested serialization of big ints within unmanaged types works.

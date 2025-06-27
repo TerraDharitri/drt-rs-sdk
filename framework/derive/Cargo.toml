@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-derive"
-version = "1.13.6"
+version = "1.14.0"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -15,8 +15,8 @@ categories = ["cryptography::cryptocurrencies", "development-tools::procedural-m
 
 [dependencies]
 proc-macro2 = "=1.0.86"
-quote = "=1.0.36"
-syn = "=2.0.72"
+quote = "=1.0.37"
+syn = "=2.0.77"
 hex = "=0.4.3"
 radix_trie = "=0.2.1"
 

@@ -10,11 +10,11 @@ name = "drtpy-snippet-generator"
 path = "src/drtpy_snippet_generator.rs"
 
 [dependencies.dharitri-sc]
-version = "1.13.6"
+version = "1.14.0"
 path = "../../framework/base"
 
 [dependencies]
-bech32 = "0.9"
+bech32 = "0.11"
 num-bigint = "0.4"
 num-traits = "0.2"
 hex = "0.4"
