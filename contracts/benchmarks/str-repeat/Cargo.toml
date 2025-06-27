@@ -12,10 +12,10 @@ path = "src/str_repeat.rs"
 managed-buffer-builder-cached = ["dharitri-sc/managed-buffer-builder-cached"]
 
 [dependencies.dharitri-sc]
-version = "1.15.0"
+version = "1.15.4"
 path = "../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.15.0"
+version = "1.15.4"
 path = "../../../framework/scenario"

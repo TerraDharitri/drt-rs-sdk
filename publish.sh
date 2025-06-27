@@ -80,6 +80,14 @@ cd sdk/core
 cargo publish --allow-dirty || return 1
 cd ../..
 
+cd sdk/http
+cargo publish --allow-dirty || return 1
+cd ../..
+
+cd sdk/dapp
+cargo publish --allow-dirty || return 1
+cd ../..
+
 cd sdk/scenario-format/
 cargo publish --allow-dirty || return 1
 cd ../..

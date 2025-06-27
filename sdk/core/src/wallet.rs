@@ -194,7 +194,7 @@ impl Wallet {
     }
 
     #[deprecated(
-        since = "1.15.0",
+        since = "0.54.0",
         note = "Renamed to `to_address`, type changed to dharitri_chain_core::types::Address"
     )]
     pub fn address(&self) -> crate::data::sdk_address::SdkAddress {

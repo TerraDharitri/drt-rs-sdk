@@ -19,7 +19,7 @@ pub trait InteractorPrepareAsync {
     type Exec;
 
     #[deprecated(
-        since = "1.15.0",
+        since = "0.54.0",
         note = "Calling `.prepare_async()` no longer necessary, `.run()` can be called directly."
     )]
     fn prepare_async(self) -> Self::Exec;

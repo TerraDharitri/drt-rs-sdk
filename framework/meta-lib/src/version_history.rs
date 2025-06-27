@@ -3,7 +3,7 @@ use crate::{framework_version, framework_versions, version::FrameworkVersion};
 /// The last version to be used for upgrades and templates.
 ///
 /// Should be edited every time a new version of the framework is released.
-pub const LAST_VERSION: FrameworkVersion = framework_version!(1.15.0);
+pub const LAST_VERSION: FrameworkVersion = framework_version!(1.15.4);
 
 /// Indicates where to stop with the upgrades.
 pub const LAST_UPGRADE_VERSION: FrameworkVersion = LAST_VERSION;
@@ -85,7 +85,8 @@ pub const VERSIONS: &[FrameworkVersion] = framework_versions![
     0.53.0,
     0.53.1,
     0.53.2,
-    1.15.0,
+    0.54.0,
+    1.15.4,
 ];
 
 #[rustfmt::skip]
@@ -113,7 +114,9 @@ pub const CHECK_AFTER_UPGRADE_TO: &[FrameworkVersion] = framework_versions![
     0.51.1,
     0.52.3,
     0.53.2,
-    1.15.0,
+    0.54.0,
+    0.54.1,
+    1.15.4,
 ];
 
 pub const LOWER_VERSION_WITH_TEMPLATE_TAG: FrameworkVersion = framework_version!(0.43.0);
