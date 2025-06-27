@@ -1,7 +1,7 @@
 [package]
 name = "check-pause"
 version = "0.0.0"
-authors = ["Alin Cruceat <alin.cruceat@dharitri.com>"]
+authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
@@ -12,14 +12,14 @@ path = "src/check_pause.rs"
 num-bigint = "0.4"
 
 [dependencies.dharitri-sc]
-version = "0.50.0"
+version = "1.11.2"
 path = "../../../framework/base"
 
 [dependencies.dharitri-sc-modules]
-version = "0.50.0"
+version = "1.11.2"
 path = "../../../contracts/modules"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "0.50.0"
+version = "1.11.2"
 path = "../../../framework/scenario"
 

@@ -3,7 +3,7 @@ name = "rewards-distribution-meta"
 version = "0.0.0"
 edition = "2021"
 publish = false
-authors = ["Claudiu-Marcel Bruda <claudiu.bruda@dharitri.com>"]
+authors = ["contact@dharitri.org"]
 
 [dev-dependencies]
 
@@ -11,6 +11,6 @@ authors = ["Claudiu-Marcel Bruda <claudiu.bruda@dharitri.com>"]
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "0.50.0"
+version = "1.11.2"
 path = "../../../../framework/meta"
 default-features = false

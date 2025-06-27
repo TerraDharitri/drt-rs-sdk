@@ -163,7 +163,7 @@ impl<'a, M: ManagedTypeApi> RewaOrDcdtTokenPaymentRefs<'a, M> {
     }
 
     pub fn is_empty(&self) -> bool {
-        self.amount == &BigUint::zero()
+        self.amount == &0u32
     }
 
     pub fn map_rewa_or_dcdt<Context, D, F, U>(self, context: Context, for_rewa: D, for_dcdt: F) -> U

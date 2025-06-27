@@ -7,8 +7,7 @@ VM_TAG="v1.5.19"
 echo "Before:"
 drtpy config dump
 drtpy config set dependencies.vmtools.tag $VM_TAG
-drtpy config set dependencies.vmtools.urlTemplate.linux https://github.com/TerraDharitri
-/drt-chain-vm-go/archive/{TAG}.tar.gz
+drtpy config set dependencies.vmtools.urlTemplate.linux https://github.com/TerraDharitri/drt-go-chain-vm/archive/{TAG}.tar.gz
 echo "After:"
 drtpy config dump
 

@@ -73,6 +73,7 @@ pub trait TxPaymentRewaOnly<Env>: TxPayment<Env> + AnnotatedValue<Env, BigUint<E
 where
     Env: TxEnv,
 {
+    #[inline]
     fn with_rewa_value<F, R>(&self, env: &Env, f: F) -> R
     where
         F: FnOnce(&BigUint<Env::Api>) -> R,

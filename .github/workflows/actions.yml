@@ -16,7 +16,7 @@ jobs:
     name: Contracts
     uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.8
     with:
-      rust-toolchain: nightly-2023-12-11
+      rust-toolchain: stable
       path-to-sc-meta: framework/meta
       drt-go-scenario-version: v0.0.2-3
       coverage-args: --ignore-filename-regex='meta/src' --ignore-filename-regex='wasm-adapter' --ignore-filename-regex='benchmarks/' --ignore-filename-regex='tests/' --output ./coverage.md

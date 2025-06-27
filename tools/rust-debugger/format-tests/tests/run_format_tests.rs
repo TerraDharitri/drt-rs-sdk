@@ -31,8 +31,7 @@ fn run_format_tests() {
     rust_formatters.push("formatters");
     check_path(&rust_formatters);
 
-    let pretty_printers = Path::new("../pretty-printers/TerraDharitri
-_sc_lldb_pretty_printers.py")
+    let pretty_printers = Path::new("../pretty-printers/dharitri_sc_lldb_pretty_printers.py")
         .canonicalize()
         .unwrap();
     check_path(&pretty_printers);

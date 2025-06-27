@@ -10,5 +10,4 @@ There are 4 derive macros currently provided:
 * TopEncode
 * TopDecode
 
-For more info about the serialization format, see [the developer reference](https://docs.dharitri.org
-/developers/developer-reference/serialization-format/).
+For more info about the serialization format, see [the developer reference](https://docs.dharitri.org/developers/developer-reference/serialization-format/).
