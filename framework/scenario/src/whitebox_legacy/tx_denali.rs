@@ -31,7 +31,7 @@ impl ScCallDenali {
     }
 
     pub fn add_rewa_value(&mut self, rewa_value: &num_bigint::BigUint) {
-        self.rewa_value = rewa_value.clone();
+        self.rewa_value.clone_from(rewa_value);
     }
 
     pub fn add_dcdt_transfer(
@@ -101,6 +101,6 @@ impl TxExpectDenali {
     }
 
     pub fn set_message(&mut self, msg: &str) {
-        self.message = msg.to_owned();
+        self.message = msg.to_string();
     }
 }

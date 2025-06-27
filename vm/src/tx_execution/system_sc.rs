@@ -12,7 +12,7 @@ use system_sc_special_roles::*;
 use system_sc_unimplemented::*;
 
 /// Address of the system smart contract that manages DCDT.
-/// Bech32: drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez
+/// Bech32: drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2
 pub const DCDT_SYSTEM_SC_ADDRESS_ARRAY: [u8; 32] =
     hex!("233300000000000000000000000000000002333000000000000000000002ffff");
 

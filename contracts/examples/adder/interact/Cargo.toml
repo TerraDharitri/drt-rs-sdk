@@ -1,7 +1,7 @@
 [package]
 name = "basic-interact"
 version = "0.0.0"
-authors = ["Ovidiu Stinga <ovidiu.stinga@dharitri.com>"]
+authors = ["contact@dharitri.org"]
 edition = "2021"
 publish = false
 
@@ -18,5 +18,5 @@ toml = "0.8.6"
 path = ".."
 
 [dependencies.dharitri-sc-snippets]
-version = "0.50.0"
+version = "1.11.2"
 path = "../../../../framework/snippets"

@@ -9,8 +9,7 @@ TOKEN_ID=""
 TOKEN_ID_HEX="0x$(echo -n ${TOKEN_ID} | xxd -p -u | tr -d '\n')"
 TOKEN_AMOUNT_PER_TX=100
 
-PROXY="https://testnet-gateway.dharitri.org
-"
+PROXY="https://testnet-gateway.dharitri.org"
 CHAIN_ID="T"
 
 SC_WITH_ROLE_ADDRESS_BECH32=
@@ -19,7 +18,7 @@ SC_WITH_ROLE_ADDRESS_HEX="0x$(drtpy wallet bech32 --decode ${SC_WITH_ROLE_ADDRES
 SC_DEST_ADDRESS_BECH32=
 SC_DEST_ADDRESS_HEX="0x$(drtpy wallet bech32 --decode ${SC_DEST_ADDRESS_BECH32})"
 
-DCDT_SYSTEM_SC_ADDRESS=drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez
+DCDT_SYSTEM_SC_ADDRESS=drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2
 DCDT_TRANSFER_FUNC_NAME="DCDTTransfer"
 DCDT_MULTI_TRANSFER_FUNC_NAME="MultiDCDTNFTTransfer"
 TRANSFER_ROLE_NAME_HEX=0x444344545472616E73666572526F6C65

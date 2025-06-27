@@ -306,7 +306,7 @@ fn test_bech32() {
     assert_eq!(
         hex::decode("233300000000000000000000000000000002333000000000000000000002ffff").unwrap(),
         interpret_string(
-            "bech32:drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez",
+            "bech32:drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2",
             &context
         )
     );

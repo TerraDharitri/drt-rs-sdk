@@ -1,13 +1,7 @@
 # The DharitrI Rust Tool Set
 
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/TerraDharitri
-/drt-sdk-rs/actions.yml?branch=main)](https://github.com/TerraDharitri
-/drt-sdk-rs/actions/workflows/actions.yml?query=branch%3Amain) [![Dependency Status](https://deps.rs/repo/github/TerraDharitri
-/drt-sdk-rs/status.svg)](https://deps.rs/repo/github/TerraDharitri
-/drt-sdk-rs) [![Contributors](https://img.shields.io/github/contributors/TerraDharitri
-/drt-sdk-rs)](https://github.com/TerraDharitri
-/drt-sdk-rs/graphs/contributors)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/TerraDharitri/drt-rs-sdk/actions.yml?branch=main)](https://github.com/TerraDharitri/drt-rs-sdk/actions/workflows/actions.yml?query=branch%3Amain) [![Dependency Status](https://deps.rs/repo/github/TerraDharitri/drt-rs-sdk/status.svg)](https://deps.rs/repo/github/TerraDharitri/drt-rs-sdk) [![Contributors](https://img.shields.io/github/contributors/TerraDharitri/drt-rs-sdk)](https://github.com/TerraDharitri/drt-rs-sdk/graphs/contributors)
 
 This repository contains a wide variety of tools, aimed primarily at smart contract developers.
 
@@ -24,13 +18,11 @@ The repo contains:
 
 # Documentation
 
-Most documentation can be found at https://docs.dharitri.org
-/developers/overview/
+Most documentation can be found at https://docs.dharitri.org/developers/overview/
 
 # Getting started
 
-The crowdfunding tutorial is a great place to start: https://docs.dharitri.org
-/developers/tutorials/crowdfunding-p1/
+The crowdfunding tutorial is a great place to start: https://docs.dharitri.org/developers/tutorials/crowdfunding-p1/
 
 # IDE
 
@@ -38,10 +30,8 @@ The framework is designed to be easiest to use with the IDE VSCode extension: ht
 
 # Building contracts
 
-A comprehensive build guide can be found here: https://docs.dharitri.org
-/developers/developer-reference/sc-build-reference/
+A comprehensive build guide can be found here: https://docs.dharitri.org/developers/developer-reference/sc-build-reference/
 
 # Debugging contracts
 
-The debugger guide: https://docs.dharitri.org
-/developers/developer-reference/sc-debugging/
+The debugger guide: https://docs.dharitri.org/developers/developer-reference/sc-debugging/

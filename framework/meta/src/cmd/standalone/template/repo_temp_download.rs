@@ -6,7 +6,7 @@ use std::{
 
 use super::RepoVersion;
 
-const ZIP_NAME: &str = "drt-sdk-rs-download.zip";
+const ZIP_NAME: &str = "drt-rs-sdk-download.zip";
 
 pub struct RepoTempDownload {
     pub version: RepoVersion,

@@ -1,17 +1,14 @@
 [package]
 name = "dharitri-sc-scenario"
-version = "0.50.0"
+version = "1.11.2"
 edition = "2021"
 
-authors = [
-    "Andrei Marinica <andrei.marinica@dharitri.com>",
-    "DharitrI <contact@dharitri.com>",
-]
+authors = ["contact@dharitri.org"]
 license = "GPL-3.0-only"
 readme = "README.md"
-repository = "https://github.com/TerraDharitri/drt-sdk-rs"
-homepage ="https://dharitri.org/"
-documentation = "https://docs.dharitri.com/"
+repository = "https://github.com/TerraDharitri/drt-rs-sdk"
+homepage = "https://dharitri.org/"
+documentation = "https://docs.dharitri.org/"
 description = "DharitrI tools for writing and executing scenarios"
 keywords = ["dharitri", "blockchain", "contract", "debug"]
 categories = ["cryptography::cryptocurrencies", "development-tools::debugging"]
@@ -41,25 +38,25 @@ path = "src/main.rs"
 run-go-tests = []
 
 [dependencies.dharitri-sc]
-version = "=0.50.0"
+version = "=1.11.2"
 features = ["alloc", "num-bigint"]
 path = "../base"
 
 [dependencies.dharitri-sc-meta]
-version = "=0.50.0"
+version = "=1.11.2"
 path = "../meta"
 
 [dependencies.dharitri-chain-scenario-format]
-version = "0.22.2"
+version = "1.11.2"
 path = "../../sdk/scenario-format"
 
 [dependencies.dharitri-vm-executor]
 version = "=1.0.2"
 
 [dependencies.dharitri-chain-vm]
-version = "=0.8.4"
+version = "=1.11.2"
 path = "../../vm"
 
 [dependencies.dharitri-sdk]
-version = "=0.4.1"
+version = "=1.11.2"
 path = "../../sdk/core"

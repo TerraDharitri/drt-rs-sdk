@@ -3,7 +3,7 @@ name = "proxy-pause-meta"
 version = "0.0.0"
 edition = "2021"
 publish = false
-authors = [ "you",]
+authors = ["contact@dharitri.org"]
 
 [dev-dependencies]
 
@@ -11,6 +11,6 @@ authors = [ "you",]
 path = ".."
 
 [dependencies.dharitri-sc-meta]
-version = "0.50.0"
+version = "1.11.2"
 path = "../../../../framework/meta"
 default-features = false

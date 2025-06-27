@@ -11,8 +11,7 @@ use super::system_info::{get_system_info, SystemInfo};
 
 const USER_AGENT: &str = "dharitri-sc-meta";
 const SCENARIO_CLI_RELEASES_BASE_URL: &str =
-    "https://api.github.com/repos/TerraDharitri
-/drt-chain-scenario-cli-go/releases";
+    "https://api.github.com/repos/TerraDharitri/drt-go-chain-scenario-cli/releases";
 const CARGO_HOME: &str = env!("CARGO_HOME");
 
 #[derive(Clone, Debug)]
@@ -32,8 +31,8 @@ pub struct ScenarioGoInstaller {
 
 fn select_zip_name() -> String {
     match get_system_info() {
-        SystemInfo::Linux => "drt_scenario_go_linux_amd64.zip".to_string(),
-        SystemInfo::MacOs => "drt_scenario_go_darwin_amd64.zip".to_string(),
+        SystemInfo::Linux => "drt_go_scenario_linux_amd64.zip".to_string(),
+        SystemInfo::MacOs => "drt_go_scenario_darwin_amd64.zip".to_string(),
     }
 }
 
@@ -53,7 +52,7 @@ impl ScenarioGoInstaller {
     pub fn install(&self) {
         let release_raw = self
             .get_scenario_go_release_json()
-            .expect("couldn't retrieve drt-chain-scenario-cli-go release");
+            .expect("couldn't retrieve drt-go-chain-scenario-cli release");
 
         assert!(
             !release_raw.contains("\"message\": \"Not Found\""),
