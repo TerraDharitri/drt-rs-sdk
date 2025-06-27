@@ -14,7 +14,7 @@ permissions:
 jobs:
   contracts:
     name: Contracts (nightly)
-    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@67a09c1737e95f0d85a200c38101b40aae9173c2
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.19
     with:
       rust-toolchain: nightly-2024-05-22
       path-to-sc-meta: framework/meta
