@@ -5,7 +5,8 @@ dharitri_sc::derive_imports!();
 
 pub mod erc20_proxy;
 
-#[derive(TopEncode, TopDecode, PartialEq, Eq, TypeAbi, Clone, Copy)]
+#[type_abi]
+#[derive(TopEncode, TopDecode, PartialEq, Eq, Clone, Copy)]
 pub enum Status {
     FundingPeriod,
     Successful,

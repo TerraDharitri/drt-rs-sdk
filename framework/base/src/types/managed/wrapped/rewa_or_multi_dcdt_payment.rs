@@ -9,14 +9,13 @@ use crate::{
 };
 
 use crate as dharitri_sc; // needed by the TypeAbi generated code
-use crate::derive::TypeAbi;
+use crate::derive::type_abi;
 
 /// Encodes any type of payment, which either:
 /// - REWA (can be zero in case of no payment whatsoever);
 /// - Multi-DCDT (one or more DCDT transfers).
-#[derive(
-    TopDecode, TopEncode, TypeAbi, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug,
-)]
+#[type_abi]
+#[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug)]
 pub enum RewaOrMultiDcdtPayment<M: ManagedTypeApi> {
     Rewa(BigUint<M>),
     MultiDcdt(ManagedVec<M, DcdtTokenPayment<M>>),
