@@ -45,7 +45,7 @@ pub fn proxy(
 }
 
 #[deprecated(
-    since = "1.15.8",
+    since = "0.54.4",
     note = "Replace with attribute #[type_abi], which should be placed before all derives. More about this: https://docs.dharitri.org/developers/transactions/tx-migration/#replace-derivetypeabi-with-type_abi"
 )]
 #[proc_macro_derive(TypeAbi)]

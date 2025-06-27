@@ -2,7 +2,7 @@
 #                      r u s t f m t   -   C O N F I G
 # ==================================================================================
 # 
-# Version: 1.15.8
+# Version: 1.15.10
 # Author : Robbepop <robbepop@web.de>
 # 
 # A predefined .rustfmt.toml file with all configuration options and their

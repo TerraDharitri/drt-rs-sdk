@@ -10,10 +10,10 @@ path = "src/lib.rs"
 
 
 [dependencies.dharitri-sc]
-version = "1.15.8"
+version = "1.15.10"
 path = "../../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.15.8"
+version = "1.15.10"
 path = "../../../../../framework/scenario"
 

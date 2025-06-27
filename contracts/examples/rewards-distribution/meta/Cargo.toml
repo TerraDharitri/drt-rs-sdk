@@ -11,6 +11,6 @@ authors = ["contact@dharitri.org"]
 path = ".."
 
 [dependencies.dharitri-sc-meta-lib]
-version = "1.15.8"
+version = "1.15.10"
 path = "../../../../framework/meta-lib"
 default-features = false
