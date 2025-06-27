@@ -9,10 +9,11 @@ The `drt-rs-sdk` repo contains many crates, grouped into several families. Crate
 For brevity, the changelog will only mention a short version of their name.
 
 They are:
-- `dharitri-sc`, in short `sc`, the smart contract framework, 6 crates + 3 for contracts/modules:
+- `dharitri-sc`, in short `sc`, the smart contract framework, 7 crates + 3 for contracts/modules:
 	- `dharitri-sc`
     - `dharitri-sc-derive`
     - `dharitri-sc-meta`
+    - `dharitri-sc-meta-lib`
     - `dharitri-sc-scenario`
     - `dharitri-sc-snippets`
     - `dharitri-sc-wasm-adapter`
@@ -26,10 +27,25 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 1.12.2]
+## [sc 1.13.6] - 2024-08-06
+- Pause module events.
+
+## [sc 0.52.2] - 2024-08-01
+- `ManagedBufferReadToEnd` extract data methods.
+
+## [sc 0.52.1] - 2024-07-31
+- `ManagedBufferReadToEnd` `TypeAbi` implementation.
+
+## [sc 0.52.0, codec 1.13.6] - 2024-07-31
+- ManagedBufferReadToEnd type, which flushed a nested data buffer.
+- Fixed hex and binary formatters for byte slices.
+- Added EI 1.4 and 1.5 configs.
+- Dependency upgrades.
+
+## [sc 0.51.1]
 - `sc-meta upgrade` bugfix.
 
-## [sc 0.51.0, codec 1.12.2, vm 1.12.2, sdk 1.12.2, scenario-format 1.12.2] - 2024-07-06
+## [sc 0.51.0, codec 0.20.0, vm 1.13.6, sdk 1.13.6, scenario-format 1.13.6] - 2024-07-06
 - Major refactoring of `dharitri-sc-meta`
 	- Crate `dharitri-sc-meta` split in 2:
 		1. `dharitri-sc-meta` remains the standalone tool. For backwards compatibility, it can still be used in contract meta crates, but a warning will be issued.
@@ -248,7 +264,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- Various bugfixes.
 - VM implementation for `get_shard_of_address` VM hook.
 
-## [sc 0.43.0, codec 0.18.1, vm 1.12.2] - 2023-08-16
+## [sc 0.43.0, codec 0.18.1, vm 1.13.6] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
 	- pre-rustc-1.71;
 	- between rustc-1.71 and rustc-1.73;
@@ -262,7 +278,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Arguments `--target-dir-wasm`, `--target-dir-meta`, and `--target-dir-all` in the `dharitri-sc-meta` CLI.
 - Fixed an issue with contract calls and DCDT transfers in the `StaticApi` environment.
 
-## [sc 0.42.0, codec 0.18.0, vm 0.4.0, scenario-format 1.12.2, sdk 0.2.0] - 2023-07-15
+## [sc 0.42.0, codec 0.18.0, vm 0.4.0, scenario-format 0.20.0, sdk 0.2.0] - 2023-07-15
 - Multi-endpoints in multi-contracts:
 	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
 	- We can also have multiple versions of the constructor.
@@ -524,7 +540,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Feature `cb_closure_managed_deser` replaced by `cb_closure_unmanaged_deser`, managed implementation is now the default.
 - Git tag/commit info in ABI.
 
-## [numbat-wasm 0.28.0, numbat-codec 1.12.2, denali 0.12.0] - 2022-02-22
+## [numbat-wasm 0.28.0, numbat-codec 1.13.6, denali 0.12.0] - 2022-02-22
 - Major numbat-codec refactor:
 	- Redesigned the error handling for single value encoding
 	- Introduced multi-value encoding, which replaces the previous endpoint argument and result mechanisms
@@ -626,7 +642,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Nested encode and decode from ManagedBuffers cached in a static singleton buffer.
 - Implemented `ExactSizeIterator` for `ManagedVecIterator`.
 
-## [numbat-wasm 1.12.2] - 2021-11-10
+## [numbat-wasm 1.13.6] - 2021-11-10
 - Memory allocation optimisations.
 
 ## [numbat-wasm 0.22.2] - 2021-11-06
@@ -666,11 +682,11 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - ABI contains endpoint mutability flag (mutable/readonly)
 - reverse iteration for `ManagedVec`
 
-## [numbat-wasm 0.20.1] - 2021-10-05
+## [numbat-wasm 1.13.6] - 2021-10-05
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [numbat-wasm 1.12.2, numbat-codec 0.7.0, denali 0.10.0] - 2021-10-02
+## [numbat-wasm 0.20.0, numbat-codec 0.7.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -681,7 +697,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 1.12.2] - 2021-09-10
+## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 1.13.6] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Andes minimum version is `v1.4.10`.
 	- Redesigned parts of the numbat-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -829,7 +845,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [numbat-wasm 0.11.0, numbat-codec 1.12.2, denali 1.12.2] - 2021-02-05
+## [numbat-wasm 0.11.0, numbat-codec 1.13.6, denali 1.13.6] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
@@ -918,7 +934,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [numbat-wasm 1.12.2, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [numbat-wasm 1.13.6, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from numbat-wasm 0.8.0.
@@ -979,7 +995,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Arg name in error message
 - Async call arguments based on traits
 
-## [numbat-wasm 1.12.2] - 2020-06-29
+## [numbat-wasm 1.13.6] - 2020-06-29
 - EndpointResult trait, arg serialization trait, arg loader
 - Variadic args/results: OptionalArg, OptionalResult, MultiResultX
 

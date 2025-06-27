@@ -14,7 +14,7 @@
         },
         "framework": {
             "name": "dharitri-sc",
-            "version": "1.12.2"
+            "version": "1.13.6"
         }
     },
     "docs": [
@@ -244,6 +244,14 @@
                     "type": "DcdtTokenPayment"
                 }
             ]
+        },
+        {
+            "identifier": "pauseContract",
+            "inputs": []
+        },
+        {
+            "identifier": "unpauseContract",
+            "inputs": []
         }
     ],
     "dcdtAttributes": [

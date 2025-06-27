@@ -1,6 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 #[dharitri_sc::contract]
 pub trait FormattedMessageFeatures {
@@ -70,6 +70,21 @@ pub trait FormattedMessageFeatures {
     #[endpoint]
     fn print_message_codec(&self, x: i32) {
         sc_print!("Printing x: {:c}", x);
+    }
+
+    #[endpoint]
+    fn print_message_bytes(&self, x: &[u8]) {
+        sc_print!("Printing x: {}", x,);
+    }
+
+    #[endpoint]
+    fn print_message_hex_bytes(&self, x: &[u8]) {
+        sc_print!("Printing x: {:x}", x,);
+    }
+
+    #[endpoint]
+    fn print_message_binary_bytes(&self, x: &[u8]) {
+        sc_print!("Printing x: {:b}", x);
     }
 
     #[endpoint]

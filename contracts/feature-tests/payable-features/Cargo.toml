@@ -9,9 +9,9 @@ publish = false
 path = "src/payable_features.rs"
 
 [dependencies.dharitri-sc]
-version = "1.12.2"
+version = "1.13.6"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.12.2"
+version = "1.13.6"
 path = "../../../framework/scenario"

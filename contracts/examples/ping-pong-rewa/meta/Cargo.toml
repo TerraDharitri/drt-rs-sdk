@@ -9,6 +9,6 @@ publish = false
 path = ".."
 
 [dependencies.dharitri-sc-meta-lib]
-version = "1.12.2"
+version = "1.13.6"
 path = "../../../../framework/meta-lib"
 default-features = false

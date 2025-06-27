@@ -9,6 +9,7 @@ mod encoded_managed_vec_item;
 mod dcdt_token_data;
 mod dcdt_token_payment;
 mod managed_address;
+mod managed_buffer_read_to_end;
 mod managed_byte_array;
 mod managed_decimal;
 mod managed_option;
@@ -34,6 +35,7 @@ pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 pub use dcdt_token_data::DcdtTokenData;
 pub use dcdt_token_payment::{DcdtTokenPayment, DcdtTokenPaymentRefs, MultiDcdtPayment};
 pub use managed_address::ManagedAddress;
+pub use managed_buffer_read_to_end::*;
 pub(crate) use managed_byte_array::ManagedBufferSizeContext;
 pub use managed_byte_array::ManagedByteArray;
 pub use managed_decimal::{

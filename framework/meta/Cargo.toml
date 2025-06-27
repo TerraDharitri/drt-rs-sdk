@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-meta"
-version = "1.12.2"
+version = "1.13.6"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -38,14 +38,14 @@ pathdiff = "0.2.1"
 common-path = "1.0.0" 
 
 [dependencies.dharitri-sc-meta-lib]
-version = "=1.12.2"
+version = "=1.13.6"
 path = "../meta-lib"
 
 [dependencies.dharitri-sc]
-version = "=1.12.2"
+version = "=1.13.6"
 path = "../base"
 features = ["alloc", "num-bigint"]
 
 [dependencies.dharitri-sc-snippets]
-version = "=1.12.2"
+version = "=1.13.6"
 path = "../snippets"
