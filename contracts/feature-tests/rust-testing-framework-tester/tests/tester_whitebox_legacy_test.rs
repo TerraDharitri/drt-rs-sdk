@@ -294,6 +294,7 @@ fn test_dcdt_balance() {
         })
         .assert_ok();
 
+    wrapper.add_denali_set_account(sc_wrapper.address_ref());
     wrapper.add_denali_check_account(sc_wrapper.address_ref());
     wrapper.write_denali_output(TEST_DCDT_OUTPUT_PATH);
 }

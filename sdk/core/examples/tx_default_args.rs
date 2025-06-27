@@ -1,11 +1,11 @@
 use dharitri_sdk::{
-    blockchain::{CommunicationProxy, DEVNET_GATEWAY},
     data::address::Address,
+    gateway::{GatewayProxy, DEVNET_GATEWAY},
 };
 
 #[tokio::main]
 async fn main() {
-    let blockchain = CommunicationProxy::new(DEVNET_GATEWAY.to_string());
+    let blockchain = GatewayProxy::new(DEVNET_GATEWAY.to_string());
     let network_config = blockchain.get_network_config().await.unwrap();
     let addr = Address::from_bech32_string(
         "drt1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ssj7kxgw",

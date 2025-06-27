@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-chain-vm"
-version = "1.11.10"
+version = "1.12.2"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -13,19 +13,23 @@ description = "DharitrI VM implementation and tooling"
 keywords = ["dharitri", "blockchain", "vm", "tools"]
 categories = ["cryptography::cryptocurrencies", "development-tools::debugging"]
 
+[features]
+# not supported when compiling to wasm
+wasm-incopatible = ["rand", "rand_seeder", "ed25519-dalek"]
+
 [dependencies]
 num-bigint = "0.4"
 num-traits = "0.2"
 hex = "0.4"
 sha2 = "0.10.6"
 sha3 = "0.10.6"
-rand = "0.8.5"
-rand_seeder = "0.2.2"
-ed25519-dalek = "1.0.1"
-itertools = "0.12.0"
+itertools = "0.13.0"
 hex-literal = "=0.4.1"
-bitflags = "=2.5.0"
+bitflags = "=2.6.0"
 colored = "2.1.0"
+rand = { version= "0.8.5", optional = true }
+rand_seeder = { version= "0.2.2", optional = true }
+ed25519-dalek = { version = "1.0.1" , optional = true }
 
 [dependencies.dharitri-vm-executor]
 version = "=1.0.2"

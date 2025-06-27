@@ -5,9 +5,8 @@ use dharitri_sc::{
 
 dharitri_sc::derive_imports!();
 
-#[derive(
-    NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Debug, Clone,
-)]
+#[type_abi]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Debug, Clone)]
 pub struct ExampleStructManaged<M: ManagedTypeApi> {
     pub big_uint: BigUint<M>,
     pub int: u32,

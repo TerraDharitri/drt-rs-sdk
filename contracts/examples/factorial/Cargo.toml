@@ -9,9 +9,9 @@ publish = false
 path = "src/factorial.rs"
 
 [dependencies.dharitri-sc]
-version = "1.11.10"
+version = "1.12.2"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.11.10"
+version = "1.12.2"
 path = "../../../framework/scenario"

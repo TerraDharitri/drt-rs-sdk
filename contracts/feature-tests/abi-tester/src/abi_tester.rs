@@ -23,8 +23,10 @@ use only_nested::*;
 #[dcdt_attribute("STRUCT1", AbiEnum)]
 #[dcdt_attribute("STRUCT2", AbiManagedType<Self::Api>)]
 #[dcdt_attribute("OnlyInDcdt", OnlyShowsUpInDcdtAttr)]
-#[dcdt_attribute["ExplicitDiscriminant", ExplicitDiscriminant]]
-#[dcdt_attribute["ExplicitDiscriminantMixed", ExplicitDiscriminantMixed]]
+#[dcdt_attribute("ExplicitDiscriminant", ExplicitDiscriminant)]
+#[dcdt_attribute("ExplicitDiscriminantMixed", ExplicitDiscriminantMixed)]
+#[dcdt_attribute("ManagedDecimalVar", ManagedDecimal<Self::Api, NumDecimals>)]
+#[dcdt_attribute("ManagedDecimalConst", ManagedDecimalWrapper<Self::Api>)]
 pub trait AbiTester {
     /// Contract constructor.
     #[init]

@@ -1,9 +1,9 @@
-use crate::{denali_to_drtrs_address, Interactor};
+use crate::{denali_to_drtrs_address, network_response, Interactor};
 use log::info;
 use dharitri_sc_scenario::{
     imports::Bech32Address,
     denali_system::ScenarioRunner,
-    scenario_model::{ScDeployStep, SetStateStep, TxResponse},
+    scenario_model::{ScDeployStep, SetStateStep},
 };
 use dharitri_sdk::{
     data::{address::Address as DrtrsAddress, transaction::Transaction},
@@ -53,11 +53,11 @@ impl Interactor {
     {
         let sc_deploy_step = sc_deploy_step.as_mut();
         let tx_hash = self.launch_sc_deploy(sc_deploy_step).await;
-        let tx = self.retrieve_tx_on_network(tx_hash.clone()).await;
+        let tx = self.proxy.retrieve_tx_on_network(tx_hash.clone()).await;
 
         let addr = sc_deploy_step.tx.from.clone();
         let nonce = tx.nonce;
-        sc_deploy_step.save_response(TxResponse::from_network_tx(tx));
+        sc_deploy_step.save_response(network_response::parse_tx_response(tx));
 
         let deploy_address = sc_deploy_step
             .response()

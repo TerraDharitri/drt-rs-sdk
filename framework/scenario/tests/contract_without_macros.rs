@@ -7,7 +7,6 @@
 // and maintenance.
 
 #![allow(unused)]
-#![allow(deprecated)] // TODO: unified syntax
 
 use dharitri_sc::{
     contract_base::ProxyObjNew,
@@ -103,11 +102,116 @@ mod module_1 {
     }
 
     pub trait ProxyTrait: dharitri_sc::contract_base::ProxyObjBase + Sized {
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
         fn version(
             &mut self,
-        ) -> dharitri_sc::types::ContractCallNoPayment<Self::Api, BigInt<Self::Api>> {
-            let ___address___ = self.extract_address();
-            dharitri_sc::types::ContractCallNoPayment::new(___address___, "version")
+        ) -> dharitri_sc::types::Tx<
+            dharitri_sc::types::TxScEnv<Self::Api>,
+            (),
+            Self::To,
+            (),
+            (),
+            dharitri_sc::types::FunctionCall<Self::Api>,
+            dharitri_sc::types::OriginalResultMarker<BigInt<Self::Api>>,
+        > {
+            dharitri_sc::types::TxBaseWithEnv::new_tx_from_sc()
+                .to(self.extract_proxy_to())
+                .original_result()
+                .raw_call("version")
+        }
+    }
+}
+
+mod sampler_adder_proxy {
+    #![allow(dead_code)]
+    #![allow(clippy::all)]
+    use dharitri_sc::proxy_imports::*;
+    pub struct AdderProxy;
+    impl<Env, From, To, Gas> TxProxyTrait<Env, From, To, Gas> for AdderProxy
+    where
+        Env: TxEnv,
+        From: TxFrom<Env>,
+        To: TxTo<Env>,
+        Gas: TxGas<Env>,
+    {
+        type TxProxyMethods = AdderProxyMethods<Env, From, To, Gas>;
+        fn proxy_methods(self, tx: Tx<Env, From, To, (), Gas, (), ()>) -> Self::TxProxyMethods {
+            AdderProxyMethods { wrapped_tx: tx }
+        }
+    }
+    pub struct AdderProxyMethods<Env, From, To, Gas>
+    where
+        Env: TxEnv,
+        From: TxFrom<Env>,
+        To: TxTo<Env>,
+        Gas: TxGas<Env>,
+    {
+        wrapped_tx: Tx<Env, From, To, (), Gas, (), ()>,
+    }
+    #[rustfmt::skip]
+    impl<Env, From, Gas> AdderProxyMethods<Env, From, (), Gas>
+    where
+        Env: TxEnv,
+        Env::Api: VMApi,
+        From: TxFrom<Env>,
+        Gas: TxGas<Env>,
+    {
+        pub fn init<Arg0: ProxyArg<BigUint<Env::Api>>>(
+            self,
+            initial_value: Arg0,
+        ) -> TxTypedDeploy<Env, From, NotPayable, Gas, ()> {
+            self.wrapped_tx
+                .payment(NotPayable)
+                .raw_deploy()
+                .argument(&initial_value)
+                .original_result()
+        }
+    }
+    #[rustfmt::skip]
+    impl<Env, From, To, Gas> AdderProxyMethods<Env, From, To, Gas>
+    where
+        Env: TxEnv,
+        Env::Api: VMApi,
+        From: TxFrom<Env>,
+        To: TxTo<Env>,
+        Gas: TxGas<Env>,
+    {
+        pub fn upgrade<Arg0: ProxyArg<BigUint<Env::Api>>>(
+            self,
+            initial_value: Arg0,
+        ) -> TxTypedUpgrade<Env, From, To, NotPayable, Gas, ()> {
+            self.wrapped_tx
+                .payment(NotPayable)
+                .raw_upgrade()
+                .argument(&initial_value)
+                .original_result()
+        }
+    }
+    #[rustfmt::skip]
+    impl<Env, From, To, Gas> AdderProxyMethods<Env, From, To, Gas>
+    where
+        Env: TxEnv,
+        Env::Api: VMApi,
+        From: TxFrom<Env>,
+        To: TxTo<Env>,
+        Gas: TxGas<Env>,
+    {
+        pub fn sum(
+            self,
+        ) -> TxTypedCall<Env, From, To, NotPayable, Gas, BigUint<Env::Api>> {
+            self.wrapped_tx.payment(NotPayable).raw_call("getSum").original_result()
+        }
+        /// Add desired amount to the storage variable.
+        pub fn add<Arg0: ProxyArg<BigUint<Env::Api>>>(
+            self,
+            value: Arg0,
+        ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+            self.wrapped_tx
+                .payment(NotPayable)
+                .raw_call("add")
+                .argument(&value)
+                .original_result()
         }
     }
 }
@@ -121,21 +225,25 @@ mod sample_adder {
     pub trait Adder:
         super::module_1::VersionModule + dharitri_sc::contract_base::ContractBase + Sized
     {
-        fn init(&self, initial_value: &BigInt<Self::Api>) {
-            self.set_sum(initial_value);
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn init(&self, initial_value: dharitri_sc::types::BigUint<Self::Api>) {
+            self.sum().set(initial_value);
         }
-        fn add(&self, value: BigInt<Self::Api>) {
-            let mut sum = self.get_sum();
-            sum.add_assign(value);
-            self.set_sum(&sum);
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn upgrade(&self, initial_value: dharitri_sc::types::BigUint<Self::Api>) {
+            self.init(initial_value);
         }
-        fn get_sum(&self) -> BigInt<Self::Api>;
-        fn set_sum(&self, sum: &BigInt<Self::Api>);
-        fn add_version(&self) {
-            self.add(self.version())
+        /// Add desired amount to the storage variable.
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn add(&self, value: dharitri_sc::types::BigUint<Self::Api>) {
+            self.sum().update(|sum| *sum += value);
         }
-        fn callback(&self);
-        fn callbacks(&self) -> self::CallbackProxyObj<Self::Api>;
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn sum(&self) -> SingleValueMapper<Self::Api, dharitri_sc::types::BigUint<Self::Api>>;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -149,17 +257,14 @@ mod sample_adder {
     where
         C: AutoImpl + super::module_1::AutoImpl,
     {
-        fn get_sum(&self) -> BigInt<Self::Api> {
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn sum(&self) -> SingleValueMapper<Self::Api, dharitri_sc::types::BigUint<Self::Api>> {
             let mut ___key___ = dharitri_sc::storage::StorageKey::<Self::Api>::new(&b"sum"[..]);
-            dharitri_sc::storage_get(dharitri_sc::types::ManagedRef::new(&___key___))
-        }
-        fn set_sum(&self, sum: &BigInt<Self::Api>) {
-            let mut ___key___ = dharitri_sc::storage::StorageKey::<Self::Api>::new(&b"sum"[..]);
-            dharitri_sc::storage_set(dharitri_sc::types::ManagedRef::new(&___key___), &sum);
-        }
-        fn callback(&self) {}
-        fn callbacks(&self) -> self::CallbackProxyObj<Self::Api> {
-            <self::CallbackProxyObj::<Self::Api> as dharitri_sc::contract_base::CallbackProxyObjBase>::new_cb_proxy_obj()
+            <SingleValueMapper<
+            Self::Api,
+            dharitri_sc::types::BigUint<Self::Api>,
+        > as dharitri_sc::storage::mappers::StorageMapper<Self::Api>>::new(___key___)
         }
     }
 
@@ -172,11 +277,11 @@ mod sample_adder {
         Adder + dharitri_sc::contract_base::ContractBase + super::module_1::EndpointWrappers
     {
         #[inline]
-        fn call_get_sum(&self) {
+        fn call_sum(&self) {
             <Self::Api as dharitri_sc::api::VMApi>::init_static();
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let () = dharitri_sc::io::load_endpoint_args::<Self::Api, ()>(());
-            let result = self.get_sum();
+            let result = self.sum();
             dharitri_sc::io::finish_multi::<Self::Api, _>(&result);
         }
         #[inline]
@@ -185,9 +290,19 @@ mod sample_adder {
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let (initial_value, ()) = dharitri_sc::io::load_endpoint_args::<
                 Self::Api,
-                (dharitri_sc::types::BigInt<Self::Api>, ()),
+                (dharitri_sc::types::BigUint<Self::Api>, ()),
             >(("initial_value", ()));
-            self.init(&initial_value);
+            self.init(initial_value);
+        }
+        #[inline]
+        fn call_upgrade(&self) {
+            <Self::Api as dharitri_sc::api::VMApi>::init_static();
+            dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
+            let (initial_value, ()) = dharitri_sc::io::load_endpoint_args::<
+                Self::Api,
+                (dharitri_sc::types::BigUint<Self::Api>, ()),
+            >(("initial_value", ()));
+            self.upgrade(initial_value);
         }
         #[inline]
         fn call_add(&self) {
@@ -195,38 +310,55 @@ mod sample_adder {
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let (value, ()) = dharitri_sc::io::load_endpoint_args::<
                 Self::Api,
-                (dharitri_sc::types::BigInt<Self::Api>, ()),
+                (dharitri_sc::types::BigUint<Self::Api>, ()),
             >(("value", ()));
             self.add(value);
         }
-
         fn call(&self, fn_name: &str) -> bool {
             if match fn_name {
                 "callBack" => {
-                    Adder::callback(self);
+                    self::EndpointWrappers::callback(self);
+                    return true;
+                },
+                "init"
+                    if <Self::Api as dharitri_sc::api::VMApi>::external_view_init_override() =>
+                {
+                    dharitri_sc::external_view_contract::external_view_contract_constructor::<
+                        Self::Api,
+                    >();
                     return true;
                 },
                 "getSum" => {
-                    self.call_get_sum();
+                    self.call_sum();
                     true
                 },
-                "init" => {
+                "init"
+                    if !<Self::Api as dharitri_sc::api::VMApi>::external_view_init_override() =>
+                {
                     self.call_init();
+                    true
+                },
+                "upgrade" => {
+                    self.call_upgrade();
                     true
                 },
                 "add" => {
                     self.call_add();
                     true
                 },
-                _other => false,
+                other => false,
             } {
-                return true;
-            }
-            if super::module_1::EndpointWrappers::call(self, fn_name) {
                 return true;
             }
             false
         }
+        fn callback_selector(
+            &self,
+            mut ___cb_closure___: dharitri_sc::types::CallbackClosureForDeser<Self::Api>,
+        ) -> dharitri_sc::types::CallbackSelectorResult<Self::Api> {
+            dharitri_sc::types::CallbackSelectorResult::NotProcessed(___cb_closure___)
+        }
+        fn callback(&self) {}
     }
 
     impl<A> EndpointWrappers for dharitri_sc::contract_base::UniversalContractObj<A> where
@@ -234,24 +366,224 @@ mod sample_adder {
     {
     }
 
+    pub struct AbiProvider {}
+    impl dharitri_sc::contract_base::ContractAbiProvider for AbiProvider {
+        type Api = dharitri_sc::api::uncallable::UncallableApi;
+        fn abi() -> dharitri_sc::abi::ContractAbi {
+            let mut contract_abi = dharitri_sc::abi::ContractAbi::new(
+                dharitri_sc::abi::BuildInfoAbi {
+                    contract_crate: dharitri_sc::abi::ContractCrateBuildAbi {
+                        name: "adder",
+                        version: "0.0.0",
+                        git_version: "",
+                    },
+                    framework: dharitri_sc::abi::FrameworkBuildAbi::create(),
+                },
+                &[
+                    "One of the simplest smart contracts possible,",
+                    "it holds a single variable in storage, which anyone can increment.",
+                ],
+                "Adder",
+                false,
+            );
+            let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
+                &[],
+                "getSum",
+                "sum",
+                false,
+                false,
+                dharitri_sc::abi::EndpointMutabilityAbi::Readonly,
+                dharitri_sc::abi::EndpointTypeAbi::Endpoint,
+                &[],
+                &[],
+                false,
+            );
+            endpoint_abi
+            .add_output::<
+                SingleValueMapper<Self::Api, dharitri_sc::types::BigUint<Self::Api>>,
+            >(&[]);
+            contract_abi
+            .add_type_descriptions::<
+                SingleValueMapper<Self::Api, dharitri_sc::types::BigUint<Self::Api>>,
+            >();
+            contract_abi.endpoints.push(endpoint_abi);
+            let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
+                &[],
+                "init",
+                "init",
+                false,
+                false,
+                dharitri_sc::abi::EndpointMutabilityAbi::Mutable,
+                dharitri_sc::abi::EndpointTypeAbi::Init,
+                &[],
+                &[],
+                false,
+            );
+            endpoint_abi.add_input::<dharitri_sc::types::BigUint<Self::Api>>("initial_value");
+            contract_abi.add_type_descriptions::<dharitri_sc::types::BigUint<Self::Api>>();
+            contract_abi.constructors.push(endpoint_abi);
+            let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
+                &[],
+                "upgrade",
+                "upgrade",
+                false,
+                false,
+                dharitri_sc::abi::EndpointMutabilityAbi::Mutable,
+                dharitri_sc::abi::EndpointTypeAbi::Upgrade,
+                &[],
+                &[],
+                false,
+            );
+            endpoint_abi.add_input::<dharitri_sc::types::BigUint<Self::Api>>("initial_value");
+            contract_abi.add_type_descriptions::<dharitri_sc::types::BigUint<Self::Api>>();
+            contract_abi.upgrade_constructors.push(endpoint_abi);
+            let mut endpoint_abi = dharitri_sc::abi::EndpointAbi::new(
+                &["Add desired amount to the storage variable."],
+                "add",
+                "add",
+                false,
+                false,
+                dharitri_sc::abi::EndpointMutabilityAbi::Mutable,
+                dharitri_sc::abi::EndpointTypeAbi::Endpoint,
+                &[],
+                &[],
+                false,
+            );
+            endpoint_abi.add_input::<dharitri_sc::types::BigUint<Self::Api>>("value");
+            contract_abi.add_type_descriptions::<dharitri_sc::types::BigUint<Self::Api>>();
+            contract_abi.endpoints.push(endpoint_abi);
+            contract_abi
+        }
+    }
+
+    #[allow(non_snake_case)]
+    pub mod endpoints {
+        use super::EndpointWrappers;
+        pub fn sum<A>()
+        where
+            A: dharitri_sc::api::VMApi,
+        {
+            super::EndpointWrappers::call_sum(
+                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+            );
+        }
+        pub fn init<A>()
+        where
+            A: dharitri_sc::api::VMApi,
+        {
+            super::EndpointWrappers::call_init(
+                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+            );
+        }
+        pub fn upgrade<A>()
+        where
+            A: dharitri_sc::api::VMApi,
+        {
+            super::EndpointWrappers::call_upgrade(
+                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+            );
+        }
+        pub fn add<A>()
+        where
+            A: dharitri_sc::api::VMApi,
+        {
+            super::EndpointWrappers::call_add(
+                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+            );
+        }
+        pub fn callBack<A>()
+        where
+            A: dharitri_sc::api::VMApi,
+        {
+            super::EndpointWrappers::callback(
+                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+            );
+        }
+    }
     pub trait ProxyTrait:
         dharitri_sc::contract_base::ProxyObjBase + super::module_1::ProxyTrait
     {
-        fn get_sum(
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn sum(
             &mut self,
-        ) -> dharitri_sc::types::ContractCallNoPayment<Self::Api, BigInt<Self::Api>> {
-            let ___address___ = self.extract_address();
-            dharitri_sc::types::ContractCallNoPayment::new(___address___, "get_sum")
+        ) -> dharitri_sc::types::Tx<
+            dharitri_sc::types::TxScEnv<Self::Api>,
+            (),
+            Self::To,
+            (),
+            (),
+            dharitri_sc::types::FunctionCall<Self::Api>,
+            dharitri_sc::types::OriginalResultMarker<
+                SingleValueMapper<Self::Api, dharitri_sc::types::BigUint<Self::Api>>,
+            >,
+        > {
+            dharitri_sc::types::TxBaseWithEnv::new_tx_from_sc()
+                .to(self.extract_proxy_to())
+                .original_result()
+                .raw_call("getSum")
         }
-        fn add(
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn init<Arg0: dharitri_sc::types::ProxyArg<dharitri_sc::types::BigUint<Self::Api>>>(
             &mut self,
-            amount: &BigInt<Self::Api>,
-        ) -> dharitri_sc::types::ContractCallNoPayment<Self::Api, ()> {
-            let ___address___ = self.extract_address();
-            let mut ___contract_call___ =
-                dharitri_sc::types::ContractCallNoPayment::new(___address___, "add");
-            dharitri_sc::types::ContractCall::proxy_arg(&mut ___contract_call___, amount);
-            ___contract_call___
+            initial_value: Arg0,
+        ) -> dharitri_sc::types::Tx<
+            dharitri_sc::types::TxScEnv<Self::Api>,
+            (),
+            Self::To,
+            (),
+            (),
+            dharitri_sc::types::DeployCall<dharitri_sc::types::TxScEnv<Self::Api>, ()>,
+            dharitri_sc::types::OriginalResultMarker<()>,
+        > {
+            dharitri_sc::types::TxBaseWithEnv::new_tx_from_sc()
+                .raw_deploy()
+                .argument(&initial_value)
+                .original_result()
+                .to(self.extract_proxy_to())
+        }
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn upgrade<
+            Arg0: dharitri_sc::types::ProxyArg<dharitri_sc::types::BigUint<Self::Api>>,
+        >(
+            &mut self,
+            initial_value: Arg0,
+        ) -> dharitri_sc::types::Tx<
+            dharitri_sc::types::TxScEnv<Self::Api>,
+            (),
+            Self::To,
+            (),
+            (),
+            dharitri_sc::types::FunctionCall<Self::Api>,
+            dharitri_sc::types::OriginalResultMarker<()>,
+        > {
+            dharitri_sc::types::TxBaseWithEnv::new_tx_from_sc()
+                .to(self.extract_proxy_to())
+                .original_result()
+                .raw_call("upgrade")
+                .argument(&initial_value)
+        }
+        #[allow(clippy::too_many_arguments)]
+        #[allow(clippy::type_complexity)]
+        fn add<Arg0: dharitri_sc::types::ProxyArg<dharitri_sc::types::BigUint<Self::Api>>>(
+            &mut self,
+            value: Arg0,
+        ) -> dharitri_sc::types::Tx<
+            dharitri_sc::types::TxScEnv<Self::Api>,
+            (),
+            Self::To,
+            (),
+            (),
+            dharitri_sc::types::FunctionCall<Self::Api>,
+            dharitri_sc::types::OriginalResultMarker<()>,
+        > {
+            dharitri_sc::types::TxBaseWithEnv::new_tx_from_sc()
+                .to(self.extract_proxy_to())
+                .original_result()
+                .raw_call("add")
+                .argument(&value)
         }
     }
 
@@ -288,33 +620,7 @@ mod sample_adder {
         A: dharitri_sc::api::VMApi,
     {
         fn call(&self, fn_name: &str) -> bool {
-            EndpointWrappers::call(
-                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
-                fn_name,
-            )
-        }
-    }
-
-    pub struct ContractBuilder;
-
-    impl dharitri_sc::contract_base::CallableContractBuilder for ContractBuilder {
-        fn new_contract_obj<A: dharitri_sc::api::VMApi>(
-            &self,
-        ) -> dharitri_sc::types::heap::Box<dyn dharitri_sc::contract_base::CallableContract>
-        {
-            dharitri_sc::types::heap::Box::new(ContractObj::<A> {
-                _phantom: core::marker::PhantomData,
-            })
-        }
-    }
-
-    pub struct AbiProvider {}
-
-    impl dharitri_sc::contract_base::ContractAbiProvider for AbiProvider {
-        type Api = dharitri_sc::api::uncallable::UncallableApi;
-
-        fn abi() -> dharitri_sc::abi::ContractAbi {
-            dharitri_sc::abi::ContractAbi::default()
+            EndpointWrappers::call(self, fn_name)
         }
     }
 
@@ -324,6 +630,17 @@ mod sample_adder {
     {
         ContractObj {
             _phantom: core::marker::PhantomData,
+        }
+    }
+    pub struct ContractBuilder;
+    impl dharitri_sc::contract_base::CallableContractBuilder for self::ContractBuilder {
+        fn new_contract_obj<A: dharitri_sc::api::VMApi + Send + Sync>(
+            &self,
+        ) -> dharitri_sc::types::heap::Box<dyn dharitri_sc::contract_base::CallableContract>
+        {
+            dharitri_sc::types::heap::Box::new(ContractObj::<A> {
+                _phantom: core::marker::PhantomData,
+            })
         }
     }
 
@@ -465,29 +782,26 @@ fn contract_without_macros_basic() {
 
     let adder = sample_adder::contract_obj::<SingleTxApi>();
 
-    adder.init(&BigInt::from(5));
-    assert_eq!(BigInt::from(5), adder.get_sum());
+    adder.init(dharitri_sc::types::BigUint::from(5u32));
+    assert_eq!(dharitri_sc::types::BigUint::from(5u32), adder.sum().get());
 
-    adder.add(BigInt::from(7));
-    assert_eq!(BigInt::from(12), adder.get_sum());
-
-    adder.add(BigInt::from(-1));
-    assert_eq!(BigInt::from(11), adder.get_sum());
+    adder.add(dharitri_sc::types::BigUint::from(7u32));
+    assert_eq!(
+        dharitri_sc::types::BigUint::from(12u32),
+        adder.sum().get()
+    );
 
     assert_eq!(BigInt::from(100), adder.version());
 
-    adder.add_version();
-    assert_eq!(BigInt::from(111), adder.get_sum());
-
     assert!(!adder.call("invalid_endpoint"));
 
-    assert!(adder.call("version"));
+    assert!(adder.call("getSum"));
 
     let mut own_proxy =
         sample_adder::Proxy::<StaticApi>::new_proxy_obj().contract(ManagedAddress::zero());
-    let _ = own_proxy.get_sum();
+    let _ = own_proxy.sum();
 
-    let _ = dharitri_sc_meta::abi_json::contract_abi::<sample_adder::AbiProvider>();
+    let _ = dharitri_sc_meta_lib::abi_json::contract_abi::<sample_adder::AbiProvider>();
 }
 
 fn world() -> dharitri_sc_scenario::ScenarioWorld {

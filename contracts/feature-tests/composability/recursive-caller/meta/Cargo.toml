@@ -7,7 +7,7 @@ publish = false
 [dependencies.recursive-caller]
 path = ".."
 
-[dependencies.dharitri-sc-meta]
-version = "1.11.10"
-path = "../../../../../framework/meta"
+[dependencies.dharitri-sc-meta-lib]
+version = "1.12.2"
+path = "../../../../../framework/meta-lib"
 default-features = false

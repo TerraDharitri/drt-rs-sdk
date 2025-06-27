@@ -26,8 +26,44 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
+## [sc 1.12.2]
+- `sc-meta upgrade` bugfix.
 
-## [sc 1.11.10] - 2024-06-21
+## [sc 0.51.0, codec 1.12.2, vm 1.12.2, sdk 1.12.2, scenario-format 1.12.2] - 2024-07-06
+- Major refactoring of `dharitri-sc-meta`
+	- Crate `dharitri-sc-meta` split in 2:
+		1. `dharitri-sc-meta` remains the standalone tool. For backwards compatibility, it can still be used in contract meta crates, but a warning will be issued.
+		2. `dharitri-sc-meta-lib` is the contract-only library to contract meta crates.
+	- The refactoring came with few code changes, but dependencies were disentangled and cleaned up.
+	- Account retrieval tool was merged into `sc-meta` standalone. Previously little known feature, it enables downloading the full state of an account and formatting it as a denali set state step. Very useful for generating tests and investigating state.
+	- `dharitri-sdk` was also refactored, especially the gateway proxy.
+- A new code report is available in the `.drtsc.json` build output. The report analyzes the wasm code after build and always offers the following information:
+	- `imports`: what VM hooks are used;
+	- `eiCheck`: if the used imports comply with the environment interface (EI, allowed VM hooks);
+	- `hasAllocator`: is it allocates on the heap;
+	- `hasPanic`: whether it produces Rust panics and formats error messages using the standard Rust formatter (a source of code bloat).
+- `ManagedDecimal` and `ManagedDecimalSigned`:
+	- New types that encapulate a managed `BigUint` and `BigInt` respectively, but treat them as base 10 fixed point rational numbers.
+	- Two flavors are allowed: the number of decimals is known at compile time (e.g. REWA always has 18 decimals), or only at runtime.
+		- Type `ConstDecimals` is able to resolve conversions at compile time, reducing code size and making encoding and decoding easier, since the number of decimals does not need to be encoded.
+		- Regular `usize` number of decimals is resolved at runtime.
+	- All basic arithmetic operations are implemented for these types, just like for the big integers.
+- Implemented logarithms:
+	- Natural logarithm `ln` for `ManagedDecimal`, `BigFloat`, and `BigInt`.
+	- Base 2 logarithm `log2` for `ManagedDecimal`.
+	- Precision is about 5 decimals, largely irrespective of input.
+	- The operation is cheap, `ln` costs 44980 gas for managed decimals and 153772 for big floats, largely irrespective of input.
+- Smart contract code on the front-end:
+	- Framework and contract code, together with the Rust VM as a backend, can now be compiled to WebAssembly for front-end, using `wasm-bindgen`.
+	- A few incompatible Rust VM features needed to be made optional for this to work.
+- Reverted changes in `sc 0.50.6` (`diagnostic::on_unimplemented` & rustc 1.78 dependency).
+- Bugfix: `sync_call_readonly` can now be used with proxies.
+
+
+## [sc 0.50.6] - 2024-07-05
+- Temporarily removed dependency to rustc 1.78, to ease transition from older versions. Will be re-enabled in 0.51.0.
+
+## [sc 0.50.5] - 2024-06-21
 - `#[storage_mapper_from_address] annotation.
 - Added missing equality operator for test addresses (`TestAddress`, `TestSCAddress`).
 
@@ -55,7 +91,7 @@ They are:
 	- `BoxedBytes` - fixed memory leak.
 	- `ManagedVecItem` - allowing larger payloads (up to 128 bytes).
 
-## [sc 0.50.0, codec 1.11.10, vm 1.11.10, sdk 1.11.10] - 2024-05-10
+## [sc 0.50.0, codec 0.19.0, vm 0.8.4, sdk 0.4.1] - 2024-05-10
 - Framework now runs on **stable** Rust. All unstable features were removed. The most important changes enabling this:
 	- `CodecFrom` completely removed, `TypeAbiFrom` was used instead since 0.49.0.
 	- `ManagedVecItem` payload redesigned.
@@ -118,7 +154,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Support for reading from another contract for the following storage mappers: `AddressToIdMapper`, `BiDiMapper`, `LinkedListMapper`, `SetMapper`, `SingleValueMapper`, `UniqueIdMapper`, `UnorderedSetMapper`, `UserMapper`, `VecMapper`, `WhitelistMapper`.
 - Additional methods to access data nodes directly in the `SetMapper` and `QueueMapper`.
 
-## [sc 0.47.2, codec 0.18.6, vm 0.8.2, scenario-format 1.11.10] - 2024-02-02
+## [sc 0.47.2, codec 0.18.6, vm 0.8.2, scenario-format 0.22.2] - 2024-02-02
 - Scenario testing infrastructure:
 	- The Rust VM can generate mock addresses, if not specified in advance.
 	- The `sc:` syntax now generates addresses with VM type 0x0500, same as the latest version of drt-go-scenario.
@@ -212,7 +248,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- Various bugfixes.
 - VM implementation for `get_shard_of_address` VM hook.
 
-## [sc 0.43.0, codec 0.18.1, vm 0.5.0] - 2023-08-16
+## [sc 0.43.0, codec 0.18.1, vm 1.12.2] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
 	- pre-rustc-1.71;
 	- between rustc-1.71 and rustc-1.73;
@@ -226,7 +262,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Arguments `--target-dir-wasm`, `--target-dir-meta`, and `--target-dir-all` in the `dharitri-sc-meta` CLI.
 - Fixed an issue with contract calls and DCDT transfers in the `StaticApi` environment.
 
-## [sc 0.42.0, codec 0.18.0, vm 0.4.0, scenario-format 0.20.0, sdk 0.2.0] - 2023-07-15
+## [sc 0.42.0, codec 0.18.0, vm 0.4.0, scenario-format 1.12.2, sdk 0.2.0] - 2023-07-15
 - Multi-endpoints in multi-contracts:
 	- It is now possible to have multiple versions of the same endpoint in different multi-contract variants.
 	- We can also have multiple versions of the constructor.
@@ -337,7 +373,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Many depedencies updates across the repo.
 - Updated readme files.
 
-## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 1.11.10, sdk 0.1.0] - 2023-01-12
+## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
 - All crates were renamed, in line with the DharitrI brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
@@ -488,7 +524,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Feature `cb_closure_managed_deser` replaced by `cb_closure_unmanaged_deser`, managed implementation is now the default.
 - Git tag/commit info in ABI.
 
-## [numbat-wasm 0.28.0, numbat-codec 0.9.0, denali 0.12.0] - 2022-02-22
+## [numbat-wasm 0.28.0, numbat-codec 1.12.2, denali 0.12.0] - 2022-02-22
 - Major numbat-codec refactor:
 	- Redesigned the error handling for single value encoding
 	- Introduced multi-value encoding, which replaces the previous endpoint argument and result mechanisms
@@ -507,7 +543,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Trailing commas are allowed in `sc_panic!`, `require!` and `sc_print!`.
 - DcdtTokenData `decode_attributes_or_exit` for easier error handling.
 
-## [numbat-wasm 0.27.2, numbat-codec 1.11.10] - 2022-01-27
+## [numbat-wasm 0.27.2, numbat-codec 0.8.4] - 2022-01-27
 - Added missing non-specialized decode implementations for managed types.
 
 ## [numbat-wasm 0.27.1] - 2022-01-27
@@ -590,10 +626,10 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Nested encode and decode from ManagedBuffers cached in a static singleton buffer.
 - Implemented `ExactSizeIterator` for `ManagedVecIterator`.
 
-## [numbat-wasm 0.22.3] - 2021-11-10
+## [numbat-wasm 1.12.2] - 2021-11-10
 - Memory allocation optimisations.
 
-## [numbat-wasm 1.11.10] - 2021-11-06
+## [numbat-wasm 0.22.2] - 2021-11-06
 - Callback endpoint automatically created empty for contracts that have no callbacks. This is determined by the `meta` crate, based on the ABI of the contract and its modules.
 - `UnorderedSetMapper`
 - `IgnoreVarArgs` variadic argument type that ignores input
@@ -634,7 +670,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Added missing managed methods in blockchain API: `is_smart_contract`, `get_shard_of_address`, `get_balance`.
 - Improved preprocessor substitutions: `ManagedAddress`, `TokenIdentifier`.
 
-## [numbat-wasm 0.20.0, numbat-codec 0.7.0, denali 0.10.0] - 2021-10-02
+## [numbat-wasm 1.12.2, numbat-codec 0.7.0, denali 0.10.0] - 2021-10-02
 - Managed callback handling
 - Managed async call result
 - ManagedVec improvements, deserialization fix
@@ -645,7 +681,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.19.1] - 2021-09-17
 - Legacy Send API implementation fix
 
-## [numbat-wasm 1.11.10, numbat-codec 0.6.0, denali 0.9.0] - 2021-09-10
+## [numbat-wasm 0.19.0, numbat-codec 0.6.0, denali 1.12.2] - 2021-09-10
 - Managed types used extensively. Because of this, the recommended Andes minimum version is `v1.4.10`.
 	- Redesigned parts of the numbat-codec, so as to allow custom type specializations. These specializations allow serializers and types to bypass the limitations of the codec traits to provide optimized implementations. Managed type serialization relies on this.
 	- Redesigned existing managed types: `BigInt`, `BigUint`, `EllipticCurve`.
@@ -793,7 +829,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [numbat-wasm 0.11.0, numbat-codec 0.5.0, denali 0.5.0] - 2021-02-05
+## [numbat-wasm 0.11.0, numbat-codec 1.12.2, denali 1.12.2] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
@@ -846,7 +882,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.10.2, numbat-codec 0.4.2] - 2020-12-28
 - Codec type hygene
 
-## [numbat-wasm 0.10.1, numbat-codec 1.11.10, denali 1.11.10] - 2020-12-23
+## [numbat-wasm 0.10.1, numbat-codec 0.4.1, denali 0.4.1] - 2020-12-23
 - Minor fixes, support for strings
 
 ## [numbat-wasm 0.10.0, numbat-codec 0.4.0] - 2020-12-21
@@ -882,7 +918,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.9.1] - 2020-11-05
 - BigUint serialization bugfix
 
-## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
+## [numbat-wasm 1.12.2, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
 - Completely ditched the approach from numbat-wasm 0.8.0.
@@ -943,7 +979,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Arg name in error message
 - Async call arguments based on traits
 
-## [numbat-wasm 0.5.0] - 2020-06-29
+## [numbat-wasm 1.12.2] - 2020-06-29
 - EndpointResult trait, arg serialization trait, arg loader
 - Variadic args/results: OptionalArg, OptionalResult, MultiResultX
 
@@ -972,7 +1008,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.4.2] - 2020-05-07
 - Tutorial setup (later abandoned)
 
-## [numbat-wasm 1.11.10] - 2020-05-06
+## [numbat-wasm 0.4.1] - 2020-05-06
 - Direct storage conversion for simple types
 - Block info hooks
 

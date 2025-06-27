@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta::cli_main::<send_tx_repeat::AbiProvider>();
+    dharitri_sc_meta_lib::cli_main::<send_tx_repeat::AbiProvider>();
 }

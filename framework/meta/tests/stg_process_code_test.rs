@@ -1,6 +1,4 @@
-use dharitri_sc_meta::cmd::standalone::scen_test_gen::{
-    format_test_fn_go, process_code, DEFAULT_SETUP_GO,
-};
+use dharitri_sc_meta::cmd::scen_test_gen::{format_test_fn_go, process_code, DEFAULT_SETUP_GO};
 
 const GO_TEST_1: &str = r#"use dharitri_sc_scenario::*;
 

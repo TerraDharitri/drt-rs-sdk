@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-scenario"
-version = "1.11.10"
+version = "1.12.2"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -24,39 +24,31 @@ sha2 = "0.10.6"
 serde = "1.0"
 serde_json = "1.0"
 pathdiff = "0.2.1"
-itertools = "0.12.0"
+itertools = "0.13.0"
 colored = "2.0"
-clap = { version = "4.4.7", features = ["derive"] }
-tokio = { version = "1.24", features = ["full"] }
 unwrap-infallible = "0.1.5"
 
-[[bin]]
-name = "sc-scenario"
-path = "src/main.rs"
-
 [features]
+default = ["wasm-incopatible"]
+wasm-incopatible = ["dharitri-chain-vm/wasm-incopatible"]
 run-go-tests = []
 
 [dependencies.dharitri-sc]
-version = "=1.11.10"
+version = "=1.12.2"
 features = ["alloc", "num-bigint"]
 path = "../base"
 
-[dependencies.dharitri-sc-meta]
-version = "=1.11.10"
-path = "../meta"
+[dependencies.dharitri-sc-meta-lib]
+version = "=1.12.2"
+path = "../meta-lib"
 
 [dependencies.dharitri-chain-scenario-format]
-version = "1.11.10"
+version = "1.12.2"
 path = "../../sdk/scenario-format"
 
 [dependencies.dharitri-vm-executor]
 version = "=1.0.2"
 
 [dependencies.dharitri-chain-vm]
-version = "=1.11.10"
+version = "=1.12.2"
 path = "../../vm"
-
-[dependencies.dharitri-sdk]
-version = "=1.11.10"
-path = "../../sdk/core"

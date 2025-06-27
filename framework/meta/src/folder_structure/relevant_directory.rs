@@ -1,4 +1,5 @@
-use crate::{version::FrameworkVersion, CargoTomlContents};
+use crate::version::FrameworkVersion;
+use dharitri_sc_meta_lib::cargo_toml_contents::CargoTomlContents;
 use std::{
     fs::{self, DirEntry},
     path::{Path, PathBuf},
@@ -11,7 +12,9 @@ use super::version_req::VersionReq;
 pub const FRAMEWORK_CRATE_NAMES: &[&str] = &[
     "dharitri-sc",
     "dharitri-sc-meta",
+    "dharitri-sc-meta-lib",
     "dharitri-sc-scenario",
+    "dharitri-sc-snippets",
     "dharitri-sc-wasm-adapter",
     "dharitri-sc-modules",
     "numbat-wasm",

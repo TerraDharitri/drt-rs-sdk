@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc"
-version = "1.11.10"
+version = "1.12.2"
 edition = "2021"
 rust-version = "1.78"
 
@@ -19,21 +19,21 @@ all-features = true
 
 [features]
 num-bigint = ["dharitri-sc-codec/num-bigint"]
-alloc = ["dharitri-sc-codec/alloc"]
+alloc = []
 managed-buffer-builder-cached = []
 dcdt-token-payment-legacy-decode = []
 
 [dependencies]
 hex-literal = "=0.4.1"
-bitflags = "=2.5.0"
+bitflags = "=2.6.0"
 num-traits = { version = "=0.2.19", default-features = false }
 unwrap-infallible = "0.1.5"
 
 [dependencies.dharitri-sc-derive]
-version = "=1.11.10"
+version = "=1.12.2"
 path = "../derive"
 
 [dependencies.dharitri-sc-codec]
-version = "=1.11.10"
+version = "=1.12.2"
 path = "../../data/codec"
 features = ["derive"]

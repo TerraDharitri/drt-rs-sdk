@@ -1,9 +1,20 @@
-# Smart contract meta-programming
+# Smart contract meta-programming tool
 
 [![crates.io](https://img.shields.io/crates/v/dharitri-sc-meta.svg)](https://crates.io/crates/dharitri-sc-meta)
 
-A meta-programming utility that works with smart contract code metadata.
+This is the standalone tool for creating and managing DharitrI smart contract crates.
 
-It is responsible with creating the smart contract ABIs, generating the wasm crates, and, ultimately, building the contract binaries
+## Install
 
-For more about the build process, see https://docs.dharitri.org/developers/developer-reference/sc-build-reference/
+All you need to do to install is:
+
+```
+cargo install dharitri-sc-meta
+```
+
+It works on both stable and nightly Rust, requires rustc 1.78 or greater.
+
+## Documentation
+
+Please see the explanations and CLI specifiations here: https://docs.dharitri.org/developers/meta/sc-meta
+
