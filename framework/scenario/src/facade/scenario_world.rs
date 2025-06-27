@@ -107,7 +107,7 @@ impl ScenarioWorld {
     /// This method was made as a workaround to avoid this problem.
     ///
     /// Fortunately, the issue was fixed in Rust, and so this function is no longer necessary.
-    #[deprecated(since = "1.11.4", note = "No longer needed, simply delete.")]
+    #[deprecated(since = "0.50.2", note = "No longer needed, simply delete.")]
     pub fn set_current_dir_from_workspace(&mut self, relative_path: &str) -> &mut Self {
         let mut path = find_current_workspace().unwrap();
         path.push(relative_path);

@@ -261,7 +261,7 @@ where
 {
     /// Backwards compatibility only.   
     #[deprecated(
-        since = "1.11.4",
+        since = "0.50.2",
         note = "Backwards compatibility only, does nothing. Just delete. Use `register_promise` to launch asynchronous calls."
     )]
     #[inline]

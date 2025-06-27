@@ -16,8 +16,8 @@ pub use interactor_prepare_async::InteractorPrepareAsync;
 pub use interactor_query_env::InteractorEnvQuery;
 pub use interactor_query_step::InteractorQueryStep;
 
-#[deprecated(since = "1.11.4", note = "Renamed to InteractorExecEnv")]
+#[deprecated(since = "0.50.2", note = "Renamed to InteractorExecEnv")]
 pub type InteractorExecEnv<'a> = InteractorEnvExec<'a>;
 
-#[deprecated(since = "1.11.4", note = "Renamed to InteractorEnvQuery")]
+#[deprecated(since = "0.50.2", note = "Renamed to InteractorEnvQuery")]
 pub type InteractorQueryEnv<'a> = InteractorEnvQuery<'a>;

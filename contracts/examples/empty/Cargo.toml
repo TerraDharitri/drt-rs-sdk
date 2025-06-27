@@ -9,11 +9,11 @@ publish = false
 path = "src/empty.rs"
 
 [dependencies.dharitri-sc]
-version = "1.11.4"
+version = "1.11.6"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.11.4"
+version = "1.11.6"
 path = "../../../framework/scenario"
 
 [dev-dependencies]
