@@ -9,15 +9,15 @@ name = "format-tests"
 path = "src/format_tests.rs"
 
 [dependencies.dharitri-sc]
-version = "1.7.2"
+version = "1.8.3"
 path = "../../../framework/base"
 
 [dependencies.dharitri-sc-scenario]
-version = "1.7.2"
+version = "1.8.3"
 path = "../../../framework/scenario"
 
 [dependencies.dharitri-chain-vm]
-version = "1.7.2"
+version = "1.8.3"
 path = "../../../vm"
 
 [dev-dependencies]

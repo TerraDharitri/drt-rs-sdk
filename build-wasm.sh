@@ -2,7 +2,8 @@
 
 # builds all wasm targets
 
-# cargo install dharitri-sc-meta   #teja789
+# cargo install dharitri-sc-meta  #teja789
+
 cargo install --path framework/meta
 
 TARGET_DIR=$PWD/target

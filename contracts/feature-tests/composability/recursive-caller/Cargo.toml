@@ -12,9 +12,9 @@ path = "src/recursive_caller.rs"
 path = "../vault"
 
 [dependencies.dharitri-sc]
-version = "1.7.2"
+version = "1.8.3"
 path = "../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.7.2"
+version = "1.8.3"
 path = "../../../../framework/scenario"

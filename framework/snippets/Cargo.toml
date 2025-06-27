@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-snippets"
-version = "1.7.2"
+version = "1.8.3"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -25,10 +25,11 @@ clap = "=4.4.7"
 bstr = "=1.6.2"
 native-tls = "=0.2.7"
 
+
 [dependencies.dharitri-sc-scenario]
-version = "=1.7.2"
+version = "=1.8.3"
 path = "../scenario"
 
 [dependencies.dharitri-sdk]
-version = "=1.7.2"
+version = "=1.8.3"
 path = "../../sdk/core"
