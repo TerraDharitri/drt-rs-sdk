@@ -14,6 +14,8 @@ const ISSUE_NON_FUNGIBLE_ENDPOINT_NAME: &str = "issueNonFungible";
 const ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME: &str = "issueSemiFungible";
 const REGISTER_META_DCDT_ENDPOINT_NAME: &str = "registerMetaDCDT";
 const ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME: &str = "registerAndSetAllRoles";
+const REGISTER_DYNAMIC_DCDT_ENDPOINT_NAME: &str = "registerDynamic";
+const REGISTER_AND_SET_ALL_ROLES_DYNAMIC_DCDT_ENDPOINT_NAME: &str = "registerAndSetAllRolesDynamic";
 
 /// The specific `Tx` type produces by the issue operations of the DCDTSystemSCProxy.
 pub type IssueCall<Env, From, To, Gas> = Tx<
@@ -211,20 +213,78 @@ where
     ) -> IssueCall<Env, From, To, Gas> {
         let token_type_name = match token_type {
             DcdtTokenType::Fungible => "FNG",
-            DcdtTokenType::NonFungible => "NFT",
-            DcdtTokenType::SemiFungible => "SFT",
-            DcdtTokenType::Meta => "META",
+            DcdtTokenType::NonFungible | DcdtTokenType::DynamicNFT => "NFT",
+            DcdtTokenType::SemiFungible | DcdtTokenType::DynamicSFT => "SFT",
+            DcdtTokenType::Meta | DcdtTokenType::DynamicMeta => "META",
             DcdtTokenType::Invalid => "",
         };
 
-        self.wrapped_tx
-            .raw_call(ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME)
+        let endpoint = match token_type {
+            DcdtTokenType::Fungible
+            | DcdtTokenType::NonFungible
+            | DcdtTokenType::SemiFungible
+            | DcdtTokenType::Meta => ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME,
+            DcdtTokenType::DynamicNFT | DcdtTokenType::DynamicSFT | DcdtTokenType::DynamicMeta => {
+                REGISTER_AND_SET_ALL_ROLES_DYNAMIC_DCDT_ENDPOINT_NAME
+            },
+
+            DcdtTokenType::Invalid => "",
+        };
+
+        let mut tx = self
+            .wrapped_tx
+            .raw_call(endpoint)
             .rewa(issue_cost)
             .argument(&token_display_name)
             .argument(&token_ticker)
-            .argument(&token_type_name)
-            .argument(&num_decimals)
-            .original_result()
+            .argument(&token_type_name);
+
+        if token_type != DcdtTokenType::DynamicNFT && token_type != DcdtTokenType::DynamicSFT {
+            tx = tx.argument(&num_decimals);
+        }
+
+        tx.original_result()
+    }
+
+    /// Issues dynamic DCDT tokens
+    pub fn issue_dynamic<
+        Arg0: ProxyArg<ManagedBuffer<Env::Api>>,
+        Arg1: ProxyArg<ManagedBuffer<Env::Api>>,
+    >(
+        self,
+        issue_cost: BigUint<Env::Api>,
+        token_display_name: Arg0,
+        token_ticker: Arg1,
+        token_type: DcdtTokenType,
+        num_decimals: usize,
+    ) -> IssueCall<Env, From, To, Gas> {
+        let endpoint_name = match token_type {
+            DcdtTokenType::DynamicNFT | DcdtTokenType::DynamicSFT | DcdtTokenType::DynamicMeta => {
+                REGISTER_DYNAMIC_DCDT_ENDPOINT_NAME
+            },
+            _ => "",
+        };
+
+        let token_type_name = match token_type {
+            DcdtTokenType::DynamicNFT => "NFT",
+            DcdtTokenType::DynamicSFT => "SFT",
+            DcdtTokenType::DynamicMeta => "META",
+            _ => "",
+        };
+
+        let mut tx = self
+            .wrapped_tx
+            .raw_call(endpoint_name)
+            .rewa(issue_cost)
+            .argument(&token_display_name)
+            .argument(&token_ticker)
+            .argument(&token_type_name);
+
+        if token_type != DcdtTokenType::DynamicNFT && token_type != DcdtTokenType::DynamicSFT {
+            tx = tx.argument(&num_decimals);
+        }
+
+        tx.original_result()
     }
 
     /// Deduplicates code from all the possible issue functions
@@ -246,7 +306,7 @@ where
             DcdtTokenType::NonFungible => ISSUE_NON_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::SemiFungible => ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::Meta => REGISTER_META_DCDT_ENDPOINT_NAME,
-            DcdtTokenType::Invalid => "",
+            _ => "",
         };
 
         let mut tx = self
@@ -578,6 +638,31 @@ where
             .argument(&token_identifier);
         append_token_property_arguments(&mut tx.data, property_arguments);
         tx.original_result()
+    }
+
+    /// Changes token to dynamic.
+    /// Does not work for: FungibleDCDT, NonFungibleDCDT, NonFungibleDCDTv2.
+    pub fn change_to_dynamic<Arg0: ProxyArg<TokenIdentifier<Env::Api>>>(
+        self,
+        token_id: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("changeToDynamic")
+            .argument(&token_id)
+            .original_result()
+    }
+
+    /// Updates a specific token to the newest version.
+    pub fn update_token<Arg0: ProxyArg<TokenIdentifier<Env::Api>>>(
+        self,
+        token_id: Arg0,
+    ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
+        self.wrapped_tx
+            .payment(NotPayable)
+            .raw_call("updateTokenID")
+            .argument(&token_id)
+            .original_result()
     }
 }
 

@@ -9,7 +9,7 @@
 #![allow(unused)]
 
 use dharitri_sc::{
-    contract_base::ProxyObjNew,
+    contract_base::{CallableContractBuilder, ProxyObjNew},
     types::{BigInt, ManagedAddress},
 };
 use dharitri_sc_scenario::api::{SingleTxApi, StaticApi};
@@ -57,19 +57,19 @@ mod module_1 {
 
     pub trait EndpointWrappers: VersionModule + dharitri_sc::contract_base::ContractBase {
         #[inline]
-        fn call_version(&self) {
+        fn call_version(&mut self) {
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let result = self.version();
             dharitri_sc::io::finish_multi::<Self::Api, _>(&result)
         }
 
-        fn call_some_async(&self) {
+        fn call_some_async(&mut self) {
             self.some_async();
             dharitri_sc::io::finish_multi::<Self::Api, _>(&())
         }
 
-        fn call(&self, fn_name: &str) -> bool {
-            if match fn_name {
+        fn call(&mut self, fn_name: &str) -> bool {
+            match fn_name {
                 "callBack" => {
                     self.callback();
                     return true;
@@ -79,10 +79,13 @@ mod module_1 {
                     true
                 },
                 _other => false,
-            } {
-                return true;
             }
-            false
+        }
+        fn callback_selector(
+            &mut self,
+            ___cb_closure___: &dharitri_sc::types::CallbackClosureForDeser<Self::Api>,
+        ) -> dharitri_sc::types::CallbackSelectorResult {
+            dharitri_sc::types::CallbackSelectorResult::NotProcessed
         }
     }
 
@@ -251,8 +254,6 @@ mod sample_adder {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     pub trait AutoImpl: dharitri_sc::contract_base::ContractBase {}
 
-    // impl<C> super::module_1::AutoImpl for C where C: AutoImpl {}
-
     impl<C> Adder for C
     where
         C: AutoImpl + super::module_1::AutoImpl,
@@ -277,7 +278,7 @@ mod sample_adder {
         Adder + dharitri_sc::contract_base::ContractBase + super::module_1::EndpointWrappers
     {
         #[inline]
-        fn call_sum(&self) {
+        fn call_sum(&mut self) {
             <Self::Api as dharitri_sc::api::VMApi>::init_static();
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let () = dharitri_sc::io::load_endpoint_args::<Self::Api, ()>(());
@@ -285,7 +286,7 @@ mod sample_adder {
             dharitri_sc::io::finish_multi::<Self::Api, _>(&result);
         }
         #[inline]
-        fn call_init(&self) {
+        fn call_init(&mut self) {
             <Self::Api as dharitri_sc::api::VMApi>::init_static();
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let (initial_value, ()) = dharitri_sc::io::load_endpoint_args::<
@@ -295,7 +296,7 @@ mod sample_adder {
             self.init(initial_value);
         }
         #[inline]
-        fn call_upgrade(&self) {
+        fn call_upgrade(&mut self) {
             <Self::Api as dharitri_sc::api::VMApi>::init_static();
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let (initial_value, ()) = dharitri_sc::io::load_endpoint_args::<
@@ -305,7 +306,7 @@ mod sample_adder {
             self.upgrade(initial_value);
         }
         #[inline]
-        fn call_add(&self) {
+        fn call_add(&mut self) {
             <Self::Api as dharitri_sc::api::VMApi>::init_static();
             dharitri_sc::io::call_value_init::not_payable::<Self::Api>();
             let (value, ()) = dharitri_sc::io::load_endpoint_args::<
@@ -314,8 +315,8 @@ mod sample_adder {
             >(("value", ()));
             self.add(value);
         }
-        fn call(&self, fn_name: &str) -> bool {
-            if match fn_name {
+        fn call(&mut self, fn_name: &str) -> bool {
+            match fn_name {
                 "callBack" => {
                     self::EndpointWrappers::callback(self);
                     return true;
@@ -346,19 +347,43 @@ mod sample_adder {
                     self.call_add();
                     true
                 },
-                other => false,
-            } {
-                return true;
+                other => {
+                    if super::module_1::EndpointWrappers::call(self, fn_name) {
+                        return true;
+                    }
+                    false
+                },
             }
-            false
         }
         fn callback_selector(
-            &self,
-            mut ___cb_closure___: dharitri_sc::types::CallbackClosureForDeser<Self::Api>,
-        ) -> dharitri_sc::types::CallbackSelectorResult<Self::Api> {
-            dharitri_sc::types::CallbackSelectorResult::NotProcessed(___cb_closure___)
+            &mut self,
+            ___cb_closure___: &dharitri_sc::types::CallbackClosureForDeser<Self::Api>,
+        ) -> dharitri_sc::types::CallbackSelectorResult {
+            let ___cb_closure_matcher___ = ___cb_closure___.matcher::<32usize>();
+            if ___cb_closure_matcher___.matches_empty() {
+                return dharitri_sc::types::CallbackSelectorResult::Processed;
+            }
+            if super::module_1::EndpointWrappers::callback_selector(self, ___cb_closure___)
+                .is_processed()
+            {
+                return dharitri_sc::types::CallbackSelectorResult::Processed;
+            }
+            dharitri_sc::types::CallbackSelectorResult::NotProcessed
         }
-        fn callback(&self) {}
+        fn callback(&mut self) {
+            if let Some(___cb_closure___) =
+                dharitri_sc::types::CallbackClosureForDeser::storage_load_and_clear::<Self::Api>()
+            {
+                if !self::EndpointWrappers::callback_selector(self, &___cb_closure___)
+                    .is_processed()
+                {
+                    dharitri_sc::api::ErrorApiImpl::signal_error(
+                        &<Self::Api as dharitri_sc::api::ErrorApi>::error_api_impl(),
+                        err_msg::CALLBACK_BAD_FUNC.as_bytes(),
+                    );
+                }
+            }
+        }
     }
 
     impl<A> EndpointWrappers for dharitri_sc::contract_base::UniversalContractObj<A> where
@@ -441,7 +466,7 @@ mod sample_adder {
             A: dharitri_sc::api::VMApi,
         {
             super::EndpointWrappers::call_sum(
-                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+                &mut dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
             );
         }
         pub fn init<A>()
@@ -449,7 +474,7 @@ mod sample_adder {
             A: dharitri_sc::api::VMApi,
         {
             super::EndpointWrappers::call_init(
-                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+                &mut dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
             );
         }
         pub fn upgrade<A>()
@@ -457,7 +482,7 @@ mod sample_adder {
             A: dharitri_sc::api::VMApi,
         {
             super::EndpointWrappers::call_upgrade(
-                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+                &mut dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
             );
         }
         pub fn add<A>()
@@ -465,7 +490,7 @@ mod sample_adder {
             A: dharitri_sc::api::VMApi,
         {
             super::EndpointWrappers::call_add(
-                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+                &mut dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
             );
         }
         pub fn callBack<A>()
@@ -473,7 +498,7 @@ mod sample_adder {
             A: dharitri_sc::api::VMApi,
         {
             super::EndpointWrappers::callback(
-                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+                &mut dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
             );
         }
     }
@@ -567,12 +592,9 @@ mod sample_adder {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //////// CONTRACT OBJECT ////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////
-    pub struct ContractObj<A>
+    pub struct ContractObj<A>(dharitri_sc::contract_base::UniversalContractObj<A>)
     where
-        A: dharitri_sc::api::VMApi,
-    {
-        _phantom: core::marker::PhantomData<A>,
-    }
+        A: dharitri_sc::api::VMApi;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     //////// CONTRACT OBJECT as CONTRACT BASE ///////////////////////////////////////////////////////
@@ -597,7 +619,10 @@ mod sample_adder {
         A: dharitri_sc::api::VMApi,
     {
         fn call(&self, fn_name: &str) -> bool {
-            EndpointWrappers::call(self, fn_name)
+            // creating a new object, which we can mutate
+            // because of dynamic traits, we cannot move `self`
+            let mut obj = dharitri_sc::contract_base::UniversalContractObj::<A>::new();
+            EndpointWrappers::call(&mut obj, fn_name)
         }
     }
 
@@ -605,19 +630,17 @@ mod sample_adder {
     where
         A: dharitri_sc::api::VMApi,
     {
-        ContractObj {
-            _phantom: core::marker::PhantomData,
-        }
+        ContractObj::<A>(dharitri_sc::contract_base::UniversalContractObj::<A>::new())
     }
+
     pub struct ContractBuilder;
+
     impl dharitri_sc::contract_base::CallableContractBuilder for self::ContractBuilder {
         fn new_contract_obj<A: dharitri_sc::api::VMApi + Send + Sync>(
             &self,
         ) -> dharitri_sc::types::heap::Box<dyn dharitri_sc::contract_base::CallableContract>
         {
-            dharitri_sc::types::heap::Box::new(ContractObj::<A> {
-                _phantom: core::marker::PhantomData,
-            })
+            dharitri_sc::types::heap::Box::new(self::contract_obj::<A>())
         }
     }
 
@@ -770,8 +793,10 @@ fn contract_without_macros_basic() {
 
     assert_eq!(BigInt::from(100), adder.version());
 
+    let adder = sample_adder::ContractBuilder.new_contract_obj::<SingleTxApi>();
     assert!(!adder.call("invalid_endpoint"));
 
+    let adder = sample_adder::ContractBuilder.new_contract_obj::<SingleTxApi>();
     assert!(adder.call("getSum"));
 
     let mut own_proxy =

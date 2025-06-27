@@ -27,7 +27,7 @@ pub trait SeedNftMinter:
         marketplaces: ManagedVec<ManagedAddress>,
         distribution: ManagedVec<Distribution<Self::Api>>,
     ) {
-        self.marketplaces().extend(&marketplaces);
+        self.marketplaces().extend(marketplaces);
         self.init_distribution(distribution);
     }
 
@@ -102,7 +102,7 @@ pub trait SeedNftMinter:
             } else {
                 dcdt_payments
                     .try_get(0)
-                    .map(|dcdt_payment| dcdt_payment.amount)
+                    .map(|dcdt_payment| dcdt_payment.amount.clone())
                     .unwrap_or_default()
             };
             total_amount += amount;

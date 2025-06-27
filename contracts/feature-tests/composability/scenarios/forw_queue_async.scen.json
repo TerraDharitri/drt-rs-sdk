@@ -80,6 +80,8 @@
                         "endpoint": "str:accept_funds",
                         "topics": [
                             "str:accept_funds",
+                            "str:REWA",
+                            "0",
                             "0x03e8"
                         ],
                         "data": "*"

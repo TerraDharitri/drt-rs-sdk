@@ -1,4 +1,4 @@
-# DharitrI Data Encoding & Handling
+# Dharitri Data Encoding & Handling
 
 The crates in this folder deal with data manipulation.
 

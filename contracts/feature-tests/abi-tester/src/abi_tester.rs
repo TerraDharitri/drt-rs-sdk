@@ -111,6 +111,14 @@ pub trait AbiTester {
     }
 
     #[endpoint]
+    fn process_managed_decimal(
+        &self,
+        input: ManagedDecimal<Self::Api, ConstDecimals<10>>,
+    ) -> ManagedDecimal<Self::Api, usize> {
+        input.into()
+    }
+
+    #[endpoint]
     fn dcdt_local_role(&self) -> DcdtLocalRole {
         DcdtLocalRole::None
     }

@@ -16,7 +16,7 @@ where
 
 impl<Env> TxPaymentMultiDcdt<Env> for MultiDcdtPayment<Env::Api> where Env: TxEnv {}
 impl<Env> TxPaymentMultiDcdt<Env> for &MultiDcdtPayment<Env::Api> where Env: TxEnv {}
-impl<'a, Env> TxPaymentMultiDcdt<Env> for ManagedRef<'a, Env::Api, MultiDcdtPayment<Env::Api>> where
+impl<Env> TxPaymentMultiDcdt<Env> for ManagedRef<'_, Env::Api, MultiDcdtPayment<Env::Api>> where
     Env: TxEnv
 {
 }
@@ -62,7 +62,10 @@ where
             0 => ().with_normalized(env, from, to, fc, f),
             1 => self.get(0).as_refs().with_normalized(env, from, to, fc, f),
             _ => to.with_address_ref(env, |to_addr| {
-                let fc_conv = fc.convert_to_multi_transfer_dcdt_call(to_addr, self);
+                let fc_conv = fc.convert_to_multi_transfer_dcdt_call(
+                    to_addr,
+                    self.as_multi_rewa_or_dcdt_payment(),
+                );
                 f(&from.resolve_address(env), &*BigUint::zero_ref(), fc_conv)
             }),
         }
@@ -71,12 +74,12 @@ where
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
             rewa: None,
-            multi_dcdt: self.clone(),
+            multi_dcdt: self.as_multi_rewa_or_dcdt_payment().clone(),
         }
     }
 }
 
-impl<'a, Env> TxPayment<Env> for ManagedRef<'a, Env::Api, MultiDcdtPayment<Env::Api>>
+impl<Env> TxPayment<Env> for ManagedRef<'_, Env::Api, MultiDcdtPayment<Env::Api>>
 where
     Env: TxEnv,
 {
@@ -159,7 +162,7 @@ where
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
             rewa: None,
-            multi_dcdt: self,
+            multi_dcdt: self.into_multi_rewa_or_dcdt_payment(),
         }
     }
 }

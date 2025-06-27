@@ -7,8 +7,11 @@ pub const BAD_TOKEN_TICKER_FORMAT: &str = "bad token ticker format";
 pub const SINGLE_DCDT_EXPECTED: &str = "function expects single DCDT payment";
 pub const TOO_MANY_DCDT_TRANSFERS: &str = "too many DCDT transfers";
 pub const DCDT_INVALID_TOKEN_INDEX: &str = "invalid token index";
+pub const DCDT_UNEXPECTED_REWA: &str = "unexpected REWA transfer";
 pub const INCORRECT_NUM_DCDT_TRANSFERS: &str = "incorrect number of DCDT transfers";
-pub static FUNGIBLE_TOKEN_EXPECTED_ERR_MSG: &str = "fungible DCDT token expected";
+pub const INCORRECT_NUM_TRANSFERS: &str = "incorrect number of transfers";
+pub const FUNGIBLE_TOKEN_EXPECTED_ERR_MSG: &str = "fungible DCDT token expected";
+pub const TOKEN_IDENTIFIER_DCDT_EXPECTED: &str = "DCDT expected";
 
 pub const ARG_WRONG_NUMBER: &str = "wrong number of arguments";
 pub const ARG_ASYNC_WRONG_NUMBER: &str = "wrong number of arguments provided to async call";

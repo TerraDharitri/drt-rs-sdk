@@ -1,6 +1,6 @@
-# DharitrI Smart Contract Framework
+# Dharitri Smart Contract Framework
 
-The crates in this folder form the DharitrI smart contract framework.
+The crates in this folder form the Dharitri smart contract framework.
 
 They are as follows:
     - `dharitri-sc` - the base crate for smart contract libraries, it is the only dependency the smart contract code sees.

@@ -25,7 +25,7 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
@@ -45,13 +45,13 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
         self.call_dcdt_second_contract(
             &expected_token_identifier,
-            &(dcdt_value / 2u32),
+            &(dcdt_value.clone() / 2u32),
             &self.get_second_contract_address(),
             &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
             &ManagedVec::new(),
@@ -65,7 +65,7 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
@@ -86,7 +86,7 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
@@ -107,7 +107,7 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
@@ -132,8 +132,8 @@ pub trait FirstContract {
         arg_buffer.push_arg(dcdt_token_identifier);
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(func_name);
-        for arg in args.into_iter() {
-            arg_buffer.push_arg_raw(arg);
+        for arg in args {
+            arg_buffer.push_arg_raw(arg.clone());
         }
 
         self.tx()

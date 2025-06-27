@@ -26,7 +26,7 @@ where
     }
 }
 
-impl<'a, Env> TxPayment<Env> for TestDcdtTransfer<'a>
+impl<Env> TxPayment<Env> for TestDcdtTransfer<'_>
 where
     Env: TxEnv,
 {

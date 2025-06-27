@@ -49,7 +49,7 @@ impl<M: ManagedTypeApi> RewaOrMultiDcdtPayment<M> {
     }
 }
 
-impl<'a, M: ManagedTypeApi> RewaOrMultiDcdtPaymentRefs<'a, M> {
+impl<M: ManagedTypeApi> RewaOrMultiDcdtPaymentRefs<'_, M> {
     pub fn to_owned_payment(&self) -> RewaOrMultiDcdtPayment<M> {
         match self {
             RewaOrMultiDcdtPaymentRefs::Rewa(rewa_value) => {

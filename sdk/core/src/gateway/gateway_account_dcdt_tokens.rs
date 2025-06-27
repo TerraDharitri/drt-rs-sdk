@@ -16,7 +16,7 @@ impl<'a> GetAccountDcdtTokensRequest<'a> {
     }
 }
 
-impl<'a> GatewayRequest for GetAccountDcdtTokensRequest<'a> {
+impl GatewayRequest for GetAccountDcdtTokensRequest<'_> {
     type Payload = ();
     type DecodedJson = DcdtBalanceResponse;
     type Result = HashMap<String, DcdtBalance>;

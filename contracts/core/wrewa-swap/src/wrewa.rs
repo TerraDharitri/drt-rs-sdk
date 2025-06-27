@@ -16,7 +16,7 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
     fn wrap_rewa(&self) -> DcdtTokenPayment<Self::Api> {
         self.require_not_paused();
 
-        let payment_amount = self.call_value().rewa_value();
+        let payment_amount = self.call_value().rewa();
         require!(*payment_amount > 0u32, "Payment must be more than 0");
 
         let wrapped_rewa_token_id = self.wrapped_rewa_token_id().get();
@@ -28,7 +28,7 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
             .single_dcdt(&wrapped_rewa_token_id, 0, &payment_amount)
             .transfer();
 
-        DcdtTokenPayment::new(wrapped_rewa_token_id, 0, payment_amount.clone_value())
+        DcdtTokenPayment::new(wrapped_rewa_token_id, 0, payment_amount.clone())
     }
 
     #[payable("*")]
@@ -39,19 +39,19 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
         let (payment_token, payment_amount) = self.call_value().single_fungible_dcdt();
         let wrapped_rewa_token_id = self.wrapped_rewa_token_id().get();
 
-        require!(payment_token == wrapped_rewa_token_id, "Wrong dcdt token");
-        require!(payment_amount > 0u32, "Must pay more than 0 tokens!");
+        require!(*payment_token == wrapped_rewa_token_id, "Wrong dcdt token");
+        require!(*payment_amount > 0u32, "Must pay more than 0 tokens!");
         require!(
-            payment_amount <= self.get_locked_rewa_balance(),
+            *payment_amount <= self.get_locked_rewa_balance(),
             "Contract does not have enough funds"
         );
 
         self.send()
             .dcdt_local_burn(&wrapped_rewa_token_id, 0, &payment_amount);
 
-        // 1 wrapped rEWA = 1 rEWA, so we pay back the same amount
+        // 1 wrapped REWA = 1 REWA, so we pay back the same amount
         let caller = self.blockchain().get_caller();
-        self.tx().to(&caller).rewa(&payment_amount).transfer();
+        self.tx().to(&caller).rewa(&*payment_amount).transfer();
     }
 
     #[view(getLockedRewaBalance)]

@@ -74,15 +74,13 @@ pub trait ForwarderSyncCallModule {
             .returns(ReturnsResult)
             .sync_call();
 
-        let (rewa_value, dcdt_transfers_multi) = result.into_tuple();
-
-        self.accept_funds_sync_result_event(&rewa_value, &dcdt_transfers_multi);
+        self.accept_funds_sync_result_event(&result);
     }
 
     #[endpoint]
     #[payable("REWA")]
     fn forward_sync_accept_funds_rh_rewa(&self, to: ManagedAddress) -> BigUint {
-        let payment = self.call_value().rewa_value();
+        let payment = self.call_value().rewa();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         self.tx()
@@ -127,7 +125,7 @@ pub trait ForwarderSyncCallModule {
         &self,
         to: ManagedAddress,
     ) -> ManagedVec<Self::Api, DcdtTokenPayment<Self::Api>> {
-        let payment = self.call_value().all_dcdt_transfers().clone_value();
+        let payment = self.call_value().all_dcdt_transfers().clone();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         self.tx()
@@ -159,8 +157,7 @@ pub trait ForwarderSyncCallModule {
     #[event("accept_funds_sync_result")]
     fn accept_funds_sync_result_event(
         &self,
-        #[indexed] rewa_value: &BigUint,
-        #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
+        #[indexed] multi_dcdt: &MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue>,
     );
 
     #[endpoint]

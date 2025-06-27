@@ -50,18 +50,15 @@ pub trait Vault {
         self.blockchain().get_caller()
     }
 
-    fn dcdt_transfers_multi(&self) -> MultiValueEncoded<DcdtTokenPaymentMultiValue> {
-        self.call_value()
-            .all_dcdt_transfers()
-            .clone_value()
-            .into_multi_value()
+    fn all_transfers_multi(&self) -> MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue> {
+        self.call_value().all_transfers().clone().into_multi_value()
     }
 
     #[payable("*")]
     #[endpoint]
     fn accept_funds(&self) {
-        let dcdt_transfers_multi = self.dcdt_transfers_multi();
-        self.accept_funds_event(&self.call_value().rewa_value(), &dcdt_transfers_multi);
+        let dcdt_transfers_multi = self.all_transfers_multi();
+        self.accept_funds_event(&dcdt_transfers_multi);
 
         self.call_counts(ManagedBuffer::from(b"accept_funds"))
             .update(|c| *c += 1);
@@ -69,17 +66,14 @@ pub trait Vault {
 
     #[payable("*")]
     #[endpoint]
-    fn accept_funds_echo_payment(
-        &self,
-    ) -> MultiValue2<BigUint, MultiValueEncoded<DcdtTokenPaymentMultiValue>> {
-        let rewa_value = self.call_value().rewa_value();
-        let dcdt_transfers_multi = self.dcdt_transfers_multi();
-        self.accept_funds_event(&rewa_value, &dcdt_transfers_multi);
+    fn accept_funds_echo_payment(&self) -> MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue> {
+        let dcdt_transfers_multi = self.all_transfers_multi();
+        self.accept_funds_event(&dcdt_transfers_multi);
 
         self.call_counts(ManagedBuffer::from(b"accept_funds_echo_payment"))
             .update(|c| *c += 1);
 
-        (rewa_value.clone_value(), dcdt_transfers_multi).into()
+        dcdt_transfers_multi
     }
 
     #[payable("*")]
@@ -91,8 +85,8 @@ pub trait Vault {
     #[payable("*")]
     #[endpoint]
     fn reject_funds(&self) {
-        let dcdt_transfers_multi = self.dcdt_transfers_multi();
-        self.reject_funds_event(&self.call_value().rewa_value(), &dcdt_transfers_multi);
+        let dcdt_transfers_multi = self.all_transfers_multi();
+        self.reject_funds_event(&dcdt_transfers_multi);
         sc_panic!("reject_funds");
     }
 
@@ -220,7 +214,7 @@ pub trait Vault {
 
         let mut new_tokens = ManagedVec::new();
 
-        for payment in payments.into_iter() {
+        for payment in payments.iter() {
             // burn old tokens
             self.send().dcdt_local_burn(
                 &payment.token_identifier,
@@ -240,9 +234,9 @@ pub trait Vault {
             );
 
             new_tokens.push(DcdtTokenPayment::new(
-                payment.token_identifier,
+                payment.token_identifier.clone(),
                 new_token_nonce,
-                payment.amount,
+                payment.amount.clone(),
             ));
         }
 
@@ -258,15 +252,13 @@ pub trait Vault {
     #[event("accept_funds")]
     fn accept_funds_event(
         &self,
-        #[indexed] rewa_value: &BigUint,
-        #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
+        #[indexed] multi_dcdt: &MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue>,
     );
 
     #[event("reject_funds")]
     fn reject_funds_event(
         &self,
-        #[indexed] rewa_value: &BigUint,
-        #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
+        #[indexed] multi_dcdt: &MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue>,
     );
 
     #[event("retrieve_funds")]

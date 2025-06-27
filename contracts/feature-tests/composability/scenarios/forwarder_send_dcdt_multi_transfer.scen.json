@@ -178,31 +178,6 @@
                     "code": "drtsc:../forwarder/output/forwarder.drtsc.json"
                 }
             }
-        },
-        {
-            "step": "scCall",
-            "id": "REWA-test",
-            "comment": "send all types",
-            "tx": {
-                "from": "address:a_user",
-                "to": "sc:forwarder",
-                "function": "send_dcdt_direct_multi_transfer",
-                "arguments": [
-                    "address:a_user",
-                    "str:REWA",
-                    "0",
-                    "1000"
-                ],
-                "gasLimit": "80,000,000",
-                "gasPrice": "0"
-            },
-            "expect": {
-                "out": [],
-                "status": "10",
-                "message": "str:insufficient funds",
-                "gas": "*",
-                "refund": "*"
-            }
         }
     ]
 }

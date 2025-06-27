@@ -1,3 +1,4 @@
+use dharitri_chain_core::REWA_000000_TOKEN_IDENTIFIER;
 use num_bigint::BigUint;
 
 use crate::{
@@ -109,6 +110,10 @@ impl TxCache {
         nonce: u64,
         value: &BigUint,
     ) -> Result<(), TxPanic> {
+        if dcdt_token_identifier == REWA_000000_TOKEN_IDENTIFIER.as_bytes() {
+            return self.transfer_rewa_balance(from, to, value);
+        }
+
         if !is_system_sc_address(from) && !is_system_sc_address(to) {
             let metadata = self.subtract_dcdt_balance(from, dcdt_token_identifier, nonce, value)?;
             self.increase_dcdt_balance(to, dcdt_token_identifier, nonce, value, metadata);

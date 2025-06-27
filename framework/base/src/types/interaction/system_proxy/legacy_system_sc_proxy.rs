@@ -17,6 +17,8 @@ const ISSUE_NON_FUNGIBLE_ENDPOINT_NAME: &str = "issueNonFungible";
 const ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME: &str = "issueSemiFungible";
 const REGISTER_META_DCDT_ENDPOINT_NAME: &str = "registerMetaDCDT";
 const ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME: &str = "registerAndSetAllRoles";
+const REGISTER_DYNAMIC_DCDT_ENDPOINT_NAME: &str = "registerDynamic";
+const REGISTER_AND_SET_ALL_ROLES_DYNAMIC_DCDT_ENDPOINT_NAME: &str = "registerAndSetAllRolesDynamic";
 
 /// Proxy for the DCDT system smart contract.
 /// Unlike other contract proxies, this one has a fixed address,
@@ -185,21 +187,75 @@ where
 
         let token_type_name = match token_type {
             DcdtTokenType::Fungible => "FNG",
-            DcdtTokenType::NonFungible => "NFT",
-            DcdtTokenType::SemiFungible => "SFT",
-            DcdtTokenType::Meta => "META",
+            DcdtTokenType::NonFungible | DcdtTokenType::DynamicNFT => "NFT",
+            DcdtTokenType::SemiFungible | DcdtTokenType::DynamicSFT => "SFT",
+            DcdtTokenType::Meta | DcdtTokenType::DynamicMeta => "META",
             DcdtTokenType::Invalid => "",
         };
 
-        ContractCallWithRewa::new(
-            dcdt_system_sc_address,
-            ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME,
-            issue_cost,
-        )
-        .argument(&token_display_name)
-        .argument(&token_ticker)
-        .argument(&token_type_name)
-        .argument(&num_decimals)
+        let endpoint = match token_type {
+            DcdtTokenType::Fungible
+            | DcdtTokenType::NonFungible
+            | DcdtTokenType::SemiFungible
+            | DcdtTokenType::Meta => ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME,
+
+            DcdtTokenType::DynamicNFT | DcdtTokenType::DynamicSFT | DcdtTokenType::DynamicMeta => {
+                REGISTER_AND_SET_ALL_ROLES_DYNAMIC_DCDT_ENDPOINT_NAME
+            },
+
+            DcdtTokenType::Invalid => "",
+        };
+
+        let mut contract_call =
+            ContractCallWithRewa::new(dcdt_system_sc_address, endpoint, issue_cost)
+                .argument(&token_display_name)
+                .argument(&token_ticker)
+                .argument(&token_type_name);
+
+        if token_type != DcdtTokenType::DynamicNFT {
+            contract_call = contract_call.argument(&num_decimals);
+        }
+
+        contract_call
+    }
+
+    /// Issues dynamic DCDT tokens
+    pub fn issue_dynamic(
+        self,
+        issue_cost: BigUint<SA>,
+        token_display_name: &ManagedBuffer<SA>,
+        token_ticker: &ManagedBuffer<SA>,
+        token_type: DcdtTokenType,
+        num_decimals: usize,
+    ) -> ContractCallWithRewa<SA, ()> {
+        let dcdt_system_sc_address = self.dcdt_system_sc_address();
+
+        let endpoint_name = match token_type {
+            DcdtTokenType::DynamicNFT | DcdtTokenType::DynamicSFT | DcdtTokenType::DynamicMeta => {
+                REGISTER_DYNAMIC_DCDT_ENDPOINT_NAME
+            },
+            _ => "",
+        };
+
+        let token_type_name = match token_type {
+            DcdtTokenType::DynamicNFT => "NFT",
+            DcdtTokenType::DynamicSFT => "SFT",
+            DcdtTokenType::DynamicMeta => "META",
+            _ => "",
+        };
+
+        let mut contract_call =
+            ContractCallWithRewa::new(dcdt_system_sc_address, endpoint_name, issue_cost);
+
+        contract_call.proxy_arg(token_display_name);
+        contract_call.proxy_arg(token_ticker);
+        contract_call.proxy_arg(&token_type_name);
+
+        if token_type != DcdtTokenType::DynamicNFT {
+            contract_call.proxy_arg(&num_decimals);
+        }
+
+        contract_call
     }
 
     /// Deduplicates code from all the possible issue functions
@@ -219,7 +275,7 @@ where
             DcdtTokenType::NonFungible => ISSUE_NON_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::SemiFungible => ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::Meta => REGISTER_META_DCDT_ENDPOINT_NAME,
-            DcdtTokenType::Invalid => "",
+            _ => "",
         };
 
         let mut contract_call =

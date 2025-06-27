@@ -39,8 +39,8 @@ pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
     #[endpoint]
     fn send_dcdt_with_fees(&self, to: ManagedAddress, percentage_fees: BigUint) {
         let (token_id, payment) = self.call_value().single_fungible_dcdt();
-        let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
-        let amount_to_send = payment - fees;
+        let fees = &*payment * &percentage_fees / PERCENTAGE_TOTAL;
+        let amount_to_send = payment.clone() - fees;
 
         self.send().direct_dcdt(&to, &token_id, 0, &amount_to_send);
     }
@@ -90,13 +90,13 @@ pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
-                issue_cost.clone_value(),
+                issue_cost.clone(),
                 &token_display_name,
                 &token_ticker,
                 &initial_supply,

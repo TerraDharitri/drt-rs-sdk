@@ -7,7 +7,7 @@
                 "sc:alloc-mem-leaking": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../output/alloc-mem-leaking.wasm"
+                    "code": "drtsc:../output/alloc-mem-leaking.drtsc.json"
                 },
                 "address:an_account": {
                     "nonce": "0",

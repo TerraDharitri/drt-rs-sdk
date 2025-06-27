@@ -34,7 +34,7 @@ pub trait DcdtModule {
     ) {
         require!(self.token_id().is_empty(), "Token already issued");
 
-        let issue_cost = self.call_value().rewa_value().clone_value();
+        let issue_cost = self.call_value().rewa().clone();
         let num_decimals = match opt_num_decimals {
             OptionalValue::Some(d) => d,
             OptionalValue::None => 0,
@@ -62,7 +62,7 @@ pub trait DcdtModule {
             ManagedAsyncCallResult::Err(_) => {
                 // return payment to initial caller
                 let initial_caller = self.blockchain().get_owner_address();
-                let rewa_returned = self.call_value().rewa_value();
+                let rewa_returned = self.call_value().rewa();
                 self.tx()
                     .to(&initial_caller)
                     .rewa(rewa_returned)
@@ -84,7 +84,9 @@ pub trait DcdtModule {
     fn nft_create<T: TopEncode>(&self, amount: &BigUint, attributes: &T) -> u64 {
         let token_id = self.token_id().get();
         let empty_buffer = ManagedBuffer::new();
-        let empty_vec = ManagedVec::from_handle(empty_buffer.get_handle());
+
+        // sneakily reuses the same handle
+        let empty_vec = unsafe { ManagedRef::wrap_handle(empty_buffer.get_handle()) };
 
         self.send().dcdt_nft_create(
             &token_id,

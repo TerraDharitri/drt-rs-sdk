@@ -48,7 +48,7 @@ MOD_PATH = "dharitri_chain_core::types"
 HEAP_ADDRESS_TYPE = f"{MOD_PATH}::address::Address"
 BOXED_BYTES_TYPE = f"{MOD_PATH}::boxed_bytes::BoxedBytes"
 
-# 6. DharitrI codec - Multi-types
+# 6. Dharitri codec - Multi-types
 MOD_PATH = "dharitri_sc_codec::multi_types"
 
 OPTIONAL_VALUE_TYPE = f"{MOD_PATH}::multi_value_optional::OptionalValue<{ANY_TYPE}>"
@@ -331,7 +331,7 @@ class BigUint(PlainManagedVecItem, ManagedType):
 
 class TokenIdentifier(PlainManagedVecItem, ManagedType):
     def lookup(self, token_identifier: lldb.value) -> lldb.value:
-        return token_identifier.buffer
+        return token_identifier.data.buffer
 
     def value_summary(self, buffer: lldb.value, context: lldb.value, type_info: lldb.SBType) -> str:
         return buffer_as_string(buffer)
@@ -417,14 +417,13 @@ class DcdtTokenPayment(ManagedVecItem, ManagedType):
 
 class RewaOrDcdtTokenIdentifier(PlainManagedVecItem, ManagedType):
     def lookup(self, rewa_or_dcdt_token_identifier: lldb.value) -> lldb.value:
-        return rewa_or_dcdt_token_identifier.data
+        return rewa_or_dcdt_token_identifier.buffer
 
-    @check_invalid_handle
-    def summary_from_raw_handle(self, raw_handle: int, context: lldb.value, type_info: lldb.SBType) -> str:
-        if raw_handle == MANAGED_OPTION_NONE_HANDLE:
+    def value_summary(self, buffer: lldb.value, context: lldb.value, type_info: lldb.SBType) -> str:
+        token_id = buffer_as_string(buffer)
+        if token_id == '"REWA-000000"':
             return "RewaOrDcdtTokenIdentifier::rewa()"
-        token_summary = TokenIdentifier().summary_from_raw_handle(raw_handle, context, None)
-        return f"RewaOrDcdtTokenIdentifier::dcdt({token_summary})"
+        return f"RewaOrDcdtTokenIdentifier::dcdt({token_id})" 
 
 
 class ManagedVec(PlainManagedVecItem, ManagedType):
@@ -487,7 +486,7 @@ DHARITRI_WASM_TYPE_HANDLERS = [
     # 5. SC wasm - heap
     (HEAP_ADDRESS_TYPE, HeapAddress),
     (BOXED_BYTES_TYPE, BoxedBytes),
-    # 6. DharitrI codec - Multi-types
+    # 6. Dharitri codec - Multi-types
     (OPTIONAL_VALUE_TYPE, OptionalValue),
 ]
 

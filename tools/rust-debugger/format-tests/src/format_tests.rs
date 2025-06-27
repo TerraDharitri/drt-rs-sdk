@@ -66,7 +66,7 @@ fn main() {
     push!(
         to_check,
         managed_address,
-        "(32) 0x233300000000000000000000000000000002333000000000000000000002ffff"
+        "(32) 0x233300000000000000000000000000233300000000000000000000000002ffff"
     );
 
     let managed_byte_array: ManagedByteArray<DebugApi, 4> =
@@ -138,21 +138,21 @@ fn main() {
     push!(
         to_check,
         managed_vec_of_addresses,
-        "(1) { [0] = (32) 0x233300000000000000000000000000000002333000000000000000000002ffff }"
+        "(1) { [0] = (32) 0x233300000000000000000000000000233300000000000000000000000002ffff }"
     );
 
     let managed_option_of_vec_of_addresses: ManagedOption<
         DebugApi,
         ManagedVec<DebugApi, ManagedAddress<DebugApi>>,
     > = ManagedOption::some(managed_vec_of_addresses.clone());
-    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x233300000000000000000000000000000002333000000000000000000002ffff })");
+    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x233300000000000000000000000000233300000000000000000000000002ffff })");
 
     // 5. SC wasm - heap
     let heap_address: Address = managed_address.to_address();
     push!(
         to_check,
         heap_address,
-        "(32) 0x233300000000000000000000000000000002333000000000000000000002ffff"
+        "(32) 0x233300000000000000000000000000233300000000000000000000000002ffff"
     );
 
     let boxed_bytes: BoxedBytes = b"test"[..].into();
@@ -169,7 +169,7 @@ fn main() {
         "(3) { [0] = (2) 0x6162, [1] = (4) 0x61626364, [2] = (12) 0x6162636465666768696a6b6c }"
     );
 
-    // 6. DharitrI codec - Multi-types
+    // 6. Dharitri codec - Multi-types
     let optional_value_some: OptionalValue<BigUint<DebugApi>> =
         OptionalValue::Some(BigUint::from(42u64));
     push!(to_check, optional_value_some, "OptionalValue::Some(42)");
@@ -181,7 +181,7 @@ fn main() {
 
     let invalid_handle = DebugHandle::from(-1000);
     let biguint_with_invalid_handle: BigUint<DebugApi> =
-        BigUint::from_handle(invalid_handle.clone());
+        unsafe { BigUint::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         biguint_with_invalid_handle,
@@ -189,7 +189,7 @@ fn main() {
     );
 
     let big_float_with_invalid_handle: BigFloat<DebugApi> =
-        BigFloat::from_handle(invalid_handle.clone());
+        unsafe { BigFloat::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         big_float_with_invalid_handle,
@@ -197,7 +197,7 @@ fn main() {
     );
 
     let managed_buffer_with_invalid_handle: ManagedBuffer<DebugApi> =
-        ManagedBuffer::from_handle(invalid_handle.clone());
+        unsafe { ManagedBuffer::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         managed_buffer_with_invalid_handle,
@@ -205,7 +205,7 @@ fn main() {
     );
 
     let token_identifier_with_invalid_handle: TokenIdentifier<DebugApi> =
-        TokenIdentifier::from_handle(invalid_handle.clone());
+        unsafe { TokenIdentifier::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         token_identifier_with_invalid_handle,
@@ -213,7 +213,7 @@ fn main() {
     );
 
     let optional_value_some_with_invalid_handle: OptionalValue<BigUint<DebugApi>> =
-        OptionalValue::Some(BigUint::from_handle(invalid_handle.clone()));
+        OptionalValue::Some(unsafe { BigUint::from_handle(invalid_handle.clone()) });
     push!(
         to_check,
         optional_value_some_with_invalid_handle,

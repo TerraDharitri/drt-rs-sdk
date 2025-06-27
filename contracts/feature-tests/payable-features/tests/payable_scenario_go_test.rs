@@ -10,6 +10,16 @@ fn call_value_check_go() {
 }
 
 #[test]
+fn call_value_check_multi_rewa_go() {
+    world().run("scenarios/call-value-check-multi-rewa.scen.json");
+}
+
+#[test]
+fn payable_all_transfers_go() {
+    world().run("scenarios/payable_all_transfers.scen.json");
+}
+
+#[test]
 fn payable_any_1_go() {
     world().run("scenarios/payable_any_1.scen.json");
 }
@@ -55,8 +65,18 @@ fn payable_multi_array_go() {
 }
 
 #[test]
+fn payable_multi_array_rewa_go() {
+    world().run("scenarios/payable_multi_array_rewa.scen.json");
+}
+
+#[test]
 fn payable_multiple_go() {
     world().run("scenarios/payable_multiple.scen.json");
+}
+
+#[test]
+fn payable_multiple_rewa_go() {
+    world().run("scenarios/payable_multiple_rewa.scen.json");
 }
 
 #[test]
@@ -77,4 +97,9 @@ fn payable_token_3_go() {
 #[test]
 fn payable_token_4_go() {
     world().run("scenarios/payable_token_4.scen.json");
+}
+
+#[test]
+fn payable_token_5_go() {
+    world().run("scenarios/payable_token_5.scen.json");
 }

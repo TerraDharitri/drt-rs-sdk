@@ -52,7 +52,7 @@ where
         step.tx.dcdt_value = full_payment_data
             .multi_dcdt
             .iter()
-            .map(TxDCDT::from)
+            .map(|item| TxDCDT::from(item.clone()))
             .collect();
     }
 

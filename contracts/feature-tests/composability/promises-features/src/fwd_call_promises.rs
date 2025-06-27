@@ -55,4 +55,50 @@ pub trait CallPromisesModule: common::CommonModule {
             args: ManagedVec::new(),
         });
     }
+
+    #[endpoint]
+    #[payable("*")]
+    fn forward_payment_callback(&self, to: ManagedAddress) {
+        let payment = self.call_value().any_payment();
+        let gas_limit = self.blockchain().get_gas_left() / 2;
+
+        self.tx()
+            .to(&to)
+            .gas(gas_limit)
+            .payment(payment)
+            .callback(self.callbacks().transfer_callback())
+            .register_promise();
+    }
+
+    #[promises_callback]
+    fn transfer_callback(&self, #[call_result] result: MultiValueEncoded<ManagedBuffer>) {
+        self.callback_result(result);
+
+        let call_value = self.call_value().any_payment();
+        match call_value {
+            RewaOrMultiDcdtPayment::Rewa(rewa) => {
+                self.retrieve_funds_callback_event(&RewaOrDcdtTokenIdentifier::rewa(), 0, &rewa);
+                let _ = self.callback_data().push(&CallbackData {
+                    callback_name: ManagedBuffer::from(b"transfer_callback"),
+                    token_identifier: RewaOrDcdtTokenIdentifier::rewa(),
+                    token_nonce: 0,
+                    token_amount: rewa,
+                    args: ManagedVec::new(),
+                });
+            },
+            RewaOrMultiDcdtPayment::MultiDcdt(multi_dcdt) => {
+                for dcdt in multi_dcdt.into_iter() {
+                    let token_identifier = RewaOrDcdtTokenIdentifier::dcdt(dcdt.token_identifier);
+                    self.retrieve_funds_callback_event(&token_identifier, 0, &dcdt.amount);
+                    let _ = self.callback_data().push(&CallbackData {
+                        callback_name: ManagedBuffer::from(b"transfer_callback"),
+                        token_identifier,
+                        token_nonce: 0,
+                        token_amount: dcdt.amount,
+                        args: ManagedVec::new(),
+                    });
+                }
+            },
+        }
+    }
 }

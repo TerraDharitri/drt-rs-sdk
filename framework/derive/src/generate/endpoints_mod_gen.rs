@@ -37,7 +37,7 @@ pub fn generate_endpoints_mod(
                 A: dharitri_sc::api::VMApi ,
             {
                 super::EndpointWrappers::callback(
-                    &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+                    &mut dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
                 );
             }
         }
@@ -93,7 +93,7 @@ fn generate_wasm_endpoint(
             A: dharitri_sc::api::VMApi,
         {
             super::EndpointWrappers::#call_method_ident(
-                &dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
+                &mut dharitri_sc::contract_base::UniversalContractObj::<A>::new(),
             );
         }
     }

@@ -6,7 +6,7 @@ mod dns_mock {
         #[payable("REWA")]
         #[endpoint]
         fn register(&self, name: BoxedBytes) {
-            let _payment = self.call_value().rewa_value();
+            let _payment = self.call_value().rewa();
             let address = self.blockchain().get_caller();
             self.tx()
                 .to(&address)

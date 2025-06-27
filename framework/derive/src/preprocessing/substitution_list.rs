@@ -56,6 +56,7 @@ fn add_managed_types(substitutions: &mut SubstitutionsMap) {
     add_managed_type_with_generics(substitutions, &quote!(ManagedAsyncCallResult));
     add_managed_type(substitutions, &quote!(DcdtTokenPaymentMultiArg));
     add_managed_type(substitutions, &quote!(DcdtTokenPaymentMultiValue));
+    add_managed_type(substitutions, &quote!(RewaOrDcdtTokenPaymentMultiValue));
     add_managed_type_with_generics(substitutions, &quote!(MultiValueEncodedIterator));
     add_managed_type_with_generics(substitutions, &quote!(MultiValueEncoded));
     add_managed_type_with_generics(substitutions, &quote!(ManagedVarArgs));

@@ -54,7 +54,7 @@
                         "value": "10"
                     }
                 ],
-                "function": "payment_array_3",
+                "function": "payment_array_dcdt_3",
                 "arguments": [],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"
@@ -85,7 +85,7 @@
                         "value": "10"
                     }
                 ],
-                "function": "payment_array_3",
+                "function": "payment_array_dcdt_3",
                 "arguments": [],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"
@@ -94,6 +94,42 @@
                 "out": [],
                 "status": "4",
                 "message": "str:incorrect number of DCDT transfers",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
+        },
+        {
+            "step": "scCall",
+            "id": "payment-array-bad-rewa",
+            "tx": {
+                "from": "address:an-account",
+                "to": "sc:payable-features",
+                "dcdtValue": [
+                    {
+                        "tokenIdentifier": "str:TOK-000003",
+                        "value": "400"
+                    },
+                    {
+                        "tokenIdentifier": "str:SFT-123",
+                        "nonce": "5",
+                        "value": "10"
+                    },
+                    {
+                        "tokenIdentifier": "str:REWA-000000",
+                        "nonce": "0",
+                        "value": "103"
+                    }
+                ],
+                "function": "payment_array_dcdt_3",
+                "arguments": [],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "4",
+                "message": "str:unexpected REWA transfer",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -120,7 +156,7 @@
                         "value": "10"
                     }
                 ],
-                "function": "payment_array_3",
+                "function": "payment_array_dcdt_3",
                 "arguments": [],
                 "gasLimit": "50,000,000",
                 "gasPrice": "0"

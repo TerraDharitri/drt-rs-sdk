@@ -16,10 +16,10 @@ pub trait NonFungibleTokenMapperFeatures:
     #[payable("REWA")]
     #[endpoint]
     fn issue_and_set_all_roles_meta(&self, token_ticker: ManagedBuffer) {
-        let payment = self.call_value().rewa_value();
+        let payment = self.call_value().rewa();
         self.non_fungible_token_mapper().issue_and_set_all_roles(
             DcdtTokenType::Meta,
-            payment.clone_value(),
+            payment.clone(),
             ManagedBuffer::new(),
             token_ticker,
             0,

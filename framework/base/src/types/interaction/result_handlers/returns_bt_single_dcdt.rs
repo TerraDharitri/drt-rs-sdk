@@ -28,6 +28,7 @@ where
             Env::Api::error_api_impl().signal_error(b"Back transfers expected to be a single DCDT")
         }
 
-        dcdt_payments.get(0)
+        let x = dcdt_payments.get(0).clone();
+        x
     }
 }

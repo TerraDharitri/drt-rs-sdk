@@ -67,6 +67,46 @@
                 "gas": "*",
                 "refund": "*"
             }
+        },
+        {
+            "step": "scCall",
+            "id": "payment-multiple-bad-rewa",
+            "tx": {
+                "from": "address:an-account",
+                "to": "sc:payable-features",
+                "dcdtValue": [
+                    {
+                        "tokenIdentifier": "str:TOK-123456",
+                        "value": "100"
+                    },
+                    {
+                        "tokenIdentifier": "str:OTHERTOK-123456",
+                        "value": "100"
+                    },
+                    {
+                        "tokenIdentifier": "str:SFT-123",
+                        "nonce": "5",
+                        "value": "10"
+                    },
+                    {
+                        "tokenIdentifier": "str:REWA-000000",
+                        "nonce": "0",
+                        "value": "120"
+                    }
+                ],
+                "function": "payment_multiple",
+                "arguments": [],
+                "gasLimit": "50,000,000",
+                "gasPrice": "0"
+            },
+            "expect": {
+                "out": [],
+                "status": "4",
+                "message": "str:unexpected REWA transfer",
+                "logs": "*",
+                "gas": "*",
+                "refund": "*"
+            }
         }
     ]
 }

@@ -1,6 +1,4 @@
-use crate::types::{
-    BigUint, DcdtTokenPayment, ManagedAddress, MultiDcdtPayment, TxFrom, TxToSpecified,
-};
+use crate::types::{BigUint, DcdtTokenPayment, ManagedAddress, ManagedVec, TxFrom, TxToSpecified};
 
 use super::{FullPaymentData, FunctionCall, TxEnv, TxPayment};
 
@@ -45,7 +43,7 @@ where
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
             rewa: None,
-            multi_dcdt: MultiDcdtPayment::from_single_item(self),
+            multi_dcdt: ManagedVec::from_single_item(self.into_multi_rewa_or_dcdt_payment()),
         }
     }
 }
@@ -91,7 +89,7 @@ where
     fn into_full_payment_data(self, _env: &Env) -> FullPaymentData<Env::Api> {
         FullPaymentData {
             rewa: None,
-            multi_dcdt: MultiDcdtPayment::from_single_item(self.clone()),
+            multi_dcdt: ManagedVec::from_single_item(self.as_rewa_or_dcdt_payment().clone()),
         }
     }
 }

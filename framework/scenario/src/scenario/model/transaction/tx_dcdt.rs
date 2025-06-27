@@ -1,4 +1,8 @@
-use dharitri_sc::{api::ManagedTypeApi, types::DcdtTokenPayment};
+use dharitri_sc::{
+    api::ManagedTypeApi,
+    chain_core::REWA_000000_TOKEN_IDENTIFIER,
+    types::{RewaOrDcdtTokenPayment, DcdtTokenPayment},
+};
 
 use crate::{
     scenario::model::{BigUintValue, BytesValue, U64Value},
@@ -13,6 +17,12 @@ pub struct TxDCDT {
     pub dcdt_token_identifier: BytesValue,
     pub nonce: U64Value,
     pub dcdt_value: BigUintValue,
+}
+
+impl TxDCDT {
+    pub fn is_rewa(&self) -> bool {
+        self.dcdt_token_identifier.value == REWA_000000_TOKEN_IDENTIFIER.as_bytes()
+    }
 }
 
 impl InterpretableFrom<TxDCDTRaw> for TxDCDT {
@@ -37,6 +47,18 @@ impl IntoRaw<TxDCDTRaw> for TxDCDT {
 
 impl<M: ManagedTypeApi> From<DcdtTokenPayment<M>> for TxDCDT {
     fn from(value: DcdtTokenPayment<M>) -> Self {
+        TxDCDT {
+            dcdt_token_identifier: BytesValue::from(
+                value.token_identifier.as_managed_buffer().to_vec(),
+            ),
+            nonce: U64Value::from(value.token_nonce),
+            dcdt_value: BigUintValue::from(value.amount),
+        }
+    }
+}
+
+impl<M: ManagedTypeApi> From<RewaOrDcdtTokenPayment<M>> for TxDCDT {
+    fn from(value: RewaOrDcdtTokenPayment<M>) -> Self {
         TxDCDT {
             dcdt_token_identifier: BytesValue::from(
                 value.token_identifier.as_managed_buffer().to_vec(),

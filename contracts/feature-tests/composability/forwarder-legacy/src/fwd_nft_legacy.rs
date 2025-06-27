@@ -52,13 +52,13 @@ pub trait ForwarderNftModule: fwd_storage_legacy::ForwarderStorageModule {
     #[payable("REWA")]
     #[endpoint]
     fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_non_fungible(
-                issue_cost.clone_value(),
+                issue_cost.clone(),
                 &token_display_name,
                 &token_ticker,
                 NonFungibleTokenProperties {

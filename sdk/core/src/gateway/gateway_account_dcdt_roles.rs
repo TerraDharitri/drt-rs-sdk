@@ -16,7 +16,7 @@ impl<'a> GetAccountDcdtRolesRequest<'a> {
     }
 }
 
-impl<'a> GatewayRequest for GetAccountDcdtRolesRequest<'a> {
+impl GatewayRequest for GetAccountDcdtRolesRequest<'_> {
     type Payload = ();
     type DecodedJson = DcdtRolesResponse;
     type Result = HashMap<String, Vec<String>>;

@@ -35,7 +35,7 @@ pub trait DistributionModule {
             }
             self.tx()
                 .to(&distribution.address)
-                .raw_call(distribution.endpoint)
+                .raw_call(distribution.endpoint.clone())
                 .rewa_or_single_dcdt(token_id, token_nonce, &payment_amount)
                 .gas(distribution.gas_limit)
                 .transfer_execute();

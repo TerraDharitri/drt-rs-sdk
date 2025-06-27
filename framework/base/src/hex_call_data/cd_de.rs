@@ -6,7 +6,7 @@ use crate::{
 };
 use alloc::{boxed::Box, vec::Vec};
 
-/// Deserializes from the DharitrI smart contract call format.
+/// Deserializes from the Dharitri smart contract call format.
 ///
 /// This format consists of the function name, followed by '@', follwed by hex-encoded argument bytes separated by '@' characters.
 /// Example: "funcName@00000@aaaa@1234@@".
@@ -103,7 +103,7 @@ impl<'a> HexCallDataDeserializer<'a> {
     }
 }
 
-impl<'a> TopDecodeMultiInput for HexCallDataDeserializer<'a> {
+impl TopDecodeMultiInput for HexCallDataDeserializer<'_> {
     type ValueInput = Box<[u8]>;
 
     fn has_next(&self) -> bool {

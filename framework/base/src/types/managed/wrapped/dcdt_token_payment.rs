@@ -1,6 +1,9 @@
 use crate::{
     api::ManagedTypeApi,
-    types::{BigUint, DcdtTokenPaymentMultiValue, DcdtTokenType, ManagedVecItem, TokenIdentifier},
+    types::{
+        BigUint, DcdtTokenPaymentMultiValue, DcdtTokenType, ManagedType, ManagedVecItem,
+        TokenIdentifier,
+    },
 };
 
 use crate as dharitri_sc; // needed by the codec and TypeAbi generated code
@@ -13,7 +16,11 @@ use crate::{
     derive::type_abi,
 };
 
-use super::{ManagedVec, ManagedVecItemPayloadBuffer};
+use super::{
+    managed_vec_item_read_from_payload_index, managed_vec_item_save_to_payload_index,
+    RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, ManagedVec, ManagedVecItemPayloadBuffer,
+    ManagedVecRef, MultiRewaOrDcdtPayment,
+};
 
 #[type_abi]
 #[derive(TopEncode, NestedEncode, Clone, PartialEq, Eq, Debug)]
@@ -53,6 +60,22 @@ impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
     #[inline]
     pub fn into_tuple(self) -> (TokenIdentifier<M>, u64, BigUint<M>) {
         (self.token_identifier, self.token_nonce, self.amount)
+    }
+
+    /// Zero-cost conversion that loosens the REWA restriction.
+    ///
+    /// It is always safe to do, since the 2 types are guaranteed to have the same layout.
+    pub fn as_rewa_or_dcdt_payment(&self) -> &RewaOrDcdtTokenPayment<M> {
+        unsafe { core::mem::transmute(self) }
+    }
+
+    /// Conversion that loosens the REWA restriction.
+    pub fn into_multi_rewa_or_dcdt_payment(self) -> RewaOrDcdtTokenPayment<M> {
+        RewaOrDcdtTokenPayment {
+            token_identifier: RewaOrDcdtTokenIdentifier::dcdt(self.token_identifier),
+            token_nonce: self.token_nonce,
+            amount: self.amount,
+        }
     }
 }
 
@@ -153,28 +176,6 @@ impl<M: ManagedTypeApi> DcdtTokenPayment<M> {
     }
 }
 
-fn managed_vec_item_from_slice<T>(arr: &[u8], index: &mut usize) -> T
-where
-    T: ManagedVecItem,
-{
-    ManagedVecItem::from_byte_reader(|bytes| {
-        let size = T::payload_size();
-        bytes.copy_from_slice(&arr[*index..*index + size]);
-        *index += size;
-    })
-}
-
-fn managed_vec_item_to_slice<T>(arr: &mut [u8], index: &mut usize, item: T)
-where
-    T: ManagedVecItem,
-{
-    ManagedVecItem::into_byte_writer(item, |bytes| {
-        let size = T::payload_size();
-        arr[*index..*index + size].copy_from_slice(bytes);
-        *index += size;
-    });
-}
-
 impl<M: ManagedTypeApi> IntoMultiValue for DcdtTokenPayment<M> {
     type MultiValue = DcdtTokenPaymentMultiValue<M>;
 
@@ -187,39 +188,31 @@ impl<M: ManagedTypeApi> IntoMultiValue for DcdtTokenPayment<M> {
 impl<M: ManagedTypeApi> ManagedVecItem for DcdtTokenPayment<M> {
     type PAYLOAD = ManagedVecItemPayloadBuffer<16>;
     const SKIPS_RESERIALIZATION: bool = false;
-    type Ref<'a> = Self;
+    type Ref<'a> = ManagedVecRef<'a, Self>;
 
-    fn from_byte_reader<Reader: FnMut(&mut [u8])>(mut reader: Reader) -> Self {
-        let mut arr: [u8; 16] = [0u8; 16];
-        reader(&mut arr[..]);
+    fn read_from_payload(payload: &Self::PAYLOAD) -> Self {
         let mut index = 0;
-
-        let token_identifier = managed_vec_item_from_slice(&arr, &mut index);
-        let token_nonce = managed_vec_item_from_slice(&arr, &mut index);
-        let amount = managed_vec_item_from_slice(&arr, &mut index);
-
-        DcdtTokenPayment {
-            token_identifier,
-            token_nonce,
-            amount,
+        unsafe {
+            DcdtTokenPayment {
+                token_identifier: managed_vec_item_read_from_payload_index(payload, &mut index),
+                token_nonce: managed_vec_item_read_from_payload_index(payload, &mut index),
+                amount: managed_vec_item_read_from_payload_index(payload, &mut index),
+            }
         }
     }
 
-    unsafe fn from_byte_reader_as_borrow<'a, Reader: FnMut(&mut [u8])>(
-        reader: Reader,
-    ) -> Self::Ref<'a> {
-        Self::from_byte_reader(reader)
+    unsafe fn borrow_from_payload<'a>(payload: &Self::PAYLOAD) -> Self::Ref<'a> {
+        ManagedVecRef::new(Self::read_from_payload(payload))
     }
 
-    fn into_byte_writer<R, Writer: FnMut(&[u8]) -> R>(self, mut writer: Writer) -> R {
-        let mut arr: [u8; 16] = [0u8; 16];
+    fn save_to_payload(self, payload: &mut Self::PAYLOAD) {
         let mut index = 0;
 
-        managed_vec_item_to_slice(&mut arr, &mut index, self.token_identifier);
-        managed_vec_item_to_slice(&mut arr, &mut index, self.token_nonce);
-        managed_vec_item_to_slice(&mut arr, &mut index, self.amount);
-
-        writer(&arr[..])
+        unsafe {
+            managed_vec_item_save_to_payload_index(self.token_identifier, payload, &mut index);
+            managed_vec_item_save_to_payload_index(self.token_nonce, payload, &mut index);
+            managed_vec_item_save_to_payload_index(self.amount, payload, &mut index);
+        }
     }
 }
 
@@ -257,6 +250,22 @@ impl<'a, M: ManagedTypeApi> DcdtTokenPaymentRefs<'a, M> {
             token_nonce: self.token_nonce,
             amount: self.amount.clone(),
         }
+    }
+}
+
+impl<M: ManagedTypeApi> MultiDcdtPayment<M> {
+    /// Zero-cost conversion that loosens the REWA restriction.
+    ///
+    /// It is always safe to do, since the 2 types are guaranteed to have the same layout.
+    pub fn as_multi_rewa_or_dcdt_payment(&self) -> &MultiRewaOrDcdtPayment<M> {
+        unsafe { core::mem::transmute(self) }
+    }
+
+    /// Zero-cost conversion that loosens the REWA restriction.
+    ///
+    /// It is always safe to do, since the 2 types are guaranteed to have the same layout.
+    pub fn into_multi_rewa_or_dcdt_payment(self) -> MultiRewaOrDcdtPayment<M> {
+        unsafe { MultiRewaOrDcdtPayment::from_handle(self.forget_into_handle()) }
     }
 }
 
