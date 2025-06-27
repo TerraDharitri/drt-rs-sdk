@@ -12,6 +12,6 @@ path = "src/promises_main.rs"
 path = "../vault"
 
 [dependencies.dharitri-sc]
-version = "1.8.3"
+version = "1.9.0"
 path = "../../../../framework/base"
 

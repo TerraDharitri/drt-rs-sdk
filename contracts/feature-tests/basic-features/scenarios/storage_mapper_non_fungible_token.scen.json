@@ -16,7 +16,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "drtsc:../output/basic-features.drtsc.json"
                 },
                 "address:an_account": {
                     "nonce": "0",
@@ -25,7 +25,7 @@
                 "0x233300000000000000000000000000000002333000000000000000000002ffff": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../../dcdt-system-sc-mock/output/dcdt-system-sc-mock.wasm"
+                    "code": "drtsc:../../dcdt-system-sc-mock/output/dcdt-system-sc-mock.drtsc.json"
                 }
             }
         },
@@ -70,7 +70,7 @@
                     "storage": {
                         "str:nonFungibleTokenMapper": ""
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "drtsc:../output/basic-features.drtsc.json"
                 }
             }
         },
@@ -167,7 +167,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "drtsc:../output/basic-features.drtsc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",
@@ -259,7 +259,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "drtsc:../output/basic-features.drtsc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",
@@ -329,7 +329,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/basic-features.wasm"
+                    "code": "drtsc:../output/basic-features.drtsc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",

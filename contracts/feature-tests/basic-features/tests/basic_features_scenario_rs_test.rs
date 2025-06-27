@@ -5,11 +5,11 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/basic-features");
 
     blockchain.register_contract(
-        "file:output/basic-features.wasm",
+        "drtsc:output/basic-features.drtsc.json",
         basic_features::ContractBuilder,
     );
     blockchain.register_contract(
-        "file:../dcdt-system-sc-mock/output/dcdt-system-sc-mock.wasm",
+        "drtsc:../dcdt-system-sc-mock/output/dcdt-system-sc-mock.drtsc.json",
         dcdt_system_sc_mock::ContractBuilder,
     );
 
@@ -216,6 +216,11 @@ fn get_caller_rs() {
 }
 
 #[test]
+fn get_code_metadata_rs() {
+    world().run("scenarios/get_code_metadata.scen.json");
+}
+
+#[test]
 fn get_cumulated_validator_rewards_rs() {
     world().run("scenarios/get_cumulated_validator_rewards.scen.json");
 }
@@ -223,6 +228,11 @@ fn get_cumulated_validator_rewards_rs() {
 #[test]
 fn get_shard_of_address_rs() {
     world().run("scenarios/get_shard_of_address.scen.json");
+}
+
+#[test]
+fn is_builtin_function_rs() {
+    world().run("scenarios/is_builtin_function.scen.json");
 }
 
 #[test]
@@ -269,6 +279,11 @@ fn managed_vec_array_push_rs() {
 #[test]
 fn managed_vec_biguint_push_rs() {
     world().run("scenarios/managed_vec_biguint_push.scen.json");
+}
+
+#[test]
+fn new_address_rs() {
+    world().run("scenarios/new_address.scen.json");
 }
 
 #[test]
@@ -372,6 +387,11 @@ fn storage_mapper_address_to_id_rs() {
 #[ignore]
 fn storage_mapper_fungible_token_rs() {
     world().run("scenarios/storage_mapper_fungible_token.scen.json");
+}
+
+#[test]
+fn storage_mapper_get_at_address_rs() {
+    world().run("scenarios/storage_mapper_get_at_address.scen.json");
 }
 
 #[test]

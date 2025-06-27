@@ -1,6 +1,6 @@
 use dharitri_sc_scenario::{scenario_model::*, *};
 
-const ADDER_PATH_EXPR: &str = "file:output/adder.wasm";
+const ADDER_PATH_EXPR: &str = "drtsc:output/adder.drtsc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

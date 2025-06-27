@@ -1,6 +1,7 @@
 #![no_std]
+#![allow(unused_imports)]
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 #[dharitri_sc::contract]
 pub trait Factorial {

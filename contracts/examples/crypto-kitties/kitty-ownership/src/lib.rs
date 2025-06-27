@@ -1,7 +1,7 @@
 #![no_std]
 #![allow(clippy::suspicious_operation_groupings)]
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 use core::cmp::max;
 

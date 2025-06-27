@@ -3,7 +3,7 @@ use linked_list_repeat::ProxyTrait;
 use dharitri_sc::types::{MultiValueEncoded, TokenIdentifier};
 use dharitri_sc_scenario::{api::StaticApi, scenario_model::*, *};
 
-const WASM_PATH_EXPR: &str = "file:output/linked-list-repeat.wasm";
+const WASM_PATH_EXPR: &str = "drtsc:output/linked-list-repeat.drtsc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

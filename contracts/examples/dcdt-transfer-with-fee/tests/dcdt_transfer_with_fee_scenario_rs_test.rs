@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/examples/dcdt-transfer-with-fee");
 
     blockchain.register_contract(
-        "file:output/dcdt-transfer-with-fee.wasm",
+        "drtsc:output/dcdt-transfer-with-fee.drtsc.json",
         dcdt_transfer_with_fee::ContractBuilder,
     );
     blockchain

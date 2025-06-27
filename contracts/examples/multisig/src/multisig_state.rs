@@ -1,6 +1,6 @@
 use crate::{action::Action, user_role::UserRole};
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 /// Contains all events that can be emitted by the contract.
 #[dharitri_sc::module]

@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/examples/ping-pong-rewa");
 
     blockchain.register_contract(
-        "file:output/ping-pong-rewa.wasm",
+        "drtsc:output/ping-pong-rewa.drtsc.json",
         ping_pong_rewa::ContractBuilder,
     );
     blockchain

@@ -30,12 +30,12 @@
                             ]
                         }
                     },
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "drtsc:../forwarder/output/forwarder.drtsc.json"
                 },
                 "sc:vault": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "file:../vault/output/vault.wasm"
+                    "code": "drtsc:../vault/output/vault.drtsc.json"
                 }
             }
         },
@@ -182,7 +182,7 @@
                     "storage": {
                         "str:call_counts|nested:str:accept_funds": "1"
                     },
-                    "code": "file:../vault/output/vault.wasm"
+                    "code": "drtsc:../vault/output/vault.drtsc.json"
                 },
                 "sc:forwarder": {
                     "nonce": "0",
@@ -199,7 +199,7 @@
                         }
                     },
                     "storage": {},
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "drtsc:../forwarder/output/forwarder.drtsc.json"
                 }
             }
         }

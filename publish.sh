@@ -50,7 +50,7 @@
 #
 # 11. Run `sc-meta all update`. This will update the `Cargo.lock` files.
 #
-# 12. Create pull request on GitHub. The faster it gets merged in master, the better.
+# 12. Create pull request on GitHub. The faster it gets merged in main, the better.
 #
 # 13. (optional) Test the new framework on one of the contracts that are not in the same repo, e.g. DNS, DEX, etc.
 #

@@ -1,10 +1,8 @@
 #![no_std]
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 mod pause_proxy {
-    dharitri_sc::imports!();
-
     #[dharitri_sc::proxy]
     pub trait Pausable {
         #[endpoint]

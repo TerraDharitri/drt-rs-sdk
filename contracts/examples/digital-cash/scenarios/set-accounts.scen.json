@@ -42,7 +42,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:digital_cash_owner_address",
-                "contractCode": "file:../output/digital-cash.wasm",
+                "contractCode": "drtsc:../output/digital-cash.drtsc.json",
                 "arguments": [
                     "10",
                     "str:REWA"
@@ -72,7 +72,7 @@
                         "str:allTimeFeeTokens|str:.item|u32:1": "str:REWA",
                         "str:allTimeFeeTokens|str:.index|nested:str:REWA": "1"
                     },
-                    "code": "file:../output/digital-cash.wasm"
+                    "code": "drtsc:../output/digital-cash.drtsc.json"
                 },
                 "address:acc1": {
                     "nonce": "0",

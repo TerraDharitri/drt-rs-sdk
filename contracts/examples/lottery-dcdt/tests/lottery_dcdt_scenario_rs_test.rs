@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/examples/lottery-dcdt");
 
     blockchain.register_contract(
-        "file:output/lottery-dcdt.wasm",
+        "drtsc:output/lottery-dcdt.drtsc.json",
         lottery_dcdt::ContractBuilder,
     );
     blockchain

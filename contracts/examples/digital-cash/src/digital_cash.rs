@@ -1,8 +1,7 @@
 #![no_std]
 #![allow(unused_attributes)]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::imports::*;
 
 mod constants;
 mod deposit_info;

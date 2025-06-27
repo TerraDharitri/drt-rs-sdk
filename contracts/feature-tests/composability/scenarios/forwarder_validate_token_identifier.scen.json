@@ -11,7 +11,7 @@
                     "dcdt": {
                         "str:DCDT-123456": "200"
                     },
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "drtsc:../forwarder/output/forwarder.drtsc.json"
                 },
                 "address:viewer": {
                     "nonce": "0",

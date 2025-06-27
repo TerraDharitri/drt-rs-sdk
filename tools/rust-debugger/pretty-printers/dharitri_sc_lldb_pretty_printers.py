@@ -50,7 +50,7 @@ MOD_PATH = "dharitri_sc::types::heap"
 HEAP_ADDRESS_TYPE = f"{MOD_PATH}::h256_address::Address"
 BOXED_BYTES_TYPE = f"{MOD_PATH}::boxed_bytes::BoxedBytes"
 
-# 6. Dharitri codec - Multi-types
+# 6. DharitrI codec - Multi-types
 MOD_PATH = "dharitri_sc_codec::multi_types"
 
 OPTIONAL_VALUE_TYPE = f"{MOD_PATH}::multi_value_optional::OptionalValue<{ANY_TYPE}>::{SOME_OR_NONE}"
@@ -477,7 +477,7 @@ NUMBAT_WASM_TYPE_HANDLERS = [
     # 5. SC wasm - heap
     (HEAP_ADDRESS_TYPE, HeapAddress),
     (BOXED_BYTES_TYPE, BoxedBytes),
-    # 6. Dharitri codec - Multi-types
+    # 6. DharitrI codec - Multi-types
     (OPTIONAL_VALUE_TYPE, OptionalValue),
 ]
 

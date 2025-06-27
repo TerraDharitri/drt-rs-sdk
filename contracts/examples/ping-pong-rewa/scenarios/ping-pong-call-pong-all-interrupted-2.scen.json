@@ -21,7 +21,7 @@
                 "to": "sc:ping-pong",
                 "function": "pongAll",
                 "arguments": [],
-                "gasLimit": "6,100,000",
+                "gasLimit": "3,500,000",
                 "gasPrice": "0"
             },
             "expect": {
@@ -67,7 +67,7 @@
                         "str:userStatus|0x0000002": "1",
                         "str:user_count": "2"
                     },
-                    "code": "file:../output/ping-pong-rewa.wasm"
+                    "code": "drtsc:../output/ping-pong-rewa.drtsc.json"
                 }
             }
         },
@@ -126,7 +126,7 @@
                         "str:userStatus|0x0000002": "2",
                         "str:user_count": "2"
                     },
-                    "code": "file:../output/ping-pong-rewa.wasm"
+                    "code": "drtsc:../output/ping-pong-rewa.drtsc.json"
                 }
             }
         },

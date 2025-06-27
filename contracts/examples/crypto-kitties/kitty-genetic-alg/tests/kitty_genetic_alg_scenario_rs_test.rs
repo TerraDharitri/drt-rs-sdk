@@ -3,7 +3,7 @@ use dharitri_sc_scenario::*;
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.register_contract(
-        "file:output/kitty-genetic-alg.wasm",
+        "drtsc:output/kitty-genetic-alg.drtsc.json",
         kitty_genetic_alg::ContractBuilder,
     );
     blockchain

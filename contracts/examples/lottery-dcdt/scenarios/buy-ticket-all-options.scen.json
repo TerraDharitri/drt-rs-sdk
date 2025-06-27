@@ -83,7 +83,7 @@
                         "str:numberOfEntriesForUser|u32:12|str:lottery_name|address:acc1": "1",
                         "+": ""
                     },
-                    "code": "file:../output/lottery-dcdt.wasm"
+                    "code": "drtsc:../output/lottery-dcdt.drtsc.json"
                 }
             }
         }

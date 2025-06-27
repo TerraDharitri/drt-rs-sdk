@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/benchmarks/mappers/linked-list-repeat");
 
     blockchain.register_contract(
-        "file:output/linked-list-repeat.wasm",
+        "drtsc:output/linked-list-repeat.drtsc.json",
         linked_list_repeat::ContractBuilder,
     );
     blockchain

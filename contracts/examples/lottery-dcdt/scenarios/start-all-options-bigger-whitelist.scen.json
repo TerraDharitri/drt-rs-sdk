@@ -98,7 +98,7 @@
                         },
                         "+": ""
                     },
-                    "code": "file:../output/lottery-dcdt.wasm"
+                    "code": "drtsc:../output/lottery-dcdt.drtsc.json"
                 }
             }
         }

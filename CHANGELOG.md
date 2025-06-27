@@ -26,7 +26,50 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 1.8.0, codec 0.18.4, vm 1.8.0, scenario-format 1.8.0] - 2024-01-23
+## [sc 1.9.0] - 2024-04-09
+- When serializing to a managed buffer, static buffer caching is disabled by default.
+- `sc-meta:` - installers for wasm32 target and wasm-opt.
+- Integrated traits for token management: `FixedSupplyToken`, `Mergeable`.
+
+## [sc 0.47.8] - 2024-03-22
+- Test coverage functionality in sc-meta.
+- Removed deprecation from legacy whitebox testing framework, since it is still used extensively.
+
+## [sc 0.47.7] - 2024-03-15
+- Template bugfix (concerning the interactor).
+
+## [sc 0.47.6] - 2024-03-14
+- Template naming bugfix, regarding numbers in the project name.
+- Added the interactor to the adder template.
+
+## [sc 0.47.5] - 2024-03-08
+- Fixed an issue with `MapMapper` when reading from another contract.
+- Got rid of nightly feature `maybe_uninit_uninit_array`/`maybe_uninit_array_assume_init`.
+
+## [sc 0.47.4, vm 0.8.3] - 2024-02-08
+- Post-build wasm report added to `.drtsc.json` file.
+- Fixed a dependency issue involving ed25519-dalek (downgraded dependency).
+
+## [sc 0.47.3, sdk 0.3.2] - 2024-02-06
+- SDK: changed the way to retrieve the new deployed address afte deploy/
+- Support for reading from another contract for the following storage mappers: `AddressToIdMapper`, `BiDiMapper`, `LinkedListMapper`, `SetMapper`, `SingleValueMapper`, `UniqueIdMapper`, `UnorderedSetMapper`, `UserMapper`, `VecMapper`, `WhitelistMapper`.
+- Additional methods to access data nodes directly in the `SetMapper` and `QueueMapper`.
+
+## [sc 0.47.2, codec 0.18.6, vm 0.8.2, scenario-format 0.22.2] - 2024-02-02
+- Scenario testing infrastructure:
+	- The Rust VM can generate mock addresses, if not specified in advance.
+	- The `sc:` syntax now generates addresses with VM type 0x0500, same as the latest version of drt-go-scenario.
+	- Rust test support for checking `code_metadata`.
+- Explicit discriminants supported for enums.
+- Optimized `top_encode_number` function. It no longer contains branches or loops.
+- Removed reliance on Rust nightly features `is_sorted` and `slice_partition_dedup`.
+
+## [sc 0.47.1, codec 0.18.5, vm 0.8.1, scenario-format 0.22.1] - 2024-01-29
+- Blockchain hooks: `get_code_metadata`, `is_builtin_function`.
+- Support for `drtsc:` syntax in scenarios.
+- Updated dependencies.
+
+## [sc 0.47.0, codec 0.18.4, vm 0.8.0, scenario-format 0.22.0] - 2024-01-23
 - Added support for the code metadata in the Rust VM and Rust scenarios backend.
 - `sc-meta`:
 	- New `drt-go-scenario` installer;
@@ -44,7 +87,7 @@ They are:
 - Removed `hashbrown` dependency from framework.
 - Imports in output now sorted.
 
-## [sc 0.45.2, codec 0.18.3, vm 0.7.1, scenario-format 0.21.1, sdk 1.8.0] - 2023-12-18
+## [sc 0.45.2, codec 0.18.3, vm 0.7.1, scenario-format 0.21.1, sdk 0.3.1] - 2023-12-18
 - Updated framework dependencies to the latest versions: syn, bitflags, wasmparser, base64, sha2, sha3, itertools, hmac, pem, pbkdf2, etc.
 - `sc-meta` improvements:
 	- `overflow-checks` field in `sc-config.toml`;
@@ -162,7 +205,7 @@ They are:
 ## [sc 0.41.2, codec 0.17.2, vm 0.3.2] - 2023-06-09
 - Releasing a new version of the codec, without the dependency to `wee_alloc`.
 
-## [sc 0.41.1, vm 1.8.0] - 2023-05-15
+## [sc 0.41.1, vm 0.3.1] - 2023-05-15
 - Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
 
 ## [sc 0.41.0, vm 0.3.0] - 2023-05-05
@@ -232,7 +275,7 @@ They are:
 - Updated readme files.
 
 ## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
-- All crates were renamed, in line with the Dharitri brand.
+- All crates were renamed, in line with the DharitrI brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
 - A `ScenarioWorld` facade, for contract tests.
@@ -495,7 +538,7 @@ They are:
 ## [numbat-wasm 0.22.1] - 2021-11-04
 - Made the generated code in `wasm/lib.rs` more compact with the use of macros.
 
-## [numbat-wasm 1.8.0] - 2021-11-02
+## [numbat-wasm 0.22.0] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
 - Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `drtpy`.
 - Renamed feature `andes-tests` to `denali-go-tests`
@@ -511,7 +554,7 @@ They are:
 - Debugger builtin function mocks check for DCDT roles
 - ABI provides definitions for DcdtTokenPayment, DcdtTokenData, DcdtTokenType
 
-## [numbat-wasm 0.21.0, numbat-codec 1.8.0, denali 0.11.0] - 2021-10-22
+## [numbat-wasm 0.21.0, numbat-codec 0.8.0, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `numbat-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -573,7 +616,7 @@ They are:
 ## [numbat-wasm 0.18.1] - 2021-08-05
 - Added "safe" storage mappers, which serialize keys using nested encoding instead of top. The old respective mappers only kept for backwards compatibility, are now deprecated.
 
-## [numbat-wasm 0.18.0, denali 1.8.0] - 2021-07-28
+## [numbat-wasm 0.18.0, denali 0.8.0] - 2021-07-28
 
 - New math hooks exposed from Andes:
 	- `pow`, `log2`, `sqrt`
@@ -748,10 +791,10 @@ They are:
 - ABI generation framework
 - New example contracts
 
-## [numbat-wasm 0.9.8, numbat-codec 0.3.2, denali 1.8.0] - 2020-11-23
+## [numbat-wasm 0.9.8, numbat-codec 0.3.2, denali 0.3.1] - 2020-11-23
 - SC deploy API
 
-## [numbat-wasm 0.9.7, numbat-codec 1.8.0, denali 0.3.0] - 2020-11-11
+## [numbat-wasm 0.9.7, numbat-codec 0.3.1, denali 0.3.0] - 2020-11-11
 - Monomorphization via codec trait instead of TypeInfo for arguments and storage
 - Reorganized all contracts in the `contracts` folder
 
@@ -779,9 +822,9 @@ They are:
 ## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04
 - Serialization completely refactored to use "fast exit" methods
 - Storage/argument/result traits completely redesigned, simplified and optimized
-- Completely ditched the approach from numbat-wasm 1.8.0.
+- Completely ditched the approach from numbat-wasm 0.8.0.
 
-## [numbat-wasm 1.8.0, numbat-codec 0.2.0] - 2020-11-02
+## [numbat-wasm 0.8.0, numbat-codec 0.2.0] - 2020-11-02
 - Was the first version to split Encode/Decode into TopEncode/NestedEncode/TopDecode/NestedDecode
 - Attempted to optimize the serializer to use "fast exit" closures. It worked, but the resulting bytecode size was not satisfactory. Even though it was completely replaced and never got to be used, it historically remains the solution of this release.
 - Some of the storage/argument/result trait refactorings, survived.

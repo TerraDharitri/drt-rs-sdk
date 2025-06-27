@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use dharitri_sc::types::{SCResult, StaticSCError};
 use dharitri_sc_scenario::api::StaticApi;
 

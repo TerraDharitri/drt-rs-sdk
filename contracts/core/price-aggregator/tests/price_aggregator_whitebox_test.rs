@@ -22,7 +22,7 @@ pub const USD_TICKER: &[u8] = b"USDC";
 
 const OWNER_ADDRESS_EXPR: &str = "address:owner";
 const PRICE_AGGREGATOR_ADDRESS_EXPR: &str = "sc:price-aggregator";
-const PRICE_AGGREGATOR_PATH_EXPR: &str = "file:output/dharitri-sc-price-aggregator.wasm";
+const PRICE_AGGREGATOR_PATH_EXPR: &str = "drtsc:output/dharitri-sc-price-aggregator.drtsc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
@@ -255,9 +255,8 @@ fn test_price_aggregator_submit_round_ok() {
     );
 
     world.whitebox_query(&price_aggregator_whitebox, |sc| {
-        let result = sc
-            .latest_price_feed(managed_buffer!(REWA_TICKER), managed_buffer!(USD_TICKER))
-            .unwrap();
+        let result =
+            sc.latest_price_feed(managed_buffer!(REWA_TICKER), managed_buffer!(USD_TICKER));
 
         let (round_id, from, to, timestamp, price, decimals) = result.into_tuple();
         assert_eq!(round_id, 1);

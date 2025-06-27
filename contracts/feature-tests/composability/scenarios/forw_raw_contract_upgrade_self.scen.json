@@ -6,11 +6,11 @@
             "accounts": {
                 "address:a_user": {},
                 "sc:forwarder": {
-                    "code": "file:../forwarder-raw/output/forwarder-raw.wasm",
+                    "code": "drtsc:../forwarder-raw/output/forwarder-raw.drtsc.json",
                     "owner": "sc:forwarder"
                 },
                 "sc:reference": {
-                    "code": "file:../vault/output/vault-upgrade.wasm"
+                    "code": "drtsc:../vault/output/vault-upgrade.drtsc.json"
                 }
             }
         },
@@ -42,12 +42,12 @@
                     "nonce": "*"
                 },
                 "sc:forwarder": {
-                    "code": "file:../vault/output/vault-upgrade.wasm",
+                    "code": "drtsc:../vault/output/vault-upgrade.drtsc.json",
                     "codeMetadata": "0x0102",
                     "owner": "sc:forwarder"
                 },
                 "sc:reference": {
-                    "code": "file:../vault/output/vault-upgrade.wasm"
+                    "code": "drtsc:../vault/output/vault-upgrade.drtsc.json"
                 }
             }
         }

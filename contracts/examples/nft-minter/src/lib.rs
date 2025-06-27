@@ -1,7 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 
 mod nft_module;
 
@@ -87,8 +86,6 @@ pub trait NftMinter: nft_module::NftModule {
 }
 
 mod nft_marketplace_proxy {
-    dharitri_sc::imports!();
-
     #[dharitri_sc::proxy]
     pub trait NftMarketplace {
         #[endpoint(claimTokens)]

@@ -37,7 +37,7 @@
             "id": "deploy",
             "tx": {
                 "from": "address:owner",
-                "contractCode": "file:../output/token-release.wasm",
+                "contractCode": "drtsc:../output/token-release.drtsc.json",
                 "arguments": [
                     "str:FIRSTTOKEN-123456"
                 ],
@@ -76,7 +76,7 @@
                         "str:setupPeriodStatus": "1",
                         "str:tokenIdentifier": "str:FIRSTTOKEN-123456"
                     },
-                    "code": "file:../output/token-release.wasm"
+                    "code": "drtsc:../output/token-release.drtsc.json"
                 }
             }
         },
@@ -127,7 +127,7 @@
                         "str:setupPeriodStatus": "1",
                         "str:tokenIdentifier": "str:FIRSTTOKEN-123456"
                     },
-                    "code": "file:../output/token-release.wasm",
+                    "code": "drtsc:../output/token-release.drtsc.json",
                     "owner": "address:owner"
                 }
             }

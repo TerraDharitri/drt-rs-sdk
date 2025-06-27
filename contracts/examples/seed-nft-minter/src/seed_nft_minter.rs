@@ -1,7 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 
 mod distribution_module;
 mod nft_module;
@@ -123,7 +122,7 @@ pub trait SeedNftMinter:
 }
 
 mod nft_marketplace_proxy {
-    dharitri_sc::imports!();
+    use dharitri_sc::imports::*;
 
     #[dharitri_sc::proxy]
     pub trait NftMarketplace {

@@ -2,9 +2,9 @@ use dharitri_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.register_contract("file:output/erc1155.wasm", erc1155::ContractBuilder);
+    blockchain.register_contract("drtsc:output/erc1155.drtsc.json", erc1155::ContractBuilder);
     blockchain.register_contract(
-        "file:../erc1155-user-mock/output/erc1155-user-mock.wasm",
+        "drtsc:../erc1155-user-mock/output/erc1155-user-mock.drtsc.json",
         erc1155_user_mock::ContractBuilder,
     );
 

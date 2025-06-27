@@ -10,9 +10,11 @@ use ruplacer::Query;
 use toml::value::Table;
 
 const TEST_DIRECTORY: &str = "./tests";
+const INTERACT_DIRECTORY: &str = "./interact";
 const ROOT_CARGO_TOML: &str = "./Cargo.toml";
 const META_CARGO_TOML: &str = "./meta/Cargo.toml";
 const WASM_CARGO_TOML: &str = "./wasm/Cargo.toml";
+const INTERACT_CARGO_TOML: &str = "./interact/Cargo.toml";
 
 pub struct TemplateAdjuster {
     pub metadata: TemplateMetadata,
@@ -24,6 +26,7 @@ impl TemplateAdjuster {
         self.update_dependencies_root();
         self.update_dependencies_meta();
         self.update_dependencies_wasm(args_tag);
+        self.update_dependencies_interact();
     }
 
     fn update_dependencies_root(&self) {
@@ -34,7 +37,11 @@ impl TemplateAdjuster {
             remove_paths_from_deps(&mut toml, &[]);
         }
 
-        toml.add_workspace(&[".", "meta"]);
+        if self.metadata.has_interactor {
+            toml.add_workspace(&[".", "meta", "interact"]);
+        } else {
+            toml.add_workspace(&[".", "meta"]);
+        }
 
         toml.save_to_file(&cargo_toml_path);
     }
@@ -65,12 +72,28 @@ impl TemplateAdjuster {
         toml.save_to_file(&cargo_toml_path);
     }
 
+    fn update_dependencies_interact(&self) {
+        if !self.metadata.has_interactor {
+            return;
+        }
+
+        let cargo_toml_path = self.target.contract_dir().join(INTERACT_CARGO_TOML);
+        let mut toml = CargoTomlContents::load_from_file(&cargo_toml_path);
+
+        if !self.keep_paths {
+            remove_paths_from_deps(&mut toml, &[&self.metadata.name]);
+        }
+
+        toml.save_to_file(&cargo_toml_path);
+    }
+
     pub fn rename_template_to(&self) {
         self.rename_trait_to();
         self.rename_in_cargo_toml_root();
         self.rename_in_cargo_toml_meta();
         self.rename_in_cargo_toml_wasm();
         self.rename_in_tests();
+        self.rename_in_interactor();
         self.rename_solution_files();
     }
 
@@ -163,22 +186,44 @@ impl TemplateAdjuster {
         let old_wasm = wasm_file_name(&self.metadata.name);
         let new_wasm = wasm_file_name(&self.target.new_name);
 
+        let old_drtsc = drtsc_file_name(&self.metadata.name);
+        let new_drtsc = drtsc_file_name(&self.target.new_name);
+
+        self.rename_in_scenarios(&old_wasm, &new_wasm);
+        self.rename_in_scenarios(&old_drtsc, &new_drtsc);
+
+        queries.push(Query::substring(&old_wasm, &new_wasm));
+        queries.push(Query::substring(&old_drtsc, &new_drtsc));
+
+        replace_in_files(
+            &self.target.contract_dir().join(TEST_DIRECTORY),
+            "*.rs",
+            &queries,
+        );
+    }
+
+    fn rename_in_scenarios(&self, old: &str, new: &str) {
         replace_in_files(
             &self.target.contract_dir(),
             "*.scen.json",
-            &[Query::substring(&old_wasm, &new_wasm)][..],
+            &[Query::substring(old, new)][..],
         );
 
         replace_in_files(
             &self.target.contract_dir(),
             "*.steps.json",
-            &[Query::substring(&old_wasm, &new_wasm)][..],
+            &[Query::substring(old, new)][..],
         );
+    }
 
-        queries.push(Query::substring(&old_wasm, &new_wasm));
+    fn rename_in_interactor(&self) {
+        let old_drtsc = drtsc_file_name(&self.metadata.name);
+        let new_drtsc = drtsc_file_name(&self.target.new_name);
+
+        let queries = vec![Query::substring(&old_drtsc, &new_drtsc)];
 
         replace_in_files(
-            &self.target.contract_dir().join(TEST_DIRECTORY),
+            &self.target.contract_dir().join(INTERACT_DIRECTORY),
             "*.rs",
             &queries,
         );
@@ -198,6 +243,10 @@ impl TemplateAdjuster {
 
 fn wasm_file_name(name: &str) -> String {
     format!("{name}.wasm",)
+}
+
+fn drtsc_file_name(name: &str) -> String {
+    format!("{name}.drtsc.json",)
 }
 
 fn rs_file_name(name: &str) -> String {

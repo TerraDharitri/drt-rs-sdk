@@ -3,7 +3,7 @@
 mod fee;
 use fee::*;
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 #[dharitri_sc::contract]
 pub trait DcdtTransferWithFee {
     #[init]

@@ -5,9 +5,10 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/examples/crowdfunding-dcdt");
 
     blockchain.register_contract(
-        "file:output/crowdfunding-dcdt.wasm",
+        "drtsc:output/crowdfunding-dcdt.drtsc.json",
         crowdfunding_dcdt::ContractBuilder,
     );
+
     blockchain
 }
 

@@ -1,3 +1,4 @@
+mod builder;
 mod rewa_or_dcdt_token_identifier;
 mod rewa_or_dcdt_token_payment;
 mod rewa_or_multi_dcdt_payment;
@@ -5,7 +6,6 @@ mod encoded_managed_vec_item;
 mod dcdt_token_data;
 mod dcdt_token_payment;
 mod managed_address;
-mod managed_buffer_cached_builder;
 mod managed_byte_array;
 mod managed_option;
 mod managed_ref;
@@ -17,7 +17,9 @@ mod managed_vec_ref_iter;
 pub(crate) mod preloaded_managed_buffer;
 mod randomness_source;
 mod token_identifier;
+mod traits;
 
+pub use builder::*;
 pub use rewa_or_dcdt_token_identifier::RewaOrDcdtTokenIdentifier;
 pub use rewa_or_dcdt_token_payment::RewaOrDcdtTokenPayment;
 pub use rewa_or_multi_dcdt_payment::RewaOrMultiDcdtPayment;
@@ -25,7 +27,6 @@ pub(crate) use encoded_managed_vec_item::EncodedManagedVecItem;
 pub use dcdt_token_data::DcdtTokenData;
 pub use dcdt_token_payment::{DcdtTokenPayment, MultiDcdtPayment};
 pub use managed_address::ManagedAddress;
-pub use managed_buffer_cached_builder::ManagedBufferCachedBuilder;
 pub(crate) use managed_byte_array::ManagedBufferSizeContext;
 pub use managed_byte_array::ManagedByteArray;
 pub use managed_option::ManagedOption;
@@ -37,3 +38,8 @@ pub use managed_vec_ref::ManagedVecRef;
 pub use managed_vec_ref_iter::ManagedVecRefIterator;
 pub use randomness_source::RandomnessSource;
 pub use token_identifier::TokenIdentifier;
+
+pub use traits::{
+    fixed_token_supply::FixedSupplyToken,
+    mergeable::{ExternallyMergeable, Mergeable},
+};

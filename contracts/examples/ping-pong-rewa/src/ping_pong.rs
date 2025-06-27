@@ -1,6 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 mod user_status;
 
@@ -46,6 +46,9 @@ pub trait PingPong {
         self.activation_timestamp().set(activation_timestamp);
         self.max_funds().set(max_funds.into_option());
     }
+
+    #[upgrade]
+    fn upgrade(&self) {}
 
     /// User sends some REWA to be locked in the contract for a period of time.
     /// Optional `_data` argument is ignored.

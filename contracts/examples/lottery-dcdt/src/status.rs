@@ -1,4 +1,4 @@
-dharitri_sc::derive_imports!();
+use dharitri_sc::derive_imports::*;
 
 #[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy)]
 pub enum Status {

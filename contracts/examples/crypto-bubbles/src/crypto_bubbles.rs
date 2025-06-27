@@ -1,6 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 #[dharitri_sc::contract]
 pub trait CryptoBubbles {

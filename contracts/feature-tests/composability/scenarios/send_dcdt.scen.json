@@ -11,7 +11,7 @@
                     "dcdt": {
                         "str:SENDDCDT": "1,000"
                     },
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "drtsc:../forwarder/output/forwarder.drtsc.json"
                 },
                 "address:an_account": {
                     "nonce": "0",
@@ -89,7 +89,7 @@
                         "str:SENDDCDT": "800"
                     },
                     "storage": {},
-                    "code": "file:../forwarder/output/forwarder.wasm"
+                    "code": "drtsc:../forwarder/output/forwarder.drtsc.json"
                 },
                 "address:an_account": {
                     "nonce": "*",

@@ -1,5 +1,4 @@
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 
 pub const MAX_ORDERS_PER_USER: usize = 100;
 pub const PERCENT_BASE_POINTS: u64 = 100_000;

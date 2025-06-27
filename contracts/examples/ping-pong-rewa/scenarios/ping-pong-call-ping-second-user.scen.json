@@ -63,7 +63,7 @@
                         "str:userStatus|0x0000002": "1",
                         "str:user_count": "2"
                     },
-                    "code": "file:../output/ping-pong-rewa.wasm"
+                    "code": "drtsc:../output/ping-pong-rewa.drtsc.json"
                 }
             }
         }

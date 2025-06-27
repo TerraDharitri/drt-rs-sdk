@@ -1,5 +1,4 @@
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 
 pub const MAX_DISTRIBUTION_PERCENTAGE: u64 = 100_000; // 100%
 

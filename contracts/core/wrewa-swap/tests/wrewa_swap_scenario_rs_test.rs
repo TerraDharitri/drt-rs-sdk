@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/core/wrewa-swap");
 
     blockchain.register_contract(
-        "file:output/dharitri-sc-wrewa-swap.wasm",
+        "drtsc:output/dharitri-sc-wrewa-swap.drtsc.json",
         dharitri_sc_wrewa_swap::ContractBuilder,
     );
     blockchain

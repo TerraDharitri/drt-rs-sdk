@@ -1,6 +1,6 @@
 use dharitri_sc_scenario::{scenario_model::*, *};
 
-const PF_PATH_EXPR: &str = "file:output/payable-features.wasm";
+const PF_PATH_EXPR: &str = "drtsc:output/payable-features.drtsc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

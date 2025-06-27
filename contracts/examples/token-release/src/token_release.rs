@@ -1,7 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::imports::*;
 
 mod contract_data;
 

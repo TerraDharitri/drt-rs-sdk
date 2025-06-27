@@ -18,7 +18,7 @@
                             ]
                         }
                     },
-                    "code": "file:../output/dcdt-system-sc-mock.wasm"
+                    "code": "drtsc:../output/dcdt-system-sc-mock.drtsc.json"
                 }
             }
         },
@@ -96,7 +96,7 @@
                     "storage": {
                         "str:nrIssuedTokens": "1"
                     },
-                    "code": "file:../output/dcdt-system-sc-mock.wasm"
+                    "code": "drtsc:../output/dcdt-system-sc-mock.drtsc.json"
                 }
             }
         },

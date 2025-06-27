@@ -19,7 +19,7 @@ const REWA_TICKER: &[u8] = b"REWA";
 const NR_ORACLES: usize = 4;
 const OWNER_ADDRESS_EXPR: &str = "address:owner";
 const PRICE_AGGREGATOR_ADDRESS_EXPR: &str = "sc:price-aggregator";
-const PRICE_AGGREGATOR_PATH_EXPR: &str = "file:output/dharitri-sc-price-aggregator.wasm";
+const PRICE_AGGREGATOR_PATH_EXPR: &str = "drtsc:output/dharitri-sc-price-aggregator.drtsc.json";
 const SLASH_AMOUNT: u64 = 10;
 const SLASH_QUORUM: usize = 3;
 const STAKE_AMOUNT: u64 = 20;
@@ -288,9 +288,8 @@ fn test_price_aggregator_submit_round_ok() {
     state
         .world
         .whitebox_query(&state.price_aggregator_whitebox, |sc| {
-            let result = sc
-                .latest_price_feed(managed_buffer!(REWA_TICKER), managed_buffer!(USD_TICKER))
-                .unwrap();
+            let result =
+                sc.latest_price_feed(managed_buffer!(REWA_TICKER), managed_buffer!(USD_TICKER));
 
             let (round_id, from, to, timestamp, price, decimals) = result.into_tuple();
             assert_eq!(round_id, 1);

@@ -20,7 +20,7 @@
                             ]
                         }
                     },
-                    "code": "file:../forwarder-raw/output/forwarder-raw.wasm"
+                    "code": "drtsc:../forwarder-raw/output/forwarder-raw.drtsc.json"
                 }
             }
         },
@@ -92,7 +92,7 @@
                         }
                     },
                     "storage": {},
-                    "code": "file:../forwarder-raw/output/forwarder-raw.wasm"
+                    "code": "drtsc:../forwarder-raw/output/forwarder-raw.drtsc.json"
                 }
             }
         }

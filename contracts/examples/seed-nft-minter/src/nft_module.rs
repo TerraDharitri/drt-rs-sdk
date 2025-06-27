@@ -1,7 +1,6 @@
 use crate::distribution_module;
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 
 use dharitri_sc_modules::default_issue_callbacks;
 

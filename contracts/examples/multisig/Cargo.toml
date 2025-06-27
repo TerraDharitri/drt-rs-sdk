@@ -9,15 +9,15 @@ publish = false
 path = "src/multisig.rs"
 
 [dependencies.dharitri-sc]
-version = "1.8.3"
+version = "1.9.0"
 path = "../../../framework/base"
 
 [dependencies.dharitri-sc-modules]
-version = "1.8.3"
+version = "1.9.0"
 path = "../../../contracts/modules"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.8.3"
+version = "1.9.0"
 path = "../../../framework/scenario"
 
 [dev-dependencies.adder]
@@ -27,7 +27,7 @@ path = "../adder"
 path = "../factorial"
 
 [dev-dependencies.dharitri-sc-wrewa-swap]
-version = "1.8.3"
+version = "1.9.0"
 path = "../../core/wrewa-swap"
 
 [dev-dependencies]

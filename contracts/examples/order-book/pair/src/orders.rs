@@ -1,5 +1,4 @@
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::imports::*;
 
 use crate::common::{FEE_PENALTY_INCREASE_EPOCHS, FEE_PENALTY_INCREASE_PERCENT};
 

@@ -1,6 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 use dharitri_sc_modules::default_issue_callbacks;
 mod fractional_uri_info;
@@ -144,7 +144,7 @@ pub trait FractionalNfts: default_issue_callbacks::DefaultIssueCallbacksModule {
 }
 
 mod nft_marketplace_proxy {
-    dharitri_sc::imports!();
+    use dharitri_sc::imports::*;
 
     #[dharitri_sc::proxy]
     pub trait NftMarketplace {

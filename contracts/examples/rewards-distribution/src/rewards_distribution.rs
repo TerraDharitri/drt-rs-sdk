@@ -1,7 +1,6 @@
 #![no_std]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 use dharitri_sc_modules::ongoing_operation::{
     CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
@@ -440,8 +439,6 @@ fn ticket_from_storage(position: u64, ticket_id: u64) -> u64 {
 }
 
 mod seed_nft_minter {
-    dharitri_sc::imports!();
-
     #[dharitri_sc::proxy]
     pub trait SeedNftMinter {
         #[endpoint(getNftCount)]

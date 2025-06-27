@@ -31,8 +31,8 @@ pub struct ScenarioGoInstaller {
 
 fn select_zip_name() -> String {
     match get_system_info() {
-        SystemInfo::Linux => "drt_scenario_go_linux_amd64.zip".to_string(),
-        SystemInfo::MacOs => "drt_scenario_go_darwin_amd64.zip".to_string(),
+        SystemInfo::Linux => "drt_go_scenario_linux_amd64.zip".to_string(),
+        SystemInfo::MacOs => "drt_go_scenario_darwin_amd64.zip".to_string(),
     }
 }
 

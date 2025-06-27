@@ -33,10 +33,13 @@ use dharitri_sc_scenario::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
-    blockchain.register_contract("file:output/use-module.wasm", use_module::ContractBuilder);
+    blockchain.register_contract(
+        "drtsc:output/use-module.drtsc.json",
+        use_module::ContractBuilder,
+    );
 
     blockchain.register_contract(
-        "file:test-wasm/numbat-wasm-sc-dns.wasm",
+        "drtsc:test-wasm/numbat-wasm-sc-dns.drtsc.json",
         dns_mock::ContractBuilder,
     );
 

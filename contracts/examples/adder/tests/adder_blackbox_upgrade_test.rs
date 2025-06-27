@@ -1,12 +1,12 @@
 use dharitri_sc_scenario::{scenario_model::*, *};
 
-const ADDER_PATH_EXPR: &str = "file:output/adder.wasm";
+const ADDER_PATH_EXPR: &str = "drtsc:output/adder.drtsc.json";
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
     blockchain.set_current_dir_from_workspace("contracts/examples/adder");
 
-    blockchain.register_contract("file:output/adder.wasm", adder::ContractBuilder);
+    blockchain.register_contract("drtsc:output/adder.drtsc.json", adder::ContractBuilder);
     blockchain
 }
 

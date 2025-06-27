@@ -1,4 +1,4 @@
-dharitri_sc::derive_imports!();
+use dharitri_sc::derive_imports::*;
 
 use dharitri_sc::{
     api::ManagedTypeApi,

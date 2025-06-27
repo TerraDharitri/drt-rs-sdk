@@ -98,6 +98,25 @@ fn test_into_vec() {
 }
 
 #[test]
+fn test_to_array_of_refs() {
+    let mut vec = ManagedVec::<StaticApi, i32>::new();
+    for i in 0..10 {
+        vec.push(i);
+    }
+
+    let refs: Option<[i32; 20]> = vec.to_array_of_refs();
+    assert!(refs.is_none());
+
+    let refs: Option<[i32; 10]> = vec.to_array_of_refs();
+    assert!(refs.is_some());
+
+    let refs = refs.unwrap();
+    for (i, &item) in refs.iter().enumerate() {
+        assert_eq!(item, i as i32);
+    }
+}
+
+#[test]
 fn test_take_u64() {
     let mut vec = Vec::<u64>::new();
     let mut managed_vec = ManagedVec::<StaticApi, u64>::new();
@@ -135,8 +154,6 @@ fn test_sort_u64() {
     }
 
     assert!(!managed_vec.is_sorted());
-    assert!(managed_vec.is_sorted_by(|a, b| Some(a.cmp(&(b * 10u64)))));
-    assert!(managed_vec.is_sorted_by_key(|d| d / 10u64 > 1u64));
     managed_vec.sort();
     vec.sort();
 
@@ -178,13 +195,11 @@ fn test_sort_by_u64() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by(|a, b| Some(flip(a).cmp(&flip(b)))));
     managed_vec.sort_by(|a, b| flip(a).cmp(&flip(b)));
     vec.sort_by_key(flip);
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by(|a, b| Some(flip(a).cmp(&flip(b)))));
     assert_eq!(vec, managed_vec.into_vec());
 }
 
@@ -200,11 +215,6 @@ fn test_sort_by_biguint() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by(|a, b| {
-        let a_u64 = a.to_u64().unwrap();
-        let b_u64 = b.to_u64().unwrap();
-        Some(flip(&a_u64).cmp(&flip(&b_u64)))
-    }));
     managed_vec.sort_by(|a, b| {
         let a_u64 = a.to_u64().unwrap();
         let b_u64 = b.to_u64().unwrap();
@@ -218,11 +228,6 @@ fn test_sort_by_biguint() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by(|a, b| {
-        let a_u64 = a.to_u64().unwrap();
-        let b_u64 = b.to_u64().unwrap();
-        Some(flip(&a_u64).cmp(&flip(&b_u64)))
-    }));
     assert_eq!(vec, managed_vec.into_vec());
 }
 
@@ -237,13 +242,11 @@ fn test_sort_by_key_u64() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by_key(|a| a.to_string().len()));
     managed_vec.sort_by_key(|a| a.to_string().len());
     vec.sort_by_key(|a| a.to_string().len());
 
     assert!(managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by_key(|a| a.to_string().len()));
     assert_eq!(vec, managed_vec.into_vec());
 }
 
@@ -259,13 +262,11 @@ fn test_sort_by_key_biguint() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by_key(|a| a.to_u64().unwrap().to_string().len()));
     managed_vec.sort_by_key(|a| a.to_u64().unwrap().to_string().len());
     vec.sort_by_key(|a| a.to_u64().unwrap().to_string().len());
 
     assert!(managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by_key(|a| a.to_u64().unwrap().to_string().len()));
     assert_eq!(vec, managed_vec.into_vec());
 }
 
@@ -280,7 +281,6 @@ fn test_sort_by_cached_key_u64() {
 
     managed_vec.sort_by_cached_key(|a| a.to_string());
     vec.sort_by_cached_key(|a| a.to_string());
-    assert!(managed_vec.is_sorted_by_key(|a| a.to_string()));
     let managed_vec_as_vec = managed_vec.into_vec();
     assert_eq!(managed_vec_as_vec, [1111u64, 222u64, 33u64, 4u64]);
     assert_eq!(vec, managed_vec_as_vec);
@@ -298,7 +298,6 @@ fn test_sort_by_cached_key_biguint() {
 
     managed_vec.sort_by_cached_key(|a| a.to_u64().unwrap().to_string());
     vec.sort_by_cached_key(|a| a.to_u64().unwrap().to_string());
-    assert!(managed_vec.is_sorted_by_key(|a| a.to_u64().unwrap().to_string()));
     let managed_vec_as_vec = managed_vec.into_vec();
     assert_eq!(managed_vec_as_vec, [1111u64, 222u64, 33u64, 4u64]);
     assert_eq!(vec, managed_vec_as_vec);
@@ -344,13 +343,11 @@ fn test_sort_unstable_by_u64() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by(|a, b| Some(flip(a).cmp(&flip(b)))));
     managed_vec.sort_unstable_by(|a, b| flip(a).cmp(&flip(b)));
     vec.sort_unstable_by_key(flip);
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by(|a, b| Some(flip(a).cmp(&flip(b)))));
     assert_eq!(vec, managed_vec.into_vec());
 }
 
@@ -366,11 +363,6 @@ fn test_sort_unstable_by_biguint() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by(|a, b| {
-        let a_u64 = a.to_u64().unwrap();
-        let b_u64 = b.to_u64().unwrap();
-        Some(flip(&a_u64).cmp(&flip(&b_u64)))
-    }));
     managed_vec.sort_unstable_by(|a, b| {
         let a_u64 = a.to_u64().unwrap();
         let b_u64 = b.to_u64().unwrap();
@@ -384,11 +376,6 @@ fn test_sort_unstable_by_biguint() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by(|a, b| {
-        let a_u64 = a.to_u64().unwrap();
-        let b_u64 = b.to_u64().unwrap();
-        Some(flip(&a_u64).cmp(&flip(&b_u64)))
-    }));
     assert_eq!(vec, managed_vec.into_vec());
 }
 
@@ -403,13 +390,11 @@ fn test_sort_unstable_by_key_u64() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by_key(|a| a.to_string().len()));
     managed_vec.sort_unstable_by_key(|a| a.to_string().len());
     vec.sort_unstable_by_key(|a| a.to_string().len());
 
     assert!(managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by_key(|a| a.to_string().len()));
     assert_eq!(vec, managed_vec.into_vec());
 }
 
@@ -425,13 +410,11 @@ fn test_sort_unstable_by_key_biguint() {
 
     assert!(!managed_vec.is_sorted());
 
-    assert!(!managed_vec.is_sorted_by_key(|a| a.to_u64().unwrap().to_string().len()));
     managed_vec.sort_unstable_by_key(|a| a.to_u64().unwrap().to_string().len());
     vec.sort_unstable_by_key(|a| a.to_u64().unwrap().to_string().len());
 
     assert!(managed_vec.is_sorted());
 
-    assert!(managed_vec.is_sorted_by_key(|a| a.to_u64().unwrap().to_string().len()));
     assert_eq!(vec, managed_vec.into_vec());
 }
 

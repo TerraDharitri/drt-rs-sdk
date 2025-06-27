@@ -1,4 +1,4 @@
-dharitri_sc::imports!();
+use dharitri_sc::imports::*;
 
 use crate::{storage, zombie_factory, zombie_feeding, zombie_helper};
 

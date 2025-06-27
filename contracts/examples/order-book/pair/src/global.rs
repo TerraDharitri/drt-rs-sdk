@@ -1,5 +1,4 @@
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+use dharitri_sc::imports::*;
 
 #[dharitri_sc::module]
 pub trait GlobalOperationModule {

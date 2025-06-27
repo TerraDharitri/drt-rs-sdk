@@ -4,11 +4,11 @@ fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
     blockchain.register_contract(
-        "file:../kitty-ownership/output/kitty-ownership.wasm",
+        "drtsc:../kitty-ownership/output/kitty-ownership.drtsc.json",
         kitty_ownership::ContractBuilder,
     );
     blockchain.register_contract(
-        "file:output/kitty-auction.wasm",
+        "drtsc:output/kitty-auction.drtsc.json",
         kitty_auction::ContractBuilder,
     );
 

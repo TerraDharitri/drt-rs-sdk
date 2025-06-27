@@ -5,7 +5,7 @@ fn world() -> ScenarioWorld {
     blockchain.set_current_dir_from_workspace("contracts/examples/nft-subscription");
 
     blockchain.register_contract(
-        "file:output/nft-subscription.wasm",
+        "drtsc:output/nft-subscription.drtsc.json",
         nft_subscription::ContractBuilder,
     );
     blockchain
