@@ -26,7 +26,16 @@ They are:
 - `dharitri-chain-scenario-format`, in short `scenario-format`, scenario JSON serializer/deserializer, 1 crate.
 - `dharitri-sdk`, in short `sdk`, allows communication with the chain(s), 1 crate.
 
-## [sc 1.6.4, codec 1.6.4, vm 1.6.4, scenario-format 1.6.4, sdk 1.6.4] - 2023-12-18
+## [sc 1.7.2] - 2024-01-10
+- Interactor: fixed parsing of newly issued token identifier.
+
+## [sc 0.46.0] - 2024-01-05
+- Promises callback memory allocator bugfix.
+- Removed features: `promises`, `managed-map`, `back-transfers`.
+- Removed `hashbrown` dependency from framework.
+- Imports in output now sorted.
+
+## [sc 0.45.2, codec 1.7.2, vm 1.7.2, scenario-format 1.7.2, sdk 1.7.2] - 2023-12-18
 - Updated framework dependencies to the latest versions: syn, bitflags, wasmparser, base64, sha2, sha3, itertools, hmac, pem, pbkdf2, etc.
 - `sc-meta` improvements:
 	- `overflow-checks` field in `sc-config.toml`;
@@ -144,7 +153,7 @@ They are:
 ## [sc 0.41.2, codec 0.17.2, vm 0.3.2] - 2023-06-09
 - Releasing a new version of the codec, without the dependency to `wee_alloc`.
 
-## [sc 0.41.1, vm 1.6.4] - 2023-05-15
+## [sc 0.41.1, vm 1.7.2] - 2023-05-15
 - Fixed an edge case for the token storage mappers (`FungibleTokenMapper`, `NonFungibleTokenMapper`).
 
 ## [sc 0.41.0, vm 0.3.0] - 2023-05-05
@@ -214,7 +223,7 @@ They are:
 - Updated readme files.
 
 ## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
-- All crates were renamed, in line with the DharitrI brand.
+- All crates were renamed, in line with the Dharitri brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
 - A `ScenarioWorld` facade, for contract tests.
@@ -485,7 +494,7 @@ They are:
 ## [numbat-wasm 0.21.2] - 2021-10-26
 - Bugfix regarding contract upgrade args in `numbat-wasm-debug`
 
-## [numbat-wasm 1.6.4, numbat-codec 0.8.1, denali 0.11.1] - 2021-10-26
+## [numbat-wasm 1.7.2, numbat-codec 0.8.1, denali 0.11.1] - 2021-10-26
 - Relative path improvements and fixes in `numbat-wasm-debug`:
 	- denali-rs `file:` syntax now actually loads files and correctly unifies equivalent paths
 	- debugging now works seamlessly, without needing to temporarily change paths in the tests
@@ -593,7 +602,7 @@ They are:
 - Published DNS module, which helps contracts register usernames for themselves
 - `DCDTLocalRole` more expressive type ABI
 
-## [numbat-wasm 0.16.1, denali 1.6.4] - 2021-05-18
+## [numbat-wasm 0.16.1, denali 1.7.2] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
 ## [numbat-wasm 0.16.0, denali 0.7.0, numbat-codec 0.5.3] - 2021-05-14
@@ -730,10 +739,10 @@ They are:
 - ABI generation framework
 - New example contracts
 
-## [numbat-wasm 0.9.8, numbat-codec 0.3.2, denali 1.6.4] - 2020-11-23
+## [numbat-wasm 0.9.8, numbat-codec 0.3.2, denali 1.7.2] - 2020-11-23
 - SC deploy API
 
-## [numbat-wasm 0.9.7, numbat-codec 1.6.4, denali 0.3.0] - 2020-11-11
+## [numbat-wasm 0.9.7, numbat-codec 1.7.2, denali 0.3.0] - 2020-11-11
 - Monomorphization via codec trait instead of TypeInfo for arguments and storage
 - Reorganized all contracts in the `contracts` folder
 
@@ -772,7 +781,7 @@ They are:
 - small int EI
 - minor refactors, serialization fixes
 
-## [numbat-wasm 1.6.4] - 2020-10-07
+## [numbat-wasm 1.7.2] - 2020-10-07
 - Avoid function selector infinite loop
 - Crowdfunding contract initial commit
 

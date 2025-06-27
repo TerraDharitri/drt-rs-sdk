@@ -205,7 +205,7 @@ overflow-checks = false
 path = \"..\"
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = \"1.6.4\"
+version = \"1.7.2\"
 path = \"../../../../framework/wasm-adapter\"
 
 [workspace]
@@ -218,7 +218,7 @@ members = [\".\"]
             name: "test".to_string(),
             edition: "2021".to_string(),
             profile: ContractVariantProfile::default(),
-            framework_version: "1.6.4".to_string(),
+            framework_version: "1.7.2".to_string(),
             framework_path: Option::Some("../../../framework/base".to_string()),
             contract_features: Vec::<String>::new(),
         };

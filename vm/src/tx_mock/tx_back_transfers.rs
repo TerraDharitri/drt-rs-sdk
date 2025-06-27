@@ -41,5 +41,4 @@ impl BackTransfers {
         self.call_value = bt.call_value;
         self.dcdt_transfers = bt.dcdt_transfers;
     }
-    
 }

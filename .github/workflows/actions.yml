@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
 
 permissions:
   checks: write
@@ -13,7 +14,7 @@ permissions:
 jobs:
   contracts:
     name: Contracts
-    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.4
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.6-1
     with:
       rust-toolchain: nightly-2023-12-11
       vmtools-version: v1.5.19
