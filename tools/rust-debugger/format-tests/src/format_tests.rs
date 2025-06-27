@@ -7,10 +7,7 @@ use dharitri_sc::{
         ManagedType, ManagedVec, TokenIdentifier,
     },
 };
-use dharitri_sc_scenario::{
-    api::{DebugApi, DebugHandle},
-    num_bigint::{BigInt as RustBigInt, BigUint as RustBigUint},
-};
+use dharitri_sc_scenario::imports::*;
 
 macro_rules! push {
     ($list: ident, $name:ident, $expected: expr ) => {{

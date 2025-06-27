@@ -16,9 +16,9 @@ path = "parent"
 path = "child"
 
 [dependencies.dharitri-sc]
-version = "1.11.6"
+version = "1.11.10"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.11.6"
+version = "1.11.10"
 path = "../../../framework/scenario"
