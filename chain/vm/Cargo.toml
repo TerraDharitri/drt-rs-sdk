@@ -36,4 +36,4 @@ version = "=1.18.2"
 path = "../core"
 
 [dependencies.dharitri-vm-executor]
-version = "1.0.4"
+version = "=1.0.4"
