@@ -7,6 +7,7 @@ use std::collections::HashMap;
 pub struct DcdtBalance {
     pub token_identifier: String,
     pub balance: String,
+    pub uris: Vec<String>,
 }
 
 // DcdtBalanceDataholds the dcdt balance data

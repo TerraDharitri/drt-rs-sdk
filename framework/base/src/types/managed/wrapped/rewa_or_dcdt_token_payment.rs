@@ -1,3 +1,4 @@
+use generic_array::typenum::U16;
 use dharitri_sc_codec::IntoMultiValue;
 
 use crate::{
@@ -203,7 +204,7 @@ impl<'a, M: ManagedTypeApi> RewaOrDcdtTokenPaymentRefs<'a, M> {
 }
 
 impl<M: ManagedTypeApi> ManagedVecItem for RewaOrDcdtTokenPayment<M> {
-    type PAYLOAD = ManagedVecItemPayloadBuffer<16>;
+    type PAYLOAD = ManagedVecItemPayloadBuffer<U16>;
     const SKIPS_RESERIALIZATION: bool = false;
     type Ref<'a> = ManagedVecRef<'a, Self>;
 

@@ -4,7 +4,10 @@ use crate::sdk::{data::transaction::Transaction, wallet::Wallet};
 use log::debug;
 use dharitri_sc_scenario::dharitri_sc::types::Address;
 use dharitri_sdk::data::account::Account;
-use dharitri_sdk::gateway::{GatewayAsyncService, GetAccountRequest, GetAccountStorageRequest};
+use dharitri_sdk::data::dcdt::DcdtBalance;
+use dharitri_sdk::gateway::{
+    GatewayAsyncService, GetAccountDcdtTokensRequest, GetAccountRequest, GetAccountStorageRequest,
+};
 
 use crate::InteractorBase;
 
@@ -38,6 +41,13 @@ where
     pub async fn get_account_storage(&self, address: &Address) -> HashMap<String, String> {
         self.proxy
             .request(GetAccountStorageRequest::new(address))
+            .await
+            .expect("failed to retrieve account")
+    }
+
+    pub async fn get_account_dcdt(&self, address: &Address) -> HashMap<String, DcdtBalance> {
+        self.proxy
+            .request(GetAccountDcdtTokensRequest::new(address))
             .await
             .expect("failed to retrieve account")
     }

@@ -188,7 +188,7 @@ fn main() {
         "(3) { [0] = \"ab\" - (2) 0x6162, [1] = \"abcd\" - (4) 0x61626364, [2] = \"abcdefghijkl\" - (12) 0x6162636465666768696a6b6c }"
     );
 
-    // 6. DharitrI codec - Multi-types
+    // 6. Dharitri codec - Multi-types
     let optional_value_some: OptionalValue<BigUint<DebugApi>> =
         OptionalValue::Some(BigUint::from(42u64));
     push!(to_check, optional_value_some, "OptionalValue::Some(42)");

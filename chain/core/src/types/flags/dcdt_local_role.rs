@@ -16,6 +16,7 @@ const DCDT_ROLE_SET_NEW_URI: &str = "DCDTRoleSetNewURI";
 const DCDT_ROLE_MODIFY_ROYALTIES: &str = "DCDTRoleModifyRoyalties";
 const DCDT_ROLE_MODIFY_CREATOR: &str = "DCDTRoleModifyCreator";
 const DCDT_ROLE_NFT_RECREATE: &str = "DCDTRoleNFTRecreate";
+const DCDT_ROLE_TRANSFER: &str = "DCDTTransferRole";
 
 #[derive(TopDecode, TopEncode, NestedDecode, NestedEncode, Clone, PartialEq, Eq, Debug, Copy)]
 pub enum DcdtLocalRole {
@@ -31,6 +32,7 @@ pub enum DcdtLocalRole {
     ModifyRoyalties,
     ModifyCreator,
     SetNewUri,
+    Transfer,
 }
 
 impl DcdtLocalRole {
@@ -48,6 +50,7 @@ impl DcdtLocalRole {
             Self::ModifyCreator => 9,
             Self::ModifyRoyalties => 10,
             Self::SetNewUri => 11,
+            Self::Transfer => 12,
         }
     }
 
@@ -69,6 +72,7 @@ impl DcdtLocalRole {
             Self::ModifyRoyalties => DCDT_ROLE_MODIFY_ROYALTIES,
             Self::ModifyCreator => DCDT_ROLE_MODIFY_CREATOR,
             Self::SetNewUri => DCDT_ROLE_SET_NEW_URI,
+            Self::Transfer => DCDT_ROLE_TRANSFER,
         }
     }
 
@@ -86,13 +90,14 @@ impl DcdtLocalRole {
             Self::ModifyRoyalties => DcdtLocalRoleFlags::MODIFY_ROYALTIES,
             Self::ModifyCreator => DcdtLocalRoleFlags::MODIFY_CREATOR,
             Self::SetNewUri => DcdtLocalRoleFlags::SET_NEW_URI,
+            Self::Transfer => DcdtLocalRoleFlags::TRANSFER,
         }
     }
 }
 
 // TODO: can be done with macros, but I didn't find a public library that does it and is no_std
 // we can implement it, it's easy
-const ALL_ROLES: [DcdtLocalRole; 11] = [
+const ALL_ROLES: [DcdtLocalRole; 12] = [
     DcdtLocalRole::Mint,
     DcdtLocalRole::Burn,
     DcdtLocalRole::NftCreate,
@@ -104,6 +109,7 @@ const ALL_ROLES: [DcdtLocalRole; 11] = [
     DcdtLocalRole::ModifyRoyalties,
     DcdtLocalRole::ModifyCreator,
     DcdtLocalRole::SetNewUri,
+    DcdtLocalRole::Transfer,
 ];
 
 impl DcdtLocalRole {
@@ -127,6 +133,7 @@ impl From<u16> for DcdtLocalRole {
             9 => Self::ModifyRoyalties,
             10 => Self::ModifyCreator,
             11 => Self::SetNewUri,
+            12 => Self::Transfer,
             _ => Self::None,
         }
     }
@@ -157,6 +164,8 @@ impl<'a> From<&'a [u8]> for DcdtLocalRole {
             Self::ModifyCreator
         } else if byte_slice == DCDT_ROLE_SET_NEW_URI.as_bytes() {
             Self::SetNewUri
+        } else if byte_slice == DCDT_ROLE_TRANSFER.as_bytes() {
+            Self::Transfer
         } else {
             Self::None
         }

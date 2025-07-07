@@ -32,7 +32,45 @@ They are:
 	- `dharitri-sdk-http`
 	- `dharitri-sdk-dapp`
 
-## [sc 1.17.2, chain 1.17.2, sdk 1.17.2] - 2025-02-06
+## [sc 1.18.2, sdk 1.18.2] - 2025-04-04
+- Retrieve token properties using `get_token_properties`;
+- Fixed URIs for `dcdt_metadata_recreate` and `dcdt_metadata_update`;
+- `sc-meta`:
+  - Fixed `test --chain-simulator` used for running chain-simulator interactor tests;
+  - Added extra checks for argument validity.
+- Interactor:
+  - Fixed `setStateOverwrite`;
+  - Fixed `ReturnsTxHash` result handler.
+- Enhanced `checkState` to allow partial key verification.
+
+## [sc 1.18.0, codec 1.18.2, chain 1.18.0, sdk 0.9.0, scenario-format 1.18.2] - 2025-03-11
+- Newer compiler support:
+	- Dropped support for Rust compiler versions older than 1.83.
+	- Support and optimizations for using Rust 1.85.
+- `sc-meta`:
+	- Windows support.
+	- Removed the concept of a "main" contract configuration.
+- Using `typenum`/`generic-array` instead of const generics/macros for:
+	- ManagedVec payloads;
+	- ManagedDecimal const decimals.
+- ManagedDecimal - more arithmetic operator implementations for combinations of const + var decimals.
+- ManagedVecItem can now be derived for enums with fields.
+- Codec and ABI support for bitflags.
+- Storage mappers:
+	- New storage mapper: `TimelockMapper`;
+	- Renamed source type and object.
+- `DCDTTransferRole`:
+	- Reintroduced role after being accidentally dropped;
+	- Added a `token_has_transfer_role` method for checking if it is set on a token, as a workaround until Barnard release.
+- Unified syntax - result handler for back transfers, which resets previous back transfers (`ReturnsBackTransfersReset`).
+- SDK:
+	- Chain simulator - set state overwrite support;
+	- `Wallet` `get_shard` method.
+- Debugger - improved denali error messages.
+- Dependencies upgraded.
+
+
+## [sc 0.56.1, chain 0.13.1, sdk 0.8.2] - 2025-02-06
 - Allow setting gas for callback for direct transfers.
 - NestedEncode for interaction types: TestAddress, TestScAddress and TestTokenIdentifier.
 - Bugfix: pretty representation for ManagedAddress when debugging.
@@ -48,7 +86,7 @@ They are:
 	- API fix of an issue that was preventing set state in chain simulator;
 	- Snippets generator fixes involving the crate path and the upgrade result handler.
 
-## [sc 0.55.0, codec 1.17.2, chain 0.12.0, sdk 0.8.0] - 2025-01-08
+## [sc 0.55.0, codec 0.21.2, chain 0.12.0, sdk 0.8.0] - 2025-01-08
 - Integrating Spica changes into the framework:
 	- REWA+DCDT multi-transfers are now possible:
 		- changed the handling of call values: REWA is treated almost the same as an DCDT in `all_transfers` and `multi_rewa_or_dcdt`, old DCDT methods are given some protection against unexpected scenarios
@@ -148,7 +186,7 @@ They are:
   - Allow signature to be empty in TransactionOnNetwork;
   - Allow return data to be empty in VMOutputApi.
 
-## [sc 0.53.0 codec 0.21.0, vm 0.10.0, sdk 0.6.0, scenario-format 1.17.2] - 2024-09-04
+## [sc 0.53.0 codec 0.21.0, vm 0.10.0, sdk 0.6.0, scenario-format 0.23.0] - 2024-09-04
 - Unified syntax:
   -  Whitebox testing;
   -  Proxy fix for ManagedOption;
@@ -313,7 +351,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Support for reading from another contract for the following storage mappers: `AddressToIdMapper`, `BiDiMapper`, `LinkedListMapper`, `SetMapper`, `SingleValueMapper`, `UniqueIdMapper`, `UnorderedSetMapper`, `UserMapper`, `VecMapper`, `WhitelistMapper`.
 - Additional methods to access data nodes directly in the `SetMapper` and `QueueMapper`.
 
-## [sc 0.47.2, codec 0.18.6, vm 1.17.2, scenario-format 0.22.2] - 2024-02-02
+## [sc 0.47.2, codec 0.18.6, vm 0.8.2, scenario-format 0.22.2] - 2024-02-02
 - Scenario testing infrastructure:
 	- The Rust VM can generate mock addresses, if not specified in advance.
 	- The `sc:` syntax now generates addresses with VM type 0x0500, same as the latest version of drt-go-scenario.
@@ -327,7 +365,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Support for `drtsc:` syntax in scenarios.
 - Updated dependencies.
 
-## [sc 0.47.0, codec 0.18.4, vm 0.8.0, scenario-format 0.22.0] - 2024-01-23
+## [sc 0.47.0, codec 0.18.4, vm 0.8.0, scenario-format 1.18.2] - 2024-01-23
 - Added support for the code metadata in the Rust VM and Rust scenarios backend.
 - `sc-meta`:
 	- New `drt-go-scenario` installer;
@@ -533,7 +571,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Updated readme files.
 
 ## [sc 0.39.0, codec 0.17.0, vm 0.1.0, scenario-format 0.19.0, sdk 0.1.0] - 2023-01-12
-- All crates were renamed, in line with the DharitrI brand.
+- All crates were renamed, in line with the Dharitri brand.
 - New crate: `dharitri-chain-vm`, extracted from the old debug crate.
 - New crate: `dharitri-sdk`, adapted from a solution proposed by the community.
 - A `ScenarioWorld` facade, for contract tests.
@@ -579,7 +617,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.36.1] - 2022-11-01
 - Deprecated `ContractCall` `execute_on_dest_context_ignore_result` method, since it is currently redundant.
 
-## [numbat-wasm 0.36.0, numbat-codec 0.14.0] - 2022-10-13
+## [numbat-wasm 0.36.0, numbat-codec 1.18.0] - 2022-10-13
 - `DcdtTokenPayment` legacy decode: objects encoded by older versions of the framework can now also be decoded, if flag `dcdt-token-payment-legacy-decode` is active.
 - Codec `NestedDecodeInput` new  `peek_into` method.
 - `FungibleTokenMapper` caches the token identifier.
@@ -622,7 +660,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Testing and debugging environment aligned with VM version 1.4.53.
 - Call value and token data infrastructure additional cleanup.
 
-## [numbat-wasm 0.32.0, denali 0.14.0] - 2022-06-03
+## [numbat-wasm 0.32.0, denali 1.18.0] - 2022-06-03
 - VM new functionality added as part of the environment interface 1.2:
 	- Fully managed functionality for elliptic curves (no allocator);
 	- Fully managed cryptographic functions (no allocator);
@@ -643,7 +681,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - New standard module: `StakingModule`.
 
 
-## [numbat-wasm 0.31.1, denali 1.17.2] - 2022-05-04
+## [numbat-wasm 0.31.1, denali 0.13.1] - 2022-05-04
 - Bugfix - formatter single char issue.
 
 ## [numbat-wasm 0.31.0, numbat-codec 0.11.0, denali 0.13.0] - 2022-05-02
@@ -746,11 +784,11 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - New hook for DCDT local roles
 - Only-owner module annotation
 
-## [numbat-wasm 0.23.1, numbat-codec 0.8.3] - 2021-11-25
+## [numbat-wasm 1.18.2, numbat-codec 0.8.3] - 2021-11-25
 - `ArrayVec` serialization
 - `ManagedAddress` additional conversions
 
-## [numbat-wasm 1.17.2] - 2021-11-23
+## [numbat-wasm 0.23.0] - 2021-11-23
 - Static access to API. Static thread-local context stack in the debugger.
 
 ## [numbat-wasm 0.22.11] - 2021-11-17
@@ -764,7 +802,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - `ManagedVarArgsEager` implementation
 - `DcdtLocalRoleFlags`, no heap allocation in `get_dcdt_local_roles`
 
-## [numbat-wasm 0.22.8, numbat-codec 1.17.2] - 2021-11-12
+## [numbat-wasm 0.22.8, numbat-codec 0.8.2] - 2021-11-12
 - Optimized decode unsigned number from slice
 
 ## [numbat-wasm 0.22.7] - 2021-11-12
@@ -796,12 +834,12 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.22.1] - 2021-11-04
 - Made the generated code in `wasm/lib.rs` more compact with the use of macros.
 
-## [numbat-wasm 0.22.0] - 2021-11-02
+## [numbat-wasm 1.18.2] - 2021-11-02
 - Mechanism for generating contract endpoints based on ABI. Previously, all endpoints from all modules from a crate were automaticaly included, now they can be filtered based on what modules are used.
 - Contract `meta` crates are now capable of building the respective contracts and the ABIs without relying on `drtpy`.
 - Renamed feature `andes-tests` to `denali-go-tests`
 
-## [numbat-wasm 1.17.2] - 2021-10-26
+## [numbat-wasm 0.21.2] - 2021-10-26
 - Bugfix regarding contract upgrade args in `numbat-wasm-debug`
 
 ## [numbat-wasm 0.21.1, numbat-codec 0.8.1, denali 0.11.1] - 2021-10-26
@@ -949,7 +987,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.14.1] - 2021-03-25
 - Unified variadic arguments with respective variadic results
 
-## [numbat-wasm 0.14.0, denali 0.6.0, numbat-codec 0.5.1] - 2021-03-22
+## [numbat-wasm 1.18.0, denali 0.6.0, numbat-codec 0.5.1] - 2021-03-22
 - DCDT functionality:
 	- DCDT system smart contract proxy, though which it is possible to mint, burn, issue, freeze, pause, etc.
 	- Endpoints to handle NFTs. Also added NFT management in the  DCDT system smart contract proxy
@@ -1074,7 +1112,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Allow slices as arguments 
 - `storage_is_empty` annotation
 
-## [numbat-wasm 0.9.1] - 2020-11-05
+## [numbat-wasm 1.18.2] - 2020-11-05
 - BigUint serialization bugfix
 
 ## [numbat-wasm 0.9.0, numbat-codec 0.3.0, denali 0.2.0] - 2020-11-04

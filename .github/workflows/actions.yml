@@ -14,11 +14,11 @@ permissions:
 jobs:
   contracts:
     name: Contracts
-    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.19
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v0.1.18
     with:
-      rust-toolchain: stable
+      rust-toolchain: 1.85
       path-to-sc-meta: framework/meta
-      drt-go-scenario-version: v0.0.4
+      drt-go-scenario-version: v0.0.5
       enable-interactor-tests: true
       coverage-args: --ignore-filename-regex='meta/src' --ignore-filename-regex='wasm-adapter' --ignore-filename-regex='benchmarks/' --ignore-filename-regex='tests/' --output ./coverage.md
     secrets:

@@ -5,6 +5,23 @@ dharitri_sc::imports!();
 pub trait CallPromisesDirectModule {
     #[endpoint]
     #[payable("*")]
+    fn promise_raw_single_token_to_user(
+        &self,
+        to: ManagedAddress,
+        gas_limit: u64,
+        extra_gas_for_callback: u64,
+    ) {
+        let payment = self.call_value().rewa_or_single_dcdt();
+        self.tx()
+            .to(&to)
+            .payment(payment)
+            .gas(gas_limit)
+            .callback(self.callbacks().retrieve_dcdt_callback())
+            .gas_for_callback(extra_gas_for_callback)
+            .register_promise();
+    }
+    #[endpoint]
+    #[payable("*")]
     fn promise_raw_single_token(
         &self,
         to: ManagedAddress,
@@ -60,11 +77,27 @@ pub trait CallPromisesDirectModule {
         self.async_call_event_callback(arg1, arg2, &result.into_vec_of_buffers());
     }
 
+    #[promises_callback]
+    fn retrieve_dcdt_callback(&self) {
+        let callback_payment = self.call_value().single_dcdt();
+        self.async_call_dcdt_event_callback(
+            callback_payment.token_identifier.clone(),
+            callback_payment.amount.clone(),
+        );
+    }
+
     #[event("async_call_event_callback")]
     fn async_call_event_callback(
         &self,
         #[indexed] arg1: usize,
         #[indexed] arg2: BigUint,
         arguments: &ManagedVec<Self::Api, ManagedBuffer>,
+    );
+
+    #[event("async_call_event_callback")]
+    fn async_call_dcdt_event_callback(
+        &self,
+        #[indexed] token_id: TokenIdentifier,
+        #[indexed] amount: BigUint,
     );
 }

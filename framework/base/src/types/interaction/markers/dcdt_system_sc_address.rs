@@ -9,14 +9,14 @@ use crate::{
 };
 
 /// Address of the system smart contract that manages DCDT.
-const SYSTEM_SC_ADDRESS_BYTES: [u8; 32] =
+const DCDT_SYSTEM_SC_ADDRESS_BYTES: [u8; 32] =
     hex!("233300000000000000000000000000000002333000000000000000000002ffff");
-const SYSTEM_SC_ADDRESS_BECH32: &str =
+const DCDT_SYSTEM_SC_ADDRESS_BECH32: &str =
     "drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2";
-const SYSTEM_SC_ADDRESS_ANNOTATION: &str =
+const DCDT_SYSTEM_SC_ADDRESS_ANNOTATION: &str =
     "bech32:drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2";
 
-/// Indicates the system SC address, which is the same on any DharitrI blockchain.
+/// Indicates the system SC address, which is the same on any Dharitri blockchain.
 pub struct DCDTSystemSCAddress;
 
 impl DCDTSystemSCAddress {
@@ -24,19 +24,19 @@ impl DCDTSystemSCAddress {
     where
         Api: ManagedTypeApi,
     {
-        ManagedAddress::from(SYSTEM_SC_ADDRESS_BYTES)
+        ManagedAddress::from(DCDT_SYSTEM_SC_ADDRESS_BYTES)
     }
 
     pub fn to_address(&self) -> Address {
-        SYSTEM_SC_ADDRESS_BYTES.into()
+        DCDT_SYSTEM_SC_ADDRESS_BYTES.into()
     }
 
     pub fn to_bech32_str(&self) -> &str {
-        SYSTEM_SC_ADDRESS_BECH32
+        DCDT_SYSTEM_SC_ADDRESS_BECH32
     }
 
     pub fn to_bech32_string(&self) -> alloc::string::String {
-        SYSTEM_SC_ADDRESS_BECH32.into()
+        DCDT_SYSTEM_SC_ADDRESS_BECH32.into()
     }
 }
 
@@ -45,7 +45,7 @@ where
     Env: TxEnv,
 {
     fn annotation(&self, _env: &Env) -> ManagedBuffer<Env::Api> {
-        ManagedBuffer::from(SYSTEM_SC_ADDRESS_ANNOTATION)
+        ManagedBuffer::from(DCDT_SYSTEM_SC_ADDRESS_ANNOTATION)
     }
 
     fn to_value(&self, _env: &Env) -> ManagedAddress<Env::Api> {
@@ -62,7 +62,7 @@ impl TopEncode for DCDTSystemSCAddress {
         O: TopEncodeOutput,
         H: EncodeErrorHandler,
     {
-        SYSTEM_SC_ADDRESS_BYTES.top_encode_or_handle_err(output, h)
+        DCDT_SYSTEM_SC_ADDRESS_BYTES.top_encode_or_handle_err(output, h)
     }
 }
 
@@ -70,6 +70,6 @@ impl<M> TypeAbiFrom<DCDTSystemSCAddress> for ManagedAddress<M> where M: ManagedT
 
 impl core::fmt::Display for DCDTSystemSCAddress {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.write_str(SYSTEM_SC_ADDRESS_BECH32)
+        f.write_str(DCDT_SYSTEM_SC_ADDRESS_BECH32)
     }
 }

@@ -1,5 +1,5 @@
-# DharitrI SDK for Rust
+# Dharitri SDK for Rust
 
-General purpose collection of tools & SDKs to interact with the DharitrI blockchain from Rust projects, wasm-bindgen compatible.
+General purpose collection of tools & SDKs to interact with the Dharitri blockchain from Rust projects, wasm-bindgen compatible.
 
 More examples in `./examples`.

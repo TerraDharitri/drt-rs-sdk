@@ -139,7 +139,7 @@ fn test_with_tx_that_has_sc_result() {
                       "value": 0,
                       "receiver": "drt1qqqqqqqqqqqqqpgquu5rsa4ee6l4azz6vdu4hjp8z4p6tt8m0n4sptujw6",
                       "sender": "drt1qqqqqqqqqqqqqpgq5400a82at6ttplyrdhyn8kk9lhxaed5d0n4scvfa4u",
-                      "data": "DCDTTransfer@57524557412d643763366262@e7730d1ef1b0@737761704e6f466565416e64466f7277617264@4d45582d646332383963@0000000000000000000000000000000000000000000000000000000000000000",
+                      "data": "DCDTTransfer@57524557412d643763366262@e7730d1ef1b0@737761704e6f466565416e64466f7277617264@4d4f412d646332383963@0000000000000000000000000000000000000000000000000000000000000000",
                       "prevTxHash": "d4058bd3c13db0b14832c7c58fe163db2f579ff6544380586b8a27d88b4a5070",
                       "originalTxHash": "d4058bd3c13db0b14832c7c58fe163db2f579ff6544380586b8a27d88b4a5070",
                       "gasLimit": 0,

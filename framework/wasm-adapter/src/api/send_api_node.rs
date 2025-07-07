@@ -1,7 +1,7 @@
 use crate::api::VmApiImpl;
 use dharitri_sc::api::{const_handles, RawHandle, SendApi, SendApiImpl};
 
-extern "C" {
+unsafe extern "C" {
     fn managedMultiTransferDCDTNFTExecute(
         dstHandle: i32,
         tokenTransfersHandle: i32,

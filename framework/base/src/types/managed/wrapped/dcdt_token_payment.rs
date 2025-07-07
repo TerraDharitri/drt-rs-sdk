@@ -1,3 +1,5 @@
+use generic_array::typenum::U16;
+
 use crate::{
     api::ManagedTypeApi,
     types::{
@@ -186,7 +188,7 @@ impl<M: ManagedTypeApi> IntoMultiValue for DcdtTokenPayment<M> {
 }
 
 impl<M: ManagedTypeApi> ManagedVecItem for DcdtTokenPayment<M> {
-    type PAYLOAD = ManagedVecItemPayloadBuffer<16>;
+    type PAYLOAD = ManagedVecItemPayloadBuffer<U16>;
     const SKIPS_RESERIALIZATION: bool = false;
     type Ref<'a> = ManagedVecRef<'a, Self>;
 

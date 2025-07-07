@@ -8,7 +8,7 @@ pub fn footer() -> Html {
             <p>
                 { "Made with " }
                 <Icon class="icon" icon_id={IconId::BootstrapHeartFill}/>
-                { " by the DharitrI team" }
+                { " by the Dharitri team" }
             </p>
         </footer>
     }

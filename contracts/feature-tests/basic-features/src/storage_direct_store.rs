@@ -66,14 +66,14 @@ pub trait StorageStoreFeatures {
     fn store_map3(&self, x: usize, b: bool);
 
     #[endpoint]
-    #[storage_set("NUMABTi64")]
+    #[storage_set("NUMBATi64")]
     fn store_reserved_i64(&self, i: i64);
 
     #[endpoint]
-    #[storage_set("NUMABTBigUint")]
+    #[storage_set("NUMBATBigUint")]
     fn store_reserved_big_uint(&self, i: BigUint);
 
     #[endpoint]
-    #[storage_set("NUMABTreserved")]
+    #[storage_set("NUMBATreserved")]
     fn store_reserved_vec_u8(&self, i: ManagedBuffer);
 }

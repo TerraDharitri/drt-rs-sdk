@@ -1,6 +1,6 @@
 use dharitri_sc::{api::EllipticCurveApiImpl, types::heap::BoxedBytes};
 
-extern "C" {
+unsafe extern "C" {
     fn createEC(dataOffset: i32, dataLength: i32) -> i32;
 
     fn managedCreateEC(nameHandle: i32) -> i32;

@@ -1,4 +1,4 @@
-# DharitrI transaction snippets
+# Dharitri transaction snippets
 
 Provides basic functionality for interacting with smart contracts directly from Rust.
 

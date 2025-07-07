@@ -31,7 +31,7 @@
 #
 # 6. Make sure that the contract upgrade tool is still sound.
 # At the very least add the new version to `VERSIONS` and change `DEFAULT_LAST_VERSION` in 
-# `/home/andreim/TerraDharitri/rs/drt-rs-sdk/framework/meta/src/sc_upgrade/upgrade_versions.rs`+
+# `/home/andreim/dharitri/rs/drt-rs-sdk/framework/meta/src/sc_upgrade/upgrade_versions.rs`+
 # 
 # 7. Run this script, `./publish.sh`.
 # You can comment out the crates you are not publishing. The script will stop otherwise when it cannot publish them.
@@ -97,37 +97,37 @@ cargo publish --allow-dirty || return 1
 cd ../..
 
 cd framework/base
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd framework/meta-lib
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd framework/scenario
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd framework/snippets
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd framework/meta
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd framework/wasm-adapter
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd contracts/modules
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd contracts/core/price-aggregator
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../../..
 
 cd contracts/core/wrewa-swap
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../../..

@@ -5,7 +5,7 @@ dharitri_sc::imports!();
 pub trait RewaDecimal {
     #[payable("REWA")]
     #[endpoint]
-    fn returns_rewa_decimal(&self) -> ManagedDecimal<Self::Api, ConstDecimals<18>> {
+    fn returns_rewa_decimal(&self) -> ManagedDecimal<Self::Api, RewaDecimals> {
         self.call_value().rewa_decimal()
     }
 }

@@ -1,7 +1,7 @@
 use super::VmApiImpl;
 use dharitri_sc::api::{EndpointFinishApi, EndpointFinishApiImpl};
 
-extern "C" {
+unsafe extern "C" {
     fn finish(dataOffset: *const u8, length: i32);
 
     // big int API

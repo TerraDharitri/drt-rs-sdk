@@ -21,7 +21,7 @@ fn test_process_issued_token_identifier_fungible() {
       "gasPrice": 1000000000,
       "gasLimit": 100000000,
       "gasUsed": 100000000,
-      "data": "aXNzdWVMcFRva2VuQDAwMDAwMDAwMDAwMDAwMDAwNTAwMTM5ZWQ3YWU0YWEwMzc5MmU2YmNiMzMyMzk0YTQwZmU3NDZlZWZhNDdjZWJANDU0NzRjNDQ0ZDQ1NTg0YzUwQDQ1NDc0YzQ0NGQ0NTU4",
+      "data": "aXNzdWVMcFRva2VuQDAwMDAwMDAwMDAwMDAwMDAwNTAwMTM5ZWQ3YWU0YWEwMzc5MmU2YmNiMzMyMzk0YTQwZmU3NDZlZWZhNDdjZWJANTI0NTU3NDE0ZDRmNDE0YzUwQDUyNDU1NzQxNGQ0ZjQx",
       "signature": "b5049d2906adc1305a6a8d0f42749254ca6259c6996d9a35e7dc7528b3c87b48a421879aff70bc6d81483a7559b75e5dcf9be499dcb7d57aa9f25c79ac2ad40d",
       "sourceShard": 1,
       "destinationShard": 1,
@@ -100,7 +100,7 @@ fn test_process_issued_token_identifier_fungible() {
                 "address": "drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2",
                 "identifier": "DCDTTransfer",
                 "topics": [
-                  "RUdMRE1FWC05NWM2ZDU=",
+                  "UkVXQU1PQS05NWM2ZDU=",
                   "",
                   "A+g=",
                   "AAAAAAAAAAAFAO+ux8+3RD51ieGHV10Z68X293CYfOs="
@@ -120,7 +120,7 @@ fn test_process_issued_token_identifier_fungible() {
             ]
           },
           "tokens": [
-            "REWAMOA-95c6d5"
+            "REWA-95c6d5"
           ],
           "dcdtValues": [
             "1000"

@@ -1,3 +1,9 @@
+##############################################################################
+### LLDB support for displaying Dharitri SpaceCraft SDK types in debug mode
+##############################################################################
+### Version: 1.18.2
+##############################################################################
+
 from functools import partial
 import string
 from typing import Callable, Collection, Iterable, List, Tuple, Type
@@ -48,14 +54,14 @@ CHAIN_CORE_PATH = "dharitri_chain_core::types"
 HEAP_ADDRESS_TYPE = f"{CHAIN_CORE_PATH}::address::Address"
 BOXED_BYTES_TYPE = f"{CHAIN_CORE_PATH}::boxed_bytes::BoxedBytes"
 
-# 6. DharitrI interaction expression
+# 6. Dharitri interaction expression
 INTERACTION_EXPR_PATH = "dharitri_sc::types::interaction::expr"
 
 TEST_SC_ADDRESS_TYPE = f"{INTERACTION_EXPR_PATH}::test_sc_address::TestSCAddress"
 TEST_ADDRESS_TYPE = f"{INTERACTION_EXPR_PATH}::test_address::TestAddress"
 TEST_TOKEN_IDENTIFIER_TYPE = f"{INTERACTION_EXPR_PATH}::test_token_identifier::TestTokenIdentifier"
 
-# 7. DharitrI codec - Multi-types
+# 7. Dharitri codec - Multi-types
 MULTI_TYPES_PATH = "dharitri_sc_codec::multi_types"
 
 OPTIONAL_VALUE_TYPE = f"{MULTI_TYPES_PATH}::multi_value_optional::OptionalValue<{ANY_TYPE}>"
@@ -527,11 +533,11 @@ DHARITRI_WASM_TYPE_HANDLERS = [
     # 5. SC wasm - heap
     (HEAP_ADDRESS_TYPE, HeapAddress),
     (BOXED_BYTES_TYPE, BoxedBytes),
-    # 6. DharitrI interaction expression
+    # 6. Dharitri interaction expression
     (TEST_SC_ADDRESS_TYPE, TestSCAddress),
     (TEST_ADDRESS_TYPE, TestAddress),
     (TEST_TOKEN_IDENTIFIER_TYPE, TestTokenIdentifier),
-    # 7. DharitrI codec - Multi-types
+    # 7. Dharitri codec - Multi-types
     (OPTIONAL_VALUE_TYPE, OptionalValue),
 ]
 

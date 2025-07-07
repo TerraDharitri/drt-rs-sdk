@@ -21,15 +21,14 @@ jobs:
       - name: Install rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          default: true
-          toolchain: stable
+          toolchain: 1.85
           target: wasm32-unknown-unknown
 
       - name: Install prerequisites
         run: |
           cargo install wasm-opt
           cargo install --path framework/meta
-          sc-meta install drt-go-scenario --tag v0.0.4
+          sc-meta install drt-go-scenario --tag v0.0.5
 
           which wasm-opt
           which drt-go-scenario

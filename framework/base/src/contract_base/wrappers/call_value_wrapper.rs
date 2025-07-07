@@ -9,7 +9,7 @@ use crate::{
     },
     err_msg,
     types::{
-        big_num_cmp::bi_gt_zero, BigUint, ConstDecimals, RewaOrDcdtTokenIdentifier,
+        big_num_cmp::bi_gt_zero, BigUint, RewaDecimals, RewaOrDcdtTokenIdentifier,
         RewaOrDcdtTokenPayment, RewaOrMultiDcdtPayment, DcdtTokenPayment, ManagedDecimal,
         ManagedRef, ManagedType, ManagedVec, ManagedVecItem, ManagedVecItemPayload,
         ManagedVecPayloadIterator, ManagedVecRef, TokenIdentifier,
@@ -102,8 +102,8 @@ where
     }
 
     /// Returns the REWA call value from the VM as ManagedDecimal
-    pub fn rewa_decimal(&self) -> ManagedDecimal<A, ConstDecimals<18>> {
-        ManagedDecimal::<A, ConstDecimals<18>>::const_decimals_from_raw(self.rewa_value().clone())
+    pub fn rewa_decimal(&self) -> ManagedDecimal<A, RewaDecimals> {
+        ManagedDecimal::<A, RewaDecimals>::const_decimals_from_raw(self.rewa_value().clone())
     }
 
     /// Returns all DCDT transfers that accompany this SC call.

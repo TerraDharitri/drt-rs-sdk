@@ -1,5 +1,5 @@
 use imports::{DrtscPath, ReturnsResult, TestAddress, TestSCAddress};
-use dharitri_sc::types::{BigUint, ConstDecimals, ManagedDecimal};
+use dharitri_sc::types::{BigUint, RewaDecimals, ManagedDecimal};
 use dharitri_sc_scenario::{api::StaticApi, imports, ScenarioTxRun, ScenarioWorld};
 
 const OWNER_ADDRESS: TestAddress = TestAddress::new("owner");
@@ -50,8 +50,6 @@ fn rewa_decimal_blackbox_test() {
 
     assert_eq!(
         rewa_decimal_result,
-        ManagedDecimal::<StaticApi, ConstDecimals<18>>::const_decimals_from_raw(BigUint::from(
-            5u64
-        ))
+        ManagedDecimal::<StaticApi, RewaDecimals>::const_decimals_from_raw(BigUint::from(5u64))
     );
 }

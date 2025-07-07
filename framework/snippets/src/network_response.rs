@@ -21,6 +21,7 @@ pub fn parse_tx_response(tx: TransactionOnNetwork, return_code: ReturnCode) -> T
             ..Default::default()
         };
     }
+
     process_success(&tx)
 }
 
@@ -153,7 +154,7 @@ fn process_new_issued_token_identifier(tx: &TransactionOnNetwork) -> Option<Stri
         if scr.sender.0 != DCDTSystemSCAddress.to_address() {
             continue;
         }
-        
+
         let prev_tx_data: &str = if let Some(prev_tx) = tx
             .smart_contract_results
             .iter()

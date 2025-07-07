@@ -23,8 +23,8 @@ fn test_print_ascii() {
     fmf.print_message(i32::MIN);
     check_printed_and_clear("Printing x: -2147483648");
 
-    fmf.print_message_bytes(b"MVX");
-    check_printed_and_clear("Printing x: MVX");
+    fmf.print_message_bytes(b"DRT");
+    check_printed_and_clear("Printing x: DRT");
 }
 
 #[test]
@@ -43,8 +43,8 @@ fn test_print_binary() {
     fmf.print_message_binary(u32::MAX);
     check_printed_and_clear("Printing x: 11111111111111111111111111111111");
 
-    fmf.print_message_binary_bytes(b"MVX");
-    check_printed_and_clear("Printing x: 010011010101011001011000");
+    fmf.print_message_binary_bytes(b"DRT");
+    check_printed_and_clear("Printing x: 010001000101001001010100");
 }
 
 #[test]
@@ -66,8 +66,8 @@ fn test_print_hex() {
     fmf.print_message_hex(i32::MIN);
     check_printed_and_clear("Printing x: 80000000");
 
-    fmf.print_message_hex_bytes(b"MVX");
-    check_printed_and_clear("Printing x: 4d5658");
+    fmf.print_message_hex_bytes(b"DRT");
+    check_printed_and_clear("Printing x: 445254");
 }
 
 #[test]
