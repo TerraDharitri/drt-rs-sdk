@@ -49,7 +49,7 @@ where
 
     /// Retrieves the REWA call value from the VM.
     ///
-    /// Will return 0 in case of an DCDT transfer, even though REWA and DCDT transfers are now posible.
+    /// Will return 0 in case of an DCDT transfer, even though REWA and DCDT transfers are now possible.
     pub fn rewa_direct_non_strict(&self) -> ManagedRef<'static, A, BigUint<A>> {
         let call_value_handle: A::BigIntHandle = use_raw_handle(const_handles::CALL_VALUE_REWA);
         if !A::static_var_api_impl()
@@ -84,7 +84,7 @@ where
 
     /// Retrieves the REWA call value from the VM.
     ///
-    /// Will return 0 in case of an DCDT transfer, even though REWA and DCDT transfers are now posible.
+    /// Will return 0 in case of an DCDT transfer, even though REWA and DCDT transfers are now possible.
     ///
     /// ## Important!
     ///
@@ -107,7 +107,7 @@ where
     }
 
     /// Returns all DCDT transfers that accompany this SC call.
-    /// Will return 0 results if nothing was transfered, or just REWA.
+    /// Will return 0 results if nothing was transferred, or just REWA.
     ///
     /// Will crash for REWA + DCDT multi transfers.
     pub fn all_dcdt_transfers(&self) -> ManagedRef<'static, A, ManagedVec<A, DcdtTokenPayment<A>>> {

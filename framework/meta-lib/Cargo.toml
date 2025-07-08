@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-meta-lib"
-version = "1.18.2"
+version = "1.19.0"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -23,12 +23,12 @@ colored = "3.0"
 lazy_static = "1.4.0"
 convert_case = "0.8"
 hex = "0.4"
-wasmparser = "0.227"
-wasmprinter = "0.227"
+wasmparser = "0.231"
+wasmprinter = "0.231"
 semver = "1.0.20"
 wat = "1.217.0"
 
 [dependencies.dharitri-sc]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../base"
 features = ["alloc", "num-bigint"]

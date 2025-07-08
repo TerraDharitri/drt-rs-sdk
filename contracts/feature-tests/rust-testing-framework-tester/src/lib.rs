@@ -62,7 +62,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
 
     #[payable("REWA")]
     #[endpoint]
-    fn recieve_rewa_half(&self) {
+    fn receive_rewa_half(&self) {
         let payment_amount = &*self.call_value().rewa() / 2u32;
         self.tx().to(ToCaller).rewa(payment_amount).transfer();
     }

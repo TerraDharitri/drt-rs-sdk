@@ -1,4 +1,4 @@
-use dharitri_chain_vm::tx_mock::TxFunctionName;
+use dharitri_chain_vm::host::context::TxFunctionName;
 
 use super::{value_set_big_uint::*, BytesValue, CheckValue, U64Value};
 use num_bigint::BigUint;

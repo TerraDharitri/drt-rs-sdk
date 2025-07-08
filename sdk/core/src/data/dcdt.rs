@@ -7,10 +7,12 @@ use std::collections::HashMap;
 pub struct DcdtBalance {
     pub token_identifier: String,
     pub balance: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if = "Vec::is_empty")]
     pub uris: Vec<String>,
 }
 
-// DcdtBalanceDataholds the dcdt balance data
+// DcdtBalanceData holds the dcdt balance data
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DcdtBalanceData {
     pub dcdts: HashMap<String, DcdtBalance>,

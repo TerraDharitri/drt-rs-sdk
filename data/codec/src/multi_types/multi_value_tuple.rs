@@ -10,7 +10,7 @@ macro_rules! multi_value_impls_debug {
         $(
             #[derive(Clone, Debug, PartialEq)]
             pub struct $mv_struct<$($name,)+>(
-                #[deprecated(since = "1.18.0", note = "use .into_tuple() or .as_tuple() instead")]
+                #[deprecated(since = "0.57.0", note = "use .into_tuple() or .as_tuple() instead")]
                 pub ($($name,)+)
             );
         )+
@@ -21,7 +21,7 @@ macro_rules! multi_value_impls_no_debug {
         $(
             #[derive(Clone)]
             pub struct $mv_struct<$($name,)+>(
-                #[deprecated(since = "1.18.0", note = "use .into_tuple() or .as_tuple() instead")]
+                #[deprecated(since = "0.57.0", note = "use .into_tuple() or .as_tuple() instead")]
                 pub ($($name,)+)
             );
         )+

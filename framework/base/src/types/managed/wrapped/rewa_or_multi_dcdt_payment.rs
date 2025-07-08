@@ -30,7 +30,7 @@ impl<M: ManagedTypeApi> RewaOrMultiDcdtPayment<M> {
     }
 }
 
-/// The version of `RewaOrMultiDcdtPayment` that contains referrences instead of owned fields.
+/// The version of `RewaOrMultiDcdtPayment` that contains references instead of owned fields.
 pub enum RewaOrMultiDcdtPaymentRefs<'a, M: ManagedTypeApi> {
     Rewa(&'a BigUint<M>),
     MultiDcdt(&'a ManagedVec<M, DcdtTokenPayment<M>>),

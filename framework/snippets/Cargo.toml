@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc-snippets"
-version = "1.18.2"
+version = "1.19.0"
 edition = "2021"
 
 authors = ["contact@dharitri.org"]
@@ -26,30 +26,31 @@ base64 = "0.22"
 log = "0.4.17"
 env_logger = "0.11"
 futures = "0.3"
-anyhow = "1.0.44"
+anyhow = "1.0"
 serde_json = "1.0"
+colored = "3.0"
 
 tokio = { version = "1.24", features = ["full"], optional = true }
 
 [dependencies.dharitri-sc-scenario]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../scenario"
 
 [dependencies.dharitri-chain-scenario-format]
-version = "1.18.2"
+version = "1.19.0"
 path = "../../sdk/scenario-format"
 
 [dependencies.dharitri-sdk]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../../sdk/core"
 
 [dependencies.dharitri-sdk-http]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../../sdk/http"
 optional = true
 default-features = false
 
 [dependencies.dharitri-sdk-dapp]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../../sdk/dapp"
 optional = true

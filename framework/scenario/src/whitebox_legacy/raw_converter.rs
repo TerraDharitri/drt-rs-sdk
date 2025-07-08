@@ -12,8 +12,8 @@ use crate::{
     scenario_model::U64Value,
 };
 use dharitri_chain_vm::{
+    blockchain::state::{AccountData, DcdtData},
     types::VMAddress,
-    world_mock::{AccountData, DcdtData},
 };
 use num_traits::Zero;
 

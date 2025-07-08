@@ -11,7 +11,7 @@ use std::{
 ///
 /// This happens in a controlled environment, in the `with_shared` method closure argument.
 /// All reference-counted pointers are expected to be dropped until that closure finishes.
-#[deprecated(since = "1.18.0", note = "replaced by BlockchainVMRef and Arc")]
+#[deprecated(since = "0.57.0", note = "replaced by BlockchainVMRef and Arc")]
 pub enum Shareable<T> {
     Owned(T),
     Shared(Arc<T>),

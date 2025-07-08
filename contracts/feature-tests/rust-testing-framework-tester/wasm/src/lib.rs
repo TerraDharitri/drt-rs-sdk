@@ -24,7 +24,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         get_rewa_balance => get_rewa_balance
         get_dcdt_balance => get_dcdt_balance
         receive_rewa => receive_rewa
-        recieve_rewa_half => recieve_rewa_half
+        receive_rewa_half => receive_rewa_half
         receive_dcdt => receive_dcdt
         reject_payment => reject_payment
         receive_dcdt_half => receive_dcdt_half

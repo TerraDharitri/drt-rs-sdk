@@ -63,7 +63,7 @@ impl TypeAbi for CodeMetadata {
 impl TypeAbiFrom<Self> for DcdtTokenType {}
 impl TypeAbiFrom<&Self> for DcdtTokenType {}
 
-// implementation originally geneated via #[type_abi] attribute
+// implementation originally generated via #[type_abi] attribute
 impl TypeAbi for DcdtTokenType {
     type Unmanaged = Self;
     fn type_name() -> TypeName {
@@ -127,7 +127,7 @@ impl TypeAbi for DcdtTokenType {
 impl TypeAbiFrom<Self> for DcdtLocalRole {}
 impl TypeAbiFrom<&Self> for DcdtLocalRole {}
 
-// implementation originally geneated via #[type_abi] attribute
+// implementation originally generated via #[type_abi] attribute
 impl TypeAbi for DcdtLocalRole {
     type Unmanaged = Self;
 

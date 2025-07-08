@@ -7,7 +7,7 @@ use promises_features::promises_feature_proxy;
 const USER_ADDRESS: TestAddress = TestAddress::new("user");
 const PROMISES_FEATURE_ADDRESS: TestSCAddress = TestSCAddress::new("promises-feature");
 const PROMISES_FEATURES_PATH: DrtscPath =
-    DrtscPath::new("promises-features/output/promises-feature.drtsc.json");
+    DrtscPath::new("promises-features/output/promises-features.drtsc.json");
 const VAULT_ADDRESS: TestSCAddress = TestSCAddress::new("vault");
 const VAULT_PATH: DrtscPath = DrtscPath::new("../vault/output/vault.drtsc.json");
 

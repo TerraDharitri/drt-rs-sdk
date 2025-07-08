@@ -1,7 +1,7 @@
 use dharitri_sc_scenario::imports::*;
 use scenario_tester::*;
 
-const ST_PATH_EXPR: DrtscPath = DrtscPath::new("drtsc:output/scenario-tester.drtsc.json");
+const ST_PATH_EXPR: DrtscPath = DrtscPath::new("output/scenario-tester.drtsc.json");
 const OWNER: TestAddress = TestAddress::new("owner");
 const SCENARIO_TESTER: TestSCAddress = TestSCAddress::new("scenario-tester");
 

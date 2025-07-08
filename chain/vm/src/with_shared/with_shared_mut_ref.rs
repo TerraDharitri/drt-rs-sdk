@@ -10,7 +10,7 @@ use std::rc::Rc;
 ///
 /// See the `Shared` type for a safer implementation, which does not require `Clone`.
 #[deprecated(
-    since = "1.18.0",
+    since = "0.57.0",
     note = "not currently used, has not been used in some time, only kept for reference"
 )]
 pub fn with_shared_mut_ref<T, F, R>(t: &mut T, f: F) -> R

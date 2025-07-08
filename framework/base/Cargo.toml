@@ -1,6 +1,6 @@
 [package]
 name = "dharitri-sc"
-version = "1.18.2"
+version = "1.19.0"
 edition = "2021"
 rust-version = "1.83"
 
@@ -24,21 +24,21 @@ managed-buffer-builder-cached = []
 dcdt-token-payment-legacy-decode = []
 
 [dependencies]
-hex-literal = "=0.4.1"
-bitflags = "=2.9.0"
+hex-literal = "1.0"
+bitflags = "2.9"
 num-traits = { version = "=0.2.19", default-features = false }
 unwrap-infallible = "0.1.5"
 generic-array = "1.2.0"
 
 [dependencies.dharitri-sc-derive]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../derive"
 
 [dependencies.dharitri-sc-codec]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../../data/codec"
 features = ["derive"]
 
 [dependencies.dharitri-chain-core]
-version = "=1.18.2"
+version = "=1.19.0"
 path = "../../chain/core"

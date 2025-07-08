@@ -31,7 +31,7 @@
 #
 # 6. Make sure that the contract upgrade tool is still sound.
 # At the very least add the new version to `VERSIONS` and change `DEFAULT_LAST_VERSION` in 
-# `/home/andreim/dharitri/rs/drt-rs-sdk/framework/meta/src/sc_upgrade/upgrade_versions.rs`+
+# `/home/andreim/terradharitri/rs/drt-rs-sdk/framework/meta/src/sc_upgrade/upgrade_versions.rs`+
 # 
 # 7. Run this script, `./publish.sh`.
 # You can comment out the crates you are not publishing. The script will stop otherwise when it cannot publish them.
@@ -69,31 +69,31 @@ cargo publish --allow-dirty || return 1
 cd ../..
 
 cd chain/core
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd chain/vm
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd sdk/core
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd sdk/http
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd sdk/dapp
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd sdk/scenario-format/
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd framework/derive
-cargo publish --allow-dirty || return 1
+cargo publish --allow-dirty  || return 1
 cd ../..
 
 cd framework/base

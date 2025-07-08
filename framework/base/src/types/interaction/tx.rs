@@ -198,7 +198,7 @@ where
 
     /// Sets a single token payment, with the token identifier and amount kept as references.
     ///
-    /// This is handy whem we only want one DCDT transfer and we want to avoid unnecessary object clones.
+    /// This is handy when we only want one DCDT transfer and we want to avoid unnecessary object clones.
     pub fn single_dcdt<'a>(
         self,
         token_identifier: &'a TokenIdentifier<Env::Api>,

@@ -14,7 +14,7 @@ struct ToolNotFound;
 /// Runs the VM executable,
 /// which reads parses and executes one or more denali tests.
 pub fn run_drt_go_scenario(absolute_path: &Path) {
-    if cfg!(not(feature = "run-go-tests")) {
+    if cfg!(not(feature = "compiled-sc-tests")) {
         return;
     }
 

@@ -96,7 +96,7 @@ impl ScenarioGoInstaller {
 
     fn parse_scenario_go_release(&self, raw_json: &str) -> ScenarioGoRelease {
         let parsed: Value = serde_json::from_str(raw_json).unwrap();
-        
+
         let tag_name = parsed
             .get("tag_name")
             .expect("tag name not found")

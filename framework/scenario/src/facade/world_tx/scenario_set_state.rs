@@ -12,7 +12,7 @@ use crate::{
     ScenarioTxEnvData, ScenarioWorld,
 };
 
-use dharitri_chain_vm::world_mock::DcdtInstanceMetadata;
+use dharitri_chain_vm::blockchain::state::DcdtInstanceMetadata;
 use dharitri_sc::{
     proxy_imports::TopEncode,
     types::{AnnotatedValue, BigUint, DcdtLocalRole, ManagedAddress},

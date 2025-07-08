@@ -9,4 +9,4 @@ pub use contract_obj_wrapper::*;
 use denali_generator::*;
 pub use tx_denali::*;
 
-pub use dharitri_chain_vm::tx_mock::{TxContextStack, TxResult, TxTokenTransfer};
+pub use dharitri_chain_vm::host::context::{TxResult, TxTokenTransfer};

@@ -5,8 +5,8 @@ use crate::scenario::model::{
 use num_traits::Zero;
 
 use dharitri_chain_vm::{
+    blockchain::state::{AccountDcdt, BlockchainState, DcdtData, DcdtInstance, DcdtInstances},
     display_util::{bytes_to_string, verbose_hex, verbose_hex_list},
-    world_mock::{AccountDcdt, BlockchainState, DcdtData, DcdtInstance, DcdtInstances},
 };
 
 use super::ScenarioVMRunner;

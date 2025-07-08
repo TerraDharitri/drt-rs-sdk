@@ -1,4 +1,4 @@
-use dharitri_chain_vm::tx_mock::TxFunctionName;
+use dharitri_chain_vm::host::context::TxFunctionName;
 use dharitri_sc::chain_core::types::ReturnCode;
 
 use crate::scenario_model::{CheckValue, U64Value};

@@ -2,7 +2,7 @@
 
 # Locally update the VM version
 
-VM_TAG="v0.0.3"
+VM_TAG="v1.5.19"
 
 echo "Before:"
 drtpy config dump

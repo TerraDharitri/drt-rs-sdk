@@ -218,7 +218,7 @@ impl<M: ManagedTypeApi> ManagedVecItem for DcdtTokenPayment<M> {
     }
 }
 
-/// The version of `DcdtTokenPayment` that contains referrences instead of owned fields.
+/// The version of `DcdtTokenPayment` that contains references instead of owned fields.
 pub struct DcdtTokenPaymentRefs<'a, M: ManagedTypeApi> {
     pub token_identifier: &'a TokenIdentifier<M>,
     pub token_nonce: u64,

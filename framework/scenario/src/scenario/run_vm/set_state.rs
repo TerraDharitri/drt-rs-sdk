@@ -1,11 +1,11 @@
 use crate::scenario::model::SetStateStep;
 
 use dharitri_chain_vm::{
-    types::VMCodeMetadata,
-    world_mock::{
+    blockchain::state::{
         AccountData, AccountDcdt, BlockInfo as CrateBlockInfo, BlockchainState, DcdtData,
         DcdtInstance, DcdtInstanceMetadata, DcdtInstances, DcdtRoles,
     },
+    types::VMCodeMetadata,
 };
 
 use super::ScenarioVMRunner;

@@ -5,16 +5,14 @@ use num_bigint::BigUint;
 
 use scenario_tester::*;
 
-const ADDER_PATH_EXPR: &str = "drtsc:output/adder.drtsc.json";
-
 const OWNER: TestAddress = TestAddress::new("owner");
-const CODE_EXPR: DrtscPath = DrtscPath::new("output/adder.drtsc.json");
+const CODE_EXPR: DrtscPath = DrtscPath::new("output/scenario-tester.drtsc.json");
 
 fn world() -> ScenarioWorld {
-    let mut blockchain = ScenarioWorld::new();
+    let mut blockchain = ScenarioWorld::new().executor_config(ExecutorConfig::full_suite());
 
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/scenario-tester");
-    blockchain.register_contract(ADDER_PATH_EXPR, scenario_tester::ContractBuilder);
+    blockchain.register_contract(CODE_EXPR, scenario_tester::ContractBuilder);
     blockchain
 }
 
