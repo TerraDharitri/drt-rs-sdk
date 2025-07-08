@@ -3,7 +3,7 @@ use crate::{framework_version, framework_versions, version::FrameworkVersion};
 /// The last version to be used for upgrades and templates.
 ///
 /// Should be edited every time a new version of the framework is released.
-pub const LAST_VERSION: FrameworkVersion = framework_version!(1.19.0);
+pub const LAST_VERSION: FrameworkVersion = framework_version!(1.18.2);
 
 /// Indicates where to stop with the upgrades.
 pub const LAST_UPGRADE_VERSION: FrameworkVersion = LAST_VERSION;
@@ -96,7 +96,7 @@ pub const VERSIONS: &[FrameworkVersion] = framework_versions![
     0.56.0,
     0.56.1,
     0.57.0,
-    0.57.1,
+    1.18.2,
     1.19.0,
 ];
 
@@ -128,7 +128,7 @@ pub const CHECK_AFTER_UPGRADE_TO: &[FrameworkVersion] = framework_versions![
     0.54.6,
     0.55.0,
     0.56.1,
-    0.57.1,
+    1.18.2,
     1.19.0,
 ];
 
