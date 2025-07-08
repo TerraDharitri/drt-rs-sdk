@@ -95,8 +95,14 @@ impl ScenarioGoInstaller {
     }
 
     fn parse_scenario_go_release(&self, raw_json: &str) -> ScenarioGoRelease {
-        let parsed: Value = serde_json::from_str(raw_json).unwrap();
+        // let parsed: Value = serde_json::from_str(raw_json).unwrap();
+         let parsed: Value = serde_json::from_str(raw_json)
+        .expect("❌ Failed to parse release JSON");
 
+        // 🛡️ Check for possible GitHub API error (rate limit, etc.)
+        if let Some(msg) = parsed.get("message") {
+            panic!("❌ GitHub API error: {}", msg);
+        }
         let tag_name = parsed
             .get("tag_name")
             .expect("tag name not found")
