@@ -29,7 +29,7 @@ version = "2.0.0"
 default-features = false
 features = ["dharitri-vm-executor-published"]
 git = "https://github.com/TerraDharitri/drt-rs-vm-executor"
-rev = "29e9f6605f27cd0b4cc597bc8ab3375d593bf989"
+rev = "f51646d2a2f9618f463a40de6658c96f7a7e6ee8"
 
 [workspace]
 members = ["."]

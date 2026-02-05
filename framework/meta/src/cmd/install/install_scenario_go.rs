@@ -17,7 +17,7 @@ const MAX_RETRIES: u64 = 5;
 const RETRY_DELAY: time::Duration = time::Duration::from_secs(2);
 const USER_AGENT: &str = "dharitri-sc-meta";
 const SCENARIO_CLI_RELEASES_BASE_URL: &str =
-    "https://api.github.com/repos/dharitri/drt-go-chain-scenario-cli/releases";
+    "https://api.github.com/repos/TerraDharitri/drt-go-chain-scenario-cli/releases";
 const CARGO_HOME: &str = env!("CARGO_HOME");
 
 #[derive(Clone, Debug)]
@@ -38,8 +38,8 @@ pub struct ScenarioGoInstaller {
 
 fn select_zip_name() -> String {
     match get_system_info() {
-        SystemInfo::Linux => "drt_scenario_go_linux_amd64.zip".to_string(),
-        SystemInfo::MacOs => "drt_scenario_go_darwin_amd64.zip".to_string(),
+        SystemInfo::Linux => "drt_go_scenario_linux_amd64.zip".to_string(),
+        SystemInfo::MacOs => "drt_go_scenario_darwin_amd64.zip".to_string(),
     }
 }
 

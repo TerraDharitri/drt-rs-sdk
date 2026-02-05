@@ -1,7 +1,7 @@
-# The DharitrI Rust Tool Set
+# The Dharitri Rust Tool Set
 
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/dharitri/drt-rs-sdk/actions.yml?branch=main)](https://github.com/TerraDharitri/drt-rs-sdk/actions/workflows/actions.yml?query=branch%3Amain) [![Dependency Status](https://deps.rs/repo/github/dharitri/drt-rs-sdk/status.svg)](https://deps.rs/repo/github/terradharitri/drt-rs-sdk) [![Contributors](https://img.shields.io/github/contributors/terradharitri/drt-rs-sdk)](https://github.com/TerraDharitri/drt-rs-sdk/graphs/contributors)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/TerraDharitri/drt-rs-sdk/actions.yml?branch=main)](https://github.com/TerraDharitri/drt-rs-sdk/actions/workflows/actions.yml?query=branch%3Amain) [![Dependency Status](https://deps.rs/repo/github/TerraDharitri/drt-rs-sdk/status.svg)](https://deps.rs/repo/github/TerraDharitri/drt-rs-sdk) [![Contributors](https://img.shields.io/github/contributors/TerraDharitri/drt-rs-sdk)](https://github.com/TerraDharitri/drt-rs-sdk/graphs/contributors)
 
 This repository contains a wide variety of tools, aimed primarily at smart contract developers.
 
