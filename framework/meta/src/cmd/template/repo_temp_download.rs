@@ -38,10 +38,9 @@ impl RepoTempDownload {
         let response = reqwest::get(self.version.url()).await?.bytes().await?;
         if response.len() < 10000 {
             panic!(
-               "Could not download artifact from {}: {}",
-                self.version.url(),
+                "Could not download artifact: {}",
                 String::from_utf8_lossy(&response)
-        );
+            );
         }
 
         let mut file = match File::create(self.zip_path()) {

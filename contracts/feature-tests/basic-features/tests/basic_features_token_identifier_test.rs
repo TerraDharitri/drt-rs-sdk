@@ -15,11 +15,11 @@ fn test_token_identifier_rewa() {
 fn test_token_identifier_is_valid() {
     let bf = basic_features::contract_obj::<StaticApi>();
     let result = bf.token_identifier_is_valid_1(RewaOrDcdtTokenIdentifier::dcdt(
-        TokenIdentifier::from(&b"ALC-6258d2"[..]),
+        DcdtTokenIdentifier::from(&b"ALC-6258d2"[..]),
     ));
     assert!(result);
     let result = bf.token_identifier_is_valid_1(RewaOrDcdtTokenIdentifier::dcdt(
-        TokenIdentifier::from(&b"AL-C6258d2"[..]),
+        DcdtTokenIdentifier::from(&b"AL-C6258d2"[..]),
     ));
     assert!(!result);
     let result = bf.token_identifier_is_valid_2(ManagedBuffer::from(&b"12345-6258d2"[..]));
@@ -30,10 +30,10 @@ fn test_token_identifier_is_valid() {
 
 #[test]
 fn test_token_identifier_compare() {
-    let token_id = TokenIdentifier::<StaticApi>::from(&b"ALC-6258d2"[..]);
+    let token_id = DcdtTokenIdentifier::<StaticApi>::from(&b"ALC-6258d2"[..]);
     let dcdt_token_id = RewaOrDcdtTokenIdentifier::dcdt(token_id.clone());
     let wrong_dcdt_token_id =
-        RewaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(&b"AAA-111111"[..]));
+        RewaOrDcdtTokenIdentifier::dcdt(DcdtTokenIdentifier::from(&b"AAA-111111"[..]));
     let rewa_token_id = RewaOrDcdtTokenIdentifier::rewa();
 
     assert!(token_id == dcdt_token_id);

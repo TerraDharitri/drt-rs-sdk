@@ -1,23 +1,18 @@
-use crate::{
-    api::CallTypeApi,
-    types::{
-        heap::H256, BigUint, CodeMetadata, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment,
-        RewaOrDcdtTokenPaymentRefs, RewaOrMultiDcdtPayment, DcdtTokenPayment, DcdtTokenPaymentRefs,
-        ManagedAddress, ManagedBuffer, ManagedOption, ManagedVec, MultiDcdtPayment,
-        TokenIdentifier,
-    },
+use crate::types::{
+    BigUint, CodeMetadata, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment,
+    RewaOrDcdtTokenPaymentRefs, RewaOrMultiDcdtPayment, DcdtTokenIdentifier, DcdtTokenPayment,
+    DcdtTokenPaymentRefs, ManagedAddress, ManagedBuffer, ManagedVec, MultiDcdtPayment, heap::H256,
 };
 
 use dharitri_sc_codec::TopEncodeMulti;
 
 use super::{
-    AnnotatedValue, Code, ContractCallBase, ContractCallNoPayment, ContractCallWithRewa,
-    ContractDeploy, DeployCall, Rewa, RewaPayment, ExplicitGas, FromSource, FunctionCall,
+    AnnotatedValue, Code, DeployCall, Rewa, RewaPayment, ExplicitGas, FromSource, FunctionCall,
     ManagedArgBuffer, OriginalResultMarker, RHList, RHListAppendNoRet, RHListAppendRet, RHListItem,
     TxCodeSource, TxCodeValue, TxData, TxDataFunctionCall, TxRewaValue, TxEnv,
     TxEnvMockDeployAddress, TxEnvWithTxHash, TxFrom, TxFromSourceValue, TxFromSpecified, TxGas,
-    TxGasValue, TxPayment, TxPaymentRewaOnly, TxProxyTrait, TxResultHandler, TxScEnv, TxTo,
-    TxToSpecified, UpgradeCall, UNSPECIFIED_GAS_LIMIT,
+    TxGasValue, TxPayment, TxPaymentRewaOnly, TxProxyTrait, TxResultHandler, TxTo, TxToSpecified,
+    UpgradeCall,
 };
 
 /// Universal representation of a blockchain transaction.
@@ -57,7 +52,7 @@ where
     Data: TxDataFunctionCall<Env>,
     RH: TxResultHandler<Env>,
 {
-    /// Converts object to a Dharitri transaction data field string.
+    /// Converts object to a DharitrI transaction data field string.
     pub fn to_call_data_string(&self) -> ManagedBuffer<Env::Api> {
         self.data.to_call_data_string()
     }
@@ -201,7 +196,7 @@ where
     /// This is handy when we only want one DCDT transfer and we want to avoid unnecessary object clones.
     pub fn single_dcdt<'a>(
         self,
-        token_identifier: &'a TokenIdentifier<Env::Api>,
+        token_identifier: &'a DcdtTokenIdentifier<Env::Api>,
         token_nonce: u64,
         amount: &'a BigUint<Env::Api>,
     ) -> Tx<Env, From, To, DcdtTokenPaymentRefs<'a, Env::Api>, Gas, Data, RH> {
@@ -565,7 +560,7 @@ where
     ///
     /// Whenever possible, use proxies instead.
     ///
-    /// Doesa not serialize, does not enforce type safety.
+    /// Does not serialize, does not enforce type safety.
     #[inline]
     pub fn arguments_raw(mut self, raw: ManagedArgBuffer<Env::Api>) -> Self {
         self.data.arg_buffer = raw;
@@ -924,84 +919,5 @@ where
     {
         self.env.set_tx_hash(H256::from(tx_hash));
         self
-    }
-}
-
-impl<Api, To, Payment, OriginalResult>
-    From<
-        Tx<
-            TxScEnv<Api>,
-            (),
-            To,
-            Payment,
-            (),
-            DeployCall<TxScEnv<Api>, ()>,
-            OriginalResultMarker<OriginalResult>,
-        >,
-    > for ContractDeploy<Api, OriginalResult>
-where
-    Api: CallTypeApi + 'static,
-    To: TxTo<TxScEnv<Api>>,
-    Payment: TxPaymentRewaOnly<TxScEnv<Api>>,
-    OriginalResult: TopEncodeMulti,
-{
-    fn from(
-        value: Tx<
-            TxScEnv<Api>,
-            (),
-            To,
-            Payment,
-            (),
-            DeployCall<TxScEnv<Api>, ()>,
-            OriginalResultMarker<OriginalResult>,
-        >,
-    ) -> Self {
-        ContractDeploy {
-            _phantom: core::marker::PhantomData,
-            to: ManagedOption::none(),
-            rewa_payment: value.payment.into_rewa_payment(&value.env),
-            explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
-            arg_buffer: value.data.arg_buffer,
-            _return_type: core::marker::PhantomData,
-        }
-    }
-}
-
-// Conversion from new syntax to old syntax.
-impl<Api, To, Payment, OriginalResult> ContractCallBase<Api>
-    for Tx<
-        TxScEnv<Api>,
-        (),
-        To,
-        Payment,
-        (),
-        FunctionCall<Api>,
-        OriginalResultMarker<OriginalResult>,
-    >
-where
-    Api: CallTypeApi + 'static,
-    To: TxToSpecified<TxScEnv<Api>>,
-    Payment: TxPayment<TxScEnv<Api>>,
-    OriginalResult: TopEncodeMulti,
-{
-    type OriginalResult = OriginalResult;
-
-    fn into_normalized(self) -> ContractCallWithRewa<Api, OriginalResult> {
-        self.payment.with_normalized(
-            &self.env,
-            &self.from,
-            self.to,
-            self.data,
-            |norm_to, norm_rewa, norm_fc| ContractCallWithRewa {
-                basic: ContractCallNoPayment {
-                    _phantom: core::marker::PhantomData,
-                    to: norm_to.clone(),
-                    function_call: norm_fc.clone(),
-                    explicit_gas_limit: UNSPECIFIED_GAS_LIMIT,
-                    _return_type: core::marker::PhantomData,
-                },
-                rewa_payment: norm_rewa.clone(),
-            },
-        )
     }
 }

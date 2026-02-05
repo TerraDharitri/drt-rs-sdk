@@ -9,7 +9,11 @@ pub mod dcdt_features;
 #[dharitri_sc::contract]
 pub trait BuiltinFuncFeatures: dcdt_features::DcdtFeaturesModule {
     #[init]
-    fn init(&self, fungible_token_id: TokenIdentifier, non_fungible_token_id: TokenIdentifier) {
+    fn init(
+        &self,
+        fungible_token_id: DcdtTokenIdentifier,
+        non_fungible_token_id: DcdtTokenIdentifier,
+    ) {
         self.fungible_dcdt_token_id()
             .set_token_id(fungible_token_id);
         self.non_fungible_dcdt_token_id()

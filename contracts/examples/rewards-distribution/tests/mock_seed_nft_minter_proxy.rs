@@ -35,7 +35,7 @@ where
     Gas: TxGas<Env>,
 {
     pub fn init<
-        Arg0: ProxyArg<TokenIdentifier<Env::Api>>,
+        Arg0: ProxyArg<DcdtTokenIdentifier<Env::Api>>,
     >(
         self,
         nft_token_id: Arg0,

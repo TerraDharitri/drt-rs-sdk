@@ -20,7 +20,7 @@ pub trait PayableFeatures {
         initial_supply: BigUint,
         _num_decimals: usize,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> TokenIdentifier {
+    ) -> DcdtTokenIdentifier {
         let new_token_id = self.create_new_token_id(token_ticker);
         require!(new_token_id.is_valid_dcdt_identifier(), "Invalid token ID");
 
@@ -43,7 +43,7 @@ pub trait PayableFeatures {
         _token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> TokenIdentifier {
+    ) -> DcdtTokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
@@ -54,7 +54,7 @@ pub trait PayableFeatures {
         _token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> TokenIdentifier {
+    ) -> DcdtTokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
@@ -66,14 +66,14 @@ pub trait PayableFeatures {
         token_ticker: ManagedBuffer,
         _num_decimals: usize,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> TokenIdentifier {
+    ) -> DcdtTokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
     #[endpoint(setSpecialRole)]
     fn set_special_roles(
         &self,
-        _token_id: TokenIdentifier,
+        _token_id: DcdtTokenIdentifier,
         _address: ManagedAddress,
         _roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
@@ -87,11 +87,11 @@ pub trait PayableFeatures {
         token_ticker: ManagedBuffer,
         _token_type_name: ManagedBuffer,
         _num_decimals: usize,
-    ) -> TokenIdentifier {
+    ) -> DcdtTokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
-    fn create_new_token_id(&self, token_ticker: ManagedBuffer) -> TokenIdentifier {
+    fn create_new_token_id(&self, token_ticker: ManagedBuffer) -> DcdtTokenIdentifier {
         let nr_issued_tokens = self.nr_issued_tokens().get();
         let mut rand_chars = [ZERO_ASCII; RAND_CHARS_LEN];
         for c in &mut rand_chars {

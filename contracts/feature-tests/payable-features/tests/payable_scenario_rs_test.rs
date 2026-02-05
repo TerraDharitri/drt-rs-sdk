@@ -12,13 +12,18 @@ fn world() -> ScenarioWorld {
 }
 
 #[test]
-fn call_value_check_rs() {
-    world().run("scenarios/call-value-check.scen.json");
+fn payable_all_1_rs() {
+    world().run("scenarios/payable_all_1.scen.json");
 }
 
 #[test]
-fn call_value_check_multi_rewa_rs() {
-    world().run("scenarios/call-value-check-multi-rewa.scen.json");
+fn payable_all_2_rs() {
+    world().run("scenarios/payable_all_2.scen.json");
+}
+
+#[test]
+fn payable_all_3_rs() {
+    world().run("scenarios/payable_all_3.scen.json");
 }
 
 #[test]
@@ -52,6 +57,26 @@ fn payable_any_4_rs() {
 }
 
 #[test]
+fn payable_any_5_rs() {
+    world().run("scenarios/payable_any_5.scen.json");
+}
+
+#[test]
+fn payable_array_rs() {
+    world().run("scenarios/payable_array.scen.json");
+}
+
+#[test]
+fn payable_array_rewa_or_dcdt_rs() {
+    world().run("scenarios/payable_array_rewa_or_dcdt.scen.json");
+}
+
+#[test]
+fn payable_array_dcdt_rs() {
+    world().run("scenarios/payable_array_dcdt.scen.json");
+}
+
+#[test]
 fn payable_rewa_1_rs() {
     world().run("scenarios/payable_rewa_1.scen.json");
 }
@@ -72,13 +97,13 @@ fn payable_rewa_4_rs() {
 }
 
 #[test]
-fn payable_multi_array_rs() {
-    world().run("scenarios/payable_multi_array.scen.json");
+fn payable_rewa_5_rs() {
+    world().run("scenarios/payable_rewa_5.scen.json");
 }
 
 #[test]
-fn payable_multi_array_rewa_rs() {
-    world().run("scenarios/payable_multi_array_rewa.scen.json");
+fn payable_legacy_rewa_dcdt_rs() {
+    world().run("scenarios/payable_legacy_rewa_dcdt.scen.json");
 }
 
 #[test]

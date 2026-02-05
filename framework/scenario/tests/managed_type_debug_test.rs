@@ -1,8 +1,8 @@
 use dharitri_sc::{
     hex_literal::hex,
     types::{
-        BigInt, BigUint, RewaOrDcdtTokenIdentifier, ManagedAddress, ManagedBuffer,
-        ManagedByteArray, ManagedVec, TokenIdentifier,
+        BigInt, BigUint, RewaOrDcdtTokenIdentifier, DcdtTokenIdentifier, ManagedAddress,
+        ManagedBuffer, ManagedByteArray, ManagedVec,
     },
 };
 use dharitri_sc_scenario::api::StaticApi;
@@ -44,19 +44,22 @@ fn test_managed_byte_array() {
 
 #[test]
 fn test_managed_address() {
-    let addr = hex!("233300000000000000000000000000000002333000000000000000000002ffff");
+    let addr = hex!("000000000000000000010000000000000000000000000000000000000002ffff");
     let s = format!("{:?}", ManagedAddress::<StaticApi>::from(&addr));
-    assert_eq!("ManagedAddress { handle: -200, hex-value: \"233300000000000000000000000000000002333000000000000000000002ffff\" }", s);
+    assert_eq!(
+        "ManagedAddress { handle: -200, hex-value: \"000000000000000000010000000000000000000000000000000000000002ffff\" }",
+        s
+    );
 }
 
 #[test]
 fn test_managed_address_pretty() {
-    let addr = hex!("233300000000000000000000000000000002333000000000000000000002ffff");
+    let addr = hex!("000000000000000000010000000000000000000000000000000000000002ffff");
     let s = format!("{:#?}", ManagedAddress::<StaticApi>::from(&addr));
     assert_eq!(
         "ManagedAddress {
     handle: -200,
-    hex-value: \"233300000000000000000000000000000002333000000000000000000002ffff\",
+    hex-value: \"000000000000000000010000000000000000000000000000000000000002ffff\",
 }",
         s
     );
@@ -68,14 +71,17 @@ fn test_managed_vec_format_biguint() {
     mv.push(BigUint::from(1u32));
     mv.push(BigUint::from(2u32));
     let s = format!("{:?}", &mv);
-    assert_eq!("[BigUint { handle: -201, hex-value-be: \"01\" }, BigUint { handle: -202, hex-value-be: \"02\" }]", s);
+    assert_eq!(
+        "[BigUint { handle: -201, hex-value-be: \"01\" }, BigUint { handle: -202, hex-value-be: \"02\" }]",
+        s
+    );
 }
 
 #[test]
 fn test_managed_vec_format_rewa_or_dcdt() {
     let mut mv = ManagedVec::<StaticApi, RewaOrDcdtTokenIdentifier<StaticApi>>::new();
     mv.push(RewaOrDcdtTokenIdentifier::rewa());
-    mv.push(RewaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(
+    mv.push(RewaOrDcdtTokenIdentifier::dcdt(DcdtTokenIdentifier::from(
         "MYTOKEN-5678",
     )));
     let s = format!("{:?}", &mv);

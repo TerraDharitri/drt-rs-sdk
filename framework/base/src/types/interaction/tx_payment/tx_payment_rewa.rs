@@ -1,7 +1,12 @@
+use dharitri_sc_codec::Empty;
+
 use crate::{
-    contract_base::SendRawWrapper,
+    api::quick_signal_error,
+    contract_base::{SendRawWrapper, TransferExecuteFailed},
+    err_msg,
     types::{
-        AnnotatedValue, BigUint, ManagedAddress, ManagedBuffer, ManagedVec, TxFrom, TxToSpecified,
+        AnnotatedValue, BigUint, RewaOrDcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec,
+        TxFrom, TxToSpecified,
     },
 };
 
@@ -30,7 +35,47 @@ where
         self.0.with_value_ref(env, |rewa_value| rewa_value == &0u32)
     }
 
-    fn perform_transfer_execute(
+    fn perform_transfer_execute_fallible(
+        self,
+        env: &Env,
+        to: &ManagedAddress<Env::Api>,
+        gas_limit: u64,
+        fc: FunctionCall<Env::Api>,
+    ) -> Result<(), TransferExecuteFailed> {
+        self.0.with_value_ref(env, |rewa_value| {
+            if rewa_value == &0u64 {
+                quick_signal_error::<Env::Api>(err_msg::TRANSFER_EXECUTE_REQUIRES_PAYMENT)
+            } else {
+                // TODO: can probably be further optimized
+                let mut payments = ManagedVec::new();
+                payments.push(RewaOrDcdtTokenPayment::rewa_payment(rewa_value.clone()));
+                SendRawWrapper::<Env::Api>::new().multi_rewa_or_dcdt_transfer_execute_fallible(
+                    to,
+                    &payments,
+                    gas_limit,
+                    &fc.function_name,
+                    &fc.arg_buffer,
+                )
+            }
+        })
+    }
+
+    fn perform_transfer_fallible(
+        self,
+        env: &Env,
+        to: &ManagedAddress<Env::Api>,
+    ) -> Result<(), TransferExecuteFailed> {
+        self.0.with_value_ref(env, |rewa_value| {
+            if rewa_value == &0u64 {
+                quick_signal_error::<Env::Api>(err_msg::TRANSFER_EXECUTE_REQUIRES_PAYMENT)
+            } else {
+                SendRawWrapper::<Env::Api>::new().direct_rewa(to, rewa_value, Empty);
+            }
+        });
+        Ok(())
+    }
+
+    fn perform_transfer_execute_legacy(
         self,
         env: &Env,
         to: &ManagedAddress<Env::Api>,
@@ -38,14 +83,14 @@ where
         fc: FunctionCall<Env::Api>,
     ) {
         self.0.with_value_ref(env, |rewa_value| {
-            let _ = SendRawWrapper::<Env::Api>::new().direct_rewa_execute(
+            SendRawWrapper::<Env::Api>::new().direct_rewa_execute(
                 to,
                 rewa_value,
                 gas_limit,
                 &fc.function_name,
                 &fc.arg_buffer,
             );
-        })
+        });
     }
 
     #[inline]

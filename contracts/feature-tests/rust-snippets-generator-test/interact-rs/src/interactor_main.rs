@@ -89,8 +89,7 @@ impl State {
             )
             .await;
 
-        let new_address_bech32 = bech32::encode(&new_address);
-        println!("new address: {new_address_bech32}");
+        println!("new address: {}", new_address.to_bech32_default());
     }
 
     async fn no_arg_no_result_endpoint(&mut self) {
@@ -158,7 +157,7 @@ impl State {
     }
 
     async fn multi_result(&mut self) {
-        let _arg = TokenIdentifier::from_dcdt_bytes(&b""[..]);
+        let _arg = DcdtTokenIdentifier::from_dcdt_bytes(&b""[..]);
 
         let response: TypedResponse<MultiValueVec<BigUint<StaticApi>>> = self
             .interactor
@@ -175,7 +174,7 @@ impl State {
     }
 
     async fn nested_result(&mut self) {
-        let _arg = TokenIdentifier::from_dcdt_bytes(&b""[..]);
+        let _arg = DcdtTokenIdentifier::from_dcdt_bytes(&b""[..]);
 
         let response: TypedResponse<
             ManagedVec<StaticApi, ManagedVec<StaticApi, BigUint<StaticApi>>>,
@@ -213,7 +212,7 @@ impl State {
     async fn optional_type(&mut self) {
         let _arg = OptionalValue::Some(BigUint::<StaticApi>::from(0u128));
 
-        let response: TypedResponse<OptionalValue<TokenIdentifier<StaticApi>>> = self
+        let response: TypedResponse<OptionalValue<DcdtTokenIdentifier<StaticApi>>> = self
             .interactor
             .sc_call_use_result(
                 ScCallStep::new()
@@ -229,7 +228,7 @@ impl State {
 
     async fn option_type(&mut self) {
         let _arg = Option::Some(ManagedVec::from_single_item(
-            TokenIdentifier::from_dcdt_bytes(&b""[..]),
+            DcdtTokenIdentifier::from_dcdt_bytes(&b""[..]),
         ));
 
         let response: TypedResponse<Option<u64>> = self
@@ -248,7 +247,7 @@ impl State {
 
     async fn dcdt_token_payment(&mut self) {
         let _arg = OptionalValue::Some(DcdtTokenPayment::new(
-            TokenIdentifier::from_dcdt_bytes(&b""[..]),
+            DcdtTokenIdentifier::from_dcdt_bytes(&b""[..]),
             0u64,
             BigUint::from(0u128),
         ));
@@ -350,7 +349,7 @@ impl State {
                 u64,
                 BigUint<StaticApi>,
                 MyCoolStruct<StaticApi>,
-                TokenIdentifier<StaticApi>,
+                DcdtTokenIdentifier<StaticApi>,
             >,
         > = self
             .interactor
@@ -368,13 +367,13 @@ impl State {
 
     async fn complex_multi_values(&mut self) {
         let arg = MultiValueVec::from(vec![MultiValue3::from((
-            TokenIdentifier::from_dcdt_bytes(&b""[..]),
+            DcdtTokenIdentifier::from_dcdt_bytes(&b""[..]),
             0u64,
             BigUint::<StaticApi>::from(0u128),
         ))]);
 
         let response: TypedResponse<
-            MultiValueVec<MultiValue3<TokenIdentifier<StaticApi>, u64, BigUint<StaticApi>>>,
+            MultiValueVec<MultiValue3<DcdtTokenIdentifier<StaticApi>, u64, BigUint<StaticApi>>>,
         > = self
             .interactor
             .sc_call_use_result(

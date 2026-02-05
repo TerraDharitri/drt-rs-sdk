@@ -1,4 +1,4 @@
-use dharitri_sdk_http::{GatewayHttpProxy, DEVNET_GATEWAY};
+use dharitri_sdk_http::{DEVNET_GATEWAY, GatewayHttpProxy};
 
 #[tokio::main]
 async fn main() {

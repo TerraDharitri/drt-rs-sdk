@@ -12,7 +12,7 @@ use dharitri_sc_modules::default_issue_callbacks;
 #[type_abi]
 #[derive(TopEncode, TopDecode)]
 pub struct ExampleAttributes {
-    pub creation_timestamp: u64,
+    pub creation_timestamp: TimestampMillis,
 }
 
 #[dharitri_sc::contract]
@@ -40,7 +40,7 @@ pub trait SeedNftMinter:
         royalties: BigUint,
         uri: ManagedBuffer,
         selling_price: BigUint,
-        opt_token_used_as_payment: OptionalValue<TokenIdentifier>,
+        opt_token_used_as_payment: OptionalValue<DcdtTokenIdentifier>,
         opt_token_used_as_payment_nonce: OptionalValue<u64>,
     ) {
         let token_used_as_payment = match opt_token_used_as_payment {
@@ -62,7 +62,7 @@ pub trait SeedNftMinter:
         };
 
         let attributes = ExampleAttributes {
-            creation_timestamp: self.blockchain().get_block_timestamp(),
+            creation_timestamp: self.blockchain().get_block_timestamp_millis(),
         };
         let nft_nonce = self.create_nft_with_attributes(
             name,

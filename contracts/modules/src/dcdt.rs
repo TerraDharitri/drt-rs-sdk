@@ -54,11 +54,11 @@ pub trait DcdtModule {
     }
 
     #[callback]
-    fn issue_callback(&self, #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>) {
+    fn issue_callback(&self, #[call_result] result: ManagedAsyncCallResult<DcdtTokenIdentifier>) {
         match result {
             ManagedAsyncCallResult::Ok(token_id) => {
                 self.token_id().set(&token_id);
-            },
+            }
             ManagedAsyncCallResult::Err(_) => {
                 // return payment to initial caller
                 let initial_caller = self.blockchain().get_owner_address();
@@ -67,7 +67,7 @@ pub trait DcdtModule {
                     .to(&initial_caller)
                     .rewa(rewa_returned)
                     .transfer_if_not_empty();
-            },
+            }
         }
     }
 
@@ -115,5 +115,5 @@ pub trait DcdtModule {
 
     // Note: to issue another token, you have to clear this storage
     #[storage_mapper("token_id")]
-    fn token_id(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn token_id(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
 }

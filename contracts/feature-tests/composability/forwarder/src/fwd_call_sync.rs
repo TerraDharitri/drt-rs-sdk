@@ -61,7 +61,7 @@ pub trait ForwarderSyncCallModule {
     #[endpoint]
     #[payable("*")]
     fn forward_sync_accept_funds(&self, to: ManagedAddress) {
-        let payment = self.call_value().rewa_or_single_dcdt();
+        let payment = self.call_value().all();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         let result = self
@@ -87,7 +87,7 @@ pub trait ForwarderSyncCallModule {
             .to(&to)
             .gas(half_gas)
             .typed(vault_proxy::VaultProxy)
-            .retrieve_funds_rewa_or_single_dcdt()
+            .retrieve_received_funds_immediately()
             .rewa(payment)
             .returns(ReturnsBackTransfersREWA)
             .sync_call()
@@ -107,7 +107,7 @@ pub trait ForwarderSyncCallModule {
             .to(&to)
             .gas(half_gas)
             .typed(vault_proxy::VaultProxy)
-            .retrieve_funds_rewa_or_single_dcdt()
+            .retrieve_received_funds_immediately()
             .single_dcdt(
                 &payment.token_identifier,
                 payment.token_nonce,
@@ -119,37 +119,42 @@ pub trait ForwarderSyncCallModule {
         result
     }
 
+    #[allow(deprecated)]
     #[endpoint]
     #[payable("*")]
     fn forward_sync_accept_funds_rh_multi_dcdt(
         &self,
         to: ManagedAddress,
     ) -> ManagedVec<Self::Api, DcdtTokenPayment<Self::Api>> {
-        let payment = self.call_value().all_dcdt_transfers().clone();
+        let payment = self.call_value().all();
         let half_gas = self.blockchain().get_gas_left() / 2;
 
         self.tx()
             .to(&to)
             .gas(half_gas)
             .typed(vault_proxy::VaultProxy)
-            .retrieve_funds_multi_dcdt()
-            .multi_dcdt(payment)
-            .returns(ReturnsBackTransfersMultiDCDT)
+            .retrieve_received_funds_immediately()
+            .payment(payment)
+            .returns(ReturnsBackTransfersLegacyMultiDCDT)
             .sync_call()
     }
 
     #[payable("*")]
     #[endpoint]
-    fn forward_sync_accept_funds_with_fees(&self, to: ManagedAddress, percentage_fees: BigUint) {
-        let (token_id, payment) = self.call_value().rewa_or_single_fungible_dcdt();
-        let fees = &payment * &percentage_fees / PERCENTAGE_TOTAL;
-        let amount_to_send = payment - fees;
+    fn forward_sync_accept_funds_with_fees(&self, to: ManagedAddress, percentage_fees: u32) {
+        let payment = self.call_value().single();
+        let fees = &payment.amount * percentage_fees / PERCENTAGE_TOTAL;
+        let amount_to_send = &payment.amount - fees;
 
         self.tx()
             .to(&to)
             .typed(vault_proxy::VaultProxy)
             .accept_funds()
-            .rewa_or_single_dcdt(&token_id, 0u64, &amount_to_send)
+            .payment(PaymentRefs::new(
+                &payment.token_identifier,
+                payment.token_nonce,
+                &amount_to_send,
+            ))
             .returns(ReturnsResult)
             .sync_call();
     }
@@ -157,13 +162,13 @@ pub trait ForwarderSyncCallModule {
     #[event("accept_funds_sync_result")]
     fn accept_funds_sync_result_event(
         &self,
-        #[indexed] multi_dcdt: &MultiValueEncoded<RewaOrDcdtTokenPaymentMultiValue>,
+        #[indexed] multi_dcdt: &MultiValueEncoded<PaymentMultiValue>,
     );
 
     #[endpoint]
     #[payable("*")]
     fn forward_sync_accept_funds_then_read(&self, to: ManagedAddress) -> usize {
-        let payment = self.call_value().rewa_or_single_dcdt();
+        let payment = self.call_value().all();
         self.tx()
             .to(&to)
             .typed(vault_proxy::VaultProxy)
@@ -199,7 +204,7 @@ pub trait ForwarderSyncCallModule {
     fn forward_sync_retrieve_funds_with_accept_func(
         &self,
         to: ManagedAddress,
-        token: TokenIdentifier,
+        token: DcdtTokenIdentifier,
         amount: BigUint,
     ) {
         let payments = self.call_value().all_dcdt_transfers();
@@ -224,21 +229,13 @@ pub trait ForwarderSyncCallModule {
     fn forward_sync_accept_funds_multi_transfer(
         &self,
         to: ManagedAddress,
-        token_payments: MultiValueEncoded<MultiValue3<RewaOrDcdtTokenIdentifier, u64, BigUint>>,
+        payment_args: MultiValueEncoded<MultiValue3<RewaOrDcdtTokenIdentifier, u64, BigUint>>,
     ) {
-        let mut all_token_payments = ManagedVec::new();
-
-        for multi_arg in token_payments.into_iter() {
-            let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
-            let payment = RewaOrDcdtTokenPayment::new(token_identifier, token_nonce, amount);
-            all_token_payments.push(payment);
-        }
-
         self.tx()
             .to(&to)
             .typed(vault_proxy::VaultProxy)
             .accept_funds()
-            .payment(all_token_payments)
+            .payment(payment_args.convert_payment_multi_triples())
             .sync_call();
     }
 }

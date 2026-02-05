@@ -58,7 +58,7 @@ impl InterpretableFrom<DcdtRaw> for Dcdt {
         match from {
             DcdtRaw::Short(short_dcdt) => {
                 Dcdt::Short(BigUintValue::interpret_from(short_dcdt, context))
-            },
+            }
             DcdtRaw::Full(full_dcdt) => Dcdt::Full(DcdtObject {
                 token_identifier: full_dcdt
                     .token_identifier

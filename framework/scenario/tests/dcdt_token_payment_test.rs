@@ -1,6 +1,6 @@
 use dharitri_sc::{
     codec::{self, DefaultErrorHandler, TopEncode},
-    types::{BigUint, DcdtTokenPayment, TokenIdentifier},
+    types::{BigUint, DcdtTokenIdentifier, DcdtTokenPayment},
 };
 use dharitri_sc_scenario::api::StaticApi;
 
@@ -42,7 +42,7 @@ where
 #[test]
 fn dcdt_token_payment_backwards_compatibility_decode() {
     let token_payment = DcdtTokenPayment::<StaticApi>::new(
-        TokenIdentifier::from("MYTOKEN-12345"),
+        DcdtTokenIdentifier::from("MYTOKEN-12345"),
         0u64,
         BigUint::from(42u64),
     );

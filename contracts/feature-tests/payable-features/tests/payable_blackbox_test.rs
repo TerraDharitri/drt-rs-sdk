@@ -43,7 +43,7 @@ fn payable_multi_legacy() {
         .from(USER)
         .to(PAYABLE_FEATURES_ADDRESS)
         .typed(payable_features_proxy::PayableFeaturesProxy)
-        .echo_call_value_legacy()
+        .payable_legacy_rewa_dcdt()
         .dcdt(TestDcdtTransfer(TOKEN_1, 0, 100))
         .dcdt(TestDcdtTransfer(TOKEN_2, 0, 400))
         .returns(ReturnsResultUnmanaged)

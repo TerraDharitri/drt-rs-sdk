@@ -43,12 +43,12 @@ pub trait PayableFeatures {
     }
 
     #[endpoint]
-    fn multi_result(&self, _arg: TokenIdentifier) -> MultiValueEncoded<BigUint> {
+    fn multi_result(&self, _arg: DcdtTokenIdentifier) -> MultiValueEncoded<BigUint> {
         MultiValueEncoded::new()
     }
 
     #[endpoint]
-    fn nested_result(&self, _arg: TokenIdentifier) -> ManagedVec<ManagedVec<BigUint>> {
+    fn nested_result(&self, _arg: DcdtTokenIdentifier) -> ManagedVec<ManagedVec<BigUint>> {
         ManagedVec::new()
     }
 
@@ -60,19 +60,19 @@ pub trait PayableFeatures {
     }
 
     #[endpoint]
-    fn optional_type(&self, _arg: OptionalValue<BigUint>) -> OptionalValue<TokenIdentifier> {
+    fn optional_type(&self, _arg: OptionalValue<BigUint>) -> OptionalValue<DcdtTokenIdentifier> {
         OptionalValue::None
     }
 
     #[endpoint]
-    fn option_type(&self, _arg: Option<ManagedVec<TokenIdentifier>>) -> Option<u64> {
+    fn option_type(&self, _arg: Option<ManagedVec<DcdtTokenIdentifier>>) -> Option<u64> {
         None
     }
 
     #[endpoint]
     fn dcdt_token_payment(&self, _arg: OptionalValue<DcdtTokenPayment>) -> DcdtTokenPayment {
         DcdtTokenPayment::new(
-            TokenIdentifier::from_dcdt_bytes(b"COOL-123456"),
+            DcdtTokenIdentifier::from_dcdt_bytes(b"COOL-123456"),
             0,
             BigUint::from(1_000u64),
         )
@@ -103,16 +103,16 @@ pub trait PayableFeatures {
     #[endpoint]
     fn multi_value_4(
         &self,
-        arg: MultiValue4<u64, BigUint, MyCoolStruct<Self::Api>, TokenIdentifier>,
-    ) -> MultiValue4<u64, BigUint, MyCoolStruct<Self::Api>, TokenIdentifier> {
+        arg: MultiValue4<u64, BigUint, MyCoolStruct<Self::Api>, DcdtTokenIdentifier>,
+    ) -> MultiValue4<u64, BigUint, MyCoolStruct<Self::Api>, DcdtTokenIdentifier> {
         arg
     }
 
     #[endpoint]
     fn complex_multi_values(
         &self,
-        arg: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
-    ) -> MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>> {
+        arg: MultiValueEncoded<MultiValue3<DcdtTokenIdentifier, u64, BigUint>>,
+    ) -> MultiValueEncoded<MultiValue3<DcdtTokenIdentifier, u64, BigUint>> {
         arg
     }
 }

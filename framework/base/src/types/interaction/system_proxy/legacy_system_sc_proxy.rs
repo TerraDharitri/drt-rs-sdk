@@ -6,7 +6,7 @@ use crate::{
     api::{CallTypeApi, SendApi},
     types::{
         BigUint, ContractCall, ContractCallNoPayment, ContractCallWithRewa, DCDTSystemSCAddress,
-        DcdtLocalRole, DcdtTokenType, ManagedAddress, ManagedBuffer, TokenIdentifier,
+        DcdtLocalRole, DcdtTokenIdentifier, DcdtTokenType, ManagedAddress, ManagedBuffer,
     },
 };
 
@@ -156,7 +156,7 @@ where
         let zero = BigUint::zero();
         self.issue(
             issue_cost,
-            DcdtTokenType::Meta,
+            DcdtTokenType::MetaFungible,
             token_display_name,
             token_ticker,
             &zero,
@@ -187,21 +187,24 @@ where
 
         let token_type_name = match token_type {
             DcdtTokenType::Fungible => "FNG",
-            DcdtTokenType::NonFungible | DcdtTokenType::DynamicNFT => "NFT",
+            DcdtTokenType::NonFungible
+            | DcdtTokenType::NonFungibleV2
+            | DcdtTokenType::DynamicNFT => "NFT",
             DcdtTokenType::SemiFungible | DcdtTokenType::DynamicSFT => "SFT",
-            DcdtTokenType::Meta | DcdtTokenType::DynamicMeta => "META",
+            DcdtTokenType::MetaFungible | DcdtTokenType::DynamicMeta => "META",
             DcdtTokenType::Invalid => "",
         };
 
         let endpoint = match token_type {
             DcdtTokenType::Fungible
             | DcdtTokenType::NonFungible
+            | DcdtTokenType::NonFungibleV2
             | DcdtTokenType::SemiFungible
-            | DcdtTokenType::Meta => ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME,
+            | DcdtTokenType::MetaFungible => ISSUE_AND_SET_ALL_ROLES_ENDPOINT_NAME,
 
             DcdtTokenType::DynamicNFT | DcdtTokenType::DynamicSFT | DcdtTokenType::DynamicMeta => {
                 REGISTER_AND_SET_ALL_ROLES_DYNAMIC_DCDT_ENDPOINT_NAME
-            },
+            }
 
             DcdtTokenType::Invalid => "",
         };
@@ -233,7 +236,7 @@ where
         let endpoint_name = match token_type {
             DcdtTokenType::DynamicNFT | DcdtTokenType::DynamicSFT | DcdtTokenType::DynamicMeta => {
                 REGISTER_DYNAMIC_DCDT_ENDPOINT_NAME
-            },
+            }
             _ => "",
         };
 
@@ -274,7 +277,7 @@ where
             DcdtTokenType::Fungible => ISSUE_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::NonFungible => ISSUE_NON_FUNGIBLE_ENDPOINT_NAME,
             DcdtTokenType::SemiFungible => ISSUE_SEMI_FUNGIBLE_ENDPOINT_NAME,
-            DcdtTokenType::Meta => REGISTER_META_DCDT_ENDPOINT_NAME,
+            DcdtTokenType::MetaFungible => REGISTER_META_DCDT_ENDPOINT_NAME,
             _ => "",
         };
 
@@ -287,7 +290,7 @@ where
         if token_type == DcdtTokenType::Fungible {
             contract_call.proxy_arg(initial_supply);
             contract_call.proxy_arg(&properties.num_decimals);
-        } else if token_type == DcdtTokenType::Meta {
+        } else if token_type == DcdtTokenType::MetaFungible {
             contract_call.proxy_arg(&properties.num_decimals);
         }
 
@@ -318,7 +321,7 @@ where
     /// It will fail if the SC is not the owner of the token.
     pub fn mint(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         amount: &BigUint<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("mint")
@@ -330,7 +333,7 @@ where
     /// which causes it to burn fungible DCDT tokens owned by the SC.
     pub fn burn(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         amount: &BigUint<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("DCDTBurn")
@@ -340,13 +343,19 @@ where
 
     /// The manager of an DCDT token may choose to suspend all transactions of the token,
     /// except minting, freezing/unfreezing and wiping.
-    pub fn pause(self, token_identifier: &TokenIdentifier<SA>) -> ContractCallNoPayment<SA, ()> {
+    pub fn pause(
+        self,
+        token_identifier: &DcdtTokenIdentifier<SA>,
+    ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("pause")
             .argument(token_identifier)
     }
 
     /// The reverse operation of `pause`.
-    pub fn unpause(self, token_identifier: &TokenIdentifier<SA>) -> ContractCallNoPayment<SA, ()> {
+    pub fn unpause(
+        self,
+        token_identifier: &DcdtTokenIdentifier<SA>,
+    ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("unPause")
             .argument(token_identifier)
     }
@@ -356,7 +365,7 @@ where
     /// Freezing and unfreezing the tokens of an account are operations designed to help token managers to comply with regulations.
     pub fn freeze(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         address: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("freeze")
@@ -367,7 +376,7 @@ where
     /// The reverse operation of `freeze`, unfreezing, will allow further transfers to and from the account.
     pub fn unfreeze(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         address: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("unFreeze")
@@ -381,7 +390,7 @@ where
     /// Wiping the tokens of an account is an operation designed to help token managers to comply with regulations.
     pub fn wipe(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         address: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("wipe")
@@ -394,7 +403,7 @@ where
     /// Freezing and unfreezing a single NFT of an Account are operations designed to help token managers to comply with regulations.
     pub fn freeze_nft(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         nft_nonce: u64,
         address: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
@@ -407,7 +416,7 @@ where
     /// The reverse operation of `freeze`, unfreezing, will allow further transfers to and from the account.
     pub fn unfreeze_nft(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         nft_nonce: u64,
         address: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
@@ -423,7 +432,7 @@ where
     /// Wiping the tokens of an Account is an operation designed to help token managers to comply with regulations.
     pub fn wipe_nft(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         nft_nonce: u64,
         address: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
@@ -437,7 +446,7 @@ where
     /// This function as almost all in case of DCDT can be called only by the owner.
     pub fn change_sft_to_meta_dcdt(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         num_decimals: usize,
     ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("changeSFTToMetaDCDT")
@@ -452,7 +461,7 @@ where
     pub fn set_special_roles<RoleIter: Iterator<Item = DcdtLocalRole>>(
         self,
         address: &ManagedAddress<SA>,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         roles_iter: RoleIter,
     ) -> ContractCallNoPayment<SA, ()> {
         let mut contract_call = self
@@ -475,7 +484,7 @@ where
     pub fn unset_special_roles<RoleIter: Iterator<Item = DcdtLocalRole>>(
         self,
         address: &ManagedAddress<SA>,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         roles_iter: RoleIter,
     ) -> ContractCallNoPayment<SA, ()> {
         let mut contract_call = self
@@ -493,7 +502,7 @@ where
 
     pub fn transfer_ownership(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         new_owner: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
         self.dcdt_system_sc_call_no_args("transferOwnership")
@@ -503,7 +512,7 @@ where
 
     pub fn transfer_nft_create_role(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         old_creator: &ManagedAddress<SA>,
         new_creator: &ManagedAddress<SA>,
     ) -> ContractCallNoPayment<SA, ()> {
@@ -515,7 +524,7 @@ where
 
     pub fn control_changes(
         self,
-        token_identifier: &TokenIdentifier<SA>,
+        token_identifier: &DcdtTokenIdentifier<SA>,
         property_arguments: &TokenPropertyArguments,
     ) -> ContractCallNoPayment<SA, ()> {
         let mut contract_call = self
@@ -542,11 +551,7 @@ const TRUE_STR: &str = "true";
 const FALSE_STR: &str = "false";
 
 fn bool_name_bytes(b: bool) -> &'static str {
-    if b {
-        TRUE_STR
-    } else {
-        FALSE_STR
-    }
+    if b { TRUE_STR } else { FALSE_STR }
 }
 
 fn set_token_property<SA, CC>(contract_call: &mut CC, name: &str, value: bool)

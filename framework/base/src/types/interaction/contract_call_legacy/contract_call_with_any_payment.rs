@@ -6,8 +6,8 @@ use crate::{
 };
 
 use super::{
-    contract_call_no_payment::ContractCallNoPayment, contract_call_trait::ContractCallBase,
-    ContractCall, ContractCallWithRewa,
+    ContractCall, ContractCallWithRewa, contract_call_no_payment::ContractCallNoPayment,
+    contract_call_trait::ContractCallBase,
 };
 
 /// Holds data for calling another contract, with any type of payment: none, REWA, Multi-DCDT.
@@ -58,10 +58,10 @@ where
         match self.payment {
             RewaOrMultiDcdtPayment::Rewa(rewa_amount) => {
                 self.basic.transfer_execute_rewa(rewa_amount);
-            },
+            }
             RewaOrMultiDcdtPayment::MultiDcdt(multi_dcdt_payment) => {
                 self.basic.transfer_execute_dcdt(multi_dcdt_payment);
-            },
+            }
         }
     }
 }

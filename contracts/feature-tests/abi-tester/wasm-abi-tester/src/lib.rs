@@ -6,9 +6,9 @@
 
 // Init:                                 1
 // Upgrade:                              1
-// Endpoints:                           31
+// Endpoints:                           32
 // Async Callback (empty):               1
-// Total number of exported functions:  34
+// Total number of exported functions:  35
 
 #![no_std]
 
@@ -35,6 +35,7 @@ dharitri_sc_wasm_adapter::endpoints! {
         dcdt_local_role => dcdt_local_role
         dcdt_token_payment => dcdt_token_payment
         dcdt_token_data => dcdt_token_data
+        time_types => time_types
         sample_storage_mapper => sample_storage_mapper
         item_for_vec => item_for_vec
         item_for_array_vec => item_for_array_vec

@@ -1,6 +1,4 @@
-use dharitri_sc::api::DCDT_MULTI_TRANSFER_FUNC_NAME;
 use dharitri_sc_scenario::scenario_model::ScCallStep;
-use num_traits::Zero;
 
 #[test]
 fn test_tx_call_normalize_single_dcdt_token_fungible() {
@@ -89,8 +87,12 @@ fn test_tx_call_normalize_single_dcdt_token() {
 }
 
 #[test]
+#[cfg(feature = "contract-call-legacy")]
 #[allow(deprecated)]
 fn test_contract_call_multi_dcdt_deprecated() {
+    use dharitri_sc::api::DCDT_MULTI_TRANSFER_FUNC_NAME;
+    use num_traits::Zero;
+
     let tx = ScCallStep::new()
         .from("address:sender")
         .to("address:recipient")

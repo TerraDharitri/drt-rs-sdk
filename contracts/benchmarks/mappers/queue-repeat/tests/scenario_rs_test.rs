@@ -1,4 +1,4 @@
-use dharitri_sc_scenario::*;
+use dharitri_sc_scenario::imports::*;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();

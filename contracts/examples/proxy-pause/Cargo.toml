@@ -1,19 +1,19 @@
 [package]
 name = "proxy-pause"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = [ "you",]
+edition = "2024"
 publish = false
 
 [lib]
 path = "src/proxy_pause.rs"
 
 [dependencies.dharitri-sc]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../framework/scenario"
 
 [dev-dependencies.check-pause]

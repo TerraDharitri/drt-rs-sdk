@@ -1,13 +1,13 @@
 use crate::{
     api::ManagedTypeApi,
     formatter::hex_util::byte_to_hex_digits,
-    types::{heap::ArgBuffer, ManagedArgBuffer, ManagedBuffer},
+    types::{ManagedArgBuffer, ManagedBuffer, heap::ArgBuffer},
 };
 use alloc::vec::Vec;
 
 use super::SEPARATOR;
 
-/// Serializes to the Dharitri smart contract call format.
+/// Serializes to the DharitrI smart contract call format.
 ///
 /// This format consists of the function name, followed by '@', followed by hex-encoded argument bytes separated by '@' characters.
 /// Example: "funcName@00000@aaaa@1234@@".

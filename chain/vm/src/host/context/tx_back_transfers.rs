@@ -2,9 +2,9 @@ use num_bigint::BigUint;
 
 use crate::{builtin_functions::BuiltinFunctionContainer, types::VMAddress};
 
-use super::{async_call_tx_input, CallType, TxResult, TxTokenTransfer};
+use super::{CallType, TxResult, TxTokenTransfer, async_call_tx_input};
 
-#[derive(Default)]
+#[derive(Default, Debug)]
 pub struct BackTransfers {
     pub call_value: BigUint,
     pub dcdt_transfers: Vec<TxTokenTransfer>,

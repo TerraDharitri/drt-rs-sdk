@@ -6,7 +6,7 @@ use crate::{
     types::{BigUint, DcdtTokenPayment, ManagedVec},
 };
 
-use super::{contract_call_no_payment::ContractCallNoPayment, ContractCallWithRewa};
+use super::{ContractCallWithRewa, contract_call_no_payment::ContractCallNoPayment};
 
 impl<SA, OriginalResult> ContractCallWithRewa<SA, OriginalResult>
 where

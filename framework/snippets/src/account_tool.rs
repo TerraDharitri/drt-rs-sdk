@@ -38,25 +38,27 @@ pub async fn retrieve_account_as_scenario_set_state<GatewayProxy: GatewayAsyncSe
     api: &GatewayProxy,
     bech32_address: &Bech32Address,
 ) -> (SetStateAccount, SetStateStep) {
-    let address = bech32_address.as_address();
-    let sdk_account = api.request(GetAccountRequest::new(address)).await.unwrap();
+    let sdk_account = api
+        .request(GetAccountRequest::new(bech32_address))
+        .await
+        .unwrap();
 
     let account_dcdt = api
-        .request(GetAccountDcdtTokensRequest::new(address))
+        .request(GetAccountDcdtTokensRequest::new(bech32_address))
         .await
         .unwrap_or_else(|err| {
             eprintln!("failed to retrieve DCDT tokens for address {bech32_address}: {err}");
             HashMap::new()
         });
     let account_dcdt_roles = api
-        .request(GetAccountDcdtRolesRequest::new(address))
+        .request(GetAccountDcdtRolesRequest::new(bech32_address))
         .await
         .unwrap_or_else(|err| {
             eprintln!("failed to retrieve DCDT roles for address {bech32_address}: {err}");
             HashMap::new()
         });
     let account_storage = api
-        .request(GetAccountStorageRequest::new(address))
+        .request(GetAccountStorageRequest::new(bech32_address))
         .await
         .unwrap_or_else(|err| {
             panic!("failed to retrieve storage for address {bech32_address}: {err}")

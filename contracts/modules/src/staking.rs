@@ -3,7 +3,7 @@ dharitri_sc::derive_imports!();
 
 #[derive(TopEncode, TopDecode)]
 pub struct TokenAmountPair<M: ManagedTypeApi> {
-    pub token_id: TokenIdentifier<M>,
+    pub token_id: DcdtTokenIdentifier<M>,
     pub amount: BigUint<M>,
 }
 

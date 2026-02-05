@@ -1,16 +1,14 @@
-use dharitri_sdk::data::sdk_address::SdkAddress;
-use dharitri_sdk_http::{GatewayHttpProxy, DEVNET_GATEWAY};
+use dharitri_sdk::chain_core::std::Bech32Address;
+use dharitri_sdk_http::{DEVNET_GATEWAY, GatewayHttpProxy};
 
 #[tokio::main]
 async fn main() {
-    let addr = SdkAddress::from_bech32_string(
-        "drt1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ssj7kxgw",
-    )
-    .unwrap();
+    let addr = Bech32Address::from_bech32_string(
+        "drt1qqqqqqqqqqqqqpgqfzydqmdw7m2vazsp6u5p95yxz76t2p9rd8ssj7kxgw".to_owned(),
+    );
 
     let blockchain = GatewayHttpProxy::new(DEVNET_GATEWAY.to_string());
-    let account = blockchain.get_account(&addr.0).await.unwrap();
+    let account = blockchain.get_account(&addr).await.unwrap();
 
-    assert!(account.address.to_bech32_string().is_ok());
     println!("account: {account:#?}");
 }

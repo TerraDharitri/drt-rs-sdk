@@ -2,7 +2,8 @@ use super::*;
 
 use alloc::vec::Vec;
 use dharitri_chain_core::types::{
-    Address, BoxedBytes, CodeMetadata, DcdtLocalRole, DcdtTokenType, H256,
+    Address, BLSKey, BLSSignature, BoxedBytes, CodeMetadata, DurationMillis, DurationSeconds,
+    DcdtLocalRole, DcdtTokenType, H256, TimestampMillis, TimestampSeconds,
 };
 
 impl TypeAbiFrom<Self> for H256 {}
@@ -57,6 +58,34 @@ impl TypeAbi for CodeMetadata {
 
     fn type_name_rust() -> TypeName {
         "CodeMetadata".into()
+    }
+}
+
+impl TypeAbiFrom<Self> for BLSKey {}
+impl TypeAbi for BLSKey {
+    type Unmanaged = Self;
+
+    fn type_name() -> TypeName {
+        <[u8; BLSKey::len()]>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "BLSKey".into()
+    }
+}
+
+impl TypeAbiFrom<Self> for BLSSignature {}
+impl TypeAbiFrom<[u8; BLSSignature::len()]> for BLSSignature {}
+impl TypeAbiFrom<BLSSignature> for [u8; BLSSignature::len()] {}
+impl TypeAbi for BLSSignature {
+    type Unmanaged = Self;
+
+    fn type_name() -> TypeName {
+        <[u8; BLSSignature::len()]>::type_name()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "BLSSignature".into()
     }
 }
 
@@ -200,5 +229,61 @@ impl TypeAbi for DcdtLocalRole {
                 ),
             );
         }
+    }
+}
+
+impl TypeAbiFrom<Self> for DurationMillis {}
+
+impl TypeAbi for DurationMillis {
+    type Unmanaged = Self;
+
+    fn type_name() -> TypeName {
+        "u64".into()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "DurationMillis".into()
+    }
+}
+
+impl TypeAbiFrom<Self> for DurationSeconds {}
+
+impl TypeAbi for DurationSeconds {
+    type Unmanaged = Self;
+
+    fn type_name() -> TypeName {
+        "u64".into()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "DurationSeconds".into()
+    }
+}
+
+impl TypeAbiFrom<Self> for TimestampMillis {}
+
+impl TypeAbi for TimestampMillis {
+    type Unmanaged = Self;
+
+    fn type_name() -> TypeName {
+        "u64".into()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "TimestampMillis".into()
+    }
+}
+
+impl TypeAbiFrom<Self> for TimestampSeconds {}
+
+impl TypeAbi for TimestampSeconds {
+    type Unmanaged = Self;
+
+    fn type_name() -> TypeName {
+        "u64".into()
+    }
+
+    fn type_name_rust() -> TypeName {
+        "TimestampSeconds".into()
     }
 }

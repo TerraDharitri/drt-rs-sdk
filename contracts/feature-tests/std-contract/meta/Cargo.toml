@@ -1,0 +1,13 @@
+[package]
+name = "std-contract-meta"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies.std-contract]
+path = ".."
+
+[dependencies.dharitri-sc-meta-lib]
+version = "2.0.0"
+path = "../../../../framework/meta-lib"
+default-features = false

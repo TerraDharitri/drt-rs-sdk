@@ -1,12 +1,13 @@
 use basic_features_interact::{BasicFeaturesInteract, Config};
 use dharitri_sc_snippets::{
+    InteractorRunAsync, InteractorSimulateGasAsync,
     imports::{
         BigUint, DCDTSystemSCAddress, DCDTSystemSCProxy, RewaDecimals, DcdtLocalRole,
-        DcdtTokenPayment, DcdtTokenType, FungibleTokenProperties, ManagedBuffer, ManagedDecimal,
-        ManagedOption, ManagedVec, ReturnsNewTokenIdentifier, RustBigUint, StaticApi,
-        TokenIdentifier,
+        DcdtTokenIdentifier, DcdtTokenPayment, DcdtTokenType, FungibleTokenProperties,
+        ManagedBuffer, ManagedDecimal, ManagedOption, ManagedVec, ReturnsNewTokenIdentifier,
+        RustBigUint, StaticApi,
     },
-    test_wallets, InteractorRunAsync,
+    test_wallets,
 };
 use serial_test::serial;
 use system_sc_interact::SysFuncCallsInteract;
@@ -19,8 +20,18 @@ const ISSUE_COST: u64 = 50000000000000000u64;
 async fn simulator_basic_features_test() {
     let mut bf_interact = BasicFeaturesInteract::init(Config::chain_simulator_config()).await;
 
-    bf_interact.deploy_storage_bytes().await;
-    bf_interact.large_storage(15).await;
+    bf_interact.add_validator_key().await;
+    bf_interact.deploy_storage_bytes(false).await;
+    bf_interact.large_storage(15, false).await;
+
+    bf_interact
+        .interactor
+        .tx()
+        .from(&bf_interact.wallet_address)
+        .to(bf_interact.state.bf_storage_bytes_contract())
+        .rewa(1000)
+        .simulate_gas()
+        .await;
 
     let data = bf_interact.get_large_storage().await.to_vec();
     assert_eq!(bf_interact.large_storage_payload, data);
@@ -84,7 +95,7 @@ async fn send_dcdt_to_non_existent_address_test() {
         .from(&registered_wallet_address)
         .to(&not_registered_wallet_address)
         .dcdt(DcdtTokenPayment::new(
-            TokenIdentifier::from_dcdt_bytes(token.clone()),
+            DcdtTokenIdentifier::from_dcdt_bytes(token.clone()),
             1,
             BigUint::from(10u16),
         ))
@@ -98,7 +109,7 @@ async fn send_dcdt_to_non_existent_address_test() {
 async fn simulator_crypto_test() {
     let mut bf_interact = BasicFeaturesInteract::init(Config::chain_simulator_config()).await;
 
-    bf_interact.deploy_crypto().await;
+    bf_interact.deploy().await;
 
     verify_secp256r1_signature(&mut bf_interact).await;
     verify_bls_signature(&mut bf_interact).await;
@@ -275,10 +286,7 @@ async fn chain_simulator_bf_get_special_roles_test() {
 
     // set transfer role
     system_interact
-        .set_roles(
-            dynamic_nft_token_id.as_bytes(),
-            vec![DcdtLocalRole::Transfer],
-        )
+        .set_roles(&dynamic_nft_token_id, vec![DcdtLocalRole::Transfer])
         .await;
 
     // deploy bf

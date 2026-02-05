@@ -125,13 +125,13 @@ pub trait NftModule {
         match result {
             ManagedAsyncCallResult::Ok(token_id) => {
                 self.nft_token_id().set(token_id.unwrap_dcdt());
-            },
+            }
             ManagedAsyncCallResult::Err(_) => {
                 let returned = self.call_value().rewa_or_single_dcdt();
                 if returned.token_identifier.is_rewa() && returned.amount > 0 {
                     self.tx().to(ToCaller).rewa(returned.amount).transfer();
                 }
-            },
+            }
         }
     }
 
@@ -187,7 +187,7 @@ pub trait NftModule {
     // storage
 
     #[storage_mapper("nftTokenId")]
-    fn nft_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn nft_token_id(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
 
     #[storage_mapper("priceTag")]
     fn price_tag(&self, nft_nonce: u64) -> SingleValueMapper<PriceTag<Self::Api>>;

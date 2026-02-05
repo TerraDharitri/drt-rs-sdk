@@ -5,7 +5,7 @@ mod system_info;
 use dharitri_sc_meta_lib::tools::{self, build_target::install_target};
 
 use crate::cli::{
-    InstallArgs, InstallCommand, InstallDebuggerArgs, InstallDrtGoScenarioArgs, InstallWasm32Args,
+    InstallArgs, InstallCommand, InstallDebuggerArgs, InstallDrtScenarioGoArgs, InstallWasm32Args,
     InstallWasmOptArgs,
 };
 
@@ -17,28 +17,28 @@ pub async fn install(args: &InstallArgs) {
 
     match command {
         InstallCommand::All => {
-            install_scenario_go(&InstallDrtGoScenarioArgs::default()).await;
+            install_scenario_go(&InstallDrtScenarioGoArgs::default()).await;
             install_wasm32(&InstallWasm32Args::default());
             install_wasm_opt(&InstallWasmOptArgs::default());
             install_debugger(&InstallDebuggerArgs::default()).await;
-        },
-        InstallCommand::DrtGoScenario(sg_args) => install_scenario_go(sg_args).await,
+        }
+        InstallCommand::DrtScenarioGo(sg_args) => install_scenario_go(sg_args).await,
         InstallCommand::Wasm32(wam32_args) => install_wasm32(wam32_args),
         InstallCommand::WasmOpt(wasm_opt_args) => install_wasm_opt(wasm_opt_args),
         InstallCommand::Debugger(debugger_args) => install_debugger(debugger_args).await,
     }
 }
 
-async fn install_scenario_go(sg_args: &InstallDrtGoScenarioArgs) {
+async fn install_scenario_go(sg_args: &InstallDrtScenarioGoArgs) {
     ScenarioGoInstaller::new(sg_args.tag.clone())
         .install()
         .await;
 }
 
 fn install_wasm32(_wasm32_args: &InstallWasm32Args) {
-    install_target(tools::build_target::WASM32_TARGET);
+    install_target(None, tools::build_target::WASM32_TARGET);
     if tools::build_target::is_wasm32v1_available() {
-        install_target(tools::build_target::WASM32V1_TARGET);
+        install_target(None, tools::build_target::WASM32V1_TARGET);
     }
 }
 

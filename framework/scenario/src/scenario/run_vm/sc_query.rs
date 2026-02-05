@@ -1,11 +1,15 @@
-use crate::{num_bigint::BigUint, scenario::model::ScQueryStep, scenario_model::TxResponse};
+use crate::{
+    num_bigint::BigUint,
+    scenario::{model::ScQueryStep, run_vm::tx_output_check::check_tx_output},
+    scenario_model::TxResponse,
+};
 use dharitri_chain_vm::host::{
     context::{TxFunctionName, TxInput, TxResult},
     execution,
     runtime::{RuntimeInstanceCallLambda, RuntimeInstanceCallLambdaDefault},
 };
 
-use super::{tx_input_util::generate_tx_hash, ScenarioVMRunner};
+use super::{ScenarioVMRunner, tx_input_util::generate_tx_hash};
 
 impl ScenarioVMRunner {
     /// Adds a SC query step, as specified in the `sc_query_step` argument, then executes it.
@@ -13,7 +17,10 @@ impl ScenarioVMRunner {
     /// The result of the operation gets saved back in the step's response field.
     pub fn perform_sc_query_update_results(&mut self, step: &mut ScQueryStep) {
         let tx_result = self.perform_sc_query_in_debugger(step, RuntimeInstanceCallLambdaDefault);
-        let response = TxResponse::from_tx_result(tx_result);
+        if let Some(tx_expect) = &step.expect {
+            check_tx_output(&step.id, tx_expect, &tx_result);
+        }
+        let response: TxResponse = TxResponse::from_tx_result(tx_result);
         step.save_response(response);
     }
 

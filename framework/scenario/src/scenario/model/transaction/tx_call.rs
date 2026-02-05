@@ -4,8 +4,6 @@ use dharitri_sc::api::{
 };
 
 use crate::{
-    api::StaticApi,
-    dharitri_sc::types::{ContractCall, DcdtTokenPayment},
     scenario::model::{AddressValue, BigUintValue, BytesValue, U64Value},
     scenario_format::{
         interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
@@ -13,7 +11,7 @@ use crate::{
     },
 };
 
-use super::{tx_interpret_util::interpret_rewa_value, TxDCDT};
+use super::{TxDCDT, tx_interpret_util::interpret_rewa_value};
 
 pub const DEFAULT_GAS_EXPR: &str = "5,000,000";
 
@@ -97,7 +95,12 @@ impl TxCall {
         note = "Please use the unified transaction syntax instead."
     )]
     #[allow(deprecated)]
-    pub fn to_contract_call(&self) -> dharitri_sc::types::ContractCallWithRewa<StaticApi, ()> {
+    #[cfg(feature = "contract-call-legacy")]
+    pub fn to_contract_call(
+        &self,
+    ) -> dharitri_sc::types::ContractCallWithRewa<crate::imports::StaticApi, ()> {
+        use dharitri_sc::types::ContractCall;
+
         let mut contract_call = dharitri_sc::types::ContractCallWithRewa::new(
             (&self.to.value).into(),
             self.function.as_bytes(),
@@ -110,7 +113,7 @@ impl TxCall {
             self.dcdt_value
                 .iter()
                 .map(|dcdt| {
-                    DcdtTokenPayment::new(
+                    crate::imports::DcdtTokenPayment::new(
                         dcdt.dcdt_token_identifier.value.as_slice().into(),
                         dcdt.nonce.value,
                         (&dcdt.dcdt_value.value).into(),
@@ -123,7 +126,9 @@ impl TxCall {
         // The contract call objects have no "from" field, since that is always part of the execution context.
         // On the static API there is no execution context, but a placeholder value is provided.
         // Here we already know the sender, so we can replace the placeholder with the actual value.
-        if StaticApi::is_current_address_placeholder(&contract_call.basic.to.to_address()) {
+        if crate::imports::StaticApi::is_current_address_placeholder(
+            &contract_call.basic.to.to_address(),
+        ) {
             contract_call.basic.to = self.from.value.clone().into();
         }
 
@@ -155,7 +160,8 @@ impl TxCall {
     fn process_payments(&self) -> (String, Vec<BytesValue>, bool) {
         assert!(
             self.rewa_value.is_zero() || self.dcdt_value.is_empty(),
-            "Cannot have both REWA and DCDT fields filled. To transfer REWA and DCDT in the same transaction, represent REWA as REWA-000000 in the DCDTs.");
+            "Cannot have both REWA and DCDT fields filled. To transfer REWA and DCDT in the same transaction, represent REWA as REWA-000000 in the DCDTs."
+        );
 
         match self.dcdt_value.len() {
             0 => (self.function.clone(), self.arguments.clone(), false),
@@ -168,7 +174,7 @@ impl TxCall {
                 } else {
                     self.construct_single_transfer_nft_call(payment)
                 }
-            },
+            }
             _ => self.construct_multi_transfer_dcdt_call(),
         }
     }

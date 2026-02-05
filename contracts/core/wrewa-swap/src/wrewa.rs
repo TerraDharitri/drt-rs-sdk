@@ -5,7 +5,7 @@ dharitri_sc::imports!();
 #[dharitri_sc::contract]
 pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
     #[init]
-    fn init(&self, wrapped_rewa_token_id: TokenIdentifier) {
+    fn init(&self, wrapped_rewa_token_id: DcdtTokenIdentifier) {
         self.wrapped_rewa_token_id().set(&wrapped_rewa_token_id);
     }
 
@@ -49,7 +49,7 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
         self.send()
             .dcdt_local_burn(&wrapped_rewa_token_id, 0, &payment_amount);
 
-        // 1 wrapped rEWA = 1 rEWA, so we pay back the same amount
+        // 1 wrapped REWA = 1 REWA, so we pay back the same amount
         let caller = self.blockchain().get_caller();
         self.tx().to(&caller).rewa(&*payment_amount).transfer();
     }
@@ -58,11 +58,11 @@ pub trait RewaDcdtSwap: dharitri_sc_modules::pause::PauseModule {
     #[title("lockedRewaBalance")]
     fn get_locked_rewa_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
+            .get_sc_balance(RewaOrDcdtTokenIdentifier::rewa(), 0)
     }
 
     #[view(getWrappedRewaTokenId)]
     #[title("wrappedRewaTokenId")]
     #[storage_mapper("wrappedRewaTokenId")]
-    fn wrapped_rewa_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn wrapped_rewa_token_id(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
 }

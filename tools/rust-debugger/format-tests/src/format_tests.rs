@@ -41,6 +41,9 @@ fn main() {
     let biguint: BigUint<DebugApi> = num_bigint_large.to_biguint().unwrap().into();
     push!(to_check, biguint, "1000000000000000000000000000000");
 
+    let nonzerobiguint: NonZeroBigUint<DebugApi> = NonZeroBigUint::new_or_panic(biguint);
+    push!(to_check, nonzerobiguint, "1000000000000000000000000000000");
+
     let bigint: BigInt<DebugApi> = num_bigint_negative.clone().into();
     push!(to_check, bigint, "-1000000000000000000000000000000");
 
@@ -78,34 +81,36 @@ fn main() {
     let test_token_identifier: TestTokenIdentifier = TestTokenIdentifier::new("TEST-123456");
     push!(to_check, test_token_identifier, "\"str:TEST-123456\"");
 
-    let token_identifier: TokenIdentifier<DebugApi> = TokenIdentifier::from("MYTOK-123456");
+    let token_identifier: DcdtTokenIdentifier<DebugApi> = DcdtTokenIdentifier::from("MYTOK-123456");
     push!(to_check, token_identifier, "\"MYTOK-123456\"");
 
     let managed_address = DCDTSystemSCAddress.to_managed_address::<DebugApi>();
     push!(
         to_check,
         managed_address,
-        "(32) 0x233300000000000000000000000000000002333000000000000000000002ffff"
+        "(32) 0x000000000000000000010000000000000000000000000000000000000002ffff"
     );
 
     let managed_byte_array: ManagedByteArray<DebugApi, 4> =
         ManagedByteArray::new_from_bytes(b"test");
     push!(to_check, managed_byte_array, "\"test\" - (4) 0x74657374");
 
-    let managed_option_some_token_identifier: ManagedOption<DebugApi, TokenIdentifier<DebugApi>> =
-        ManagedOption::some(token_identifier.clone());
+    let managed_option_some_token_identifier: ManagedOption<
+        DebugApi,
+        DcdtTokenIdentifier<DebugApi>,
+    > = ManagedOption::some(token_identifier.clone());
     push!(
         to_check,
         managed_option_some_token_identifier,
         "ManagedOption::some(\"MYTOK-123456\")"
     );
 
-    let managed_option_none: ManagedOption<DebugApi, TokenIdentifier<DebugApi>> =
+    let managed_option_none: ManagedOption<DebugApi, DcdtTokenIdentifier<DebugApi>> =
         ManagedOption::none();
     push!(to_check, managed_option_none, "ManagedOption::none()");
 
     let payment = DcdtTokenPayment {
-        token_identifier: TokenIdentifier::from("MYTOK-123456"),
+        token_identifier: DcdtTokenIdentifier::from("MYTOK-123456"),
         token_nonce: 42,
         amount: BigUint::from(1000u64),
     };
@@ -128,7 +133,7 @@ fn main() {
         ManagedVec::new();
     managed_vec_of_payments.push(payment.clone());
     managed_vec_of_payments.push(DcdtTokenPayment::new(
-        TokenIdentifier::from("MYTOK-abcdef"),
+        DcdtTokenIdentifier::from("MYTOK-abcdef"),
         100,
         5000u64.into(),
     ));
@@ -157,21 +162,21 @@ fn main() {
     push!(
         to_check,
         managed_vec_of_addresses,
-        "(1) { [0] = (32) 0x233300000000000000000000000000000002333000000000000000000002ffff }"
+        "(1) { [0] = (32) 0x000000000000000000010000000000000000000000000000000000000002ffff }"
     );
 
     let managed_option_of_vec_of_addresses: ManagedOption<
         DebugApi,
         ManagedVec<DebugApi, ManagedAddress<DebugApi>>,
     > = ManagedOption::some(managed_vec_of_addresses.clone());
-    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x233300000000000000000000000000000002333000000000000000000002ffff })");
+    push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x000000000000000000010000000000000000000000000000000000000002ffff })");
 
     // 5. SC wasm - heap
     let heap_address: Address = managed_address.to_address();
     push!(
         to_check,
         heap_address,
-        "(32) 0x233300000000000000000000000000000002333000000000000000000002ffff"
+        "(32) 0x000000000000000000010000000000000000000000000000000000000002ffff"
     );
 
     let boxed_bytes: BoxedBytes = b"test"[..].into();
@@ -188,7 +193,7 @@ fn main() {
         "(3) { [0] = \"ab\" - (2) 0x6162, [1] = \"abcd\" - (4) 0x61626364, [2] = \"abcdefghijkl\" - (12) 0x6162636465666768696a6b6c }"
     );
 
-    // 6. Dharitri codec - Multi-types
+    // 6. DharitrI codec - Multi-types
     let optional_value_some: OptionalValue<BigUint<DebugApi>> =
         OptionalValue::Some(BigUint::from(42u64));
     push!(to_check, optional_value_some, "OptionalValue::Some(42)");
@@ -223,8 +228,8 @@ fn main() {
         "<invalid handle: raw_handle -1000 not found in managed_buffer_map>"
     );
 
-    let token_identifier_with_invalid_handle: TokenIdentifier<DebugApi> =
-        unsafe { TokenIdentifier::from_handle(invalid_handle.clone()) };
+    let token_identifier_with_invalid_handle: DcdtTokenIdentifier<DebugApi> =
+        unsafe { DcdtTokenIdentifier::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         token_identifier_with_invalid_handle,

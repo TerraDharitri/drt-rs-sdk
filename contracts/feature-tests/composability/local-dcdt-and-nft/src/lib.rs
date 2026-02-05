@@ -54,12 +54,12 @@ pub trait LocalDcdtAndDcdtNft {
     }
 
     #[endpoint(localMint)]
-    fn local_mint(&self, token_identifier: TokenIdentifier, amount: BigUint) {
+    fn local_mint(&self, token_identifier: DcdtTokenIdentifier, amount: BigUint) {
         self.send().dcdt_local_mint(&token_identifier, 0, &amount);
     }
 
     #[endpoint(localBurn)]
-    fn local_burn(&self, token_identifier: TokenIdentifier, amount: BigUint) {
+    fn local_burn(&self, token_identifier: DcdtTokenIdentifier, amount: BigUint) {
         self.send().dcdt_local_burn(&token_identifier, 0, &amount);
     }
 
@@ -95,7 +95,7 @@ pub trait LocalDcdtAndDcdtNft {
     #[allow(clippy::too_many_arguments)]
     fn nft_create(
         &self,
-        token_identifier: TokenIdentifier,
+        token_identifier: DcdtTokenIdentifier,
         amount: BigUint,
         name: ManagedBuffer,
         royalties: BigUint,
@@ -118,13 +118,13 @@ pub trait LocalDcdtAndDcdtNft {
     }
 
     #[endpoint(nftAddQuantity)]
-    fn nft_add_quantity(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
+    fn nft_add_quantity(&self, token_identifier: DcdtTokenIdentifier, nonce: u64, amount: BigUint) {
         self.send()
             .dcdt_local_mint(&token_identifier, nonce, &amount);
     }
 
     #[endpoint(nftBurn)]
-    fn nft_burn(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
+    fn nft_burn(&self, token_identifier: DcdtTokenIdentifier, nonce: u64, amount: BigUint) {
         self.send()
             .dcdt_local_burn(&token_identifier, nonce, &amount);
     }
@@ -133,7 +133,7 @@ pub trait LocalDcdtAndDcdtNft {
     fn transfer_nft_via_async_call(
         &self,
         to: ManagedAddress,
-        token_identifier: TokenIdentifier,
+        token_identifier: DcdtTokenIdentifier,
         nonce: u64,
         amount: BigUint,
     ) {
@@ -147,7 +147,7 @@ pub trait LocalDcdtAndDcdtNft {
     fn transfer_nft_and_execute(
         &self,
         to: ManagedAddress,
-        token_identifier: TokenIdentifier,
+        token_identifier: DcdtTokenIdentifier,
         nonce: u64,
         amount: BigUint,
         function: ManagedBuffer,
@@ -203,7 +203,7 @@ pub trait LocalDcdtAndDcdtNft {
     fn set_local_roles(
         &self,
         address: ManagedAddress,
-        token_identifier: TokenIdentifier,
+        token_identifier: DcdtTokenIdentifier,
         roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
         self.send()
@@ -217,7 +217,7 @@ pub trait LocalDcdtAndDcdtNft {
     fn unset_local_roles(
         &self,
         address: ManagedAddress,
-        token_identifier: TokenIdentifier,
+        token_identifier: DcdtTokenIdentifier,
         roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
         self.send()
@@ -228,7 +228,7 @@ pub trait LocalDcdtAndDcdtNft {
     }
 
     #[endpoint(controlChanges)]
-    fn control_changes(&self, token: TokenIdentifier) {
+    fn control_changes(&self, token: DcdtTokenIdentifier) {
         let property_arguments = TokenPropertyArguments {
             can_freeze: Some(true),
             can_burn: Some(true),
@@ -244,13 +244,13 @@ pub trait LocalDcdtAndDcdtNft {
     // views
 
     #[view(getFungibleDcdtBalance)]
-    fn get_fungible_dcdt_balance(&self, token_identifier: &TokenIdentifier) -> BigUint {
+    fn get_fungible_dcdt_balance(&self, token_identifier: &DcdtTokenIdentifier) -> BigUint {
         self.blockchain()
             .get_dcdt_balance(&self.blockchain().get_sc_address(), token_identifier, 0)
     }
 
     #[view(getNftBalance)]
-    fn get_nft_balance(&self, token_identifier: &TokenIdentifier, nonce: u64) -> BigUint {
+    fn get_nft_balance(&self, token_identifier: &DcdtTokenIdentifier, nonce: u64) -> BigUint {
         self.blockchain().get_dcdt_balance(
             &self.blockchain().get_sc_address(),
             token_identifier,
@@ -259,7 +259,7 @@ pub trait LocalDcdtAndDcdtNft {
     }
 
     #[view(getCurrentNftNonce)]
-    fn get_current_nft_nonce(&self, token_identifier: &TokenIdentifier) -> u64 {
+    fn get_current_nft_nonce(&self, token_identifier: &DcdtTokenIdentifier) -> u64 {
         self.blockchain()
             .get_current_dcdt_nft_nonce(&self.blockchain().get_sc_address(), token_identifier)
     }
@@ -279,7 +279,7 @@ pub trait LocalDcdtAndDcdtNft {
             ManagedAsyncCallResult::Ok(()) => {
                 self.last_issued_token().set(token_identifier.unwrap_dcdt());
                 self.last_error_message().clear();
-            },
+            }
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_rewa() && returned_tokens > 0 {
@@ -287,7 +287,7 @@ pub trait LocalDcdtAndDcdtNft {
                 }
 
                 self.last_error_message().set(&message.err_msg);
-            },
+            }
         }
     }
 
@@ -295,13 +295,13 @@ pub trait LocalDcdtAndDcdtNft {
     fn nft_issue_callback(
         &self,
         caller: &ManagedAddress,
-        #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>,
+        #[call_result] result: ManagedAsyncCallResult<DcdtTokenIdentifier>,
     ) {
         match result {
             ManagedAsyncCallResult::Ok(token_identifier) => {
                 self.last_issued_token().set(&token_identifier);
                 self.last_error_message().clear();
-            },
+            }
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 let (token_identifier, returned_tokens) =
@@ -311,7 +311,7 @@ pub trait LocalDcdtAndDcdtNft {
                 }
 
                 self.last_error_message().set(&message.err_msg);
-            },
+            }
         }
     }
 
@@ -320,10 +320,10 @@ pub trait LocalDcdtAndDcdtNft {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.last_error_message().clear();
-            },
+            }
             ManagedAsyncCallResult::Err(message) => {
                 self.last_error_message().set(&message.err_msg);
-            },
+            }
         }
     }
 
@@ -331,7 +331,7 @@ pub trait LocalDcdtAndDcdtNft {
 
     #[view(lastIssuedToken)]
     #[storage_mapper("lastIssuedToken")]
-    fn last_issued_token(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn last_issued_token(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
 
     #[view(lastErrorMessage)]
     #[storage_mapper("lastErrorMessage")]

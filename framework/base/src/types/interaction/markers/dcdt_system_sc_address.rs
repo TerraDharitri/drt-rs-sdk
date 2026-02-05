@@ -10,13 +10,13 @@ use crate::{
 
 /// Address of the system smart contract that manages DCDT.
 const DCDT_SYSTEM_SC_ADDRESS_BYTES: [u8; 32] =
-    hex!("233300000000000000000000000000000002333000000000000000000002ffff");
+    hex!("000000000000000000010000000000000000000000000000000000000002ffff");
 const DCDT_SYSTEM_SC_ADDRESS_BECH32: &str =
-    "drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2";
+    "drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez";
 const DCDT_SYSTEM_SC_ADDRESS_ANNOTATION: &str =
-    "bech32:drt1yvesqqqqqqqqqqqqqqqqqqqqqqqqyvesqqqqqqqqqqqqqqqzlllsd5j0s2";
+    "bech32:drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez";
 
-/// Indicates the system SC address, which is the same on any Dharitri blockchain.
+/// Indicates the system SC address, which is the same on any DharitrI blockchain.
 pub struct DCDTSystemSCAddress;
 
 impl DCDTSystemSCAddress {

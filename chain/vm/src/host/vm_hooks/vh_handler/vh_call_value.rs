@@ -1,8 +1,12 @@
 use crate::{
-    host::vm_hooks::{vh_early_exit::early_exit_vm_error, VMHooksContext},
+    host::{
+        context::TxTokenTransfer,
+        vm_hooks::{VMHooksContext, vh_early_exit::early_exit_vm_error},
+    },
     types::RawHandle,
     vm_err_msg,
 };
+use dharitri_chain_core::REWA_000000_TOKEN_IDENTIFIER;
 use dharitri_vm_executor::VMHooksEarlyExit;
 use num_traits::Zero;
 
@@ -40,6 +44,23 @@ impl<C: VMHooksContext> VMHooksHandler<C> {
             .mb_set_vec_of_dcdt_payments(dest_handle, self.context.input_ref().received_dcdt());
         self.use_gas_for_data_copy(num_bytes_copied)?;
 
+        Ok(())
+    }
+
+    pub fn load_all_transfers(&self, dest_handle: RawHandle) -> Result<(), VMHooksEarlyExit> {
+        let direct_rewa_value = self.context.input_ref().received_rewa().clone();
+        let transfers = if !direct_rewa_value.is_zero() {
+            vec![TxTokenTransfer {
+                token_identifier: REWA_000000_TOKEN_IDENTIFIER.as_bytes().to_vec(),
+                nonce: 0,
+                value: direct_rewa_value,
+            }]
+        } else {
+            self.context.input_ref().received_dcdt().to_owned()
+        };
+        self.context
+            .m_types_lock()
+            .mb_set_vec_of_dcdt_payments(dest_handle, &transfers);
         Ok(())
     }
 

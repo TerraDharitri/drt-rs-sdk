@@ -1,4 +1,7 @@
-use crate::types::{BigUint, RewaOrDcdtTokenPaymentRefs, ManagedAddress, TxFrom, TxToSpecified};
+use crate::{
+    contract_base::TransferExecuteFailed,
+    types::{BigUint, RewaOrDcdtTokenPaymentRefs, ManagedAddress, TxFrom, TxToSpecified},
+};
 
 use super::{Rewa, FullPaymentData, FunctionCall, TxEnv, TxPayment};
 
@@ -10,7 +13,23 @@ where
         self.is_empty()
     }
 
-    fn perform_transfer_execute(
+    fn perform_transfer_execute_fallible(
+        self,
+        env: &Env,
+        to: &ManagedAddress<Env::Api>,
+        gas_limit: u64,
+        fc: FunctionCall<Env::Api>,
+    ) -> Result<(), TransferExecuteFailed> {
+        self.map_rewa_or_dcdt(
+            fc,
+            |fc, amount| Rewa(amount).perform_transfer_execute_fallible(env, to, gas_limit, fc),
+            |fc, dcdt_payment| {
+                dcdt_payment.perform_transfer_execute_fallible(env, to, gas_limit, fc)
+            },
+        )
+    }
+
+    fn perform_transfer_execute_legacy(
         self,
         env: &Env,
         to: &ManagedAddress<Env::Api>,
@@ -19,8 +38,8 @@ where
     ) {
         self.map_rewa_or_dcdt(
             fc,
-            |fc, amount| Rewa(amount).perform_transfer_execute(env, to, gas_limit, fc),
-            |fc, dcdt_payment| dcdt_payment.perform_transfer_execute(env, to, gas_limit, fc),
+            |fc, amount| Rewa(amount).perform_transfer_execute_legacy(env, to, gas_limit, fc),
+            |fc, dcdt_payment| dcdt_payment.perform_transfer_execute_legacy(env, to, gas_limit, fc),
         )
     }
 

@@ -10,7 +10,7 @@
                 "sc:forwarder": {
                     "nonce": "0",
                     "balance": "0",
-                    "code": "drtsc:../promises-features/output/promises-features.drtsc.json"
+                    "code": "drtsc:../forwarder/output/forwarder.drtsc.json"
                 }
             }
         },

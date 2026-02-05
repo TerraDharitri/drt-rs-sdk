@@ -1,6 +1,6 @@
 use dharitri_sc::storage::{
-    mappers::{QueueMapper, StorageClearable, StorageMapper},
     StorageKey,
+    mappers::{QueueMapper, StorageClearable, StorageMapper},
 };
 use dharitri_sc_scenario::api::SingleTxApi;
 

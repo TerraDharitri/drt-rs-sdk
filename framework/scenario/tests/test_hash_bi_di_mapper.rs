@@ -1,6 +1,6 @@
 use dharitri_sc::storage::{
-    mappers::{BiDiMapper, StorageMapper},
     StorageKey,
+    mappers::{BiDiMapper, StorageMapper},
 };
 use dharitri_sc_scenario::api::SingleTxApi;
 

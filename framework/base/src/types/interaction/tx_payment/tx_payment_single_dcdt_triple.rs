@@ -1,10 +1,13 @@
-use crate::types::{
-    BigUint, DcdtTokenPayment, ManagedAddress, TokenIdentifier, TxFrom, TxToSpecified,
+use crate::{
+    contract_base::TransferExecuteFailed,
+    types::{
+        BigUint, DcdtTokenIdentifier, DcdtTokenPayment, ManagedAddress, TxFrom, TxToSpecified,
+    },
 };
 
 use super::{FullPaymentData, FunctionCall, TxEnv, TxPayment};
 
-impl<Env> TxPayment<Env> for (TokenIdentifier<Env::Api>, u64, BigUint<Env::Api>)
+impl<Env> TxPayment<Env> for (DcdtTokenIdentifier<Env::Api>, u64, BigUint<Env::Api>)
 where
     Env: TxEnv,
 {
@@ -13,14 +16,25 @@ where
     }
 
     #[inline]
-    fn perform_transfer_execute(
+    fn perform_transfer_execute_fallible(
+        self,
+        env: &Env,
+        to: &ManagedAddress<Env::Api>,
+        gas_limit: u64,
+        fc: FunctionCall<Env::Api>,
+    ) -> Result<(), TransferExecuteFailed> {
+        DcdtTokenPayment::from(self).perform_transfer_execute_fallible(env, to, gas_limit, fc)
+    }
+
+    #[inline]
+    fn perform_transfer_execute_legacy(
         self,
         env: &Env,
         to: &ManagedAddress<Env::Api>,
         gas_limit: u64,
         fc: FunctionCall<Env::Api>,
     ) {
-        DcdtTokenPayment::from(self).perform_transfer_execute(env, to, gas_limit, fc)
+        DcdtTokenPayment::from(self).perform_transfer_execute_legacy(env, to, gas_limit, fc)
     }
 
     #[inline]

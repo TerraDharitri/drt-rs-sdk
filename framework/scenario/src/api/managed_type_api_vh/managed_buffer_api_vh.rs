@@ -1,10 +1,10 @@
 use crate::{
-    api::{i32_to_bool, VMHooksApi, VMHooksApiBackend},
+    api::{VMHooksApi, VMHooksApiBackend, i32_to_bool},
     executor::debug::ContractDebugInstanceState,
 };
 use dharitri_chain_vm::executor::MemPtr;
 use dharitri_sc::{
-    api::{use_raw_handle, HandleConstraints, InvalidSliceError, ManagedBufferApiImpl},
+    api::{HandleConstraints, InvalidSliceError, ManagedBufferApiImpl, use_raw_handle},
     types::BoxedBytes,
 };
 

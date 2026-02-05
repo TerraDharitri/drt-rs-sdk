@@ -1,17 +1,17 @@
 [package]
 name = "large-storage"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2024"
 publish = false
 
 [lib]
 path = "src/large_storage.rs"
 
 [dependencies.dharitri-sc]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../framework/scenario"

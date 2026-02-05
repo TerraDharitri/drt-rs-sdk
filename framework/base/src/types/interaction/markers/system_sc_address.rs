@@ -20,7 +20,7 @@ const SYSTEM_SC_ADDRESS_BECH32: &str =
 const SYSTEM_SC_ADDRESS_ANNOTATION: &str =
     "bech32:drt1llllllllllllllllllllllllllllllllllllllllllllllllllls9258a4";
 
-/// Indicates the System SC address, which is the same on any Dharitri blockchain.
+/// Indicates the System SC address, which is the same on any DharitrI blockchain.
 pub struct SystemSCAddress;
 
 impl SystemSCAddress {

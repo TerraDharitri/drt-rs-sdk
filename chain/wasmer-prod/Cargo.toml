@@ -1,29 +1,31 @@
 [package]
 name = "dharitri-chain-vm-wasmer-prod"
 version = "0.0.0"
-edition = "2021"
+edition = "2024"
 publish = false
 
-description = "Dharitri VM adapter for the Wasmer Production executor"
+description = "DharitrI VM adapter for the Wasmer Production executor"
 
 [lib]
 path = "src/wasmer_prod.rs"
 
+[dependencies]
+home = "=0.5.1" # downgrading, >= 0.5.2 requires rustc 1.88, which is causing linker problems on Linux
+
 [dependencies.dharitri-chain-core]
-version = "=1.19.0"
+version = "=2.0.0"
 path = "../core"
 
 
 [dependencies.dharitri-chain-vm]
-version = "=1.19.0"
+version = "=2.0.0"
 path = "../vm"
 
 [dependencies.dharitri-vm-executor]
-version = "1.0.5"
-
+version = "2.0.0"
 
 [dependencies.dharitri-vm-executor-wasmer]
-version = "1.0.5"
+version = "2.0.0"
 default-features = false
 features = ["dharitri-vm-executor-published"]
 git = "https://github.com/TerraDharitri/drt-rs-vm-executor"

@@ -1,5 +1,5 @@
 use dharitri_sdk::gateway::NetworkConfigRequest;
-use dharitri_sdk_http::{GatewayHttpProxy, CHAIN_SIMULATOR_GATEWAY};
+use dharitri_sdk_http::{CHAIN_SIMULATOR_GATEWAY, GatewayHttpProxy};
 
 #[tokio::test]
 #[cfg_attr(not(feature = "chain_simulator"), ignore)]

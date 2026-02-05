@@ -1,0 +1,23 @@
+[package]
+name = "crowdfunding"
+version = "0.0.0"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2024"
+publish = false
+
+[lib]
+path = "src/crowdfunding.rs"
+
+[dependencies.dharitri-sc]
+version = "2.0.0"
+path = "../../../framework/base"
+
+[dev-dependencies.dharitri-sc-scenario]
+version = "2.0.0"
+features = ["wasmer-experimental"]
+path = "../../../framework/scenario"
+
+[dev-dependencies]
+num-bigint = "0.4"
+num-traits = "0.2"
+hex = "0.4"

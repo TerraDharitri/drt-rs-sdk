@@ -1,17 +1,17 @@
 [package]
 name = "dharitri-sc-price-aggregator-meta"
-version = "0.0.0"
-edition = "2021"
+version = "2.0.0"
+edition = "2024"
 publish = false
 
 [dependencies.dharitri-sc-price-aggregator]
 path = ".."
 
 [dependencies.dharitri-sc]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/base"
 
 [dependencies.dharitri-sc-meta-lib]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/meta-lib"
 default-features = false

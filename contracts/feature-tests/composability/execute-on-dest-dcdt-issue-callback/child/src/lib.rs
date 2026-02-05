@@ -45,13 +45,14 @@ pub trait Child {
 
     #[callback]
     fn dcdt_issue_callback(&self, #[call_result] _result: IgnoreValue) {
-        let (token_identifier, _amount) = self.call_value().single_fungible_dcdt();
-        self.wrapped_rewa_token_identifier().set(token_identifier);
+        let payment = self.call_value().single();
+        self.wrapped_rewa_token_identifier()
+            .set(&payment.token_identifier);
     }
 
     // storage
 
     #[view(getWrappedRewaTokenIdentifier)]
     #[storage_mapper("wrappedRewaTokenIdentifier")]
-    fn wrapped_rewa_token_identifier(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn wrapped_rewa_token_identifier(&self) -> SingleValueMapper<TokenId>;
 }

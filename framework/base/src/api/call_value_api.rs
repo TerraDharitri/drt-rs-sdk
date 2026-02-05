@@ -27,4 +27,7 @@ pub trait CallValueApiImpl: ErrorApiImpl + ManagedTypeApiImpl + Sized {
     /// It is redundant, since the number can also be retrieved from `load_all_dcdt_transfers`,
     /// but it is easier and cheaper to call when the content of those transfers is of no interest.
     fn dcdt_num_transfers(&self) -> usize;
+
+    /// Loads all REWA+DCDT call values into a managed vec. Overwrites destination.
+    fn load_all_transfers(&self, dest_handle: Self::ManagedBufferHandle);
 }

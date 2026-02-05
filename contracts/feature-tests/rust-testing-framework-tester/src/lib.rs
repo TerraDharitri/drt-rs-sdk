@@ -45,13 +45,13 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     #[endpoint]
     fn get_rewa_balance(&self) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
+            .get_sc_balance(RewaOrDcdtTokenIdentifier::rewa(), 0)
     }
 
     #[endpoint]
-    fn get_dcdt_balance(&self, token_id: TokenIdentifier, nonce: u64) -> BigUint {
+    fn get_dcdt_balance(&self, token_id: DcdtTokenIdentifier, nonce: u64) -> BigUint {
         self.blockchain()
-            .get_sc_balance(&RewaOrDcdtTokenIdentifier::dcdt(token_id), nonce)
+            .get_sc_balance(RewaOrDcdtTokenIdentifier::dcdt(token_id), nonce)
     }
 
     #[payable("REWA")]
@@ -69,7 +69,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
 
     #[payable("*")]
     #[endpoint]
-    fn receive_dcdt(&self) -> (TokenIdentifier, BigUint) {
+    fn receive_dcdt(&self) -> (DcdtTokenIdentifier, BigUint) {
         let payment = self.call_value().single_dcdt();
         (payment.token_identifier.clone(), payment.amount.clone())
     }
@@ -103,7 +103,7 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     fn send_nft(
         &self,
         to: ManagedAddress,
-        token_id: TokenIdentifier,
+        token_id: DcdtTokenIdentifier,
         nft_nonce: u64,
         amount: BigUint,
     ) {
@@ -114,19 +114,19 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     }
 
     #[endpoint]
-    fn mint_dcdt(&self, token_id: TokenIdentifier, nonce: u64, amount: BigUint) {
+    fn mint_dcdt(&self, token_id: DcdtTokenIdentifier, nonce: u64, amount: BigUint) {
         self.send().dcdt_local_mint(&token_id, nonce, &amount);
     }
 
     #[endpoint]
-    fn burn_dcdt(&self, token_id: TokenIdentifier, nonce: u64, amount: BigUint) {
+    fn burn_dcdt(&self, token_id: DcdtTokenIdentifier, nonce: u64, amount: BigUint) {
         self.send().dcdt_local_burn(&token_id, nonce, &amount);
     }
 
     #[endpoint]
     fn create_nft(
         &self,
-        token_id: TokenIdentifier,
+        token_id: DcdtTokenIdentifier,
         amount: BigUint,
         attributes: NftDummyAttributes,
     ) -> u64 {
@@ -152,8 +152,13 @@ pub trait RustTestingFrameworkTester: dummy_module::DummyModule {
     }
 
     #[endpoint]
-    fn get_block_timestamp(&self) -> u64 {
-        self.blockchain().get_block_timestamp()
+    fn get_block_timestamp_seconds(&self) -> TimestampSeconds {
+        self.blockchain().get_block_timestamp_seconds()
+    }
+
+    #[endpoint]
+    fn get_block_timestamp_millis(&self) -> TimestampMillis {
+        self.blockchain().get_block_timestamp_millis()
     }
 
     #[endpoint]

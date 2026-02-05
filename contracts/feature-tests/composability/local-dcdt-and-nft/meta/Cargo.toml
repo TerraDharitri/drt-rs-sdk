@@ -1,13 +1,13 @@
 [package]
 name = "local-dcdt-and-nft-meta"
 version = "0.0.0"
-edition = "2021"
+edition = "2024"
 publish = false
 
 [dependencies.local-dcdt-and-nft]
 path = ".."
 
 [dependencies.dharitri-sc-meta-lib]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../../framework/meta-lib"
 default-features = false

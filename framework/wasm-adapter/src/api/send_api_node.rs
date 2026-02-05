@@ -1,7 +1,15 @@
 use crate::api::VmApiImpl;
-use dharitri_sc::api::{const_handles, RawHandle, SendApi, SendApiImpl};
+use dharitri_sc::api::{RawHandle, SendApi, SendApiImpl, const_handles};
 
 unsafe extern "C" {
+    fn managedTransferValueExecute(
+        dstHandle: i32,
+        valueHandle: i32,
+        gasLimit: i64,
+        functionHandle: i32,
+        argumentsHandle: i32,
+    ) -> i32;
+
     fn managedMultiTransferDCDTNFTExecute(
         dstHandle: i32,
         tokenTransfersHandle: i32,
@@ -10,9 +18,9 @@ unsafe extern "C" {
         argumentsHandle: i32,
     ) -> i32;
 
-    fn managedTransferValueExecute(
+    fn managedMultiTransferDCDTNFTExecuteWithReturn(
         dstHandle: i32,
-        valueHandle: i32,
+        tokenTransfersHandle: i32,
         gasLimit: i64,
         functionHandle: i32,
         argumentsHandle: i32,
@@ -39,6 +47,15 @@ unsafe extern "C" {
     fn managedExecuteReadOnly(
         gas: i64,
         addressHandle: i32,
+        functionHandle: i32,
+        argumentsHandle: i32,
+        resultHandle: i32,
+    ) -> i32;
+
+    fn managedExecuteOnDestContextWithErrorReturn(
+        gas: i64,
+        addressHandle: i32,
+        valueHandle: i32,
         functionHandle: i32,
         argumentsHandle: i32,
         resultHandle: i32,
@@ -130,20 +147,15 @@ impl SendApiImpl for VmApiImpl {
         gas_limit: u64,
         endpoint_name_handle: RawHandle,
         arg_buffer_handle: RawHandle,
-    ) -> Result<(), &'static [u8]> {
+    ) {
         unsafe {
-            let result = managedTransferValueExecute(
+            let _ = managedTransferValueExecute(
                 to_handle,
                 amount_handle,
                 gas_limit as i64,
                 endpoint_name_handle,
                 arg_buffer_handle,
             );
-            if result == 0 {
-                Ok(())
-            } else {
-                Err(b"transferValueExecute failed")
-            }
         }
     }
 
@@ -154,20 +166,34 @@ impl SendApiImpl for VmApiImpl {
         gas_limit: u64,
         endpoint_name_handle: RawHandle,
         arg_buffer_handle: RawHandle,
-    ) -> Result<(), &'static [u8]> {
+    ) {
         unsafe {
-            let result = managedMultiTransferDCDTNFTExecute(
+            let _ = managedMultiTransferDCDTNFTExecute(
                 to_handle,
                 payments_handle,
                 gas_limit as i64,
                 endpoint_name_handle,
                 arg_buffer_handle,
             );
-            if result == 0 {
-                Ok(())
-            } else {
-                Err(b"multiTransferDCDTNFTExecute failed")
-            }
+        }
+    }
+
+    fn multi_transfer_dcdt_nft_execute_with_return(
+        &self,
+        to_handle: RawHandle,
+        payments_handle: RawHandle,
+        gas_limit: u64,
+        endpoint_name_handle: RawHandle,
+        arg_buffer_handle: RawHandle,
+    ) -> i32 {
+        unsafe {
+            managedMultiTransferDCDTNFTExecuteWithReturn(
+                to_handle,
+                payments_handle,
+                gas_limit as i64,
+                endpoint_name_handle,
+                arg_buffer_handle,
+            )
         }
     }
 
@@ -370,6 +396,27 @@ impl SendApiImpl for VmApiImpl {
                 arg_buffer_handle,
                 result_handle,
             );
+        }
+    }
+
+    fn execute_on_dest_context_error_return_raw(
+        &self,
+        gas: u64,
+        to_handle: RawHandle,
+        rewa_value_handle: RawHandle,
+        endpoint_name_handle: RawHandle,
+        arg_buffer_handle: RawHandle,
+        result_handle: RawHandle,
+    ) -> i32 {
+        unsafe {
+            managedExecuteOnDestContextWithErrorReturn(
+                gas as i64,
+                to_handle,
+                rewa_value_handle,
+                endpoint_name_handle,
+                arg_buffer_handle,
+                result_handle,
+            )
         }
     }
 

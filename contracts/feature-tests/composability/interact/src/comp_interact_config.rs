@@ -60,7 +60,7 @@ impl Config {
     pub fn token_id(&self) -> RewaOrDcdtTokenIdentifier<StaticApi> {
         match self.token_id.as_str() {
             "REWA" => RewaOrDcdtTokenIdentifier::rewa(),
-            _ => RewaOrDcdtTokenIdentifier::dcdt(TokenIdentifier::from(self.token_id.as_str())),
+            _ => RewaOrDcdtTokenIdentifier::dcdt(DcdtTokenIdentifier::from(self.token_id.as_str())),
         }
     }
 

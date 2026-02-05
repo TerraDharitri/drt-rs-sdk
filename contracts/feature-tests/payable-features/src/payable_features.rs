@@ -14,18 +14,12 @@ pub trait PayableFeatures {
 
     #[view]
     #[payable("*")]
-    fn echo_call_value_legacy(&self) -> MultiValue2<BigUint, ManagedVec<DcdtTokenPayment>> {
+    fn payable_legacy_rewa_dcdt(&self) -> MultiValue2<BigUint, ManagedVec<DcdtTokenPayment>> {
         (
             self.call_value().rewa_direct_non_strict().clone_value(),
             self.call_value().all_dcdt_transfers().clone_value(),
         )
             .into()
-    }
-
-    #[view]
-    #[payable("*")]
-    fn echo_call_value(&self) -> ManagedVec<RewaOrDcdtTokenPayment> {
-        self.call_value().all_transfers().clone()
     }
 
     #[endpoint]
@@ -45,6 +39,12 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("*")]
+    fn payable_all(&self) -> ManagedVec<Payment> {
+        self.call_value().all().clone()
+    }
+
+    #[endpoint]
+    #[payable("*")]
     fn payment_array_dcdt_3(
         &self,
     ) -> MultiValue3<DcdtTokenPayment, DcdtTokenPayment, DcdtTokenPayment> {
@@ -54,10 +54,17 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("*")]
-    fn payment_array_rewa_dcdt_3(
+    fn payment_array_rewa_or_dcdt_3(
         &self,
     ) -> MultiValue3<RewaOrDcdtTokenPayment, RewaOrDcdtTokenPayment, RewaOrDcdtTokenPayment> {
         let [payment_a, payment_b, payment_c] = self.call_value().multi_rewa_or_dcdt();
+        (payment_a.clone(), payment_b.clone(), payment_c.clone()).into()
+    }
+
+    #[endpoint]
+    #[payable("*")]
+    fn payment_array_3(&self) -> MultiValue3<Payment, Payment, Payment> {
+        let [payment_a, payment_b, payment_c] = self.call_value().array();
         (payment_a.clone(), payment_b.clone(), payment_c.clone()).into()
     }
 
@@ -99,6 +106,12 @@ pub trait PayableFeatures {
     }
 
     #[endpoint]
+    #[payable]
+    fn payable_any_5(&self) -> OptionalValue<PaymentMultiValue> {
+        optional_payment_to_multi_value(self.call_value().single_optional())
+    }
+
+    #[endpoint]
     #[payable("REWA")]
     fn payable_rewa_1(
         &self,
@@ -137,6 +150,12 @@ pub trait PayableFeatures {
     }
 
     #[endpoint]
+    #[payable("REWA")]
+    fn payable_rewa_5(&self) -> OptionalValue<PaymentMultiValue> {
+        optional_payment_to_multi_value(self.call_value().single_optional())
+    }
+
+    #[endpoint]
     #[payable("PAYABLE-FEATURES-TOKEN")]
     fn payable_token_1(
         &self,
@@ -151,7 +170,7 @@ pub trait PayableFeatures {
     fn payable_token_2(
         &self,
         #[payment] payment: BigUint,
-    ) -> MultiValue2<BigUint, TokenIdentifier> {
+    ) -> MultiValue2<BigUint, DcdtTokenIdentifier> {
         let token = self.call_value().single_dcdt().token_identifier.clone();
         (payment, token).into()
     }
@@ -168,9 +187,22 @@ pub trait PayableFeatures {
 
     #[endpoint]
     #[payable("PAYABLE-FEATURES-TOKEN")]
-    fn payable_token_4(&self) -> MultiValue2<BigUint, TokenIdentifier> {
+    fn payable_token_4(&self) -> MultiValue2<BigUint, DcdtTokenIdentifier> {
         let payment = self.call_value().single_dcdt().amount.clone();
         let token = self.call_value().single_dcdt().token_identifier.clone();
         (payment, token).into()
+    }
+}
+
+fn optional_payment_to_multi_value<M>(
+    opt_payment: Option<Ref<'static, Payment<M>>>,
+) -> OptionalValue<PaymentMultiValue<M>>
+where
+    M: ManagedTypeApi,
+{
+    if let Some(payment) = opt_payment {
+        OptionalValue::Some(payment.clone().into_multi_value())
+    } else {
+        OptionalValue::None
     }
 }

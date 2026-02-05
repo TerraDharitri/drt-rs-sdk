@@ -1,11 +1,12 @@
 use crate::{
-    api::{use_raw_handle, BlockchainApiImpl, CallTypeApi, StaticVarApiImpl, StorageWriteApi},
+    api::{BlockchainApiImpl, CallTypeApi, StaticVarApiImpl, StorageWriteApi, use_raw_handle},
     codec::TopDecodeMulti,
     contract_base::SendRawWrapper,
     formatter::SCLowerHex,
     types::{
-        decode_result, AsyncCall, AsyncCallPromises, BigUint, DcdtTokenPayment, ManagedBuffer,
-        ManagedBufferBuilder, ManagedType, ManagedVec, Tx, TRANSFER_EXECUTE_DEFAULT_LEFTOVER,
+        AsyncCall, AsyncCallPromises, BigUint, DcdtTokenPayment, ManagedBuffer,
+        ManagedBufferBuilder, ManagedType, ManagedVec, TRANSFER_EXECUTE_DEFAULT_LEFTOVER, Tx,
+        decode_result,
     },
 };
 
@@ -99,7 +100,7 @@ where
 
         SendRawWrapper::<SA>::new().clean_return_data();
 
-        decode_result(raw_result)
+        decode_result(raw_result.0)
     }
 
     pub(super) fn execute_on_dest_context_readonly<RequestedResult>(self) -> RequestedResult
@@ -155,7 +156,7 @@ where
     pub(super) fn transfer_execute_rewa(self, rewa_payment: BigUint<SA>) {
         let gas_limit = self.resolve_gas_limit_with_leftover();
 
-        let _ = SendRawWrapper::<SA>::new().direct_rewa_execute(
+        SendRawWrapper::<SA>::new().direct_rewa_execute(
             &self.to,
             &rewa_payment,
             gas_limit,
@@ -169,7 +170,7 @@ where
 
         if payment.token_nonce == 0 {
             // fungible DCDT
-            let _ = SendRawWrapper::<SA>::new().transfer_dcdt_execute(
+            SendRawWrapper::<SA>::new().transfer_dcdt_execute(
                 &self.to,
                 &payment.token_identifier,
                 &payment.amount,
@@ -179,7 +180,7 @@ where
             );
         } else {
             // non-fungible/semi-fungible DCDT
-            let _ = SendRawWrapper::<SA>::new().transfer_dcdt_nft_execute(
+            SendRawWrapper::<SA>::new().transfer_dcdt_nft_execute(
                 &self.to,
                 &payment.token_identifier,
                 payment.token_nonce,
@@ -196,7 +197,7 @@ where
         payments: ManagedVec<SA, DcdtTokenPayment<SA>>,
     ) {
         let gas_limit = self.resolve_gas_limit_with_leftover();
-        let _ = SendRawWrapper::<SA>::new().multi_dcdt_transfer_execute(
+        SendRawWrapper::<SA>::new().multi_dcdt_transfer_execute(
             &self.to,
             &payments,
             gas_limit,

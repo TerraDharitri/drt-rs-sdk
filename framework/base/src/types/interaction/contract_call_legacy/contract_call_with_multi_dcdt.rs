@@ -3,13 +3,13 @@ use crate::codec::TopEncodeMulti;
 use crate::{
     api::CallTypeApi,
     types::{
-        BigUint, DcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec, TokenIdentifier,
+        BigUint, DcdtTokenIdentifier, DcdtTokenPayment, ManagedAddress, ManagedBuffer, ManagedVec,
     },
 };
 
 use super::{
-    contract_call_no_payment::ContractCallNoPayment, contract_call_trait::ContractCallBase,
-    ContractCall, ContractCallWithRewa,
+    ContractCall, ContractCallWithRewa, contract_call_no_payment::ContractCallNoPayment,
+    contract_call_trait::ContractCallBase,
 };
 
 #[deprecated(
@@ -89,7 +89,7 @@ where
     )]
     pub fn add_dcdt_token_transfer(
         self,
-        payment_token: TokenIdentifier<SA>,
+        payment_token: DcdtTokenIdentifier<SA>,
         payment_nonce: u64,
         payment_amount: BigUint<SA>,
     ) -> Self {

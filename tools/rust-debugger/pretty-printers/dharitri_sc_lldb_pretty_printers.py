@@ -1,7 +1,7 @@
 ##############################################################################
-### LLDB support for displaying Dharitri SpaceCraft SDK types in debug mode
+### LLDB support for displaying DharitrI SpaceCraft SDK types in debug mode
 ##############################################################################
-### Version: 1.19.0
+### Version: 2.0.0
 ##############################################################################
 
 from functools import partial
@@ -30,14 +30,19 @@ BIG_FLOAT_TYPE = f"{MANAGED_BASIC_PATH}::big_float::BigFloat<{DEBUG_API_TYPE} ?>
 MANAGED_BUFFER_TYPE = f"{MANAGED_BASIC_PATH}::managed_buffer::ManagedBuffer<{DEBUG_API_TYPE} ?>"
 
 # 3. SC wasm - Managed wrapped types
+## 3a. general
 MANAGED_WRAPPED_PATH = "dharitri_sc::types::managed::wrapped"
-
-BIG_UINT_TYPE = f"{MANAGED_WRAPPED_PATH}::big_uint::BigUint<{DEBUG_API_TYPE} ?>"
-TOKEN_IDENTIFIER_TYPE = f"{MANAGED_WRAPPED_PATH}::token_identifier::TokenIdentifier<{DEBUG_API_TYPE} ?>"
+BIG_UINT_TYPE = f"{MANAGED_WRAPPED_PATH}::num::big_uint::BigUint<{DEBUG_API_TYPE} ?>"
+NON_ZERO_BIG_UINT_TYPE = f"{MANAGED_WRAPPED_PATH}::num::non_zero_big_uint::NonZeroBigUint<{DEBUG_API_TYPE} ?>"
 MANAGED_ADDRESS_TYPE = f"{MANAGED_WRAPPED_PATH}::managed_address::ManagedAddress<{DEBUG_API_TYPE} ?>"
 MANAGED_BYTE_ARRAY_TYPE = f"{MANAGED_WRAPPED_PATH}::managed_byte_array::ManagedByteArray<{DEBUG_API_TYPE} ?>"
-DCDT_TOKEN_PAYMENT_TYPE = f"{MANAGED_WRAPPED_PATH}::dcdt_token_payment::DcdtTokenPayment<{DEBUG_API_TYPE} ?>"
-REWA_OR_DCDT_TOKEN_IDENTIFIER_TYPE = f"{MANAGED_WRAPPED_PATH}::rewa_or_dcdt_token_identifier::RewaOrDcdtTokenIdentifier<{DEBUG_API_TYPE} ?>"
+## 3b. tokens & payments
+MANAGED_WRAPPED_TOKEN_PATH = "dharitri_sc::types::managed::wrapped::token"
+DCDT_TOKEN_IDENTIFIER_TYPE = f"{MANAGED_WRAPPED_TOKEN_PATH}::dcdt_token_identifier::DcdtTokenIdentifier<{DEBUG_API_TYPE} ?>"
+TOKEN_IDENTIFIER_TYPE = f"{MANAGED_WRAPPED_TOKEN_PATH}::token_identifier::TokenIdentifier<{DEBUG_API_TYPE} ?>"
+DCDT_TOKEN_PAYMENT_TYPE = f"{MANAGED_WRAPPED_TOKEN_PATH}::dcdt_token_payment::DcdtTokenPayment<{DEBUG_API_TYPE} ?>"
+REWA_OR_DCDT_TOKEN_IDENTIFIER_TYPE = f"{MANAGED_WRAPPED_TOKEN_PATH}::rewa_or_dcdt_token_identifier::RewaOrDcdtTokenIdentifier<{DEBUG_API_TYPE} ?>"
+
 # ManagedOption
 MANAGED_OPTION_INNER_TYPE_INDEX = 1
 MANAGED_OPTION_NONE_HANDLE = 2147483646  # i32::MAX - 1
@@ -54,14 +59,14 @@ CHAIN_CORE_PATH = "dharitri_chain_core::types"
 HEAP_ADDRESS_TYPE = f"{CHAIN_CORE_PATH}::address::Address"
 BOXED_BYTES_TYPE = f"{CHAIN_CORE_PATH}::boxed_bytes::BoxedBytes"
 
-# 6. Dharitri interaction expression
+# 6. DharitrI interaction expression
 INTERACTION_EXPR_PATH = "dharitri_sc::types::interaction::expr"
 
 TEST_SC_ADDRESS_TYPE = f"{INTERACTION_EXPR_PATH}::test_sc_address::TestSCAddress"
 TEST_ADDRESS_TYPE = f"{INTERACTION_EXPR_PATH}::test_address::TestAddress"
 TEST_TOKEN_IDENTIFIER_TYPE = f"{INTERACTION_EXPR_PATH}::test_token_identifier::TestTokenIdentifier"
 
-# 7. Dharitri codec - Multi-types
+# 7. DharitrI codec - Multi-types
 MULTI_TYPES_PATH = "dharitri_sc_codec::multi_types"
 
 OPTIONAL_VALUE_TYPE = f"{MULTI_TYPES_PATH}::multi_value_optional::OptionalValue<{ANY_TYPE}>"
@@ -363,9 +368,9 @@ class BigUint(PlainManagedVecItem, ManagedType):
         return big_uint.sbvalue.GetSummary()
 
 
-class TokenIdentifier(PlainManagedVecItem, ManagedType):
+class DcdtTokenIdentifier(PlainManagedVecItem, ManagedType):
     def lookup(self, token_identifier: lldb.value) -> lldb.value:
-        return token_identifier.data.buffer
+        return token_identifier.token_id.buffer
 
     def value_summary(self, buffer: lldb.value, context: lldb.value, type_info: lldb.SBType) -> str:
         return buffer_as_string(buffer)
@@ -439,7 +444,7 @@ class DcdtTokenPayment(ManagedVecItem, ManagedType):
 
     def summarize_item(self, bytes: List[int], context: lldb.value, type_info: lldb.SBType) -> str:
         token_id_handle_bytes, nonce_bytes, amount_handle_bytes = split_bytes(bytes, self.COMPONENT_SIZES)
-        token_id = TokenIdentifier().summarize_item(token_id_handle_bytes, context, None)
+        token_id = DcdtTokenIdentifier().summarize_item(token_id_handle_bytes, context, None)
         nonce = bytes_to_int(nonce_bytes)
         amount = BigInt().summarize_item(amount_handle_bytes, context, None)
         return self.to_string(token_id, nonce, amount)
@@ -450,7 +455,7 @@ class DcdtTokenPayment(ManagedVecItem, ManagedType):
 
 class RewaOrDcdtTokenIdentifier(PlainManagedVecItem, ManagedType):
     def lookup(self, rewa_or_dcdt_token_identifier: lldb.value) -> lldb.value:
-        return rewa_or_dcdt_token_identifier.buffer
+        return rewa_or_dcdt_token_identifier.token_id.buffer
 
     def value_summary(self, buffer: lldb.value, context: lldb.value, type_info: lldb.SBType) -> str:
         token_id = buffer_as_string(buffer)
@@ -522,7 +527,8 @@ DHARITRI_WASM_TYPE_HANDLERS = [
     (MANAGED_BUFFER_TYPE, ManagedBuffer),
     # 3. SC wasm - Managed wrapped types
     (BIG_UINT_TYPE, BigUint),
-    (TOKEN_IDENTIFIER_TYPE, TokenIdentifier),
+    (NON_ZERO_BIG_UINT_TYPE, BigUint),
+    (DCDT_TOKEN_IDENTIFIER_TYPE, DcdtTokenIdentifier),
     (MANAGED_ADDRESS_TYPE, ManagedAddress),
     (MANAGED_BYTE_ARRAY_TYPE, ManagedByteArray),
     (DCDT_TOKEN_PAYMENT_TYPE, DcdtTokenPayment),
@@ -533,11 +539,11 @@ DHARITRI_WASM_TYPE_HANDLERS = [
     # 5. SC wasm - heap
     (HEAP_ADDRESS_TYPE, HeapAddress),
     (BOXED_BYTES_TYPE, BoxedBytes),
-    # 6. Dharitri interaction expression
+    # 6. DharitrI interaction expression
     (TEST_SC_ADDRESS_TYPE, TestSCAddress),
     (TEST_ADDRESS_TYPE, TestAddress),
     (TEST_TOKEN_IDENTIFIER_TYPE, TestTokenIdentifier),
-    # 7. Dharitri codec - Multi-types
+    # 7. DharitrI codec - Multi-types
     (OPTIONAL_VALUE_TYPE, OptionalValue),
 ]
 

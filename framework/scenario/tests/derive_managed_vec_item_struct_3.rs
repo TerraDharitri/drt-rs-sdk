@@ -11,7 +11,7 @@ dharitri_sc::imports!();
 /// Unusually large, payload size is 74.
 #[derive(ManagedVecItem)]
 pub struct Auction<M: ManagedTypeApi> {
-    pub auctioned_token_type: TokenIdentifier<M>,
+    pub auctioned_token_type: DcdtTokenIdentifier<M>,
     pub auctioned_token_nonce: u64,
     pub nr_auctioned_tokens: BigUint<M>,
     pub auction_type: AuctionType,

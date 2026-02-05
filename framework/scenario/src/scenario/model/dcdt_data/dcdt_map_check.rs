@@ -26,7 +26,7 @@ impl InterpretableFrom<CheckDcdtMapRaw> for CheckDcdtMap {
             CheckDcdtMapRaw::Star => CheckDcdtMap::Star,
             CheckDcdtMapRaw::Equal(m) => {
                 CheckDcdtMap::Equal(CheckDcdtMapContents::interpret_from(m, context))
-            },
+            }
         }
     }
 }

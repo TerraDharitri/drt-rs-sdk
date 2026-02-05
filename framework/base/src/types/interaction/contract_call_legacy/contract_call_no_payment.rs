@@ -6,15 +6,16 @@ use crate::{
     api::CallTypeApi,
     types::{
         BigUint, RewaOrDcdtTokenIdentifier, RewaOrDcdtTokenPayment, RewaOrMultiDcdtPayment,
-        DcdtTokenPayment, FunctionCall, ManagedAddress, ManagedArgBuffer, ManagedBuffer,
-        ManagedVec, TokenIdentifier, Tx, TxScEnv,
+        DcdtTokenIdentifier, DcdtTokenPayment, FunctionCall, ManagedAddress, ManagedArgBuffer,
+        ManagedBuffer, ManagedVec, Tx, TxScEnv,
     },
 };
 
 use super::{
-    contract_call_trait::ContractCallBase, contract_call_with_rewa::ContractCallWithRewa,
-    contract_call_with_multi_dcdt::ContractCallWithMultiDcdt, ContractCall,
-    ContractCallWithAnyPayment, ContractCallWithRewaOrSingleDcdt, UNSPECIFIED_GAS_LIMIT,
+    ContractCall, ContractCallWithAnyPayment, ContractCallWithRewaOrSingleDcdt,
+    UNSPECIFIED_GAS_LIMIT, contract_call_trait::ContractCallBase,
+    contract_call_with_rewa::ContractCallWithRewa,
+    contract_call_with_multi_dcdt::ContractCallWithMultiDcdt,
 };
 
 /// Holds metadata for calling another contract, without payments.
@@ -119,7 +120,7 @@ where
     )]
     pub fn add_dcdt_token_transfer(
         self,
-        payment_token: TokenIdentifier<SA>,
+        payment_token: DcdtTokenIdentifier<SA>,
         payment_nonce: u64,
         payment_amount: BigUint<SA>,
     ) -> ContractCallWithMultiDcdt<SA, OriginalResult> {

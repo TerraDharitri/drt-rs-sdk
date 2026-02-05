@@ -31,7 +31,7 @@ pub trait Contract:
     fn buy_token_endpoint(
         &self,
         requested_amount: BigUint,
-        requested_token: TokenIdentifier,
+        requested_token: DcdtTokenIdentifier,
         requested_nonce: OptionalValue<u64>,
     ) {
         self.buy_token::<FunctionSelector<Self::Api>>(
@@ -43,14 +43,14 @@ pub trait Contract:
 
     #[endpoint(deposit)]
     #[payable]
-    fn deposit_endpoint(&self, payment_token: OptionalValue<TokenIdentifier>) {
+    fn deposit_endpoint(&self, payment_token: OptionalValue<DcdtTokenIdentifier>) {
         self.deposit::<FunctionSelector<Self::Api>>(payment_token)
     }
 
     #[endpoint(setBondingCurve)]
     fn set_bonding_curve_endpoint(
         &self,
-        identifier: TokenIdentifier,
+        identifier: DcdtTokenIdentifier,
         function: FunctionSelector<Self::Api>,
         sell_availability: bool,
     ) {
@@ -66,12 +66,12 @@ pub trait Contract:
     }
 
     #[view]
-    fn view_buy_price(&self, amount: BigUint, identifier: TokenIdentifier) -> BigUint {
+    fn view_buy_price(&self, amount: BigUint, identifier: DcdtTokenIdentifier) -> BigUint {
         self.get_buy_price::<FunctionSelector<Self::Api>>(amount, identifier)
     }
 
     #[view]
-    fn view_sell_price(&self, amount: BigUint, identifier: TokenIdentifier) -> BigUint {
+    fn view_sell_price(&self, amount: BigUint, identifier: DcdtTokenIdentifier) -> BigUint {
         self.get_sell_price::<FunctionSelector<Self::Api>>(amount, identifier)
     }
 }

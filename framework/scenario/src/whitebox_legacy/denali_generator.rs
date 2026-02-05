@@ -6,7 +6,7 @@ use crate::{
 };
 use dharitri_chain_scenario_format::interpret_trait::{InterpretableFrom, InterpreterContext};
 
-use super::{raw_converter::*, ScCallDenali, ScQueryDenali, TxExpectDenali};
+use super::{ScCallDenali, ScQueryDenali, TxExpectDenali, raw_converter::*};
 use dharitri_chain_vm::blockchain::state::AccountData;
 
 pub(crate) struct DenaliGenerator<'a> {

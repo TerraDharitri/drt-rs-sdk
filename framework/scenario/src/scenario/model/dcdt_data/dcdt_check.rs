@@ -83,7 +83,7 @@ impl CheckDcdt {
                     }];
 
                     prev_dcdt_check.instances = CheckDcdtInstances::Equal(new_instances_check);
-                },
+                }
                 CheckDcdtInstances::Equal(dcdt_instance_check) => {
                     if let Some(i) = dcdt_instance_check
                         .iter()
@@ -97,7 +97,7 @@ impl CheckDcdt {
                             ..Default::default()
                         });
                     }
-                },
+                }
             }
         }
     }
@@ -129,7 +129,7 @@ impl CheckDcdt {
                     }];
 
                     prev_dcdt_check.instances = CheckDcdtInstances::Equal(new_instances_check);
-                },
+                }
                 CheckDcdtInstances::Equal(dcdt_instance_check) => {
                     if let Some(i) = dcdt_instance_check
                         .iter()
@@ -145,7 +145,7 @@ impl CheckDcdt {
                             ..Default::default()
                         });
                     }
-                },
+                }
             }
         }
     }

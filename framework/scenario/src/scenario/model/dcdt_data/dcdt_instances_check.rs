@@ -24,8 +24,8 @@ impl CheckDcdtInstances {
                         return true;
                     }
                 }
-            },
-            CheckDcdtInstances::Star => {},
+            }
+            CheckDcdtInstances::Star => {}
         }
         false
     }
@@ -56,7 +56,7 @@ impl IntoRaw<CheckDcdtInstancesRaw> for CheckDcdtInstances {
         match self {
             CheckDcdtInstances::Equal(eq) => {
                 CheckDcdtInstancesRaw::Equal(eq.into_iter().map(|cei| cei.into_raw()).collect())
-            },
+            }
             CheckDcdtInstances::Star => CheckDcdtInstancesRaw::Star,
         }
     }

@@ -6,8 +6,8 @@ use dharitri_sc::{
     },
     derive::ManagedVecItem,
     types::{
-        BigUint, DcdtTokenPayment, ManagedByteArray, ManagedType, ManagedVecItemPayload,
-        TokenIdentifier,
+        BigUint, DcdtTokenIdentifier, DcdtTokenPayment, ManagedByteArray, ManagedType,
+        ManagedVecItemPayload,
     },
 };
 use dharitri_sc_scenario::api::StaticApi;
@@ -43,7 +43,7 @@ fn struct_with_numbers_static() {
 fn struct_to_bytes_writer() {
     let s = ManagedStructWithToken::<StaticApi> {
         token: DcdtTokenPayment::new(
-            TokenIdentifier::from("MYTOKEN-12345"),
+            DcdtTokenIdentifier::from("MYTOKEN-12345"),
             0u64,
             BigUint::from(42u64),
         ),
@@ -73,7 +73,11 @@ fn struct_to_bytes_writer() {
 #[test]
 fn struct_from_bytes_reader() {
     let s = ManagedStructWithToken::<StaticApi> {
-        token: DcdtTokenPayment::new(TokenIdentifier::from("MYTOKEN-12345"), 0u64, 42u64.into()),
+        token: DcdtTokenPayment::new(
+            DcdtTokenIdentifier::from("MYTOKEN-12345"),
+            0u64,
+            42u64.into(),
+        ),
         num: 0x12345,
         eth_address_1: ManagedByteArray::new_from_bytes(&[1u8; 20]),
         eth_address_2: ManagedByteArray::new_from_bytes(&[2u8; 20]),

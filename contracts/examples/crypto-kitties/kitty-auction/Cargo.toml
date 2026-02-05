@@ -1,8 +1,8 @@
 [package]
 name = "kitty-auction"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = [ "Dharitri <contact@dharitri.org>",]
+edition = "2024"
 publish = false
 
 [lib]
@@ -17,9 +17,9 @@ version = "0.0.0"
 path = "../kitty-ownership"
 
 [dependencies.dharitri-sc]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/base"
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/scenario"

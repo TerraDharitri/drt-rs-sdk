@@ -16,3 +16,19 @@ impl From<&DcdtAttributeAbi> for DcdtAttributeJson {
         }
     }
 }
+
+impl From<&DcdtAttributeJson> for DcdtAttributeAbi {
+    fn from(attr: &DcdtAttributeJson) -> Self {
+        DcdtAttributeAbi {
+            ticker: attr.ticker.to_owned(),
+            ty: attr.ty.clone(),
+            type_descriptions: Default::default(),
+        }
+    }
+}
+
+impl From<DcdtAttributeJson> for DcdtAttributeAbi {
+    fn from(attr: DcdtAttributeJson) -> Self {
+        DcdtAttributeAbi::from(&attr)
+    }
+}

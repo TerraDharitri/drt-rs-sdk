@@ -3,7 +3,7 @@ use std::{fs, process::Command};
 use convert_case::{Case, Casing};
 use dharitri_sc_meta::{
     cmd::template::{
-        template_names_from_repo, ContractCreator, ContractCreatorTarget, RepoSource, RepoVersion,
+        ContractCreator, ContractCreatorTarget, RepoSource, RepoVersion, template_names_from_repo,
     },
     version_history::{self, LAST_TEMPLATE_VERSION},
 };
@@ -36,7 +36,7 @@ fn template_current_adder() {
         "adder",
         "examples",
         "new-adder",
-        "Alin Cruceat <alin.cruceat@dharitri.org>",
+        "Dharitri <contact@dharitri.org>",
     );
 
     cargo_check_interactor("examples", "new-adder");
@@ -112,7 +112,7 @@ async fn template_released_adder() {
     template_test_released(
         "adder",
         "released-adder",
-        "Alin Cruceat <alin.cruceat@dharitri.org>",
+        "Dharitri <contact@dharitri.org>",
     )
     .await;
 
@@ -195,7 +195,7 @@ pub fn cargo_test(target: &ContractCreatorTarget) {
     ];
     if BUILD_CONTRACTS {
         args.push("--features");
-        args.push("dharitri-sc-scenario/run-go-tests");
+        args.push("dharitri-sc-scenario/compiled-sc-tests");
     }
 
     let exit_status = Command::new("cargo")

@@ -1,12 +1,12 @@
-use dharitri_sc::types::{Address, TestAddress, TestSCAddress};
+use dharitri_sc::{
+    chain_core::std::Bech32Address,
+    types::{Address, TestAddress, TestSCAddress},
+};
 
-use super::{value_from_slice, AddressValue};
-use crate::{
-    facade::expr::Bech32Address,
-    scenario_format::{
-        interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
-        value_interpreter::interpret_string,
-    },
+use super::{AddressValue, value_from_slice};
+use crate::scenario_format::{
+    interpret_trait::{InterpretableFrom, InterpreterContext, IntoRaw},
+    value_interpreter::interpret_string,
 };
 use std::{cmp::Ordering, fmt};
 

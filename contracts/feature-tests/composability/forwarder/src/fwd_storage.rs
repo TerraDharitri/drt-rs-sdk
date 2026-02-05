@@ -4,7 +4,7 @@ dharitri_sc::imports!();
 pub trait ForwarderStorageModule {
     #[view(lastIssuedToken)]
     #[storage_mapper("lastIssuedToken")]
-    fn last_issued_token(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn last_issued_token(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
 
     #[view(lastErrorMessage)]
     #[storage_mapper("lastErrorMessage")]

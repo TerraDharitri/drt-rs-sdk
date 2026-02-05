@@ -3,15 +3,21 @@ mod tx_payment_rewa;
 mod tx_payment_rewa_or_dcdt;
 mod tx_payment_rewa_or_dcdt_refs;
 mod tx_payment_rewa_or_multi_dcdt;
-mod tx_payment_rewa_or_multi_dcdt_ref;
+mod tx_payment_rewa_or_multi_dcdt_refs;
 mod tx_payment_rewa_value;
 mod tx_payment_multi_rewa_or_dcdt;
 mod tx_payment_multi_dcdt;
+mod tx_payment_multi_transfer_marker;
 mod tx_payment_none;
 mod tx_payment_not_payable;
+mod tx_payment_payment;
+mod tx_payment_payment_option;
+mod tx_payment_payment_ref;
+mod tx_payment_payment_refs;
 mod tx_payment_single_dcdt;
 mod tx_payment_single_dcdt_ref;
 mod tx_payment_single_dcdt_triple;
+mod tx_payment_vec_ref;
 
 pub use test_dcdt_transfer::TestDcdtTransfer;
 pub use tx_payment_rewa::{Rewa, RewaPayment};
@@ -20,7 +26,9 @@ pub use tx_payment_multi_dcdt::TxPaymentMultiDcdt;
 pub use tx_payment_not_payable::NotPayable;
 
 use crate::{
-    api::ManagedTypeApi,
+    api::{CallTypeApi, ManagedTypeApi, quick_signal_error},
+    contract_base::TransferExecuteFailed,
+    err_msg,
     types::{BigUint, ManagedAddress, ManagedBuffer, MultiRewaOrDcdtPayment},
 };
 
@@ -32,7 +40,7 @@ use super::{AnnotatedValue, FunctionCall, TxEnv, TxFrom, TxToSpecified};
     label = "not a valid payment type",
     note = "there are multiple ways to specify the transaction payment, but `{Self}` is not one of them"
 )]
-pub trait TxPayment<Env>
+pub trait TxPayment<Env>: Sized
 where
     Env: TxEnv,
 {
@@ -41,7 +49,28 @@ where
 
     /// Transfer-execute calls have different APIs for different payments types.
     /// This method selects between them.
-    fn perform_transfer_execute(
+    fn perform_transfer_execute_fallible(
+        self,
+        env: &Env,
+        to: &ManagedAddress<Env::Api>,
+        gas_limit: u64,
+        fc: FunctionCall<Env::Api>,
+    ) -> Result<(), TransferExecuteFailed>;
+
+    /// Shortcut for doing direct transfers.
+    ///
+    /// It is relevant with REWA: it is simpler to perform direct REWA transfers,
+    /// instead of going via multi-transfer.
+    fn perform_transfer_fallible(
+        self,
+        env: &Env,
+        to: &ManagedAddress<Env::Api>,
+    ) -> Result<(), TransferExecuteFailed> {
+        self.perform_transfer_execute_fallible(env, to, 0, FunctionCall::empty())
+    }
+
+    /// Allows transfer-execute without payment.
+    fn perform_transfer_execute_legacy(
         self,
         env: &Env,
         to: &ManagedAddress<Env::Api>,
@@ -131,5 +160,14 @@ where
             rewa: None,
             multi_dcdt: Default::default(),
         }
+    }
+}
+
+#[allow(unused)]
+pub(crate) fn transfer_execute_failed_error<Api: CallTypeApi>(
+    result: Result<(), TransferExecuteFailed>,
+) {
+    if result.is_err() {
+        quick_signal_error::<Api>(err_msg::TRANSFER_EXECUTE_FAILED);
     }
 }

@@ -10,13 +10,13 @@ impl EndpointMutabilityMetadata {
         match self {
             EndpointMutabilityMetadata::Mutable => {
                 quote! { dharitri_sc::abi::EndpointMutabilityAbi::Mutable }
-            },
+            }
             EndpointMutabilityMetadata::Readonly => {
                 quote! { dharitri_sc::abi::EndpointMutabilityAbi::Readonly }
-            },
+            }
             EndpointMutabilityMetadata::_Pure => {
                 quote! { dharitri_sc::abi::EndpointMutabilityAbi::Pure }
-            },
+            }
         }
     }
 }

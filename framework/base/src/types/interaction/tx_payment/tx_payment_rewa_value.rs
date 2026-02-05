@@ -11,4 +11,6 @@ where
 impl<Env> TxRewaValue<Env> for BigUint<Env::Api> where Env: TxEnv {}
 impl<Env> TxRewaValue<Env> for &BigUint<Env::Api> where Env: TxEnv {}
 impl<Env> TxRewaValue<Env> for ManagedRef<'_, Env::Api, BigUint<Env::Api>> where Env: TxEnv {}
+impl<Env> TxRewaValue<Env> for i32 where Env: TxEnv {}
 impl<Env> TxRewaValue<Env> for u64 where Env: TxEnv {}
+impl<Env> TxRewaValue<Env> for u128 where Env: TxEnv {}

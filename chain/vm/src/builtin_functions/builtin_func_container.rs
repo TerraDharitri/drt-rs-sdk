@@ -1,4 +1,5 @@
 use super::{
+    BuiltinFunctionDcdtTransferInfo,
     builtin_func_trait::BuiltinFunction,
     dcdt_nft::{
         DCDTLocalBurn, DCDTLocalMint, DCDTNftAddQuantity, DCDTNftAddUri, DCDTNftBurn,
@@ -6,7 +7,6 @@ use super::{
     },
     general::{ChangeOwner, ClaimDeveloperRewards, DeleteUsername, SetUsername, UpgradeContract},
     transfer::{DCDTMultiTransfer, DCDTNftTransfer, DCDTTransfer},
-    BuiltinFunctionDcdtTransferInfo,
 };
 
 use crate::{
@@ -85,22 +85,22 @@ impl<'a> BuiltinFunctionCall<'a> {
         match self.tx_input.func_name.as_str() {
             DCDT_LOCAL_MINT_FUNC_NAME => {
                 self.check_role_and_execute(DcdtLocalRole::Mint, DCDTLocalMint, f)
-            },
+            }
             DCDT_LOCAL_BURN_FUNC_NAME => {
                 self.check_role_and_execute(DcdtLocalRole::Burn, DCDTLocalBurn, f)
-            },
+            }
             DCDT_NFT_CREATE_FUNC_NAME => {
                 self.check_role_and_execute(DcdtLocalRole::NftCreate, DCDTNftCreate, f)
-            },
+            }
             DCDT_NFT_BURN_FUNC_NAME => {
                 self.check_role_and_execute(DcdtLocalRole::NftBurn, DCDTNftBurn, f)
-            },
+            }
             DCDT_NFT_ADD_QUANTITY_FUNC_NAME => {
                 self.check_role_and_execute(DcdtLocalRole::NftAddQuantity, DCDTNftAddQuantity, f)
-            },
+            }
             DCDT_NFT_ADD_URI_FUNC_NAME => {
                 self.check_role_and_execute(DcdtLocalRole::NftAddUri, DCDTNftAddUri, f)
-            },
+            }
             DCDT_NFT_UPDATE_ATTRIBUTES_FUNC_NAME => self.check_role_and_execute(
                 DcdtLocalRole::NftUpdateAttributes,
                 DCDTNftUpdateAttributes,
@@ -117,7 +117,7 @@ impl<'a> BuiltinFunctionCall<'a> {
             UPGRADE_CONTRACT_FUNC_NAME => self.execute_bf(UpgradeContract, f),
             MIGRATE_USERNAME_FUNC_NAME => {
                 panic!("builtin function {MIGRATE_USERNAME_FUNC_NAME} was dropped")
-            },
+            }
             _ => or_else(self.tx_input, self.tx_cache, f),
         }
     }

@@ -46,10 +46,10 @@ pub trait DcdtFeaturesModule {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.latest_transfer_result().set(TransferResult::Success);
-            },
+            }
             ManagedAsyncCallResult::Err(_) => {
                 self.latest_transfer_result().set(TransferResult::Fail);
-            },
+            }
         }
     }
 

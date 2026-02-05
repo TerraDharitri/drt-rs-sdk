@@ -2,7 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/dharitri-sc-codec-derive.svg)](https://crates.io/crates/dharitri-sc-codec-derive) 
 
-Crate that contains all macro code generation the `dharitri-sc-codec` serializer.
+Crate that contains all macro code generation for the `dharitri-sc-codec` serializer.
 
 There are 4 derive macros currently provided:
 * NestedEncode

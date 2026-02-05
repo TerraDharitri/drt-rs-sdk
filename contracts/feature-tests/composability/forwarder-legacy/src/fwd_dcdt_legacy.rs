@@ -18,18 +18,6 @@ pub type DcdtTokenDataMultiValue<M> = MultiValue9<
 
 #[dharitri_sc::module]
 pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
-    #[view(getFungibleDcdtBalance)]
-    fn get_fungible_dcdt_balance(&self, token_identifier: &TokenIdentifier) -> BigUint {
-        self.blockchain()
-            .get_dcdt_balance(&self.blockchain().get_sc_address(), token_identifier, 0)
-    }
-
-    #[view(getCurrentNftNonce)]
-    fn get_current_nft_nonce(&self, token_identifier: &TokenIdentifier) -> u64 {
-        self.blockchain()
-            .get_current_dcdt_nft_nonce(&self.blockchain().get_sc_address(), token_identifier)
-    }
-
     #[endpoint]
     fn send_dcdt(&self, to: &ManagedAddress, token_id: TokenIdentifier, amount: &BigUint) {
         self.send().direct_dcdt(to, &token_id, 0, amount);
@@ -37,9 +25,9 @@ pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
 
     #[payable("*")]
     #[endpoint]
-    fn send_dcdt_with_fees(&self, to: ManagedAddress, percentage_fees: BigUint) {
+    fn send_dcdt_with_fees(&self, to: ManagedAddress, percentage_fees: u32) {
         let (token_id, payment) = self.call_value().single_fungible_dcdt();
-        let fees = &*payment * &percentage_fees / PERCENTAGE_TOTAL;
+        let fees = &*payment * percentage_fees / PERCENTAGE_TOTAL;
         let amount_to_send = payment.clone() - fees;
 
         self.send().direct_dcdt(&to, &token_id, 0, &amount_to_send);
@@ -62,20 +50,11 @@ pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
     fn send_dcdt_direct_multi_transfer(
         &self,
         to: ManagedAddress,
-        token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
+        payment_args: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
     ) {
-        let mut all_token_payments = ManagedVec::new();
-
-        for multi_arg in token_payments.into_iter() {
-            let (token_identifier, token_nonce, amount) = multi_arg.into_tuple();
-            let payment = DcdtTokenPayment::new(token_identifier, token_nonce, amount);
-
-            all_token_payments.push(payment);
-        }
-
-        let _ = self.send_raw().multi_dcdt_transfer_execute(
+        self.send_raw().multi_dcdt_transfer_execute(
             &to,
-            &all_token_payments,
+            &payment_args.convert_payment_multi_triples(),
             self.blockchain().get_gas_left(),
             &ManagedBuffer::new(),
             &ManagedArgBuffer::new(),
@@ -130,7 +109,7 @@ pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
             ManagedAsyncCallResult::Ok(()) => {
                 self.last_issued_token().set(token_identifier.unwrap_dcdt());
                 self.last_error_message().clear();
-            },
+            }
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_rewa() && returned_tokens > 0 {
@@ -138,7 +117,7 @@ pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
                 }
 
                 self.last_error_message().set(&message.err_msg);
-            },
+            }
         }
     }
 
@@ -150,65 +129,5 @@ pub trait ForwarderDcdtModule: fwd_storage_legacy::ForwarderStorageModule {
     #[endpoint]
     fn local_burn(&self, token_identifier: TokenIdentifier, amount: BigUint) {
         self.send().dcdt_local_burn(&token_identifier, 0, &amount);
-    }
-
-    #[view]
-    fn get_dcdt_local_roles(&self, token_id: TokenIdentifier) -> MultiValueEncoded<ManagedBuffer> {
-        let roles = self.blockchain().get_dcdt_local_roles(&token_id);
-        let mut result = MultiValueEncoded::new();
-        for role in roles.iter_roles() {
-            result.push(role.as_role_name().into());
-        }
-        result
-    }
-
-    #[view]
-    fn get_dcdt_token_data(
-        &self,
-        address: ManagedAddress,
-        token_id: TokenIdentifier,
-        nonce: u64,
-    ) -> DcdtTokenDataMultiValue<Self::Api> {
-        let token_data = self
-            .blockchain()
-            .get_dcdt_token_data(&address, &token_id, nonce);
-
-        (
-            token_data.token_type,
-            token_data.amount,
-            token_data.frozen,
-            token_data.hash,
-            token_data.name,
-            token_data.attributes,
-            token_data.creator,
-            token_data.royalties,
-            token_data.uris,
-        )
-            .into()
-    }
-
-    #[view]
-    fn is_dcdt_frozen(
-        &self,
-        address: &ManagedAddress,
-        token_id: &TokenIdentifier,
-        nonce: u64,
-    ) -> bool {
-        self.blockchain().is_dcdt_frozen(address, token_id, nonce)
-    }
-
-    #[view]
-    fn is_dcdt_paused(&self, token_id: &TokenIdentifier) -> bool {
-        self.blockchain().is_dcdt_paused(token_id)
-    }
-
-    #[view]
-    fn is_dcdt_limited_transfer(&self, token_id: &TokenIdentifier) -> bool {
-        self.blockchain().is_dcdt_limited_transfer(token_id)
-    }
-
-    #[view]
-    fn validate_token_identifier(&self, token_id: TokenIdentifier) -> bool {
-        token_id.is_valid_dcdt_identifier()
     }
 }

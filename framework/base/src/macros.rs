@@ -144,7 +144,7 @@ macro_rules! sc_try {
             dharitri_sc::types::SCResult::Ok(t) => t,
             dharitri_sc::types::SCResult::Err(e) => {
                 return dharitri_sc::types::SCResult::Err(e);
-            },
+            }
         }
     };
 }

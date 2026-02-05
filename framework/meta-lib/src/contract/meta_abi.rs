@@ -1,11 +1,11 @@
 use std::{
-    fs::{create_dir_all, File},
+    fs::{File, create_dir_all},
     io::Write,
     path::Path,
 };
 
 use crate::{
-    abi_json::{serialize_abi_to_json, ContractAbiJson, DcdtAttributeAbiJson},
+    abi_json::{ContractAbiJson, DcdtAttributeAbiJson, serialize_abi_to_json},
     dcdt_attr_file_json::create_new_dcdt_attr_file,
 };
 

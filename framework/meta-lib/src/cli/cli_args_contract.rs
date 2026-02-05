@@ -8,7 +8,7 @@ use super::{BuildArgs, BuildDbgArgs, CliArgsToRaw, TwiggyArgs};
     version,
     about,
     after_help = "
-The Dharitri smart contract Meta crate can be used in two ways:
+The DharitrI smart contract Meta crate can be used in two ways:
     A. Import it into a contract's specific meta-crate. 
        There it will receive access to the contract ABI generator. 
        Based on that it is able to build the contract and apply various tools.
@@ -80,33 +80,33 @@ impl CliArgsToRaw for ContractCliAction {
         match self {
             ContractCliAction::Abi => {
                 raw.push("abi".to_string());
-            },
+            }
             ContractCliAction::Build(args) => {
                 raw.push("build".to_string());
                 raw.append(&mut args.to_raw());
-            },
+            }
             ContractCliAction::BuildDbg(args) => {
                 raw.push("build-dbg".to_string());
                 raw.append(&mut args.to_raw());
-            },
+            }
             ContractCliAction::Twiggy(args) => {
                 raw.push("twiggy".to_string());
                 raw.append(&mut args.to_raw());
-            },
+            }
             ContractCliAction::Clean => {
                 raw.push("clean".to_string());
-            },
+            }
             ContractCliAction::Update => {
                 raw.push("update".to_string());
-            },
+            }
             ContractCliAction::GenerateSnippets(args) => {
                 raw.push("snippets".to_string());
                 raw.append(&mut args.to_raw());
-            },
+            }
             ContractCliAction::GenerateProxies(args) => {
                 raw.push("proxy".to_string());
                 raw.append(&mut args.to_raw());
-            },
+            }
         }
         raw
     }

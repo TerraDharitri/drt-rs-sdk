@@ -16,7 +16,4 @@ pub use static_buffer::*;
 #[cfg(feature = "alloc")]
 pub use heap::*;
 
-pub use crate::chain_core::types::CodeMetadata;
-pub use crate::chain_core::types::DcdtLocalRole;
-pub use crate::chain_core::types::DcdtLocalRoleFlags;
-pub use crate::chain_core::types::DcdtTokenType;
+pub use crate::chain_core::types::*;

@@ -63,7 +63,7 @@ impl MultisigInteract {
         action_id
     }
 
-    pub async fn query_wrewa_token_identifier(&mut self) -> TokenIdentifier<StaticApi> {
+    pub async fn query_wrewa_token_identifier(&mut self) -> DcdtTokenIdentifier<StaticApi> {
         let wrewa_token_id = self
             .interactor
             .query()

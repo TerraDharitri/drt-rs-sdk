@@ -9,6 +9,8 @@ unsafe extern "C" {
     fn managedGetMultiDCDTCallValue(resultHandle: i32);
 
     fn getNumDCDTTransfers() -> i32;
+
+    fn managedGetAllTransfersCallValue(resultHandle: i32);
 }
 
 impl CallValueApi for VmApiImpl {
@@ -42,5 +44,11 @@ impl CallValueApiImpl for VmApiImpl {
 
     fn dcdt_num_transfers(&self) -> usize {
         unsafe { getNumDCDTTransfers() as usize }
+    }
+
+    fn load_all_transfers(&self, dest_handle: Self::ManagedBufferHandle) {
+        unsafe {
+            managedGetAllTransfersCallValue(dest_handle);
+        }
     }
 }

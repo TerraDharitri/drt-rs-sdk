@@ -2,9 +2,6 @@ use dharitri_sc_scenario::{
     dharitri_sc::types::Address, scenario_format::value_interpreter::keccak256,
 };
 
-#[cfg(test)]
-use dharitri_sc_scenario::bech32;
-
 fn get_initial_dns_address() -> Address {
     Address::from_slice(&[1u8; 32])
 }
@@ -53,15 +50,15 @@ pub fn dns_address_for_name(name: &str) -> Address {
 #[test]
 fn test_compute_dns_address() {
     assert_eq!(
-        bech32::encode(&compute_dns_address_for_shard_id(0)),
+        compute_dns_address_for_shard_id(0).to_bech32_default(),
         "drt1qqqqqqqqqqqqqpgqnhvsujzd95jz6fyv3ldmynlf97tscs9nqqqqgewses"
     );
     assert_eq!(
-        bech32::encode(&compute_dns_address_for_shard_id(1)),
+        compute_dns_address_for_shard_id(1).to_bech32_default(),
         "drt1qqqqqqqqqqqqqpgqysmcsfkqed279x6jvs694th4e4v50p4pqqqsmjndc3"
     );
     assert_eq!(
-        bech32::encode(&compute_dns_address_for_shard_id(2)),
+        compute_dns_address_for_shard_id(2).to_bech32_default(),
         "drt1qqqqqqqqqqqqqpgqnk5fq8sgg4vc63ffzf7qez550xe2l5jgqqpqygxwm7"
     );
 }
@@ -69,11 +66,15 @@ fn test_compute_dns_address() {
 #[test]
 fn test_dns_for_name() {
     assert_eq!(
-        bech32::encode(&dns_address_for_name("test.numbat")),
+        dns_address_for_name("test.numbat")
+            .to_bech32_default()
+            .bech32,
         "drt1qqqqqqqqqqqqqpgqydsrr9rw6wgl83dm7mgyqzr7khqp982zqp4q36cj29"
     );
     assert_eq!(
-        bech32::encode(&dns_address_for_name("helloworld.numbat")),
+        dns_address_for_name("helloworld.numbat")
+            .to_bech32_default()
+            .bech32,
         "drt1qqqqqqqqqqqqqpgq37fmv57uqkayxctplh4swkw9vfz2jawvqqyqsqlm3z"
     );
 }

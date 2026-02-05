@@ -22,12 +22,12 @@
         },
         {
             "step": "scCall",
-            "id": "11",
+            "id": "forward_transf_exec 1000 REWA",
             "tx": {
                 "from": "address:a_user",
                 "to": "sc:forwarder",
                 "rewaValue": "1000",
-                "function": "forward_transf_exec_rewa",
+                "function": "forward_transf_exec",
                 "arguments": [
                     "sc:vault",
                     "str:accept_funds"
@@ -70,11 +70,11 @@
         },
         {
             "step": "scCall",
-            "id": "11",
+            "id": "forward_transf_exec 0 REWA",
             "tx": {
                 "from": "address:a_user",
                 "to": "sc:forwarder",
-                "function": "forward_transf_exec_rewa",
+                "function": "forward_transf_exec",
                 "arguments": [
                     "sc:vault",
                     "str:accept_funds"

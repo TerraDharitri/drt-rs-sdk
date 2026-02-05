@@ -1,14 +1,14 @@
 [package]
 name = "payable-features-meta"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2024"
 publish = false
 
 [dependencies.payable-features]
 path = ".."
 
 [dependencies.dharitri-sc-meta-lib]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/meta-lib"
 default-features = false

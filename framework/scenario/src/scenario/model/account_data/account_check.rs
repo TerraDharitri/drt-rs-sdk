@@ -1,4 +1,4 @@
-use dharitri_sc::codec::{top_encode_to_vec_u8_or_panic, TopEncode};
+use dharitri_sc::codec::{TopEncode, top_encode_to_vec_u8_or_panic};
 
 use crate::{
     scenario::model::{
@@ -96,7 +96,7 @@ impl CheckAccount {
                 };
 
                 self.dcdt = CheckDcdtMap::Equal(new_check_dcdt_map);
-            },
+            }
             CheckDcdtMap::Equal(check_dcdt_map) => {
                 if check_dcdt_map.contents.contains_key(&token_id) {
                     let prev_entry = check_dcdt_map.contents.get_mut(&token_id).unwrap();
@@ -108,7 +108,7 @@ impl CheckAccount {
                         },
                     }
                 }
-            },
+            }
         }
 
         self

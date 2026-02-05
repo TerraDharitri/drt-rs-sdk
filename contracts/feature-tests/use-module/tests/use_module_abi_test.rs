@@ -1,5 +1,5 @@
 use dharitri_sc_meta_lib::abi_json;
-use dharitri_sc_scenario::*;
+use dharitri_sc_scenario::imports::*;
 
 use std::{fs, fs::File, io::Write};
 

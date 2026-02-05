@@ -5,6 +5,8 @@ use serde::{Deserialize, Serialize};
 pub struct NetworkConfig {
     #[serde(rename = "drt_chain_id")]
     pub chain_id: String,
+    #[serde(rename = "drt_address_hrp", default = "default_hrp")]
+    pub address_hrp: String,
     #[serde(rename = "drt_denomination")]
     pub denomination: i32,
     #[serde(rename = "drt_gas_per_data_byte")]
@@ -44,4 +46,8 @@ pub struct NetworkConfigResponse {
     pub error: String,
     pub code: String,
     pub data: Option<NetworkConfigData>,
+}
+
+fn default_hrp() -> String {
+    "drt".to_string()
 }

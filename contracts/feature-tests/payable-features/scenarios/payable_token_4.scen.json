@@ -34,7 +34,7 @@
             "expect": {
                 "out": [],
                 "status": "4",
-                "message": "str:function expects single DCDT payment",
+                "message": "str:single DCDT payment expected",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"
@@ -55,7 +55,7 @@
             "expect": {
                 "out": [],
                 "status": "4",
-                "message": "str:function expects single DCDT payment",
+                "message": "str:single DCDT payment expected",
                 "logs": "*",
                 "gas": "*",
                 "refund": "*"

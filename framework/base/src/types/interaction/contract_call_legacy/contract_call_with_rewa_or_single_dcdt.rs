@@ -8,8 +8,8 @@ use crate::{
 };
 
 use super::{
-    contract_call_no_payment::ContractCallNoPayment, contract_call_trait::ContractCallBase,
-    ContractCall, ContractCallWithRewa,
+    ContractCall, ContractCallWithRewa, contract_call_no_payment::ContractCallNoPayment,
+    contract_call_trait::ContractCallBase,
 };
 
 /// Holds data for calling another contract, with a single payment, either REWA or a single DCDT token.

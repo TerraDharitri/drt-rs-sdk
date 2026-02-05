@@ -1,8 +1,8 @@
 use super::*;
 use serde::{
+    Deserialize, Serialize,
     de::{self, Deserializer, SeqAccess, Visitor},
     ser::{SerializeMap, SerializeSeq, Serializer},
-    Deserialize, Serialize,
 };
 use std::fmt;
 
@@ -33,7 +33,7 @@ impl Serialize for CheckDcdtInstancesRaw {
             CheckDcdtInstancesRaw::Unspecified => {
                 let map = serializer.serialize_map(Some(0))?;
                 map.end()
-            },
+            }
             CheckDcdtInstancesRaw::Star => serializer.serialize_str("*"),
             CheckDcdtInstancesRaw::Equal(m) => {
                 let mut map = serializer.serialize_seq(Some(m.len()))?;
@@ -41,7 +41,7 @@ impl Serialize for CheckDcdtInstancesRaw {
                     map.serialize_element(v)?;
                 }
                 map.end()
-            },
+            }
         }
     }
 }

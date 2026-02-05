@@ -18,7 +18,7 @@ pub trait NonFungibleTokenMapperFeatures:
     fn issue_and_set_all_roles_meta(&self, token_ticker: ManagedBuffer) {
         let payment = self.call_value().rewa();
         self.non_fungible_token_mapper().issue_and_set_all_roles(
-            DcdtTokenType::Meta,
+            DcdtTokenType::MetaFungible,
             payment.clone(),
             ManagedBuffer::new(),
             token_ticker,
@@ -28,7 +28,7 @@ pub trait NonFungibleTokenMapperFeatures:
     }
 
     #[endpoint]
-    fn mapper_nft_set_token_id(&self, token_id: TokenIdentifier) {
+    fn mapper_nft_set_token_id(&self, token_id: DcdtTokenIdentifier) {
         self.non_fungible_token_mapper().set_token_id(token_id);
     }
 

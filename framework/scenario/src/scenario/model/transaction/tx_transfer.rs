@@ -6,7 +6,7 @@ use crate::{
     },
 };
 
-use super::{tx_interpret_util::interpret_rewa_value, TxCall, TxDCDT};
+use super::{TxCall, TxDCDT, tx_interpret_util::interpret_rewa_value};
 
 #[derive(Debug, Default, Clone)]
 pub struct TxTransfer {

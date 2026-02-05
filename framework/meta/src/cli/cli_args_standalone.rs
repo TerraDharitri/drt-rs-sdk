@@ -9,7 +9,7 @@ use dharitri_sc_meta_lib::cli::{CliArgsToRaw, ContractCliAction};
     version,
     about,
     after_help = "
-The Dharitri smart contract Meta crate can be used in two ways:
+The DharitrI smart contract Meta crate can be used in two ways:
     A. Import it into a contract's specific meta-crate. 
         There it will receive access to the contract ABI generator. 
         Based on that it is able to build the contract and apply various tools.
@@ -287,14 +287,14 @@ impl AllArgs {
             match &mut result.command {
                 ContractCliAction::Build(build_args) => {
                     build_args.target_dir_wasm = Some(target_dir_all.clone());
-                },
+                }
                 ContractCliAction::BuildDbg(build_args) => {
                     build_args.target_dir_wasm = Some(target_dir_all.clone());
-                },
+                }
                 ContractCliAction::Twiggy(build_args) => {
                     build_args.target_dir_wasm = Some(target_dir_all.clone());
-                },
-                _ => {},
+                }
+                _ => {}
             }
         }
         result
@@ -308,6 +308,23 @@ impl AllArgs {
             raw.push(target_dir_meta.clone());
         }
         raw.append(&mut processed.command.to_raw());
+        if !processed.load_abi_git_version {
+            raw.push("--no-abi-git-version".to_string());
+        }
+        raw
+    }
+
+    /// Produces the arguments for an abi call corresponding to a build.
+    ///
+    /// Used to get the rustc and framework versions configured for a build.
+    pub fn to_cargo_abi_for_build(&self) -> Vec<String> {
+        let processed = self.target_dir_all_override();
+        let mut raw = vec!["run".to_string()];
+        if let Some(target_dir_meta) = &processed.target_dir_meta {
+            raw.push("--target-dir".to_string());
+            raw.push(target_dir_meta.clone());
+        }
+        raw.push("abi".to_string());
         if !processed.load_abi_git_version {
             raw.push("--no-abi-git-version".to_string());
         }
@@ -419,7 +436,7 @@ pub enum InstallCommand {
     All,
 
     #[command(about = "Installs the `drt-go-scenario` tool")]
-    DrtGoScenario(InstallDrtGoScenarioArgs),
+    DrtScenarioGo(InstallDrtScenarioGoArgs),
 
     #[command(name = "wasm32", about = "Installs the `wasm32` target")]
     Wasm32(InstallWasm32Args),
@@ -432,7 +449,7 @@ pub enum InstallCommand {
 }
 
 #[derive(Default, Clone, PartialEq, Eq, Debug, Args)]
-pub struct InstallDrtGoScenarioArgs {
+pub struct InstallDrtScenarioGoArgs {
     /// The framework version on which the contracts should be created.
     #[arg(long, verbatim_doc_comment)]
     pub tag: Option<String>,
@@ -489,6 +506,9 @@ pub struct WalletNewArgs {
     /// The name of the wallet to create.
     #[arg(long = "outfile", verbatim_doc_comment)]
     pub outfile: Option<String>,
+
+    #[arg(long = "hrp", verbatim_doc_comment)]
+    pub hrp: Option<String>,
 }
 
 #[derive(Default, Clone, PartialEq, Eq, Debug, Args)]
@@ -504,6 +524,9 @@ pub struct WalletConvertArgs {
 
     #[arg(long = "outfile", verbatim_doc_comment)]
     pub outfile: Option<String>,
+
+    #[arg(long = "hrp", verbatim_doc_comment)]
+    pub hrp: Option<String>,
 }
 
 #[derive(Default, Clone, PartialEq, Eq, Debug, Args)]

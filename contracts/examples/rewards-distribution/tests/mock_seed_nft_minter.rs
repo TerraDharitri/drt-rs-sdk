@@ -3,7 +3,7 @@ use dharitri_sc::imports::*;
 #[dharitri_sc::contract]
 pub trait MockSeedNftMinter {
     #[init]
-    fn init(&self, nft_token_id: TokenIdentifier) {
+    fn init(&self, nft_token_id: DcdtTokenIdentifier) {
         self.nft_token_id().set(nft_token_id);
     }
 
@@ -18,5 +18,5 @@ pub trait MockSeedNftMinter {
 
     #[view(getNftTokenId)]
     #[storage_mapper("nft_token_id")]
-    fn nft_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
+    fn nft_token_id(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
 }

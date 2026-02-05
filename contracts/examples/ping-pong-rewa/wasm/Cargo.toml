@@ -7,7 +7,7 @@
 [package]
 name = "ping-pong-rewa-wasm"
 version = "0.0.0"
-edition = "2021"
+edition = "2024"
 publish = false
 
 [lib]
@@ -28,7 +28,7 @@ panic = "abort"
 path = ".."
 
 [dependencies.dharitri-sc-wasm-adapter]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/wasm-adapter"
 
 [workspace]

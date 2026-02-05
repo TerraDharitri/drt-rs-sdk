@@ -1,8 +1,8 @@
 [package]
 name = "proxy-test-first"
 version = "0.0.0"
-authors = ["contact@dharitri.org"]
-edition = "2021"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2024"
 publish = false
 
 [lib]
@@ -12,10 +12,10 @@ path = "src/proxy-test-first.rs"
 hex-literal = "1.0"
 
 [dependencies.dharitri-sc]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/base"
 features = ["alloc"]
 
 [dev-dependencies.dharitri-sc-scenario]
-version = "1.19.0"
+version = "2.0.0"
 path = "../../../../framework/scenario"

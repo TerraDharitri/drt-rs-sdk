@@ -10,10 +10,10 @@ impl RepoVersion {
         match self {
             RepoVersion::Main => {
                 "https://github.com/TerraDharitri/drt-rs-sdk/archive/refs/heads/main.zip".to_string()
-            },
+            }
             RepoVersion::Tag(tag) => {
                 format!("https://github.com/TerraDharitri/drt-rs-sdk/archive/refs/tags/v{tag}.zip")
-            },
+            }
         }
     }
 
@@ -22,7 +22,7 @@ impl RepoVersion {
             RepoVersion::Main => "drt-rs-sdk-main".to_string(),
             RepoVersion::Tag(tag) => {
                 format!("drt-rs-sdk-{tag}")
-            },
+            }
         }
     }
 

@@ -8,8 +8,8 @@ use crate::{
     abi::TypeAbiFrom,
     api::ManagedTypeApi,
     types::{
-        heap::Address, AnnotatedValue, ManagedAddress, ManagedBuffer, TxEnv, TxFrom,
-        TxFromSpecified, TxTo, TxToSpecified,
+        AnnotatedValue, ManagedAddress, ManagedBuffer, TxEnv, TxFrom, TxFromSpecified, TxTo,
+        TxToSpecified, heap::Address,
     },
 };
 
@@ -75,6 +75,20 @@ impl PartialEq<Address> for TestSCAddress<'_> {
 impl<'a> PartialEq<TestSCAddress<'a>> for Address {
     fn eq(&self, other: &TestSCAddress<'a>) -> bool {
         self == &other.to_address()
+    }
+}
+
+#[cfg(feature = "std")]
+impl PartialEq<dharitri_chain_core::std::Bech32Address> for TestSCAddress<'_> {
+    fn eq(&self, other: &dharitri_chain_core::std::Bech32Address) -> bool {
+        self.to_address() == other.address
+    }
+}
+
+#[cfg(feature = "std")]
+impl<'a> PartialEq<TestSCAddress<'a>> for dharitri_chain_core::std::Bech32Address {
+    fn eq(&self, other: &TestSCAddress<'a>) -> bool {
+        self.address == other.to_address()
     }
 }
 
