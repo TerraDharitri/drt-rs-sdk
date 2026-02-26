@@ -1,7 +1,7 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// Serialization of managed types, mixed with the heap allocator.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait EchoManagedTypesWithAlloc {
     /// This tests that nested serialization of managed buffers within unmanaged types works.
     #[endpoint]

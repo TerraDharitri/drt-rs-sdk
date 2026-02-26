@@ -1,12 +1,12 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 const ZERO_ASCII: u8 = b'0';
 const DASH: u8 = b'-';
 const RAND_CHARS_LEN: usize = 6;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait PayableFeatures {
     #[init]
     fn init(&self) {}
@@ -20,7 +20,7 @@ pub trait PayableFeatures {
         initial_supply: BigUint,
         _num_decimals: usize,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> DcdtTokenIdentifier {
+    ) -> TokenIdentifier {
         let new_token_id = self.create_new_token_id(token_ticker);
         require!(new_token_id.is_valid_dcdt_identifier(), "Invalid token ID");
 
@@ -43,7 +43,7 @@ pub trait PayableFeatures {
         _token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> DcdtTokenIdentifier {
+    ) -> TokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
@@ -54,7 +54,7 @@ pub trait PayableFeatures {
         _token_display_name: ManagedBuffer,
         token_ticker: ManagedBuffer,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> DcdtTokenIdentifier {
+    ) -> TokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
@@ -66,14 +66,14 @@ pub trait PayableFeatures {
         token_ticker: ManagedBuffer,
         _num_decimals: usize,
         _token_properties: MultiValueEncoded<MultiValue2<ManagedBuffer, bool>>,
-    ) -> DcdtTokenIdentifier {
+    ) -> TokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
     #[endpoint(setSpecialRole)]
     fn set_special_roles(
         &self,
-        _token_id: DcdtTokenIdentifier,
+        _token_id: TokenIdentifier,
         _address: ManagedAddress,
         _roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
@@ -87,11 +87,11 @@ pub trait PayableFeatures {
         token_ticker: ManagedBuffer,
         _token_type_name: ManagedBuffer,
         _num_decimals: usize,
-    ) -> DcdtTokenIdentifier {
+    ) -> TokenIdentifier {
         self.create_new_token_id(token_ticker)
     }
 
-    fn create_new_token_id(&self, token_ticker: ManagedBuffer) -> DcdtTokenIdentifier {
+    fn create_new_token_id(&self, token_ticker: ManagedBuffer) -> TokenIdentifier {
         let nr_issued_tokens = self.nr_issued_tokens().get();
         let mut rand_chars = [ZERO_ASCII; RAND_CHARS_LEN];
         for c in &mut rand_chars {

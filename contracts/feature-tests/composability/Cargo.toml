@@ -2,41 +2,34 @@
 name = "composability-tests"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2024"
+edition = "2018"
 publish = false
 
-[dev-dependencies.builtin-func-features]
-path = "builtin-func-features"
-
-[dev-dependencies.forwarder]
+[dependencies.forwarder]
 path = "forwarder"
 
-[dev-dependencies.forwarder-legacy]
-path = "forwarder-legacy"
-
-[dev-dependencies.forwarder-queue]
-path = "forwarder-queue"
-
-[dev-dependencies.forwarder-raw]
+[dependencies.forwarder-raw]
 path = "forwarder-raw"
 
-[dev-dependencies.proxy-test-first]
+[dependencies.promises-features]
+path = "promises-features"
+
+[dependencies.proxy-test-first]
 path = "proxy-test-first"
 
-[dev-dependencies.proxy-test-second]
+[dependencies.proxy-test-second]
 path = "proxy-test-second"
 
-[dev-dependencies.recursive-caller]
+[dependencies.recursive-caller]
 path = "recursive-caller"
 
-[dev-dependencies.vault]
+[dependencies.vault]
 path = "vault"
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../framework/base"
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../numbat-wasm"
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "2.0.0"
-path = "../../../framework/scenario"
-features = ["wasmer-experimental"]
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../numbat-wasm-debug"

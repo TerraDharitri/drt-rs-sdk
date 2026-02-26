@@ -1,11 +1,10 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 use benchmark_common::ExampleStruct;
-pub mod linked_list_repeat_proxy;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait LinkedListRepeat: benchmark_common::BenchmarkCommon {
     #[init]
     fn init(&self) {}

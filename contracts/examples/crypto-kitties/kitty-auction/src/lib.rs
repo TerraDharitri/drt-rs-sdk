@@ -1,19 +1,18 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
 pub mod auction;
 use auction::*;
-pub mod kitty_ownership_proxy;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait KittyAuction {
     #[init]
     fn init(
         &self,
         gen_zero_kitty_starting_price: BigUint,
         gen_zero_kitty_ending_price: BigUint,
-        gen_zero_kitty_auction_duration: DurationMillis,
+        gen_zero_kitty_auction_duration: u64,
         opt_kitty_ownership_contract_address: OptionalValue<ManagedAddress>,
     ) {
         self.gen_zero_kitty_starting_price()
@@ -46,12 +45,11 @@ pub trait KittyAuction {
             "Kitty Ownership contract address not set!"
         );
 
-        self.tx()
-            .to(&kitty_ownership_contract_address)
-            .typed(kitty_ownership_proxy::KittyOwnershipProxy)
+        self.kitty_ownership_proxy(kitty_ownership_contract_address)
             .create_gen_zero_kitty()
-            .callback(self.callbacks().create_gen_zero_kitty_callback())
-            .async_call_and_exit();
+            .async_call()
+            .with_callback(self.callbacks().create_gen_zero_kitty_callback())
+            .call_and_exit()
     }
 
     // views
@@ -89,9 +87,9 @@ pub trait KittyAuction {
         kitty_id: u32,
         starting_price: BigUint,
         ending_price: BigUint,
-        duration: DurationMillis,
+        duration: u64,
     ) {
-        let deadline = self.blockchain().get_block_timestamp_millis() + duration;
+        let deadline = self.blockchain().get_block_timestamp() + duration;
 
         require!(
             !self.is_up_for_auction(kitty_id),
@@ -103,7 +101,7 @@ pub trait KittyAuction {
             "starting price must be less than ending price!"
         );
         require!(
-            deadline > self.blockchain().get_block_timestamp_millis(),
+            deadline > self.blockchain().get_block_timestamp(),
             "deadline can't be in the past!"
         );
 
@@ -122,9 +120,9 @@ pub trait KittyAuction {
         kitty_id: u32,
         starting_price: BigUint,
         ending_price: BigUint,
-        duration: DurationMillis,
+        duration: u64,
     ) {
-        let deadline = self.blockchain().get_block_timestamp_millis() + duration;
+        let deadline = self.blockchain().get_block_timestamp() + duration;
 
         require!(
             !self.is_up_for_auction(kitty_id),
@@ -136,7 +134,7 @@ pub trait KittyAuction {
             "starting price must be less than ending price!"
         );
         require!(
-            deadline > self.blockchain().get_block_timestamp_millis(),
+            deadline > self.blockchain().get_block_timestamp(),
             "deadline can't be in the past!"
         );
 
@@ -152,7 +150,7 @@ pub trait KittyAuction {
     #[payable("REWA")]
     #[endpoint]
     fn bid(&self, kitty_id: u32) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
 
         require!(
             self.is_up_for_auction(kitty_id),
@@ -167,32 +165,30 @@ pub trait KittyAuction {
             "can't bid on your own kitty!"
         );
         require!(
-            self.blockchain().get_block_timestamp_millis() < auction.deadline,
+            self.blockchain().get_block_timestamp() < auction.deadline,
             "auction ended already!"
         );
         require!(
-            *payment >= auction.starting_price,
+            payment >= auction.starting_price,
             "bid amount must be higher than or equal to starting price!"
         );
         require!(
-            *payment > auction.current_bid,
+            payment > auction.current_bid,
             "bid amount must be higher than current winning bid!"
         );
         require!(
-            *payment <= auction.ending_price,
+            payment <= auction.ending_price,
             "bid amount must be less than or equal to ending price!"
         );
 
         // refund losing bid
         if !auction.current_winner.is_zero() {
-            self.tx()
-                .to(&auction.current_winner)
-                .rewa(&auction.current_bid)
-                .transfer();
+            self.send()
+                .direct_rewa(&auction.current_winner, &auction.current_bid);
         }
 
         // update auction bid and winner
-        auction.current_bid = payment.clone();
+        auction.current_bid = payment;
         auction.current_winner = caller;
         self.auction(kitty_id).set(auction);
     }
@@ -207,7 +203,7 @@ pub trait KittyAuction {
         let auction = self.auction(kitty_id).get();
 
         require!(
-            self.blockchain().get_block_timestamp_millis() > auction.deadline
+            self.blockchain().get_block_timestamp() > auction.deadline
                 || auction.current_bid == auction.ending_price,
             "auction has not ended yet!"
         );
@@ -235,18 +231,17 @@ pub trait KittyAuction {
         kitty_id: u32,
         starting_price: BigUint,
         ending_price: BigUint,
-        deadline: TimestampMillis,
+        deadline: u64,
     ) {
         let caller = self.blockchain().get_caller();
 
         let kitty_ownership_contract_address =
             self.get_kitty_ownership_contract_address_or_default();
         if !kitty_ownership_contract_address.is_zero() {
-            self.tx()
-                .to(&kitty_ownership_contract_address)
-                .typed(kitty_ownership_proxy::KittyOwnershipProxy)
-                .allow_auctioning(&caller, kitty_id)
-                .callback(self.callbacks().allow_auctioning_callback(
+            self.kitty_ownership_proxy(kitty_ownership_contract_address)
+                .allow_auctioning(caller.clone(), kitty_id)
+                .async_call()
+                .with_callback(self.callbacks().allow_auctioning_callback(
                     auction_type,
                     kitty_id,
                     starting_price,
@@ -254,7 +249,7 @@ pub trait KittyAuction {
                     deadline,
                     caller,
                 ))
-                .async_call_and_exit();
+                .call_and_exit();
         }
     }
 
@@ -262,7 +257,7 @@ pub trait KittyAuction {
         let starting_price = self.gen_zero_kitty_starting_price().get();
         let ending_price = self.gen_zero_kitty_ending_price().get();
         let duration = self.gen_zero_kitty_auction_duration().get();
-        let deadline = self.blockchain().get_block_timestamp_millis() + duration;
+        let deadline = self.blockchain().get_block_timestamp() + duration;
 
         let auction = Auction::new(
             AuctionType::Selling,
@@ -279,12 +274,11 @@ pub trait KittyAuction {
         let kitty_ownership_contract_address =
             self.get_kitty_ownership_contract_address_or_default();
         if !kitty_ownership_contract_address.is_zero() {
-            self.tx()
-                .to(&kitty_ownership_contract_address)
-                .typed(kitty_ownership_proxy::KittyOwnershipProxy)
+            self.kitty_ownership_proxy(kitty_ownership_contract_address)
                 .transfer(address, kitty_id)
-                .callback(self.callbacks().transfer_callback(kitty_id))
-                .async_call_and_exit();
+                .async_call()
+                .with_callback(self.callbacks().transfer_callback(kitty_id))
+                .call_and_exit()
         }
     }
 
@@ -297,13 +291,12 @@ pub trait KittyAuction {
         let kitty_ownership_contract_address =
             self.get_kitty_ownership_contract_address_or_default();
         if !kitty_ownership_contract_address.is_zero() {
-            self.tx()
-                .to(&kitty_ownership_contract_address)
-                .typed(kitty_ownership_proxy::KittyOwnershipProxy)
+            self.kitty_ownership_proxy(kitty_ownership_contract_address)
                 .approve_siring_and_return_kitty(approved_address, kitty_owner, kitty_id)
                 // not a mistake, same callback for transfer and approveSiringAndReturnKitty
-                .callback(self.callbacks().transfer_callback(kitty_id))
-                .async_call_and_exit();
+                .async_call()
+                .with_callback(self.callbacks().transfer_callback(kitty_id))
+                .call_and_exit()
         }
     }
 
@@ -325,7 +318,7 @@ pub trait KittyAuction {
         cb_kitty_id: u32,
         starting_price: BigUint,
         ending_price: BigUint,
-        deadline: TimestampMillis,
+        deadline: u64,
         kitty_owner: ManagedAddress,
     ) {
         match result {
@@ -339,10 +332,10 @@ pub trait KittyAuction {
                 );
 
                 self.auction(cb_kitty_id).set(auction);
-            }
+            },
             ManagedAsyncCallResult::Err(_) => {
                 // nothing to revert in case of error
-            }
+            },
         }
     }
 
@@ -363,16 +356,14 @@ pub trait KittyAuction {
                 if auction.kitty_owner != self.blockchain().get_sc_address()
                     && !auction.current_winner.is_zero()
                 {
-                    self.tx()
-                        .to(&auction.kitty_owner)
-                        .rewa(&auction.current_bid)
-                        .transfer();
+                    self.send()
+                        .direct_rewa(&auction.kitty_owner, &auction.current_bid);
                 }
-            }
+            },
             ManagedAsyncCallResult::Err(_) => {
                 // this can only fail if the kitty_ownership contract address is invalid
                 // nothing to revert in case of error
-            }
+            },
         }
     }
 
@@ -391,11 +382,11 @@ pub trait KittyAuction {
 
                 // auction data will be cleared in the transfer callback
                 // winning bid money will be sent as well
-            }
+            },
             ManagedAsyncCallResult::Err(_) => {
                 // this can only fail if the kitty_ownership contract address is invalid
                 // nothing to revert in case of error
-            }
+            },
         }
     }
 
@@ -404,13 +395,18 @@ pub trait KittyAuction {
         match result {
             ManagedAsyncCallResult::Ok(kitty_id) => {
                 self.start_gen_zero_kitty_auction(kitty_id);
-            }
+            },
             ManagedAsyncCallResult::Err(_) => {
                 // this can only fail if the kitty_ownership contract address is invalid
                 // nothing to revert in case of error
-            }
+            },
         }
     }
+
+    // proxy
+
+    #[proxy]
+    fn kitty_ownership_proxy(&self, to: ManagedAddress) -> kitty_ownership::Proxy<Self::Api>;
 
     // storage
 
@@ -428,7 +424,7 @@ pub trait KittyAuction {
     fn gen_zero_kitty_ending_price(&self) -> SingleValueMapper<BigUint>;
 
     #[storage_mapper("genZeroKittyAuctionDuration")]
-    fn gen_zero_kitty_auction_duration(&self) -> SingleValueMapper<DurationMillis>;
+    fn gen_zero_kitty_auction_duration(&self) -> SingleValueMapper<u64>;
 
     // auction
 

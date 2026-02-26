@@ -1,21 +1,22 @@
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
 use crate::common::{FEE_PENALTY_INCREASE_EPOCHS, FEE_PENALTY_INCREASE_PERCENT};
 
 use super::{common, events, validation};
 
 use super::common::{
-    FREE_ORDER_FROM_STORAGE_MIN_PENALTIES, FungiblePayment, Order, OrderInputParams, OrderType,
-    PERCENT_BASE_POINTS, Transfer,
+    Order, OrderInputParams, OrderType, Payment, Transfer, FREE_ORDER_FROM_STORAGE_MIN_PENALTIES,
+    PERCENT_BASE_POINTS,
 };
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait OrdersModule:
     events::EventsModule + common::CommonModule + validation::ValidationModule
 {
     fn create_order(
         &self,
-        payment: FungiblePayment<Self::Api>,
+        payment: Payment<Self::Api>,
         params: OrderInputParams<Self::Api>,
         order_type: OrderType,
     ) {
@@ -133,8 +134,8 @@ pub trait OrdersModule:
         &self,
         order_id: u64,
         caller: &ManagedAddress,
-        first_token_id: &TokenId,
-        second_token_id: &TokenId,
+        first_token_id: &TokenIdentifier,
+        second_token_id: &TokenIdentifier,
         epoch: u64,
     ) -> Order<Self::Api> {
         let order = self.orders(order_id).get();
@@ -160,14 +161,14 @@ pub trait OrdersModule:
 
         let creator_transfer = Transfer {
             to: order.creator.clone(),
-            payment: FungiblePayment {
+            payment: Payment {
                 token_id: token_id.clone(),
                 amount,
             },
         };
         let caller_transfer = Transfer {
             to: caller.clone(),
-            payment: FungiblePayment {
+            payment: Payment {
                 token_id,
                 amount: penalty_amount,
             },
@@ -186,8 +187,8 @@ pub trait OrdersModule:
         &self,
         order_id: u64,
         caller: &ManagedAddress,
-        first_token_id: &TokenId,
-        second_token_id: &TokenId,
+        first_token_id: &TokenIdentifier,
+        second_token_id: &TokenIdentifier,
         epoch: u64,
     ) -> Order<Self::Api> {
         let order = self.orders(order_id).get();
@@ -208,7 +209,7 @@ pub trait OrdersModule:
 
         let transfer = Transfer {
             to: caller.clone(),
-            payment: FungiblePayment { token_id, amount },
+            payment: Payment { token_id, amount },
         };
 
         self.orders(order_id).clear();
@@ -282,7 +283,7 @@ pub trait OrdersModule:
         let mut orders_vec = MultiValueManagedVec::new();
         for order in orders.iter() {
             if order.order_type == order_type {
-                orders_vec.push(order.clone());
+                orders_vec.push(order);
             }
         }
 
@@ -308,14 +309,14 @@ pub trait OrdersModule:
         &self,
         orders: MultiValueManagedVec<Order<Self::Api>>,
         total_paid: BigUint,
-        token_requested: TokenId,
+        token_requested: TokenIdentifier,
         leftover: BigUint,
     ) -> ManagedVec<Transfer<Self::Api>> {
         let mut transfers: ManagedVec<Self::Api, Transfer<Self::Api>> = ManagedVec::new();
 
         let mut match_provider_transfer = Transfer {
             to: self.blockchain().get_caller(),
-            payment: FungiblePayment {
+            payment: Payment {
                 token_id: token_requested.clone(),
                 amount: BigUint::zero(),
             },
@@ -336,7 +337,7 @@ pub trait OrdersModule:
 
             transfers.push(Transfer {
                 to: order.creator.clone(),
-                payment: FungiblePayment {
+                payment: Payment {
                     token_id: token_requested.clone(),
                     amount: creator_amount + creator_deal_amount,
                 },
@@ -353,12 +354,12 @@ pub trait OrdersModule:
     fn execute_transfers(&self, transfers: ManagedVec<Transfer<Self::Api>>) {
         for transfer in &transfers {
             if transfer.payment.amount > 0 {
-                let token_id = transfer.payment.token_id.clone();
-                let amount = NonZeroBigUint::new(transfer.payment.amount.clone()).unwrap();
-                self.tx()
-                    .to(&transfer.to)
-                    .payment(Payment::new(token_id, 0, amount))
-                    .transfer();
+                self.send().direct_dcdt(
+                    &transfer.to,
+                    &transfer.payment.token_id,
+                    0,
+                    &transfer.payment.amount,
+                )
             }
         }
     }

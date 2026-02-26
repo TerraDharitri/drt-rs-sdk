@@ -1,5 +1,0 @@
-[contracts.main]
-name = "payable-features"
-
-[[proxy]]
-path = "src/payable_features_proxy.rs"

@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<formatted_message_features::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<formatted_message_features::AbiProvider>();
 }

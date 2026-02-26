@@ -1,19 +1,16 @@
 #![no_std]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-pub mod erc20_proxy;
-
-#[type_abi]
-#[derive(TopEncode, TopDecode, PartialEq, Eq, Clone, Copy)]
+#[derive(TopEncode, TopDecode, PartialEq, Eq, TypeAbi, Clone, Copy)]
 pub enum Status {
     FundingPeriod,
     Successful,
     Failed,
 }
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Crowdfunding {
     #[init]
     fn init(&self, target: BigUint, deadline: u64, erc20_contract_address: ManagedAddress) {
@@ -33,15 +30,14 @@ pub trait Crowdfunding {
         let erc20_address = self.erc20_contract_address().get();
         let cf_contract_address = self.blockchain().get_sc_address();
 
-        self.tx()
-            .to(&erc20_address)
-            .typed(erc20_proxy::SimpleErc20TokenProxy)
+        self.erc20_proxy(erc20_address)
             .transfer_from(caller.clone(), cf_contract_address, token_amount.clone())
-            .callback(
+            .async_call()
+            .with_callback(
                 self.callbacks()
                     .transfer_from_callback(caller, token_amount),
             )
-            .async_call_and_exit();
+            .call_and_exit()
     }
 
     #[view]
@@ -50,7 +46,7 @@ pub trait Crowdfunding {
             Status::FundingPeriod
         } else if self
             .blockchain()
-            .get_sc_balance(RewaOrDcdtTokenIdentifier::rewa(), 0)
+            .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
             >= self.target().get()
         {
             Status::Successful
@@ -74,12 +70,11 @@ pub trait Crowdfunding {
 
                 let erc20_address = self.erc20_contract_address().get();
 
-                self.tx()
-                    .to(&erc20_address)
-                    .typed(erc20_proxy::SimpleErc20TokenProxy)
+                self.erc20_proxy(erc20_address)
                     .transfer(caller, balance)
-                    .async_call_and_exit();
-            }
+                    .async_call()
+                    .call_and_exit()
+            },
             Status::Failed => {
                 let caller = self.blockchain().get_caller();
                 let deposit = self.deposit(&caller).get();
@@ -89,13 +84,12 @@ pub trait Crowdfunding {
 
                     let erc20_address = self.erc20_contract_address().get();
 
-                    self.tx()
-                        .to(&erc20_address)
-                        .typed(erc20_proxy::SimpleErc20TokenProxy)
+                    self.erc20_proxy(erc20_address)
                         .transfer(caller, deposit)
-                        .async_call_and_exit();
+                        .async_call()
+                        .call_and_exit()
                 }
-            }
+            },
         }
     }
 
@@ -112,20 +106,24 @@ pub trait Crowdfunding {
                 if self.blockchain().get_block_nonce() > self.deadline().get() {
                     let erc20_address = self.erc20_contract_address().get();
 
-                    self.tx()
-                        .to(&erc20_address)
-                        .typed(erc20_proxy::SimpleErc20TokenProxy)
+                    self.erc20_proxy(erc20_address)
                         .transfer(cb_sender, cb_amount)
-                        .async_call_and_exit();
+                        .async_call()
+                        .call_and_exit();
                 }
 
                 self.deposit(&cb_sender)
                     .update(|deposit| *deposit += &cb_amount);
                 self.total_balance().update(|balance| *balance += cb_amount);
-            }
-            ManagedAsyncCallResult::Err(_) => {}
+            },
+            ManagedAsyncCallResult::Err(_) => {},
         }
     }
+
+    // proxy
+
+    #[proxy]
+    fn erc20_proxy(&self, to: ManagedAddress) -> erc20::Proxy<Self::Api>;
 
     // storage
 

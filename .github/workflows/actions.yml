@@ -5,114 +5,18 @@ on:
     branches:
       - main
   pull_request:
-  workflow_dispatch:
 
 permissions:
   checks: write
   pull-requests: write
 
 jobs:
-  rust-tests-min:
-    name: Rust Tests (rustc 1.85)
-    uses: Terradharitri/drt-sc-actions/.github/workflows/rust-tests.yml@v2.0.0
+  contracts:
+    name: Contracts
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v1.0.3
     with:
-      rust-toolchain: 1.85
-      runs-on: ubuntu-latest
-
-  rust-tests-max:
-    name: Rust Tests (rustc 1.92)
-    uses: Terradharitri/drt-sc-actions/.github/workflows/rust-tests.yml@v2.0.0
-    with:
-      rust-toolchain: 1.92
-      runs-on: ubuntu-latest
-
-  setup:
-    name: Setup Environment
-    uses: Terradharitri/drt-sc-actions/.github/workflows/setup.yml@v2.0.0
-    with:
-      rust-toolchain: 1.87
-      runs-on: ubuntu-latest
-      rust-target: wasm32v1-none
-      path-to-sc-meta: framework/meta
-      drt-go-scenario-version: v0.0.5
-      wasm-opt-version: 125
-
-  build-contracts:
-    name: Build Contracts
-    needs: setup
-    uses: Terradharitri/drt-sc-actions/.github/workflows/build-contracts.yml@v2.0.0
-    with:
-      rust-toolchain: 1.87
-      runs-on: ubuntu-latest
-      rust-target: wasm32v1-none
-
-  wasm-tests:
-    name: Wasm Tests
-    needs: build-contracts
-    uses: Terradharitri/drt-sc-actions/.github/workflows/wasm-tests.yml@v2.0.0
-    with:
-      rust-toolchain: 1.87
-      runs-on: ubuntu-latest
-
-  interactor-tests:
-    name: Interactor Tests
-    needs: build-contracts
-    uses: Terradharitri/drt-sc-actions/.github/workflows/interactor-tests.yml@v2.0.0
-    with:
-      rust-toolchain: 1.87
-      runs-on: ubuntu-latest
-
-  generate-report:
-    name: Generate Report
-    needs: build-contracts
-    uses: Terradharitri/drt-sc-actions/.github/workflows/report.yml@65f9d0c05f67b9014371e09cb923115feb719f71 # report fix, TODO: release v6.0.1
-    with:
-      rust-toolchain: 1.87
-      runs-on: ubuntu-latest
-
-  test-coverage:
-    name: Test Coverage
-    if: false  # Temporarily disabled
-    needs: setup
-    uses: Terradharitri/drt-sc-actions/.github/workflows/coverage.yml@v2.0.0
-    with:
-      rust-toolchain: 1.87
-      runs-on: ubuntu-latest
-      coverage-args: "--ignore-filename-regex='meta/src' --ignore-filename-regex='wasm-adapter' --ignore-filename-regex='benchmarks/' --ignore-filename-regex='tests/' --output ./coverage.md"
-
-  proxy-compare:
-    name: Proxy Compare
-    needs: setup
-    uses: Terradharitri/drt-sc-actions/.github/workflows/proxy-compare.yml@v2.0.0
-    with:
-      rust-toolchain: 1.87
-      runs-on: ubuntu-latest
-
-  clippy-check:
-    name: Clippy linter check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: 1.87
-          components: clippy
-      - uses: giraffate/clippy-action@v1
-        env:
-          RUSTFLAGS: ""
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          clippy_flags: "--all-targets --all-features"
-
-  formatting:
-    name: cargo fmt
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      # Ensure rustfmt is installed and setup problem matcher
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          components: rustfmt
-      - name: Rustfmt Check
-        uses: actions-rust-lang/rustfmt@v1
-
+      rust-toolchain: nightly-2022-10-12
+      vmtools-version: v1.4.60
+      extra-build-args: --ignore-eei-checks
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}

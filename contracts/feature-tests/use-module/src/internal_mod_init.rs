@@ -1,7 +1,7 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// Example of a module that contains the constructor.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait InternalModuleInit {
     /// The constructor can reside in a module.
     /// The method can have any name.

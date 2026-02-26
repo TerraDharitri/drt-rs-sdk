@@ -2,24 +2,24 @@
 name = "basic-features"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2024"
+edition = "2018"
 publish = false
 
 [lib]
 path = "src/basic_features_main.rs"
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../framework/base"
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../numbat-wasm"
+features = ["ei-1-2"]
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "2.0.0"
-features = ["wasmer-experimental", "bls"]
-path = "../../../framework/scenario"
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../numbat-wasm-debug"
 
-[dependencies.dharitri-sc-modules]
-version = "2.0.0"
-path = "../../../contracts/modules"
+[dependencies.numbat-wasm-modules]
+version = "0.0.18"
+path = "../../../numbat-wasm-modules"
 
 [dev-dependencies.dcdt-system-sc-mock]
 path = "../dcdt-system-sc-mock"

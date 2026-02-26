@@ -1,6 +1,6 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait ManagedBufferFeatures {
     #[endpoint]
     fn mbuffer_new(&self) -> ManagedBuffer {

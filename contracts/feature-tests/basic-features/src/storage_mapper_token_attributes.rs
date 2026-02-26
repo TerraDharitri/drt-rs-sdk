@@ -1,15 +1,14 @@
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-#[type_abi]
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode)]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi)]
 pub struct TokenAttributesStruct<M: ManagedTypeApi> {
     field_biguint: BigUint<M>,
     field_u64: u64,
     field_vec_u32: ManagedVec<M, u32>,
 }
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait TokenAttributesMapperFeatures {
     #[storage_mapper("TokenAttributes")]
     fn token_attributes(&self) -> TokenAttributesMapper;
@@ -17,7 +16,7 @@ pub trait TokenAttributesMapperFeatures {
     #[endpoint]
     fn token_attributes_set(
         &self,
-        token_id: &DcdtTokenIdentifier,
+        token_id: &TokenIdentifier,
         token_nonce: u64,
         attributes: &TokenAttributesStruct<Self::Api>,
     ) {
@@ -28,7 +27,7 @@ pub trait TokenAttributesMapperFeatures {
     #[endpoint]
     fn token_attributes_update(
         &self,
-        token_id: &DcdtTokenIdentifier,
+        token_id: &TokenIdentifier,
         token_nonce: u64,
         attributes: &TokenAttributesStruct<Self::Api>,
     ) {
@@ -39,7 +38,7 @@ pub trait TokenAttributesMapperFeatures {
     #[endpoint]
     fn token_attributes_get_attributes(
         &self,
-        token_id: &DcdtTokenIdentifier,
+        token_id: &TokenIdentifier,
         token_nonce: u64,
     ) -> TokenAttributesStruct<Self::Api> {
         self.token_attributes()
@@ -49,7 +48,7 @@ pub trait TokenAttributesMapperFeatures {
     #[endpoint]
     fn token_attributes_get_nonce(
         &self,
-        token_id: &DcdtTokenIdentifier,
+        token_id: &TokenIdentifier,
         attributes: TokenAttributesStruct<Self::Api>,
     ) -> u64 {
         self.token_attributes()
@@ -57,7 +56,7 @@ pub trait TokenAttributesMapperFeatures {
     }
 
     #[endpoint]
-    fn token_attributes_clear(&self, token_id: &DcdtTokenIdentifier, token_nonce: u64) {
+    fn token_attributes_clear(&self, token_id: &TokenIdentifier, token_nonce: u64) {
         self.token_attributes()
             .clear::<TokenAttributesStruct<Self::Api>, Self::Api>(token_id, token_nonce)
     }
@@ -65,7 +64,7 @@ pub trait TokenAttributesMapperFeatures {
     #[endpoint]
     fn token_attributes_has_attributes(
         &self,
-        token_id: &DcdtTokenIdentifier,
+        token_id: &TokenIdentifier,
         token_nonce: u64,
     ) -> bool {
         self.token_attributes()

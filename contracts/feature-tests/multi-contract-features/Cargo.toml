@@ -2,19 +2,16 @@
 name = "multi-contract-features"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2024"
+edition = "2018"
 publish = false
 
 [lib]
 path = "src/multi_contract_features.rs"
 
-[features]
-example_feature = []
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../numbat-wasm"
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../framework/base"
-
-[dev-dependencies.dharitri-sc-scenario]
-version = "2.0.0"
-path = "../../../framework/scenario"
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../numbat-wasm-debug"

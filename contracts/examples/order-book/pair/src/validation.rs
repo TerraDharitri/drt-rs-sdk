@@ -1,19 +1,20 @@
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-use crate::common::{FeeConfig, FeeConfigEnum, FungiblePayment};
+use crate::common::{FeeConfig, FeeConfigEnum};
 
 use super::{
     common,
     common::{
-        FEE_PENALTY_INCREASE_PERCENT, MAX_ORDERS_PER_USER, Order, OrderInputParams,
+        Order, OrderInputParams, Payment, FEE_PENALTY_INCREASE_PERCENT, MAX_ORDERS_PER_USER,
         PERCENT_BASE_POINTS,
     },
 };
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait ValidationModule: common::CommonModule {
     fn require_valid_order_input_amount(&self, params: &OrderInputParams<Self::Api>) {
-        require!(params.amount != BigUint::zero(), "Amount cannot be zero");
+        require!(params.amount != BigUint::zero(), "Amout cannot be zero");
         require!(
             self.calculate_fee_amount(
                 &params.amount,
@@ -41,13 +42,13 @@ pub trait ValidationModule: common::CommonModule {
                     params.fee_config.fixed_fee < params.amount,
                     "Invalid fee config fixed amount"
                 );
-            }
+            },
             FeeConfigEnum::Percent => {
                 require!(
                     params.fee_config.percent_fee < PERCENT_BASE_POINTS,
                     "Percent value above maximum value"
                 );
-            }
+            },
         }
 
         let amount_after_fee = self.calculate_amount_after_fee(&params.amount, &params.fee_config);
@@ -68,37 +69,26 @@ pub trait ValidationModule: common::CommonModule {
         self.require_valid_order_input_deal_config(params);
     }
 
-    fn require_valid_buy_payment(&self) -> FungiblePayment<Self::Api> {
-        let payment = self.call_value().single();
+    fn require_valid_buy_payment(&self) -> Payment<Self::Api> {
+        let (token_id, amount) = self.call_value().single_fungible_dcdt();
         let second_token_id = self.second_token_id().get();
         require!(
-            payment.token_identifier.is_valid_dcdt_identifier(),
-            "Payment is not a fungible token"
-        );
-        require!(
-            payment.token_identifier == second_token_id,
-            "Token id and second token id should be the same"
+            token_id == second_token_id,
+            "Token in and second token id should be the same"
         );
 
-        FungiblePayment {
-            token_id: payment.token_identifier.clone(),
-            amount: payment.amount.as_big_uint().clone(),
-        }
+        Payment { token_id, amount }
     }
 
-    fn require_valid_sell_payment(&self) -> FungiblePayment<Self::Api> {
-        let payment = self.call_value().single();
+    fn require_valid_sell_payment(&self) -> Payment<Self::Api> {
+        let (token_id, amount) = self.call_value().single_fungible_dcdt();
         let first_token_id = self.first_token_id().get();
-        require!(payment.is_fungible(), "Payment is not a fungible token");
         require!(
-            payment.token_identifier == first_token_id,
-            "Token id and first token id should be the same"
+            token_id == first_token_id,
+            "Token in and first token id should be the same"
         );
 
-        FungiblePayment {
-            token_id: payment.token_identifier.clone(),
-            amount: payment.amount.as_big_uint().clone(),
-        }
+        Payment { token_id, amount }
     }
 
     fn require_valid_match_input_order_ids(&self, order_ids: &ManagedVec<u64>) {

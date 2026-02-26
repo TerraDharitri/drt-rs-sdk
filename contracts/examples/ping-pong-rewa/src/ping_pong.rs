@@ -1,11 +1,10 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
-pub mod proxy_ping_pong_rewa;
-mod types;
+mod user_status;
 
-use types::{ContractState, UserStatus};
+use user_status::UserStatus;
 
 /// Derived empirically.
 const PONG_ALL_LOW_GAS_LIMIT: u64 = 3_000_000;
@@ -23,40 +22,28 @@ const PONG_ALL_LOW_GAS_LIMIT: u64 = 3_000_000;
 /// - `pong` can only be called after the contract expired (a certain duration has passed since activation).
 /// - `pongAll` can be used to send to all users to `ping`-ed. If it runs low on gas, it will interrupt itself.
 /// It can be continued anytime.
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait PingPong {
     /// Necessary configuration when deploying:
-    /// `ping_amount` - the exact REWA amount that needs to be sent when `ping`-ing.
+    /// `ping_amount` - the exact REWA amounf that needs to be sent when `ping`-ing.
     /// `duration_in_seconds` - how much time (in seconds) until contract expires.
-    /// `opt_activation_timestamp` - optionally specify the contract to only activate at a later date.
+    /// `opt_activation_timestamp` - optionally specify the contract to only actvivate at a later date.
     /// `max_funds` - optional funding cap, no more funds than this can be added to the contract.
-    #[allow_multiple_var_args]
     #[init]
     fn init(
         &self,
         ping_amount: &BigUint,
-        duration: DurationMillis,
-        opt_activation_timestamp: Option<TimestampMillis>,
+        duration_in_seconds: u64,
+        opt_activation_timestamp: Option<u64>,
         max_funds: OptionalValue<BigUint>,
     ) {
         self.ping_amount().set(ping_amount);
-        let activation_timestamp = opt_activation_timestamp
-            .unwrap_or_else(|| self.blockchain().get_block_timestamp_millis());
-        let deadline = activation_timestamp + duration;
+        let activation_timestamp =
+            opt_activation_timestamp.unwrap_or_else(|| self.blockchain().get_block_timestamp());
+        let deadline = activation_timestamp + duration_in_seconds;
         self.deadline().set(deadline);
         self.activation_timestamp().set(activation_timestamp);
         self.max_funds().set(max_funds.into_option());
-    }
-
-    #[upgrade]
-    fn upgrade(
-        &self,
-        ping_amount: &BigUint,
-        duration: DurationMillis,
-        opt_activation_timestamp: Option<TimestampMillis>,
-        max_funds: OptionalValue<BigUint>,
-    ) {
-        self.init(ping_amount, duration, opt_activation_timestamp, max_funds)
     }
 
     /// User sends some REWA to be locked in the contract for a period of time.
@@ -64,14 +51,14 @@ pub trait PingPong {
     #[payable("REWA")]
     #[endpoint]
     fn ping(&self, _data: IgnoreValue) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
 
         require!(
-            *payment == self.ping_amount().get(),
+            payment == self.ping_amount().get(),
             "the payment must match the fixed sum"
         );
 
-        let block_timestamp = self.blockchain().get_block_timestamp_millis();
+        let block_timestamp = self.blockchain().get_block_timestamp();
         require!(
             self.activation_timestamp().get() <= block_timestamp,
             "smart contract not active yet"
@@ -86,8 +73,8 @@ pub trait PingPong {
             require!(
                 &self
                     .blockchain()
-                    .get_sc_balance(RewaOrDcdtTokenIdentifier::rewa(), 0)
-                    + &*payment
+                    .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0)
+                    + &payment
                     <= max_funds,
                 "smart contract full"
             );
@@ -99,16 +86,14 @@ pub trait PingPong {
         match user_status {
             UserStatus::New => {
                 self.user_status(user_id).set(UserStatus::Registered);
-            }
+            },
             UserStatus::Registered => {
                 sc_panic!("can only ping once")
-            }
+            },
             UserStatus::Withdrawn => {
                 sc_panic!("already withdrawn")
-            }
+            },
         }
-
-        self.ping_event(&caller, &payment);
     }
 
     fn pong_by_user_id(&self, user_id: usize) -> Result<(), &'static str> {
@@ -118,14 +103,13 @@ pub trait PingPong {
             UserStatus::Registered => {
                 self.user_status(user_id).set(UserStatus::Withdrawn);
                 if let Some(user_address) = self.user_mapper().get_user_address(user_id) {
-                    let amount = self.ping_amount().get();
-                    self.tx().to(&user_address).rewa(&amount).transfer();
-                    self.pong_event(&user_address, &amount);
+                    self.send()
+                        .direct_rewa(&user_address, &self.ping_amount().get());
                     Result::Ok(())
                 } else {
                     Result::Err("unknown user")
                 }
-            }
+            },
             UserStatus::Withdrawn => Result::Err("already withdrawn"),
         }
     }
@@ -135,7 +119,7 @@ pub trait PingPong {
     #[endpoint]
     fn pong(&self) {
         require!(
-            self.blockchain().get_block_timestamp_millis() >= self.deadline().get(),
+            self.blockchain().get_block_timestamp() >= self.deadline().get(),
             "can't withdraw before deadline"
         );
 
@@ -154,27 +138,24 @@ pub trait PingPong {
     /// Can only be called after expiration.
     #[endpoint(pongAll)]
     fn pong_all(&self) -> OperationCompletionStatus {
-        let now = self.blockchain().get_block_timestamp_millis();
         require!(
-            now >= self.deadline().get(),
+            self.blockchain().get_block_timestamp() >= self.deadline().get(),
             "can't withdraw before deadline"
         );
 
         let num_users = self.user_mapper().get_user_count();
         let mut pong_all_last_user = self.pong_all_last_user().get();
-        let mut status = OperationCompletionStatus::InterruptedBeforeOutOfGas;
         loop {
             if pong_all_last_user >= num_users {
                 // clear field and reset to 0
                 pong_all_last_user = 0;
                 self.pong_all_last_user().set(pong_all_last_user);
-                status = OperationCompletionStatus::Completed;
-                break;
+                return OperationCompletionStatus::Completed;
             }
 
             if self.blockchain().get_gas_left() < PONG_ALL_LOW_GAS_LIMIT {
                 self.pong_all_last_user().set(pong_all_last_user);
-                break;
+                return OperationCompletionStatus::InterruptedBeforeOutOfGas;
             }
 
             pong_all_last_user += 1;
@@ -182,10 +163,6 @@ pub trait PingPong {
             // in case of error just ignore the error and skip
             let _ = self.pong_by_user_id(pong_all_last_user);
         }
-
-        self.pong_all_event(now, &status, pong_all_last_user);
-
-        status
     }
 
     /// Lists the addresses of all users that have `ping`-ed,
@@ -193,19 +170,6 @@ pub trait PingPong {
     #[view(getUserAddresses)]
     fn get_user_addresses(&self) -> MultiValueEncoded<ManagedAddress> {
         self.user_mapper().get_all_addresses().into()
-    }
-
-    /// Returns the current contract state as a struct
-    /// for faster fetching from external parties
-    #[view(getContractState)]
-    fn get_contract_state(&self) -> ContractState<Self::Api> {
-        ContractState {
-            ping_amount: self.ping_amount().get(),
-            deadline: self.deadline().get(),
-            activation_timestamp: self.activation_timestamp().get(),
-            max_funds: self.max_funds().get(),
-            pong_all_last_user: self.pong_all_last_user().get(),
-        }
     }
 
     // storage
@@ -216,13 +180,13 @@ pub trait PingPong {
 
     #[view(getDeadline)]
     #[storage_mapper("deadline")]
-    fn deadline(&self) -> SingleValueMapper<TimestampMillis>;
+    fn deadline(&self) -> SingleValueMapper<u64>;
 
     /// Block timestamp of the block where the contract got activated.
-    /// If not specified in the constructor it is the deploy block timestamp.
+    /// If not specified in the constructor it is the the deploy block timestamp.
     #[view(getActivationTimestamp)]
     #[storage_mapper("activationTimestamp")]
-    fn activation_timestamp(&self) -> SingleValueMapper<TimestampMillis>;
+    fn activation_timestamp(&self) -> SingleValueMapper<u64>;
 
     /// Optional funding cap.
     #[view(getMaxFunds)]
@@ -241,27 +205,8 @@ pub trait PingPong {
     fn user_status(&self, user_id: usize) -> SingleValueMapper<UserStatus>;
 
     /// Part of the `pongAll` status, the last user to be processed.
-    /// 0 if never called `pongAll` or `pongAll` completed.
+    /// 0 if never called `pongAll` or `pongAll` completed..
     #[view(pongAllLastUser)]
     #[storage_mapper("pongAllLastUser")]
     fn pong_all_last_user(&self) -> SingleValueMapper<usize>;
-
-    // events
-
-    /// Signals a successful ping by user with amount
-    #[event]
-    fn ping_event(&self, #[indexed] caller: &ManagedAddress, pinged_amount: &BigUint);
-
-    /// Signals a successful pong by user with amount
-    #[event]
-    fn pong_event(&self, #[indexed] caller: &ManagedAddress, ponged_amount: &BigUint);
-
-    /// Signals the beginning of the pong_all operation, status and last user
-    #[event]
-    fn pong_all_event(
-        &self,
-        #[indexed] timestamp: TimestampMillis,
-        #[indexed] status: &OperationCompletionStatus,
-        #[indexed] pong_all_last_user: usize,
-    );
 }

@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<factorial::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<factorial::AbiProvider>();
 }

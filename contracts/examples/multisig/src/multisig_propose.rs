@@ -1,9 +1,9 @@
 use crate::action::{Action, CallActionData};
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
 /// Contains all events that can be emitted by the contract.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
     fn propose_action(&self, action: Action<Self::Api>) -> usize {
         let (caller_id, caller_role) = self.get_caller_id_and_role();
@@ -51,18 +51,23 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         &self,
         to: ManagedAddress,
         rewa_amount: BigUint,
-        function_call: FunctionCall,
+        opt_function: OptionalValue<ManagedBuffer>,
+        arguments: MultiValueEncoded<ManagedBuffer>,
     ) -> CallActionData<Self::Api> {
         require!(
-            rewa_amount > 0 || !function_call.is_empty(),
+            rewa_amount > 0 || opt_function.is_some(),
             "proposed action has no effect"
         );
 
+        let endpoint_name = match opt_function {
+            OptionalValue::Some(data) => data,
+            OptionalValue::None => ManagedBuffer::new(),
+        };
         CallActionData {
             to,
             rewa_amount,
-            endpoint_name: function_call.function_name,
-            arguments: function_call.arg_buffer.into_vec_of_buffers(),
+            endpoint_name,
+            arguments: arguments.into_vec_of_buffers(),
         }
     }
 
@@ -75,9 +80,10 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         &self,
         to: ManagedAddress,
         rewa_amount: BigUint,
-        function_call: FunctionCall,
+        opt_function: OptionalValue<ManagedBuffer>,
+        arguments: MultiValueEncoded<ManagedBuffer>,
     ) -> usize {
-        let call_data = self.prepare_call_data(to, rewa_amount, function_call);
+        let call_data = self.prepare_call_data(to, rewa_amount, opt_function, arguments);
         self.propose_action(Action::SendTransferExecute(call_data))
     }
 
@@ -91,9 +97,10 @@ pub trait MultisigProposeModule: crate::multisig_state::MultisigStateModule {
         &self,
         to: ManagedAddress,
         rewa_amount: BigUint,
-        function_call: FunctionCall,
+        opt_function: OptionalValue<ManagedBuffer>,
+        arguments: MultiValueEncoded<ManagedBuffer>,
     ) -> usize {
-        let call_data = self.prepare_call_data(to, rewa_amount, function_call);
+        let call_data = self.prepare_call_data(to, rewa_amount, opt_function, arguments);
         self.propose_action(Action::SendAsyncCall(call_data))
     }
 

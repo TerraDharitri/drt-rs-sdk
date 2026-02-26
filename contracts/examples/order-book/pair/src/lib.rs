@@ -1,6 +1,7 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
 mod common;
 mod events;
@@ -10,7 +11,7 @@ mod validation;
 
 use common::OrderInputParams;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Pair:
     global::GlobalOperationModule
     + orders::OrdersModule
@@ -19,12 +20,12 @@ pub trait Pair:
     + validation::ValidationModule
 {
     #[init]
-    fn init(&self, first_token_id: TokenId, second_token_id: TokenId) {
+    fn init(&self, first_token_id: TokenIdentifier, second_token_id: TokenIdentifier) {
         self.first_token_id().set_if_empty(&first_token_id);
         self.second_token_id().set_if_empty(&second_token_id);
     }
 
-    #[payable]
+    #[payable("*")]
     #[endpoint(createBuyOrder)]
     fn create_buy_order_endpoint(&self, params: OrderInputParams<Self::Api>) {
         self.require_global_op_not_ongoing();
@@ -34,7 +35,7 @@ pub trait Pair:
         self.create_order(payment, params, common::OrderType::Buy);
     }
 
-    #[payable]
+    #[payable("*")]
     #[endpoint(createSellOrder)]
     fn create_sell_order_endpoint(&self, params: OrderInputParams<Self::Api>) {
         self.require_global_op_not_ongoing();

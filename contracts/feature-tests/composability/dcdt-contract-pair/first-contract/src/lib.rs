@@ -1,17 +1,17 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-const DCDT_TRANSFER_STRING: &str = "DCDTTransfer";
-const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &str = "acceptDcdtPayment";
-const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &str = "rejectDcdtPayment";
+const DCDT_TRANSFER_STRING: &[u8] = b"DCDTTransfer";
+const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &[u8] = b"acceptDcdtPayment";
+const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &[u8] = b"rejectDcdtPayment";
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait FirstContract {
     #[init]
     fn init(
         &self,
-        dcdt_token_identifier: DcdtTokenIdentifier,
+        dcdt_token_identifier: TokenIdentifier,
         second_contract_address: ManagedAddress,
     ) {
         self.set_contract_dcdt_token_identifier(&dcdt_token_identifier);
@@ -21,17 +21,17 @@ pub trait FirstContract {
     #[payable("*")]
     #[endpoint(transferToSecondContractFull)]
     fn transfer_to_second_contract_full(&self) {
-        let payment = self.call_value().single();
+        let (actual_token_identifier, dcdt_value) = self.call_value().single_fungible_dcdt();
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            payment.token_identifier == expected_token_identifier,
+            actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
         self.call_dcdt_second_contract(
             &expected_token_identifier,
-            &payment.amount,
+            &dcdt_value,
             &self.get_second_contract_address(),
             &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
             &ManagedVec::new(),
@@ -41,17 +41,17 @@ pub trait FirstContract {
     #[payable("*")]
     #[endpoint(transferToSecondContractHalf)]
     fn transfer_to_second_contract_half(&self) {
-        let payment = self.call_value().single();
+        let (actual_token_identifier, dcdt_value) = self.call_value().single_fungible_dcdt();
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            payment.token_identifier == expected_token_identifier,
+            actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
         self.call_dcdt_second_contract(
             &expected_token_identifier,
-            &(&payment.amount / 2u32),
+            &(dcdt_value / 2u32),
             &self.get_second_contract_address(),
             &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
             &ManagedVec::new(),
@@ -61,17 +61,17 @@ pub trait FirstContract {
     #[payable("*")]
     #[endpoint(transferToSecondContractRejected)]
     fn transfer_to_second_contract_rejected(&self) {
-        let payment = self.call_value().single();
+        let (actual_token_identifier, dcdt_value) = self.call_value().single_fungible_dcdt();
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            payment.token_identifier == expected_token_identifier,
+            actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
         self.call_dcdt_second_contract(
             &expected_token_identifier,
-            &payment.amount,
+            &dcdt_value,
             &self.get_second_contract_address(),
             &ManagedBuffer::from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
             &ManagedVec::new(),
@@ -81,57 +81,51 @@ pub trait FirstContract {
     #[payable("*")]
     #[endpoint(transferToSecondContractRejectedWithTransferAndExecute)]
     fn transfer_to_second_contract_rejected_with_transfer_and_execute(&self) {
-        let payment = self.call_value().single();
+        let (actual_token_identifier, dcdt_value) = self.call_value().single_fungible_dcdt();
         let second_contract_address = self.get_second_contract_address();
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            payment.token_identifier == expected_token_identifier,
+            actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
-        let gas_left = self.blockchain().get_gas_left();
-        self.tx()
-            .to(&second_contract_address)
-            .gas(gas_left)
-            .raw_call(SECOND_CONTRACT_REJECT_DCDT_PAYMENT)
-            .payment(PaymentRefs::new(
-                &expected_token_identifier,
-                0u64,
-                &payment.amount,
-            ))
-            .transfer_execute();
+        let _ = self.send_raw().transfer_dcdt_execute(
+            &second_contract_address,
+            &expected_token_identifier,
+            &dcdt_value,
+            self.blockchain().get_gas_left(),
+            &ManagedBuffer::from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
+            &ManagedArgBuffer::new(),
+        );
     }
 
     #[payable("*")]
     #[endpoint(transferToSecondContractFullWithTransferAndExecute)]
     fn transfer_to_second_contract_full_with_transfer_and_execute(&self) {
-        let payment = self.call_value().single();
+        let (actual_token_identifier, dcdt_value) = self.call_value().single_fungible_dcdt();
         let second_contract_address = self.get_second_contract_address();
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            payment.token_identifier == expected_token_identifier,
+            actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
-        let gas_left = self.blockchain().get_gas_left();
-        self.tx()
-            .to(&second_contract_address)
-            .gas(gas_left)
-            .raw_call(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT)
-            .payment(PaymentRefs::new(
-                &expected_token_identifier,
-                0u64,
-                &payment.amount,
-            ))
-            .transfer_execute();
+        let _ = self.send_raw().transfer_dcdt_execute(
+            &second_contract_address,
+            &expected_token_identifier,
+            &dcdt_value,
+            self.blockchain().get_gas_left(),
+            &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
+            &ManagedArgBuffer::new(),
+        );
     }
 
     fn call_dcdt_second_contract(
         &self,
-        dcdt_token_identifier: &TokenId,
-        amount: &NonZeroBigUint,
+        dcdt_token_identifier: &TokenIdentifier,
+        amount: &BigUint,
         to: &ManagedAddress,
         func_name: &ManagedBuffer,
         args: &ManagedVec<Self::Api, ManagedBuffer>,
@@ -140,25 +134,26 @@ pub trait FirstContract {
         arg_buffer.push_arg(dcdt_token_identifier);
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(func_name);
-        for arg in args {
-            arg_buffer.push_arg_raw(arg.clone());
+        for arg in args.into_iter() {
+            arg_buffer.push_arg_raw(arg);
         }
 
-        self.tx()
-            .to(to)
-            .raw_call(DCDT_TRANSFER_STRING)
-            .arguments_raw(arg_buffer)
-            .async_call_and_exit();
+        self.send_raw().async_call_raw(
+            to,
+            &BigUint::zero(),
+            &ManagedBuffer::from(DCDT_TRANSFER_STRING),
+            &arg_buffer,
+        );
     }
 
     // storage
 
     #[storage_set("dcdtTokenName")]
-    fn set_contract_dcdt_token_identifier(&self, dcdt_token_identifier: &DcdtTokenIdentifier);
+    fn set_contract_dcdt_token_identifier(&self, dcdt_token_identifier: &TokenIdentifier);
 
     #[view(getdcdtTokenName)]
     #[storage_get("dcdtTokenName")]
-    fn get_contract_dcdt_token_identifier(&self) -> TokenId;
+    fn get_contract_dcdt_token_identifier(&self) -> TokenIdentifier;
 
     #[storage_set("secondContractAddress")]
     fn set_second_contract_address(&self, address: &ManagedAddress);

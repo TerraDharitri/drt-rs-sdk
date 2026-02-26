@@ -1,8 +1,7 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-mod erc20_proxy;
 mod lottery_info;
 mod random;
 mod status;
@@ -12,23 +11,25 @@ use random::Random;
 use status::Status;
 
 const PERCENTAGE_TOTAL: u16 = 100;
-const THIRTY_DAYS_IN_SECONDS: DurationSeconds = DurationSeconds::new(60 * 60 * 24 * 30);
+const THIRTY_DAYS_IN_SECONDS: u64 = 60 * 60 * 24 * 30;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Lottery {
+    #[proxy]
+    fn erc20_proxy(&self, to: ManagedAddress) -> erc20::Proxy<Self::Api>;
+
     #[init]
     fn init(&self, erc20_contract_address: ManagedAddress) {
         self.set_erc20_contract_address(&erc20_contract_address);
     }
 
-    #[allow_multiple_var_args]
     #[endpoint]
     fn start(
         &self,
         lottery_name: BoxedBytes,
         ticket_price: BigUint,
         opt_total_tickets: Option<u32>,
-        opt_deadline: Option<TimestampSeconds>,
+        opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<u32>,
         opt_prize_distribution: Option<Vec<u8>>,
         opt_whitelist: Option<Vec<ManagedAddress>>,
@@ -44,14 +45,13 @@ pub trait Lottery {
         )
     }
 
-    #[allow_multiple_var_args]
     #[endpoint(createLotteryPool)]
     fn create_lottery_pool(
         &self,
         lottery_name: BoxedBytes,
         ticket_price: BigUint,
         opt_total_tickets: Option<u32>,
-        opt_deadline: Option<TimestampSeconds>,
+        opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<u32>,
         opt_prize_distribution: Option<Vec<u8>>,
         opt_whitelist: Option<Vec<ManagedAddress>>,
@@ -67,21 +67,20 @@ pub trait Lottery {
         )
     }
 
-    #[allow_multiple_var_args]
     #[allow(clippy::too_many_arguments)]
     fn start_lottery(
         &self,
         lottery_name: BoxedBytes,
         ticket_price: BigUint,
         opt_total_tickets: Option<u32>,
-        opt_deadline: Option<TimestampSeconds>,
+        opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<u32>,
         opt_prize_distribution: Option<Vec<u8>>,
         opt_whitelist: Option<Vec<ManagedAddress>>,
     ) {
         require!(!lottery_name.is_empty(), "Name can't be empty!");
 
-        let timestamp = self.blockchain().get_block_timestamp_seconds();
+        let timestamp = self.blockchain().get_block_timestamp();
 
         let total_tickets = opt_total_tickets.unwrap_or(u32::MAX);
         let deadline = opt_deadline.unwrap_or(timestamp + THIRTY_DAYS_IN_SECONDS);
@@ -141,10 +140,10 @@ pub trait Lottery {
             Status::Running => self.update_after_buy_ticket(&lottery_name, token_amount),
             Status::Ended => {
                 sc_panic!("Lottery entry period has ended! Awaiting winner announcement.")
-            }
+            },
             Status::DistributingPrizes => {
                 sc_panic!("Prizes are currently being distributed. Can't buy tickets!")
-            }
+            },
         }
     }
 
@@ -161,7 +160,7 @@ pub trait Lottery {
                 }
 
                 self.distribute_prizes(&lottery_name);
-            }
+            },
             Status::DistributingPrizes => sc_panic!("Prizes are currently being distributed!"),
         }
     }
@@ -180,8 +179,7 @@ pub trait Lottery {
 
         let info = self.get_lottery_info(lottery_name);
 
-        if self.blockchain().get_block_timestamp_seconds() > info.deadline || info.tickets_left == 0
-        {
+        if self.blockchain().get_block_timestamp() > info.deadline || info.tickets_left == 0 {
             return Status::Ended;
         }
 
@@ -211,15 +209,14 @@ pub trait Lottery {
 
         let erc20_address = self.get_erc20_contract_address();
         let lottery_contract_address = self.blockchain().get_sc_address();
-        self.tx()
-            .to(&erc20_address)
-            .typed(erc20_proxy::SimpleErc20TokenProxy)
+        self.erc20_proxy(erc20_address)
             .transfer_from(caller.clone(), lottery_contract_address, token_amount)
-            .callback(
+            .async_call()
+            .with_callback(
                 self.callbacks()
                     .transfer_from_callback(lottery_name, &caller),
             )
-            .async_call_and_exit();
+            .call_and_exit()
     }
 
     fn reserve_ticket(&self, lottery_name: &BoxedBytes) {
@@ -282,16 +279,14 @@ pub trait Lottery {
 
         let erc20_address = self.get_erc20_contract_address();
 
-        self.tx()
-            .to(&erc20_address)
-            .typed(erc20_proxy::SimpleErc20TokenProxy)
+        self.erc20_proxy(erc20_address)
             .transfer(winner_address, prize)
-            .callback(self.callbacks().distribute_prizes_callback(lottery_name))
-            .async_call_and_exit();
+            .async_call()
+            .with_callback(self.callbacks().distribute_prizes_callback(lottery_name))
+            .call_and_exit()
     }
 
     fn get_random_winning_ticket_id(&self, prev_winners: &[u32], total_tickets: u32) -> u32 {
-        #[allow(deprecated)]
         let seed = self.blockchain().get_block_random_seed_legacy();
         let mut rand = Random::new(*seed);
 
@@ -350,11 +345,11 @@ pub trait Lottery {
                 info.prize_pool += ticket_price;
 
                 self.set_number_of_entries_for_user(cb_lottery_name, cb_sender, entries);
-            }
+            },
             ManagedAsyncCallResult::Err(_) => {
                 // payment error, return ticket to pool
                 info.tickets_left += 1;
-            }
+            },
         }
 
         info.queued_tickets -= 1;
@@ -372,7 +367,7 @@ pub trait Lottery {
             ManagedAsyncCallResult::Ok(()) => self.distribute_prizes(cb_lottery_name),
             ManagedAsyncCallResult::Err(_) => {
                 // nothing we can do if an error occurs in the erc20 contract
-            }
+            },
         }
     }
 

@@ -1,7 +1,7 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// Storage mapper test.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait MapMapperFeatures {
     #[view]
     #[storage_mapper("map_mapper")]

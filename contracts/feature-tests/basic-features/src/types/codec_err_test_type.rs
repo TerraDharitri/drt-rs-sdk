@@ -1,15 +1,14 @@
-use dharitri_sc::{
-    codec::{
+use numbat_wasm::{
+    derive::TypeAbi,
+    numbat_codec::{
         DecodeError, DecodeErrorHandler, EncodeError, EncodeErrorHandler, NestedDecode,
         NestedDecodeInput, NestedEncode, NestedEncodeOutput, TopDecode, TopDecodeInput, TopEncode,
         TopEncodeOutput,
     },
-    derive::type_abi,
 };
 
 /// Helper type to explore encode/decode errors.
-#[type_abi]
-#[derive(Clone, Copy)]
+#[derive(TypeAbi)]
 pub struct CodecErrorTestType;
 
 impl TopEncode for CodecErrorTestType {

@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<multi_contract_features::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<multi_contract_features::AbiProvider>();
 }

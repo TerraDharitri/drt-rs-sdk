@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<map_repeat::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<map_repeat::AbiProvider>();
 }

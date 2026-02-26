@@ -1,27 +1,24 @@
 #![no_std]
 
-use dharitri_sc::{derive_imports::*, imports::*};
-use dharitri_sc_modules::ongoing_operation::{
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
+use numbat_wasm_modules::ongoing_operation::{
     CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
 
-pub mod rewards_distribution_proxy;
-pub mod seed_nft_minter_proxy;
 type Epoch = u64;
 
 pub const EPOCHS_IN_WEEK: Epoch = 7;
 pub const MAX_PERCENTAGE: u64 = 100_000; // 100%
 pub const DIVISION_SAFETY_CONSTANT: u64 = 1_000_000_000_000;
 
-#[type_abi]
-#[derive(ManagedVecItem, NestedEncode, NestedDecode)]
+#[derive(ManagedVecItem, NestedEncode, NestedDecode, TypeAbi)]
 pub struct Bracket {
     pub index_percent: u64,
     pub bracket_reward_percent: u64,
 }
 
-#[type_abi]
-#[derive(ManagedVecItem, NestedEncode, NestedDecode, Clone)]
+#[derive(ManagedVecItem, NestedEncode, NestedDecode, TypeAbi)]
 pub struct ComputedBracket<M: ManagedTypeApi> {
     pub end_index: u64,
     pub nft_reward_percent: BigUint<M>,
@@ -35,29 +32,25 @@ pub struct RaffleProgress<M: ManagedTypeApi> {
     pub computed_brackets: ManagedVec<M, ComputedBracket<M>>,
 }
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait RewardsDistribution:
-    dharitri_sc_modules::ongoing_operation::OngoingOperationModule
+    numbat_wasm_modules::ongoing_operation::OngoingOperationModule
 {
     #[init]
     fn init(&self, seed_nft_minter_address: ManagedAddress, brackets: ManagedVec<Bracket>) {
         self.seed_nft_minter_address().set(&seed_nft_minter_address);
 
-        let nft_token_id = self
-            .tx()
-            .to(&seed_nft_minter_address)
-            .typed(seed_nft_minter_proxy::SeedNftMinterProxy)
-            .nft_token_id()
-            .returns(ReturnsResult)
-            .sync_call();
-
+        let nft_token_id: TokenIdentifier = self
+            .seed_nft_minter_proxy(seed_nft_minter_address)
+            .get_nft_token_id()
+            .execute_on_dest_context();
         self.nft_token_id().set(nft_token_id);
 
         self.validate_brackets(&brackets);
         self.brackets().set(brackets);
     }
 
-    #[payable]
+    #[payable("*")]
     #[endpoint(depositRoyalties)]
     fn deposit_royalties(&self) {
         let payment = self.call_value().rewa_or_single_dcdt();
@@ -74,7 +67,7 @@ pub trait RewardsDistribution:
             .unwrap_or_else(|| self.new_raffle());
         let mut rng = RandomnessSource::default();
 
-        let mut bracket = raffle.computed_brackets.get(0).clone();
+        let mut bracket = raffle.computed_brackets.get(0);
 
         let run_result = self.run_while_it_has_gas(DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, || {
             let ticket = self.shuffle_and_pick_single_ticket(
@@ -105,7 +98,7 @@ pub trait RewardsDistribution:
             OperationCompletionStatus::Completed => {
                 self.completed_raffle_id_count().set(raffle.raffle_id + 1);
                 None
-            }
+            },
         };
 
         self.raffle_progress().set(raffle_progress);
@@ -138,7 +131,7 @@ pub trait RewardsDistribution:
     ) {
         while ticket > bracket.end_index {
             computed_brackets.remove(0);
-            *bracket = computed_brackets.get(0).clone();
+            *bracket = computed_brackets.get(0);
         }
     }
 
@@ -183,15 +176,10 @@ pub trait RewardsDistribution:
         });
 
         let seed_nft_minter_address = self.seed_nft_minter_address().get();
-
-        let ticket_count = self
-            .tx()
-            .to(&seed_nft_minter_address)
-            .typed(seed_nft_minter_proxy::SeedNftMinterProxy)
-            .nft_count()
-            .returns(ReturnsResult)
-            .sync_call();
-
+        let ticket_count: u64 = self
+            .seed_nft_minter_proxy(seed_nft_minter_address)
+            .get_nft_count()
+            .execute_on_dest_context();
         let brackets = self.brackets().get();
 
         let computed_brackets = self.compute_brackets(brackets, ticket_count);
@@ -247,7 +235,7 @@ pub trait RewardsDistribution:
         );
     }
 
-    #[payable]
+    #[payable("*")]
     #[endpoint(claimRewards)]
     fn claim_rewards(
         &self,
@@ -279,15 +267,10 @@ pub trait RewardsDistribution:
             }
         }
 
-        self.tx()
-            .to(&caller)
-            .rewa(total_rewa_reward)
-            .transfer_if_not_empty();
-        self.tx()
-            .to(&caller)
-            .payment(rewards)
-            .transfer_if_not_empty();
-        self.tx().to(&caller).payment(nfts).transfer_if_not_empty();
+        self.send()
+            .direct_non_zero_rewa(&caller, &total_rewa_reward);
+        self.send().direct_multi(&caller, &rewards);
+        self.send().direct_multi(&caller, &nfts);
     }
 
     fn claim_reward_token(
@@ -425,7 +408,7 @@ pub trait RewardsDistribution:
 
     #[view(getNftTokenId)]
     #[storage_mapper("nftTokenIdentifier")]
-    fn nft_token_id(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
+    fn nft_token_id(&self) -> SingleValueMapper<TokenIdentifier>;
 
     #[storage_mapper("tickets")]
     fn tickets(&self, position: u64) -> SingleValueMapper<u64>;
@@ -435,12 +418,36 @@ pub trait RewardsDistribution:
 
     #[storage_mapper("raffleProgress")]
     fn raffle_progress(&self) -> SingleValueMapper<Option<RaffleProgress<Self::Api>>>;
+
+    #[proxy]
+    fn seed_nft_minter_proxy(&self, address: ManagedAddress) -> seed_nft_minter::Proxy<Self::Api>;
 }
 
 fn ticket_to_storage(position: u64, ticket_id: u64) -> u64 {
-    if position == ticket_id { 0 } else { ticket_id }
+    if position == ticket_id {
+        0
+    } else {
+        ticket_id
+    }
 }
 
 fn ticket_from_storage(position: u64, ticket_id: u64) -> u64 {
-    if ticket_id == 0 { position } else { ticket_id }
+    if ticket_id == 0 {
+        position
+    } else {
+        ticket_id
+    }
+}
+
+mod seed_nft_minter {
+    numbat_wasm::imports!();
+
+    #[numbat_wasm::proxy]
+    pub trait SeedNftMinter {
+        #[endpoint(getNftCount)]
+        fn get_nft_count(&self) -> u64;
+
+        #[endpoint(getNftTokenId)]
+        fn get_nft_token_id(&self) -> TokenIdentifier;
+    }
 }

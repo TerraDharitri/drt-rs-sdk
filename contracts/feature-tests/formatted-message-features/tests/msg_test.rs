@@ -1,15 +1,16 @@
+use numbat_wasm_debug::DebugApi;
 use formatted_message_features::*;
-use dharitri_sc_scenario::api::StaticApi;
 
 fn check_printed_and_clear(expected: &str) {
-    let printed = StaticApi::printed_messages();
+    let printed = DebugApi::new_from_static().printed_messages();
     assert_eq!(printed, vec![expected.to_string()]);
-    StaticApi::printed_messages_clear();
+    DebugApi::new_from_static().printed_messages_clear();
 }
 
 #[test]
 fn test_print_ascii() {
-    let fmf = formatted_message_features::contract_obj::<StaticApi>();
+    let _ = DebugApi::dummy();
+    let fmf = formatted_message_features::contract_obj::<DebugApi>();
 
     fmf.print_message(5);
     check_printed_and_clear("Printing x: 5");
@@ -22,14 +23,12 @@ fn test_print_ascii() {
 
     fmf.print_message(i32::MIN);
     check_printed_and_clear("Printing x: -2147483648");
-
-    fmf.print_message_bytes(b"DRT");
-    check_printed_and_clear("Printing x: DRT");
 }
 
 #[test]
 fn test_print_binary() {
-    let fmf = formatted_message_features::contract_obj::<StaticApi>();
+    let _ = DebugApi::dummy();
+    let fmf = formatted_message_features::contract_obj::<DebugApi>();
 
     fmf.print_message_binary(12);
     check_printed_and_clear("Printing x: 1100");
@@ -42,14 +41,12 @@ fn test_print_binary() {
 
     fmf.print_message_binary(u32::MAX);
     check_printed_and_clear("Printing x: 11111111111111111111111111111111");
-
-    fmf.print_message_binary_bytes(b"DRT");
-    check_printed_and_clear("Printing x: 010001000101001001010100");
 }
 
 #[test]
 fn test_print_hex() {
-    let fmf = formatted_message_features::contract_obj::<StaticApi>();
+    let _ = DebugApi::dummy();
+    let fmf = formatted_message_features::contract_obj::<DebugApi>();
 
     fmf.print_message_hex(0);
     check_printed_and_clear("Printing x: 0");
@@ -65,14 +62,12 @@ fn test_print_hex() {
 
     fmf.print_message_hex(i32::MIN);
     check_printed_and_clear("Printing x: 80000000");
-
-    fmf.print_message_hex_bytes(b"DRT");
-    check_printed_and_clear("Printing x: 445254");
 }
 
 #[test]
 fn test_print_codecs() {
-    let fmf = formatted_message_features::contract_obj::<StaticApi>();
+    let _ = DebugApi::dummy();
+    let fmf = formatted_message_features::contract_obj::<DebugApi>();
 
     fmf.print_message_codec(0);
     check_printed_and_clear("Printing x: ");

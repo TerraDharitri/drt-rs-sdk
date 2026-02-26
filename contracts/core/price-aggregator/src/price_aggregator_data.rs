@@ -1,36 +1,30 @@
-use crate::events::{RoundId, Timestamp};
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
-
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, Clone)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, Clone)]
 pub struct TokenPair<M: ManagedTypeApi> {
     pub from: ManagedBuffer<M>,
     pub to: ManagedBuffer<M>,
 }
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct PriceFeed<M: ManagedTypeApi> {
-    pub round_id: RoundId,
+    pub round_id: u32,
     pub from: ManagedBuffer<M>,
     pub to: ManagedBuffer<M>,
-    pub timestamp: Timestamp,
+    pub timestamp: u64,
     pub price: BigUint<M>,
     pub decimals: u8,
 }
 
-#[type_abi]
-#[derive(TopEncode, TopDecode, Debug, PartialEq, Eq)]
+#[derive(TopEncode, TopDecode, TypeAbi, Debug, PartialEq, Eq)]
 pub struct TimestampedPrice<M: ManagedTypeApi> {
     pub price: BigUint<M>,
-    pub timestamp: Timestamp,
+    pub timestamp: u64,
     pub decimals: u8,
 }
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, Debug, PartialEq, Eq)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, Debug, PartialEq, Eq)]
 pub struct OracleStatus {
     pub accepted_submissions: u64,
     pub total_submissions: u64,

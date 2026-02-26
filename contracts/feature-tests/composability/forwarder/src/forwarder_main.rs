@@ -1,60 +1,43 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
-#![allow(clippy::let_and_return)]
+#![allow(clippy::let_unit_value)]
 
-mod common;
-pub mod forwarder_proxy;
-pub mod fwd_call_async;
-pub mod fwd_call_promise_direct;
-pub mod fwd_call_promises;
-pub mod fwd_call_promises_bt;
-pub mod fwd_call_sync;
-pub mod fwd_call_sync_bt;
-pub mod fwd_call_sync_bt_legacy;
-pub mod fwd_call_transf_exec;
-pub mod fwd_change_owner;
-pub mod fwd_deploy;
-pub mod fwd_dynamic;
-pub mod fwd_dcdt;
-pub mod fwd_fallible;
-pub mod fwd_nft;
-pub mod fwd_roles;
-pub mod fwd_sft;
-pub mod fwd_storage;
-pub mod fwd_upgrade;
-pub mod vault_proxy;
-pub mod vault_upgrade_proxy;
+pub mod call_async;
+pub mod call_queue;
+pub mod call_sync;
+pub mod call_transf_exec;
+pub mod contract_change_owner;
+pub mod contract_deploy;
+pub mod contract_upgrade;
+pub mod dcdt;
+pub mod nft;
+pub mod roles;
+pub mod sft;
+pub mod storage;
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// Test contract for investigating contract calls.
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Forwarder:
-    fwd_call_sync::ForwarderSyncCallModule
-    + fwd_call_async::ForwarderAsyncCallModule
-    + fwd_call_transf_exec::ForwarderTransferExecuteModule
-    + fwd_change_owner::ChangeOwnerModule
-    + fwd_deploy::DeployContractModule
-    + fwd_upgrade::UpgradeContractModule
-    + fwd_dcdt::ForwarderDcdtModule
-    + fwd_fallible::ForwarderFallibleModule
-    + fwd_sft::ForwarderSftModule
-    + fwd_nft::ForwarderNftModule
-    + fwd_roles::ForwarderRolesModule
-    + fwd_dynamic::ForwarderDynamicModule
-    + fwd_storage::ForwarderStorageModule
-    + common::CommonModule
-    + fwd_call_promises::CallPromisesModule
-    + fwd_call_promise_direct::CallPromisesDirectModule
-    + fwd_call_sync_bt_legacy::BackTransfersLegacyModule
-    + fwd_call_sync_bt::BackTransfersModule
-    + fwd_call_promises_bt::CallPromisesBackTransfersModule
+    call_sync::ForwarderSyncCallModule
+    + call_async::ForwarderAsyncCallModule
+    + call_transf_exec::ForwarderTransferExecuteModule
+    + call_queue::ForwarderQueuedCallModule
+    + contract_change_owner::ChangeOwnerModule
+    + contract_deploy::DeployContractModule
+    + contract_upgrade::UpgradeContractModule
+    + dcdt::ForwarderDcdtModule
+    + sft::ForwarderSftModule
+    + nft::ForwarderNftModule
+    + roles::ForwarderRolesModule
+    + storage::ForwarderStorageModule
 {
     #[init]
     fn init(&self) {}
 
     #[endpoint]
     fn send_rewa(&self, to: &ManagedAddress, amount: &BigUint) {
-        self.tx().to(to).rewa(amount).transfer();
+        self.send().direct_rewa(to, amount);
     }
 }

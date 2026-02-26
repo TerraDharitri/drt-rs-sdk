@@ -1,36 +1,32 @@
 #![no_std]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
-
-pub mod erc1155_proxy;
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
 const PERCENTAGE_TOTAL: u8 = 100;
 
-#[type_abi]
-#[derive(TopEncode, TopDecode)]
+#[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct Auction<M: ManagedTypeApi> {
     pub token_identifier: RewaOrDcdtTokenIdentifier<M>,
     pub min_bid: BigUint<M>,
     pub max_bid: BigUint<M>,
-    pub deadline: TimestampMillis,
+    pub deadline: u64,
     pub original_owner: ManagedAddress<M>,
     pub current_bid: BigUint<M>,
     pub current_winner: ManagedAddress<M>,
 }
 
-#[type_abi]
-#[derive(TopEncode, TopDecode)]
+#[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct AuctionArgument<M: ManagedTypeApi> {
     pub token_identifier: RewaOrDcdtTokenIdentifier<M>,
     pub min_bid: BigUint<M>,
     pub max_bid: BigUint<M>,
-    pub deadline: TimestampMillis,
+    pub deadline: u64,
 }
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Erc1155Marketplace {
-    /// `bid_cut_percentage` is the cut that the contract takes from any successful bid
+    /// `bid_cut_percentage` is the cut that the contract takes from any sucessful bid
     #[init]
     fn init(&self, token_ownership_contract_address: ManagedAddress, bid_cut_percentage: u8) {
         self.token_ownership_contract_address()
@@ -110,10 +106,7 @@ pub trait Erc1155Marketplace {
 
         let claimable_funds_mapper = self.get_claimable_funds_mapper();
         for (token_identifier, amount) in claimable_funds_mapper.iter() {
-            self.tx()
-                .to(&caller)
-                .rewa_or_single_dcdt(&token_identifier, 0, &amount)
-                .transfer();
+            self.send().direct(&caller, &token_identifier, 0, &amount);
             self.clear_claimable_funds(&token_identifier);
         }
     }
@@ -160,7 +153,7 @@ pub trait Erc1155Marketplace {
             "Can't bid on your own token"
         );
         require!(
-            self.blockchain().get_block_timestamp_millis() < auction.deadline,
+            self.blockchain().get_block_timestamp() < auction.deadline,
             "Auction ended already"
         );
         require!(
@@ -183,10 +176,12 @@ pub trait Erc1155Marketplace {
 
         // refund losing bid
         if !auction.current_winner.is_zero() {
-            self.tx()
-                .to(&auction.current_winner)
-                .rewa_or_single_dcdt(&auction.token_identifier, 0, &auction.current_bid)
-                .transfer();
+            self.send().direct(
+                &auction.current_winner,
+                &auction.token_identifier,
+                0,
+                &auction.current_bid,
+            );
         }
 
         // update auction bid and winner
@@ -205,7 +200,7 @@ pub trait Erc1155Marketplace {
         let auction = self.auction_for_token(&type_id, &nft_id).get();
 
         require!(
-            self.blockchain().get_block_timestamp_millis() > auction.deadline
+            self.blockchain().get_block_timestamp() > auction.deadline
                 || auction.current_bid == auction.max_bid,
             "Auction deadline has not passed nor is the current bid equal to max bid"
         );
@@ -220,10 +215,12 @@ pub trait Erc1155Marketplace {
             self.add_claimable_funds(&auction.token_identifier, &cut_amount);
 
             // send part of the bid to the original owner
-            self.tx()
-                .to(&auction.original_owner)
-                .rewa_or_single_dcdt(&auction.token_identifier, 0, &amount_to_send)
-                .transfer();
+            self.send().direct(
+                &auction.original_owner,
+                &auction.token_identifier,
+                0,
+                &amount_to_send,
+            );
 
             // send token to winner
             self.async_transfer_token(type_id, nft_id, auction.current_winner);
@@ -283,7 +280,7 @@ pub trait Erc1155Marketplace {
         token: &RewaOrDcdtTokenIdentifier,
         min_bid: &BigUint,
         max_bid: &BigUint,
-        deadline: TimestampMillis,
+        deadline: u64,
     ) {
         require!(
             !self.is_up_for_auction(type_id, nft_id),
@@ -294,7 +291,7 @@ pub trait Erc1155Marketplace {
             "Min bid can't be 0 or higher than max bid"
         );
         require!(
-            deadline > self.blockchain().get_block_timestamp_millis(),
+            deadline > self.blockchain().get_block_timestamp(),
             "Deadline can't be in the past"
         );
 
@@ -313,11 +310,10 @@ pub trait Erc1155Marketplace {
         let sc_own_address = self.blockchain().get_sc_address();
         let token_ownership_contract_address = self.token_ownership_contract_address().get();
 
-        self.tx()
-            .to(&token_ownership_contract_address)
-            .typed(erc1155_proxy::Erc1155Proxy)
+        self.erc1155_proxy(token_ownership_contract_address)
             .safe_transfer_from(sc_own_address, to, type_id, nft_id, &[])
-            .async_call_and_exit();
+            .async_call()
+            .call_and_exit()
     }
 
     fn calculate_cut_amount(&self, total_amount: &BigUint, cut_percentage: u8) -> BigUint {
@@ -335,6 +331,11 @@ pub trait Erc1155Marketplace {
         let mut mapper = self.get_claimable_funds_mapper();
         mapper.insert(token_identifier.clone(), BigUint::zero());
     }
+
+    // proxy
+
+    #[proxy]
+    fn erc1155_proxy(&self, to: ManagedAddress) -> erc1155::Proxy<Self::Api>;
 
     // storage
 

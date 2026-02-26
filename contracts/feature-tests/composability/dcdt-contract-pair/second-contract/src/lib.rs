@@ -1,21 +1,21 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait SecondContract {
     #[init]
-    fn init(&self, dcdt_token_identifier: TokenId) {
+    fn init(&self, dcdt_token_identifier: RewaOrDcdtTokenIdentifier) {
         self.set_contract_dcdt_token_identifier(&dcdt_token_identifier);
     }
 
     #[payable("*")]
     #[endpoint(acceptDcdtPayment)]
     fn accept_dcdt_payment(&self) {
-        let payment = self.call_value().single();
+        let actual_token_identifier = self.call_value().rewa_or_single_dcdt().token_identifier;
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
         require!(
-            payment.token_identifier == expected_token_identifier,
+            actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
     }
@@ -29,9 +29,9 @@ pub trait SecondContract {
     // storage
 
     #[storage_set("dcdtTokenName")]
-    fn set_contract_dcdt_token_identifier(&self, dcdt_token_identifier: &TokenId);
+    fn set_contract_dcdt_token_identifier(&self, dcdt_token_identifier: &RewaOrDcdtTokenIdentifier);
 
     #[view(getdcdtTokenName)]
     #[storage_get("dcdtTokenName")]
-    fn get_contract_dcdt_token_identifier(&self) -> TokenId;
+    fn get_contract_dcdt_token_identifier(&self) -> RewaOrDcdtTokenIdentifier;
 }

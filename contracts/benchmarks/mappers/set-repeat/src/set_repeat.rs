@@ -2,9 +2,9 @@
 
 use benchmark_common::ExampleStruct;
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait SetRepeat: benchmark_common::BenchmarkCommon {
     #[init]
     fn init(&self) {}

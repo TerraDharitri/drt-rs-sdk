@@ -3,8 +3,8 @@
 mod fee;
 use fee::*;
 
-use dharitri_sc::imports::*;
-#[dharitri_sc::contract]
+numbat_wasm::imports!();
+#[numbat_wasm::contract]
 pub trait DcdtTransferWithFee {
     #[init]
     fn init(&self) {}
@@ -13,9 +13,9 @@ pub trait DcdtTransferWithFee {
     #[endpoint(setExactValueFee)]
     fn set_exact_value_fee(
         &self,
-        fee_token: DcdtTokenIdentifier,
+        fee_token: TokenIdentifier,
         fee_amount: BigUint,
-        token: DcdtTokenIdentifier,
+        token: TokenIdentifier,
     ) {
         self.token_fee(&token)
             .set(Fee::ExactValue(DcdtTokenPayment::new(
@@ -25,7 +25,7 @@ pub trait DcdtTransferWithFee {
 
     #[only_owner]
     #[endpoint(setPercentageFee)]
-    fn set_percentage_fee(&self, fee: u32, token: DcdtTokenIdentifier) {
+    fn set_percentage_fee(&self, fee: u32, token: TokenIdentifier) {
         self.token_fee(&token).set(Fee::Percentage(fee));
     }
 
@@ -40,14 +40,15 @@ pub trait DcdtTransferWithFee {
         }
         self.paid_fees().clear();
 
-        self.tx().to(ToCaller).payment(fees).transfer();
+        let caller = self.blockchain().get_caller();
+        self.send().direct_multi(&caller, &fees);
     }
 
-    #[payable]
+    #[payable("*")]
     #[endpoint]
     fn transfer(&self, address: ManagedAddress) {
         require!(
-            *self.call_value().rewa_direct_non_strict() == 0,
+            self.call_value().rewa_value() == 0,
             "REWA transfers not allowed"
         );
         let payments = self.call_value().all_dcdt_transfers();
@@ -71,17 +72,17 @@ pub trait DcdtTransferWithFee {
                         "Mismatching payment for covering fees"
                     );
                     let _ = self.get_payment_after_fees(fee_type, &next_payment);
-                    new_payments.push(payment.clone());
-                }
+                    new_payments.push(payment);
+                },
                 Fee::Percentage(_) => {
                     new_payments.push(self.get_payment_after_fees(fee_type, &payment));
-                }
+                },
                 Fee::Unset => {
-                    new_payments.push(payment.clone());
-                }
+                    new_payments.push(payment);
+                },
             }
         }
-        self.tx().to(&address).payment(new_payments).transfer();
+        self.send().direct_multi(&address, &new_payments);
     }
 
     fn get_payment_after_fees(
@@ -115,19 +116,19 @@ pub trait DcdtTransferWithFee {
                 let calculated_fee_amount = &provided.amount * *percentage / PERCENTAGE_DIVISOR;
                 provided.amount = calculated_fee_amount;
                 provided
-            }
+            },
             Fee::Unset => {
                 provided.amount = BigUint::zero();
                 provided
-            }
+            },
         }
     }
 
     #[view(getTokenFee)]
     #[storage_mapper("token_fee")]
-    fn token_fee(&self, token: &DcdtTokenIdentifier) -> SingleValueMapper<Fee<Self::Api>>;
+    fn token_fee(&self, token: &TokenIdentifier) -> SingleValueMapper<Fee<Self::Api>>;
 
     #[view(getPaidFees)]
     #[storage_mapper("paid_fees")]
-    fn paid_fees(&self) -> MapMapper<(DcdtTokenIdentifier, u64), BigUint>;
+    fn paid_fees(&self) -> MapMapper<(TokenIdentifier, u64), BigUint>;
 }

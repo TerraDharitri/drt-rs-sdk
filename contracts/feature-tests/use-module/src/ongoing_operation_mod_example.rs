@@ -1,11 +1,11 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-use dharitri_sc_modules::ongoing_operation::{
+use numbat_wasm_modules::ongoing_operation::{
     self, CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
 
 /// Example of a module using the ongoing operation pattern
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait OngoingOperationModExample: ongoing_operation::OngoingOperationModule {
     #[endpoint(countTo100)]
     fn count_to_100(&self) -> OperationCompletionStatus {

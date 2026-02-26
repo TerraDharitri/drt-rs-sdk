@@ -1,10 +1,10 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 const REWA_DECIMALS: usize = 18;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Child {
     #[init]
     fn init(&self) {}
@@ -17,11 +17,11 @@ pub trait Child {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().rewa();
+        let issue_cost = self.call_value().rewa_value();
         self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
-                issue_cost.clone(),
+                issue_cost,
                 &token_display_name,
                 &token_ticker,
                 &initial_supply,
@@ -37,22 +37,22 @@ pub trait Child {
                     can_add_special_roles: true,
                 },
             )
+            .async_call()
             .with_callback(self.callbacks().dcdt_issue_callback())
-            .async_call_and_exit()
+            .call_and_exit()
     }
 
     // callbacks
 
     #[callback]
     fn dcdt_issue_callback(&self, #[call_result] _result: IgnoreValue) {
-        let payment = self.call_value().single();
-        self.wrapped_rewa_token_identifier()
-            .set(&payment.token_identifier);
+        let (token_identifier, _amount) = self.call_value().single_fungible_dcdt();
+        self.wrapped_rewa_token_identifier().set(&token_identifier);
     }
 
     // storage
 
     #[view(getWrappedRewaTokenIdentifier)]
     #[storage_mapper("wrappedRewaTokenIdentifier")]
-    fn wrapped_rewa_token_identifier(&self) -> SingleValueMapper<TokenId>;
+    fn wrapped_rewa_token_identifier(&self) -> SingleValueMapper<TokenIdentifier>;
 }

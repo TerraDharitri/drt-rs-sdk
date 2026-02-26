@@ -1,17 +1,19 @@
+#![feature(exit_status_error)]
+
 #[cfg(test)]
 use std::{io::BufRead, path::Path, process::Command};
 
 #[test]
 fn run_format_tests() {
-    let home_dir = std::env::home_dir().unwrap();
+    let home_dir = home::home_dir().unwrap();
 
     let mut vscode_lldb_plugin_lookup = home_dir.clone();
-    vscode_lldb_plugin_lookup.push(".vscode/extensions/vadimcn.vscode-lldb*");
+    vscode_lldb_plugin_lookup.push(".vscode/extensions/vadimcn.vscode-lldb-*");
 
     let vscode_lldb_plugin = glob::glob(vscode_lldb_plugin_lookup.as_os_str().to_str().unwrap())
         .expect("Failed to read glob pattern")
         .next()
-        .expect("No installed vscode-lldb found. Check for matching version in .vscode/extensions")
+        .expect("No installed vscode-lldb found")
         .expect("Glob failed");
     check_path(&vscode_lldb_plugin);
 
@@ -27,20 +29,11 @@ fn run_format_tests() {
         .unwrap();
     check_path(&format_tests_path);
 
-    let init_internal_dict = Path::new("./src/init_internal_dict.py")
-        .canonicalize()
-        .unwrap();
-    check_path(&init_internal_dict);
+    let mut rust_formatters = vscode_lldb_plugin.clone();
+    rust_formatters.push("formatters");
+    check_path(&rust_formatters);
 
-    let mut codelldb = vscode_lldb_plugin.clone();
-    codelldb.push("adapter/scripts/codelldb");
-    check_path(&codelldb);
-
-    let mut lang_support = vscode_lldb_plugin.clone();
-    lang_support.push("lang_support");
-    check_path(&lang_support);
-
-    let pretty_printers = Path::new("../pretty-printers/dharitri_sc_lldb_pretty_printers.py")
+    let pretty_printers = Path::new("../pretty-printers/numbat_wasm_lldb_pretty_printers.py")
         .canonicalize()
         .unwrap();
     check_path(&pretty_printers);
@@ -53,11 +46,7 @@ fn run_format_tests() {
     let debugger_output = Command::new(lldb)
         .arg(format_tests_path)
         .arg("-o")
-        .arg(command_script_import(&init_internal_dict))
-        .arg("-o")
-        .arg(command_script_import(&codelldb))
-        .arg("-o")
-        .arg(command_script_import(&lang_support))
+        .arg(command_script_import(&rust_formatters))
         .arg("-o")
         .arg(command_script_import(&pretty_printers))
         .arg("-o")
@@ -71,10 +60,10 @@ fn run_format_tests() {
         .output()
         .expect("Failed to run debugger");
 
-    assert!(
-        debugger_output.status.success(),
-        "Debugger returned a non-zero status"
-    );
+    debugger_output
+        .status
+        .exit_ok()
+        .expect("Debugger returned a non-zero status");
 
     let stdout_lines: Vec<String> = debugger_output
         .stdout

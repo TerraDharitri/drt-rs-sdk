@@ -2,17 +2,16 @@
 name = "panic-message-features"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2024"
+edition = "2018"
 publish = false
 
 [lib]
 path = "src/panic_features.rs"
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../framework/base"
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../numbat-wasm"
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "2.0.0"
-features = ["wasmer-experimental"]
-path = "../../../framework/scenario"
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../numbat-wasm-debug"

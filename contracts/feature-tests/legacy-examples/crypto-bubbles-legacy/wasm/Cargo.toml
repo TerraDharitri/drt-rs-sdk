@@ -1,0 +1,31 @@
+[package]
+name = "crypto-bubbles-legacy-wasm"
+version = "0.0.0"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2018"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+
+[dependencies.crypto-bubbles-legacy]
+path = ".."
+
+[dependencies.numbat-wasm-node]
+version = "0.0.18"
+path = "../../../../../numbat-wasm-node"
+
+[dependencies.numbat-wasm-output]
+version = "0.0.18"
+path = "../../../../../numbat-wasm-output"
+features = ["wasm-output-mode"]
+
+[workspace]
+members = ["."]

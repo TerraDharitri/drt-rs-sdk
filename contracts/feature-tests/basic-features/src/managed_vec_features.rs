@@ -1,6 +1,6 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait ManagedVecFeatures {
     #[endpoint]
     fn managed_vec_new(&self) -> ManagedVec<BigUint> {
@@ -39,7 +39,7 @@ pub trait ManagedVecFeatures {
         &self,
         mv: ManagedVec<BigUint>,
         index: usize,
-        item: BigUint,
+        item: &BigUint,
     ) -> ManagedVec<BigUint> {
         let mut result = mv;
         if result.set(index, item).is_ok() {
@@ -65,6 +65,16 @@ pub trait ManagedVecFeatures {
     #[endpoint]
     fn managed_vec_contains(&self, mv: ManagedVec<BigUint>, item: BigUint) -> bool {
         mv.contains(&item)
+    }
+
+    #[endpoint]
+    fn managed_vec_array_push(
+        &self,
+        mut mv: ManagedVec<[u8; 5]>,
+        item: [u8; 5],
+    ) -> ManagedVec<[u8; 5]> {
+        mv.push(item);
+        mv
     }
 
     #[endpoint]

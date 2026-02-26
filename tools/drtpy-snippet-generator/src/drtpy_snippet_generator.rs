@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use dharitri_sc::codec::{TopEncode, top_encode_to_vec_u8_or_panic};
+use numbat_wasm::numbat_codec::{top_encode_to_vec_u8_or_panic, TopEncode};
 use num_traits::Zero;
 
 mod cmd_builder;
@@ -133,7 +133,7 @@ impl DrtpySnippetGenerator {
     }
 
     pub fn set_rewa_value(&mut self, rewa_value: &num_bigint::BigUint) {
-        self.rewa_value.clone_from(rewa_value);
+        self.rewa_value = rewa_value.clone();
     }
 
     pub fn add_dcdt_transfer(
@@ -174,10 +174,10 @@ impl DrtpySnippetGenerator {
                 match deploy_type {
                     DeployType::ProjectPath(path) => {
                         cmd_builder.add_raw_named_argument(PROJECT_ARG_NAME, path);
-                    }
+                    },
                     DeployType::WasmFilePath(path) => {
                         cmd_builder.add_raw_named_argument(WASM_PATH_ARG_NAME, path);
-                    }
+                    },
                 }
 
                 if let Some(json_out_file) = opt_json_out_file {
@@ -186,7 +186,7 @@ impl DrtpySnippetGenerator {
 
                 self.handle_common_non_query_steps(&mut cmd_builder);
                 function_name = None;
-            }
+            },
             TransactionType::Upgrade {
                 dest_address_bech32,
                 deploy_type,
@@ -198,10 +198,10 @@ impl DrtpySnippetGenerator {
                 match deploy_type {
                     DeployType::ProjectPath(path) => {
                         cmd_builder.add_raw_named_argument(PROJECT_ARG_NAME, path);
-                    }
+                    },
                     DeployType::WasmFilePath(path) => {
                         cmd_builder.add_raw_named_argument(WASM_PATH_ARG_NAME, path);
-                    }
+                    },
                 }
 
                 if let Some(json_out_file) = opt_json_out_file {
@@ -210,7 +210,7 @@ impl DrtpySnippetGenerator {
 
                 self.handle_common_non_query_steps(&mut cmd_builder);
                 function_name = None;
-            }
+            },
             TransactionType::Call {
                 sender_address_bech32,
                 dest_address_bech32,
@@ -226,7 +226,7 @@ impl DrtpySnippetGenerator {
 
                         function_name = Some(function.clone());
                         self.contract_call_no_dcdt(&mut cmd_builder, dest_clone, function_clone);
-                    }
+                    },
                     1 => {
                         let sender_clone = sender_address_bech32.clone();
                         let dest_clone = dest_address_bech32.clone();
@@ -241,7 +241,7 @@ impl DrtpySnippetGenerator {
                             dcdt_transfer_clone,
                         );
                         function_name = Some(transfer_func_name);
-                    }
+                    },
                     _ => {
                         let sender_clone = sender_address_bech32.clone();
                         let dest_clone = dest_address_bech32.clone();
@@ -256,11 +256,11 @@ impl DrtpySnippetGenerator {
                             transfers_clone,
                         );
                         function_name = Some(MULTI_TRANSFER_FUNC_NAME.to_owned());
-                    }
+                    },
                 }
 
                 self.handle_common_non_query_steps(&mut cmd_builder);
-            }
+            },
             TransactionType::Query {
                 dest_address_bech32,
                 function,
@@ -272,7 +272,7 @@ impl DrtpySnippetGenerator {
 
                 function_name = Some(function.clone());
                 self.contract_call_no_dcdt(&mut cmd_builder, dest_clone, function_clone);
-            }
+            },
         }
 
         if !self.arguments.is_empty() {
@@ -293,7 +293,7 @@ impl DrtpySnippetGenerator {
                 Self::print_tx_data(function_name, &self.arguments);
                 println!();
                 cmd_builder.print();
-            }
+            },
         }
     }
 
@@ -310,31 +310,31 @@ impl DrtpySnippetGenerator {
             tx_data += &arg_as_hex;
         }
 
-        println!("{tx_data}");
+        println!("{}", tx_data);
     }
 
     fn handle_common_non_query_steps(&self, cmd_builder: &mut CmdBuilder) {
         match &self.wallet_type {
             WalletType::PemPath(path) => {
                 cmd_builder.add_raw_named_argument(PEM_PATH_ARG_NAME, path);
-            }
+            },
             WalletType::KeyFile {
                 keyfile_path,
                 passfile_path,
             } => {
                 cmd_builder.add_raw_named_argument(KEYFILE_PATH_ARG_NAME, keyfile_path);
                 cmd_builder.add_raw_named_argument(PASSFILE_PATH_ARG_NAME, passfile_path);
-            }
+            },
         }
 
         match self.sender_nonce {
             Some(nonce) => {
                 cmd_builder
                     .add_numerical_argument(NONCE_ARG_NAME, &num_bigint::BigUint::from(nonce));
-            }
+            },
             None => {
                 cmd_builder.add_flag(RECALL_NONCE_FLAG);
-            }
+            },
         }
 
         if self.rewa_value > num_bigint::BigUint::zero() {
@@ -472,7 +472,7 @@ fn main() {
     generator = DrtpySnippetGenerator::new_sc_upgrade(
         ChainConfig::Devnet,
         WalletType::PemPath("../some_path/my_file.pem".to_owned()),
-        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqs4jmlvc".to_owned(),
+        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqsgwvu0x".to_owned(),
         DeployType::WasmFilePath("../path_to_wasm/file.wasm".to_owned()),
         Some("some_out_file.json".to_owned()),
         100_000_000,
@@ -489,8 +489,8 @@ fn main() {
     generator = DrtpySnippetGenerator::new_sc_call(
         ChainConfig::Devnet,
         WalletType::PemPath("../some_path/my_file.pem".to_owned()),
-        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplq7hymha".to_owned(),
-        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqs4jmlvc".to_owned(),
+        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplqrtnc5r".to_owned(),
+        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqsgwvu0x".to_owned(),
         "someEndpointName".to_owned(),
         100_000_000,
     );
@@ -507,8 +507,8 @@ fn main() {
     generator = DrtpySnippetGenerator::new_sc_call(
         ChainConfig::Devnet,
         WalletType::PemPath("../some_path/my_file.pem".to_owned()),
-        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplq7hymha".to_owned(),
-        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqs4jmlvc".to_owned(),
+        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplqrtnc5r".to_owned(),
+        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqsgwvu0x".to_owned(),
         "someEndpointName".to_owned(),
         100_000_000,
     );
@@ -527,8 +527,8 @@ fn main() {
     generator = DrtpySnippetGenerator::new_sc_call(
         ChainConfig::Devnet,
         WalletType::PemPath("../some_path/my_file.pem".to_owned()),
-        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplq7hymha".to_owned(),
-        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqs4jmlvc".to_owned(),
+        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplqrtnc5r".to_owned(),
+        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqsgwvu0x".to_owned(),
         "someEndpointName".to_owned(),
         100_000_000,
     );
@@ -548,8 +548,8 @@ fn main() {
     generator = DrtpySnippetGenerator::new_sc_call(
         ChainConfig::Devnet,
         WalletType::PemPath("../some_path/my_file.pem".to_owned()),
-        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplq7hymha".to_owned(),
-        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqs4jmlvc".to_owned(),
+        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplqrtnc5r".to_owned(),
+        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqsgwvu0x".to_owned(),
         "someEndpointName".to_owned(),
         100_000_000,
     );
@@ -569,8 +569,8 @@ fn main() {
     generator = DrtpySnippetGenerator::new_sc_call(
         ChainConfig::Devnet,
         WalletType::PemPath("../some_path/my_file.pem".to_owned()),
-        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplq7hymha".to_owned(),
-        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqs4jmlvc".to_owned(),
+        "drt1dyxrt6ky32hpvqh9w9kgt262z4c6su65myzy33styw47m9nkrplqrtnc5r".to_owned(),
+        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqsgwvu0x".to_owned(),
         "someEndpointName".to_owned(),
         100_000_000,
     );
@@ -591,7 +591,7 @@ fn main() {
 
     generator = DrtpySnippetGenerator::new_sc_query(
         ChainConfig::Devnet,
-        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqs4jmlvc".to_owned(),
+        "drt1qqqqqqqqqqqqqpgqju6muu3kj2uqpqwz798g2jeepyn8jwn5rkqsgwvu0x".to_owned(),
         "someEndpointName".to_owned(),
     );
     generator.add_argument(&my_val);

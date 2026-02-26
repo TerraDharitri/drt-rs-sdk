@@ -1,8 +1,8 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// All elliptic curve functions provided by Andes exposed here.
 /// TODO: remove heap allocation and move to basic features.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait EllipticCurveFeatures {
     #[endpoint]
     fn compute_get_values(&self, curve_bitsize: u32) -> EllipticCurveComponents<Self::Api> {

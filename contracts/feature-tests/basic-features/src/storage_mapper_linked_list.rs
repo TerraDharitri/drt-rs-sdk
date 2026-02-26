@@ -1,7 +1,7 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// Storage mapper test.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait LinkedListMapperFeatures {
     #[view(getListMapper)]
     #[storage_mapper("list_mapper")]

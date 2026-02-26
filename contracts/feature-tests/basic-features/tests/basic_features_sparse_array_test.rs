@@ -1,9 +1,10 @@
-use dharitri_sc::types::SparseArray;
-use dharitri_sc_scenario::api::StaticApi;
+use numbat_wasm::types::SparseArray;
+use numbat_wasm_debug::DebugApi;
 
 #[test]
 fn sparse_array_test() {
-    let mut array = SparseArray::<StaticApi, 100>::new(5);
+    let _ = DebugApi::dummy();
+    let mut array = SparseArray::<DebugApi, 100>::new(5);
     assert_eq!(array.len(), 5);
     assert_eq!(array.as_raw_slice(), vec![0, 0, 0, 0, 0].as_slice());
 
@@ -25,12 +26,14 @@ fn sparse_array_test() {
 #[should_panic]
 #[test]
 fn sparse_array_create_over_capacity_test() {
-    let _ = SparseArray::<StaticApi, 100>::new(101);
+    let _ = DebugApi::dummy();
+    let _ = SparseArray::<DebugApi, 100>::new(101);
 }
 
 #[should_panic]
 #[test]
 fn sparse_array_get_invalid_index_test() {
-    let array = SparseArray::<StaticApi, 100>::new(5);
+    let _ = DebugApi::dummy();
+    let array = SparseArray::<DebugApi, 100>::new(5);
     let _ = array.get(5);
 }

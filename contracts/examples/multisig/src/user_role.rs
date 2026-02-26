@@ -1,7 +1,6 @@
-use dharitri_sc::derive_imports::*;
+numbat_wasm::derive_imports!();
 
-#[type_abi]
-#[derive(TopEncode, TopDecode, Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(TopEncode, TopDecode, TypeAbi, Clone, Copy, PartialEq, Eq, Debug)]
 pub enum UserRole {
     None,
     Proposer,

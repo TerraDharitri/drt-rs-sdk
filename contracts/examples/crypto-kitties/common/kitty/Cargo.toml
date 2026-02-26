@@ -1,16 +1,16 @@
 [package]
 name = "kitty"
 version = "0.0.0"
-authors = [ "Dharitri <contact@dharitri.org>",]
-edition = "2024"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2018"
 publish = false
 
 [lib]
 path = "src/lib.rs"
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../../../framework/base"
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../../../numbat-wasm"
 
 [dependencies.random]
 version = "0.0.0"

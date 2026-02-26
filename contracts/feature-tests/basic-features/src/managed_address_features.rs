@@ -1,8 +1,8 @@
 use core::convert::TryFrom;
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait ManagedAddressFeatures {
     #[endpoint]
     fn maddress_from_array(&self, array: &[u8; 32]) -> ManagedAddress {

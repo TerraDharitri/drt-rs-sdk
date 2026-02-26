@@ -14,18 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Install rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-
-      - name: Install prerequisites
+        uses: actions/checkout@v2
+      - name: Install drtpy
         run: |
-          cargo install dharitri-sc-meta
-
+          source .github/workflows/env
+          pip3 install drtpy
+      - name: Install wasm-opt
+        run: |
+          drtpy deps install nodejs
+          drtpy deps install wasm-opt
       - name: Build project example outputs
         run: |
           ./zip-example-wasm.sh
@@ -37,3 +34,4 @@ jobs:
           file: ./examples-wasm.zip
           asset_name: examples-wasm.zip
           overwrite: true
+          body: "This is my release text"

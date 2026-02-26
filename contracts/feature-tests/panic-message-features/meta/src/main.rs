@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<panic_message_features::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<panic_message_features::AbiProvider>();
 }

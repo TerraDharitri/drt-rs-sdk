@@ -1,14 +1,15 @@
 #![no_std]
 
-dharitri_sc::imports!();
-
-pub mod child_proxy;
+numbat_wasm::imports!();
 
 // Base cost for standalone + estimate cost of actual sc call
 const ISSUE_EXPECTED_GAS_COST: u64 = 90_000_000 + 25_000_000;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Parent {
+    #[proxy]
+    fn child_proxy(&self, to: ManagedAddress) -> child::Proxy<Self::Api>;
+
     #[init]
     fn init(&self) {}
 
@@ -18,14 +19,13 @@ pub trait Parent {
 
     #[endpoint(deployChildContract)]
     fn deploy_child_contract(&self, code: ManagedBuffer) {
-        let gas_left = self.blockchain().get_gas_left();
-        let child_contract_address = self
-            .tx()
-            .raw_deploy()
-            .code(code)
-            .gas(gas_left)
-            .returns(ReturnsNewManagedAddress)
-            .sync_call();
+        let (child_contract_address, _) = self.send_raw().deploy_contract(
+            self.blockchain().get_gas_left(),
+            &BigUint::zero(),
+            &code,
+            CodeMetadata::DEFAULT,
+            &ManagedArgBuffer::new(),
+        );
 
         self.child_contract_address().set(&child_contract_address);
     }
@@ -38,16 +38,14 @@ pub trait Parent {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().rewa();
-        let child_contract_address = self.child_contract_address().get();
-
-        self.tx()
-            .to(&child_contract_address)
-            .typed(child_proxy::ChildProxy)
+        let issue_cost = self.call_value().rewa_value();
+        let child_contract_adress = self.child_contract_address().get();
+        let _: IgnoreValue = self
+            .child_proxy(child_contract_adress)
             .issue_wrapped_rewa(token_display_name, token_ticker, initial_supply)
-            .rewa(issue_cost)
-            .gas(ISSUE_EXPECTED_GAS_COST)
-            .sync_call();
+            .with_rewa_transfer(issue_cost)
+            .with_gas_limit(ISSUE_EXPECTED_GAS_COST)
+            .execute_on_dest_context();
     }
 
     // storage

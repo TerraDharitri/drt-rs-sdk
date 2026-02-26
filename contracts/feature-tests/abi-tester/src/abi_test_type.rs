@@ -1,15 +1,12 @@
 use crate::only_nested::*;
-use bitflags::bitflags;
-use dharitri_sc::{
+use numbat_wasm::{
     api::ManagedTypeApi,
-    typenum::U2,
-    types::{BigUint, Box, ConstDecimals, ManagedBuffer, ManagedBufferReadToEnd, ManagedDecimal},
+    types::{BigUint, Box, ManagedBuffer},
 };
-dharitri_sc::derive_imports!();
+numbat_wasm::derive_imports!();
 
 /// Its only purpose is to test that the ABI generator works fine.
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct AbiTestType {
     /// This type should only appear here.
     pub nested: OnlyShowsUpAsNested01,
@@ -23,8 +20,7 @@ pub struct AbiTestType {
 }
 
 /// Its only purpose is to test that the ABI generator works fine.
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct AbiManagedType<M: ManagedTypeApi> {
     pub big_uint: BigUint<M>,
     pub integer: i32,
@@ -32,43 +28,8 @@ pub struct AbiManagedType<M: ManagedTypeApi> {
 }
 
 /// Its only purpose is to test that the ABI generator works fine.
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, ManagedVecItem)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, ManagedVecItem)]
 pub struct AbiManagedVecItem {
     pub value1: u32,
     pub value2: u32,
-}
-
-#[type_abi]
-#[derive(TopEncode, TopDecode)]
-pub struct OnlyShowsUpInDcdtAttr {
-    #[allow(dead_code)]
-    pub field: OnlyShowsUpAsNested10,
-}
-
-#[type_abi]
-#[derive(TopEncode, TopDecode)]
-pub struct ManagedDecimalWrapper<M: ManagedTypeApi> {
-    #[allow(dead_code)]
-    pub field: ManagedDecimal<M, ConstDecimals<U2>>,
-}
-
-/// Its only purpose is to test that the ABI generator works fine.
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
-pub struct AbiWithManagedBufferReadToEnd<M: ManagedTypeApi> {
-    pub endpoint: ManagedBuffer<M>,
-    pub gas: u64,
-    pub flush: ManagedBufferReadToEnd<M>,
-}
-
-bitflags! {
-    #[type_abi]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, NestedDecode, NestedEncode, TopEncode, TopDecode)]
-    pub struct Permission: u32 {
-        const NONE = 0;
-        const OWNER = 1;
-        const ADMIN = 2;
-        const PAUSE = 4;
-    }
 }

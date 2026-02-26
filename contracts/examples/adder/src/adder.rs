@@ -1,12 +1,10 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
-
-pub mod adder_proxy;
+numbat_wasm::imports!();
 
 /// One of the simplest smart contracts possible,
 /// it holds a single variable in storage, which anyone can increment.
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Adder {
     #[view(getSum)]
     #[storage_mapper("sum")]
@@ -15,11 +13,6 @@ pub trait Adder {
     #[init]
     fn init(&self, initial_value: BigUint) {
         self.sum().set(initial_value);
-    }
-
-    #[upgrade]
-    fn upgrade(&self, initial_value: BigUint) {
-        self.init(initial_value);
     }
 
     /// Add desired amount to the storage variable.

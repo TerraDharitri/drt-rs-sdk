@@ -1,17 +1,15 @@
 #![no_std]
 #![allow(clippy::suspicious_operation_groupings)]
 
-pub mod kitty_genetic_alg_proxy;
-use kitty::{Kitty, KittyGenes};
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
 use core::cmp::max;
 
+use kitty::{kitty_genes::*, Kitty};
 use random::*;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait KittyOwnership {
-    #[allow_multiple_var_args]
     #[init]
     fn init(
         &self,
@@ -51,9 +49,9 @@ pub trait KittyOwnership {
         let caller = self.blockchain().get_caller();
         let rewa_balance = self
             .blockchain()
-            .get_sc_balance(RewaOrDcdtTokenIdentifier::rewa(), 0);
+            .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0);
 
-        self.tx().to(&caller).rewa(&rewa_balance).transfer();
+        self.send().direct_rewa(&caller, &rewa_balance);
     }
 
     // views/endpoints - ERC721 required
@@ -287,11 +285,11 @@ pub trait KittyOwnership {
         require!(self.is_valid_id(matron_id), "Invalid matron id!");
         require!(self.is_valid_id(sire_id), "Invalid sire id!");
 
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         let auto_birth_fee = self.birth_fee().get();
         let caller = self.blockchain().get_caller();
 
-        require!(*payment == auto_birth_fee, "Wrong fee!");
+        require!(payment == auto_birth_fee, "Wrong fee!");
         require!(
             caller == self.kitty_owner(matron_id).get(),
             "Only the owner of the matron can call this function!"
@@ -336,16 +334,14 @@ pub trait KittyOwnership {
 
         let gene_science_contract_address = self.get_gene_science_contract_address_or_default();
         if !gene_science_contract_address.is_zero() {
-            let caller = self.blockchain().get_caller();
-            self.tx()
-                .to(&gene_science_contract_address)
-                .typed(kitty_genetic_alg_proxy::KittyGeneticAlgProxy)
+            self.kitty_genetic_alg_proxy(gene_science_contract_address)
                 .generate_kitty_genes(matron, sire)
-                .callback(
+                .async_call()
+                .with_callback(
                     self.callbacks()
-                        .generate_kitty_genes_callback(matron_id, caller),
+                        .generate_kitty_genes_callback(matron_id, self.blockchain().get_caller()),
                 )
-                .async_call_and_exit();
+                .call_and_exit()
         } else {
             sc_panic!("Gene science contract address not set!")
         }
@@ -390,7 +386,7 @@ pub trait KittyOwnership {
         let new_kitty_id = total_kitties;
         let kitty = Kitty::new(
             genes,
-            self.blockchain().get_block_timestamp_millis(),
+            self.blockchain().get_block_timestamp(),
             matron_id,
             sire_id,
             generation,
@@ -424,7 +420,7 @@ pub trait KittyOwnership {
 
     fn trigger_cooldown(&self, kitty: &mut Kitty) {
         let cooldown = kitty.get_next_cooldown_time();
-        kitty.cooldown_end = self.blockchain().get_block_timestamp_millis() + cooldown;
+        kitty.cooldown_end = self.blockchain().get_block_timestamp() + cooldown;
     }
 
     fn breed(&self, matron_id: u32, sire_id: u32) {
@@ -452,8 +448,7 @@ pub trait KittyOwnership {
     }
 
     fn is_kitty_ready_to_breed(&self, kitty: &Kitty) -> bool {
-        kitty.siring_with_id == 0
-            && kitty.cooldown_end < self.blockchain().get_block_timestamp_millis()
+        kitty.siring_with_id == 0 && kitty.cooldown_end < self.blockchain().get_block_timestamp()
     }
 
     fn is_siring_permitted(&self, matron_id: u32, sire_id: u32) -> bool {
@@ -465,8 +460,7 @@ pub trait KittyOwnership {
     }
 
     fn is_ready_to_give_birth(&self, matron: &Kitty) -> bool {
-        matron.siring_with_id != 0
-            && matron.cooldown_end < self.blockchain().get_block_timestamp_millis()
+        matron.siring_with_id != 0 && matron.cooldown_end < self.blockchain().get_block_timestamp()
     }
 
     fn is_valid_mating_pair(&self, matron_id: u32, sire_id: u32) -> bool {
@@ -574,14 +568,19 @@ pub trait KittyOwnership {
 
                 // send birth fee to caller
                 let fee = self.birth_fee().get();
-                self.tx().to(&original_caller).rewa(&fee).transfer();
-            }
+                self.send().direct_rewa(&original_caller, &fee);
+            },
             ManagedAsyncCallResult::Err(_) => {
                 // this can only fail if the kitty_genes contract address is invalid
                 // in which case, the only thing we can do is call this again later
-            }
+            },
         }
     }
+
+    // proxy
+
+    #[proxy]
+    fn kitty_genetic_alg_proxy(&self, to: ManagedAddress) -> kitty_genetic_alg::Proxy<Self::Api>;
 
     // storage - General
 

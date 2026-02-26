@@ -1,2 +1,0 @@
-panic occurred: panicked at panic_features.rs:19:9:
-example panic message 123

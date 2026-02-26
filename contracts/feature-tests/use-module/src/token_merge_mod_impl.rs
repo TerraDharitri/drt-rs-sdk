@@ -1,35 +1,34 @@
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
 use core::marker::PhantomData;
 
-use dharitri_sc_modules::token_merge::{
+use numbat_wasm_modules::token_merge::{
     custom_merged_token_attributes::{
         AllMergeScTraits, DefaultMergedAttributesWrapper, MergedTokenAttributesCreator,
     },
     merged_token_instances::MergedTokenInstances,
 };
 
-#[type_abi]
-#[derive(TopEncode, TopDecode, PartialEq, Debug)]
+#[derive(TypeAbi, TopEncode, TopDecode, PartialEq, Debug)]
 pub struct CustomAttributes {
     pub first: u32,
     pub second: u64,
 }
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait TokenMergeModImpl:
-    dharitri_sc_modules::pause::PauseModule
-    + dharitri_sc_modules::token_merge::TokenMergeModule
-    + dharitri_sc_modules::token_merge::merged_token_setup::MergedTokenSetupModule
-    + dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    numbat_wasm_modules::pause::PauseModule
+    + numbat_wasm_modules::token_merge::TokenMergeModule
+    + numbat_wasm_modules::token_merge::merged_token_setup::MergedTokenSetupModule
+    + numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[payable("*")]
     #[endpoint(mergeTokens)]
     fn merge_tokens_endpoint(&self) -> DcdtTokenPayment {
         let payments = self.call_value().all_dcdt_transfers();
         let attributes_creator = DefaultMergedAttributesWrapper::new();
-        self.merge_tokens(&*payments, &attributes_creator)
+        self.merge_tokens(payments, &attributes_creator)
     }
 
     #[payable("*")]
@@ -37,14 +36,14 @@ pub trait TokenMergeModImpl:
     fn merge_tokens_custom_attributes_endpoint(&self) -> DcdtTokenPayment {
         let payments = self.call_value().all_dcdt_transfers();
         let attributes_creator = CustomMergedAttributesWrapper::new();
-        self.merge_tokens(&*payments, &attributes_creator)
+        self.merge_tokens(payments, &attributes_creator)
     }
 
     #[payable("*")]
     #[endpoint(splitTokens)]
     fn split_tokens_endpoint(&self) -> ManagedVec<DcdtTokenPayment> {
         let payments = self.call_value().all_dcdt_transfers();
-        self.split_tokens(&*payments)
+        self.split_tokens(payments)
     }
 
     #[payable("*")]
@@ -55,7 +54,7 @@ pub trait TokenMergeModImpl:
     ) -> ManagedVec<DcdtTokenPayment> {
         let payment = self.call_value().single_dcdt();
         let attributes_creator = DefaultMergedAttributesWrapper::new();
-        self.split_token_partial(payment.clone(), tokens_to_remove, &attributes_creator)
+        self.split_token_partial(payment, tokens_to_remove, &attributes_creator)
     }
 }
 
@@ -93,7 +92,7 @@ where
     fn get_merged_token_attributes(
         &self,
         _sc: &Self::ScType,
-        _merged_token_id: &DcdtTokenIdentifier<<Self::ScType as ContractBase>::Api>,
+        _merged_token_id: &TokenIdentifier<<Self::ScType as ContractBase>::Api>,
         _merged_token_raw_attributes: &MergedTokenInstances<<Self::ScType as ContractBase>::Api>,
     ) -> Self::AttributesType {
         CustomAttributes {

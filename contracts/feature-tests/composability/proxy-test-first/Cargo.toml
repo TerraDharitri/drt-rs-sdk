@@ -2,20 +2,28 @@
 name = "proxy-test-first"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2024"
+edition = "2018"
 publish = false
 
 [lib]
 path = "src/proxy-test-first.rs"
 
-[dependencies]
-hex-literal = "1.0"
+[features]
+ei-unmanaged = ["numbat-wasm/ei-unmanaged"]
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../../framework/base"
+[dependencies]
+hex-literal = "0.3.1"
+
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../../numbat-wasm"
 features = ["alloc"]
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "2.0.0"
-path = "../../../../framework/scenario"
+[dependencies.numbat-wasm-node]
+version = "0.0.18"
+path = "../../../../numbat-wasm-node"
+optional = true
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../../numbat-wasm-debug"

@@ -1,8 +1,8 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait FungibleTokenMapperFeatures:
-    dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[payable("REWA")]
     #[endpoint]
@@ -11,9 +11,9 @@ pub trait FungibleTokenMapperFeatures:
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let payment_amount = self.call_value().rewa();
+        let payment_amount = self.call_value().rewa_value();
         self.fungible_token_mapper().issue(
-            payment_amount.clone(),
+            payment_amount,
             ManagedBuffer::new(),
             token_ticker,
             initial_supply,
@@ -25,7 +25,7 @@ pub trait FungibleTokenMapperFeatures:
     #[payable("REWA")]
     #[endpoint]
     fn issue_fungible_custom_callback(&self, token_ticker: ManagedBuffer, initial_supply: BigUint) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         let cb = if initial_supply > 0 {
             FungibleTokenMapperFeatures::callbacks(self).custom_issue_non_zero_supply_cb()
         } else {
@@ -33,7 +33,7 @@ pub trait FungibleTokenMapperFeatures:
         };
 
         self.fungible_token_mapper().issue(
-            payment.clone(),
+            payment,
             ManagedBuffer::new(),
             token_ticker,
             initial_supply,
@@ -45,15 +45,13 @@ pub trait FungibleTokenMapperFeatures:
     #[callback]
     fn custom_issue_zero_supply_cb(
         &self,
-        #[call_result] result: ManagedAsyncCallResult<DcdtTokenIdentifier>,
+        #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>,
     ) {
         match result {
             ManagedAsyncCallResult::Ok(token_id) => {
                 self.fungible_token_mapper().set_token_id(token_id);
-            }
-            ManagedAsyncCallResult::Err(_) => {
-                self.fungible_token_mapper().clear();
-            }
+            },
+            ManagedAsyncCallResult::Err(_) => {},
         }
     }
 
@@ -61,22 +59,19 @@ pub trait FungibleTokenMapperFeatures:
     fn custom_issue_non_zero_supply_cb(&self, #[call_result] result: ManagedAsyncCallResult<()>) {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
-                let token_identifier = &self.call_value().single_dcdt().token_identifier;
-                self.fungible_token_mapper()
-                    .set_token_id(token_identifier.clone());
-            }
-            ManagedAsyncCallResult::Err(_) => {
-                self.fungible_token_mapper().clear();
-            }
+                let token_identifier = self.call_value().single_dcdt().token_identifier;
+                self.fungible_token_mapper().set_token_id(token_identifier);
+            },
+            ManagedAsyncCallResult::Err(_) => {},
         }
     }
 
     #[payable("REWA")]
     #[endpoint]
     fn issue_and_set_all_roles_fungible(&self, token_ticker: ManagedBuffer) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         self.fungible_token_mapper().issue_and_set_all_roles(
-            payment.clone(),
+            payment,
             ManagedBuffer::new(),
             token_ticker,
             0,
@@ -97,8 +92,8 @@ pub trait FungibleTokenMapperFeatures:
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.roles_set().set(true);
-            }
-            ManagedAsyncCallResult::Err(_) => {}
+            },
+            ManagedAsyncCallResult::Err(_) => {},
         }
     }
 
@@ -129,9 +124,9 @@ pub trait FungibleTokenMapperFeatures:
     #[payable("*")]
     #[endpoint]
     fn require_same_token_fungible(&self) {
-        let payment_token = &self.call_value().single_dcdt().token_identifier;
+        let payment_token = self.call_value().single_dcdt().token_identifier;
         self.fungible_token_mapper()
-            .require_same_token(payment_token);
+            .require_same_token(&payment_token);
     }
 
     #[payable("*")]

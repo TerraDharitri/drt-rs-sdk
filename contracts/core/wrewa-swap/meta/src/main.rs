@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<dharitri_sc_wrewa_swap::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<numbat_sc_wrewa_swap::AbiProvider>();
 }

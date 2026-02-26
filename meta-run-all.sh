@@ -1,7 +1,23 @@
 #!/bin/bash
 
-cargo install dharitri-sc-meta
+# builds all wasm targets
 
-TARGET_DIR=$PWD/target
+root=$(pwd)
 
-sc-meta all update --target-dir-all $TARGET_DIR --path ./contracts
+set -e
+SMART_CONTRACT_JSONS=$(find . -name "numbat.json")
+for smart_contract_json in $SMART_CONTRACT_JSONS
+do
+    cd $root
+    smart_contract_folder=$(dirname $smart_contract_json)
+    meta_folder="$smart_contract_folder/meta"
+
+    if [ -f "$meta_folder/src/main.rs" ]; then
+        echo "$meta_folder running ..."
+        cd $meta_folder
+        cargo run
+    else
+        echo "$meta_folder MISSING!!!!!."
+    fi
+
+done

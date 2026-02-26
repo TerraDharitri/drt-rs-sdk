@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<erc20::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<erc20::AbiProvider>();
 }

@@ -1,15 +1,14 @@
-use dharitri_sc::{
+use numbat_wasm::{
     api::ManagedTypeApi,
-    types::{BigUint, ManagedAddress, TimestampSeconds, Vec},
+    types::{BigUint, ManagedAddress, Vec},
 };
-dharitri_sc::derive_imports!();
+numbat_wasm::derive_imports!();
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
 pub struct LotteryInfo<M: ManagedTypeApi> {
     pub ticket_price: BigUint<M>,
     pub tickets_left: u32,
-    pub deadline: TimestampSeconds,
+    pub deadline: u64,
     pub max_entries_per_user: u32,
     pub prize_distribution: Vec<u8>,
     pub whitelist: Vec<ManagedAddress<M>>,

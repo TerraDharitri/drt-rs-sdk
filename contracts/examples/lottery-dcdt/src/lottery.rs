@@ -1,6 +1,6 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
 mod lottery_info;
 mod status;
@@ -9,15 +9,14 @@ use lottery_info::LotteryInfo;
 use status::Status;
 
 const PERCENTAGE_TOTAL: u32 = 100;
-const THIRTY_DAYS_IN_MILLISECONDS: DurationMillis = DurationMillis::new(60 * 60 * 24 * 30 * 1000);
+const THIRTY_DAYS_IN_SECONDS: u64 = 60 * 60 * 24 * 30;
 const MAX_TICKETS: usize = 800;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Lottery {
     #[init]
     fn init(&self) {}
 
-    #[allow_multiple_var_args]
     #[endpoint]
     fn start(
         &self,
@@ -25,7 +24,7 @@ pub trait Lottery {
         token_identifier: RewaOrDcdtTokenIdentifier,
         ticket_price: BigUint,
         opt_total_tickets: Option<usize>,
-        opt_deadline: Option<TimestampMillis>,
+        opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<usize>,
         opt_prize_distribution: ManagedOption<ManagedVec<u8>>,
         opt_whitelist: ManagedOption<ManagedVec<ManagedAddress>>,
@@ -44,7 +43,6 @@ pub trait Lottery {
         );
     }
 
-    #[allow_multiple_var_args]
     #[endpoint(createLotteryPool)]
     fn create_lottery_pool(
         &self,
@@ -52,7 +50,7 @@ pub trait Lottery {
         token_identifier: RewaOrDcdtTokenIdentifier,
         ticket_price: BigUint,
         opt_total_tickets: Option<usize>,
-        opt_deadline: Option<TimestampMillis>,
+        opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<usize>,
         opt_prize_distribution: ManagedOption<ManagedVec<u8>>,
         opt_whitelist: ManagedOption<ManagedVec<ManagedAddress>>,
@@ -71,7 +69,6 @@ pub trait Lottery {
         );
     }
 
-    #[allow_multiple_var_args]
     #[allow(clippy::too_many_arguments)]
     fn start_lottery(
         &self,
@@ -79,7 +76,7 @@ pub trait Lottery {
         token_identifier: RewaOrDcdtTokenIdentifier,
         ticket_price: BigUint,
         opt_total_tickets: Option<usize>,
-        opt_deadline_ms: Option<TimestampMillis>,
+        opt_deadline: Option<u64>,
         opt_max_entries_per_user: Option<usize>,
         opt_prize_distribution: ManagedOption<ManagedVec<u8>>,
         opt_whitelist: ManagedOption<ManagedVec<ManagedAddress>>,
@@ -87,9 +84,9 @@ pub trait Lottery {
     ) {
         require!(!lottery_name.is_empty(), "Name can't be empty!");
 
-        let timestamp = self.blockchain().get_block_timestamp_millis();
+        let timestamp = self.blockchain().get_block_timestamp();
         let total_tickets = opt_total_tickets.unwrap_or(MAX_TICKETS);
-        let deadline = opt_deadline_ms.unwrap_or(timestamp + THIRTY_DAYS_IN_MILLISECONDS);
+        let deadline = opt_deadline.unwrap_or(timestamp + THIRTY_DAYS_IN_SECONDS);
         let max_entries_per_user = opt_max_entries_per_user.unwrap_or(MAX_TICKETS);
         let prize_distribution = opt_prize_distribution
             .unwrap_or_else(|| ManagedVec::from_single_item(PERCENTAGE_TOTAL as u8));
@@ -111,7 +108,7 @@ pub trait Lottery {
         );
         require!(deadline > timestamp, "Deadline can't be in the past!");
         require!(
-            deadline <= timestamp + THIRTY_DAYS_IN_MILLISECONDS,
+            deadline <= timestamp + THIRTY_DAYS_IN_SECONDS,
             "Deadline can't be later than 30 days from now!"
         );
         require!(
@@ -141,14 +138,14 @@ pub trait Lottery {
                 );
                 self.burn_percentage_for_lottery(&lottery_name)
                     .set(burn_percentage);
-            }
-            OptionalValue::None => {}
+            },
+            OptionalValue::None => {},
         }
 
         if let Some(whitelist) = opt_whitelist.as_option() {
             let mut mapper = self.lottery_whitelist(&lottery_name);
             for addr in &*whitelist {
-                mapper.insert(addr.clone());
+                mapper.insert(addr);
             }
         }
 
@@ -166,7 +163,7 @@ pub trait Lottery {
     }
 
     #[endpoint]
-    #[payable]
+    #[payable("*")]
     fn buy_ticket(&self, lottery_name: ManagedBuffer) {
         let (token_identifier, payment) = self.call_value().rewa_or_single_fungible_dcdt();
 
@@ -174,10 +171,10 @@ pub trait Lottery {
             Status::Inactive => sc_panic!("Lottery is currently inactive."),
             Status::Running => {
                 self.update_after_buy_ticket(&lottery_name, &token_identifier, &payment)
-            }
+            },
             Status::Ended => {
                 sc_panic!("Lottery entry period has ended! Awaiting winner announcement.")
-            }
+            },
         };
     }
 
@@ -189,7 +186,7 @@ pub trait Lottery {
             Status::Ended => {
                 self.distribute_prizes(&lottery_name);
                 self.clear_storage(&lottery_name);
-            }
+            },
         };
     }
 
@@ -200,7 +197,7 @@ pub trait Lottery {
         }
 
         let info = self.lottery_info(lottery_name).get();
-        let current_time = self.blockchain().get_block_timestamp_millis();
+        let current_time = self.blockchain().get_block_timestamp();
         if current_time > info.deadline || info.tickets_left == 0 {
             return Status::Ended;
         }
@@ -291,19 +288,19 @@ pub trait Lottery {
                 &BigUint::from(info.prize_distribution.get(i)),
             );
 
-            self.tx()
-                .to(&winner_address)
-                .rewa_or_single_dcdt(&info.token_identifier, 0, &prize)
-                .transfer();
+            self.send()
+                .direct(&winner_address, &info.token_identifier, 0, &prize);
             info.prize_pool -= prize;
         }
 
         // send leftover to first place
         let first_place_winner = ticket_holders_mapper.get(winning_tickets[0]);
-        self.tx()
-            .to(&first_place_winner)
-            .rewa_or_single_dcdt(&info.token_identifier, 0, &info.prize_pool)
-            .transfer();
+        self.send().direct(
+            &first_place_winner,
+            &info.token_identifier,
+            0,
+            &info.prize_pool,
+        );
     }
 
     fn clear_storage(&self, lottery_name: &ManagedBuffer) {
@@ -371,7 +368,7 @@ pub trait Lottery {
     #[view(getLotteryWhitelist)]
     #[storage_mapper("lotteryWhitelist")]
     fn lottery_whitelist(&self, lottery_name: &ManagedBuffer)
-    -> UnorderedSetMapper<ManagedAddress>;
+        -> UnorderedSetMapper<ManagedAddress>;
 
     #[storage_mapper("ticketHolder")]
     fn ticket_holders(&self, lottery_name: &ManagedBuffer) -> VecMapper<ManagedAddress>;

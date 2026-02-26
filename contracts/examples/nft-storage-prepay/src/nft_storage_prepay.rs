@@ -1,8 +1,8 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait NftStoragePrepay {
     #[init]
     fn init(&self, cost_per_byte: BigUint) {
@@ -42,7 +42,7 @@ pub trait NftStoragePrepay {
         self.total_reserved().clear();
 
         let owner = self.blockchain().get_caller();
-        self.tx().to(&owner).rewa(&total_reserved).transfer();
+        self.send().direct_rewa(&owner, &total_reserved);
     }
 
     // endpoints
@@ -50,10 +50,9 @@ pub trait NftStoragePrepay {
     #[payable("REWA")]
     #[endpoint(depositPaymentForStorage)]
     fn deposit_payment_for_storage(&self) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
-        self.deposit(&caller)
-            .update(|deposit| *deposit += &*payment);
+        self.deposit(&caller).update(|deposit| *deposit += payment);
     }
 
     /// defaults to max amount
@@ -71,7 +70,7 @@ pub trait NftStoragePrepay {
         user_deposit -= &amount;
         self.deposit(&caller).set(&user_deposit);
 
-        self.tx().to(&caller).rewa(&amount).transfer();
+        self.send().direct_rewa(&caller, &amount);
     }
 
     // views

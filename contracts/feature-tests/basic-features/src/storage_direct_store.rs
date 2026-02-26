@@ -1,14 +1,10 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 use crate::types::*;
 
 /// Storage tests: direct store.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait StorageStoreFeatures {
-    #[endpoint]
-    #[storage_set("storage_bytes")]
-    fn store_bytes(&self, bi: ManagedBuffer);
-
     #[endpoint]
     #[storage_set("big_uint")]
     fn store_big_uint(&self, bi: BigUint);

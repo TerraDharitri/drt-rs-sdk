@@ -1,8 +1,8 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait FormattedMessageFeatures {
     #[init]
     fn init(&self) {}
@@ -25,7 +25,7 @@ pub trait FormattedMessageFeatures {
     #[payable("*")]
     #[endpoint]
     fn dynamic_message_multiple(&self) {
-        let (token_id, nonce, amount) = self.call_value().single().clone().into_tuple();
+        let (token_id, nonce, amount) = self.call_value().rewa_or_single_dcdt().into_tuple();
         sc_panic!(
             "Got token {}, with nonce {}, amount {}. I prefer REWA. ERROR!",
             &&token_id, // references are accepted
@@ -37,7 +37,7 @@ pub trait FormattedMessageFeatures {
     #[payable("*")]
     #[endpoint]
     fn dynamic_message_ascii(&self) {
-        let (token_id, nonce, amount) = self.call_value().single().clone().into_tuple();
+        let (token_id, nonce, amount) = self.call_value().rewa_or_single_dcdt().into_tuple();
         sc_panic!(
             "Got token {}, with nonce {}, amount {}. I prefer REWA. ERROR!",
             token_id,
@@ -73,21 +73,6 @@ pub trait FormattedMessageFeatures {
     }
 
     #[endpoint]
-    fn print_message_bytes(&self, x: &[u8]) {
-        sc_print!("Printing x: {}", x,);
-    }
-
-    #[endpoint]
-    fn print_message_hex_bytes(&self, x: &[u8]) {
-        sc_print!("Printing x: {:x}", x,);
-    }
-
-    #[endpoint]
-    fn print_message_binary_bytes(&self, x: &[u8]) {
-        sc_print!("Printing x: {:b}", x);
-    }
-
-    #[endpoint]
     fn format_message_one_part(&self) -> ManagedBuffer {
         let message = sc_format!("Test");
         message
@@ -102,12 +87,6 @@ pub trait FormattedMessageFeatures {
     #[endpoint]
     fn format_message_big_int(&self, x: BigInt) -> ManagedBuffer {
         let message = sc_format!("BigInt: {}", x);
-        message
-    }
-
-    #[endpoint]
-    fn format_message_i64(&self, x: i64) -> ManagedBuffer {
-        let message = sc_format!("i64: {}", x);
         message
     }
 

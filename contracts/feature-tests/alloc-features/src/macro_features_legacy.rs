@@ -1,22 +1,22 @@
-#![allow(deprecated)]
+numbat_wasm::imports!();
 
-dharitri_sc::imports!();
+use numbat_wasm::types::String;
 
 /// Legacy, deprecated macros. Will b removed once they get removed.
 ///
 /// Error conversions should be moved to corresponding new formatter-based error tests.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait MacroFeaturesLegacy {
     #[allow(deprecated)]
     #[view]
     fn only_owner_legacy(&self) -> SCResult<()> {
-        dharitri_sc::only_owner!(self, "Custom only owner message");
-        SCResult::Ok(())
+        numbat_wasm::only_owner!(self, "Custom only owner message");
+        Ok(())
     }
 
     #[view]
     fn return_sc_error(&self) -> SCResult<()> {
-        dharitri_sc::sc_error!("return_sc_error")
+        sc_error!("return_sc_error")
     }
 
     #[view]
@@ -25,7 +25,18 @@ pub trait MacroFeaturesLegacy {
     }
 
     #[view]
-    fn result_err_from_bytes(&self, e: BoxedBytes) -> SCResult<(), ManagedSCError> {
+    fn result_err_from_bytes_1(&self, e: BoxedBytes) -> SCResult<(), ManagedSCError> {
+        SCResult::Err(e.into())?;
+        unreachable!()
+    }
+
+    #[view]
+    fn result_err_from_bytes_2<'a>(&self, e: &'a [u8]) -> SCResult<(), ManagedSCError> {
+        SCResult::Err(e.into())
+    }
+
+    #[view]
+    fn result_err_from_bytes_3(&self, e: Vec<u8>) -> SCResult<(), ManagedSCError> {
         SCResult::Err(e.into())
     }
 
@@ -42,13 +53,15 @@ pub trait MacroFeaturesLegacy {
     #[endpoint]
     fn result_echo(&self, arg: Option<String>, test: bool) -> SCResult<String> {
         require!(test, "test argument is false");
-
-        SCResult::<String, StaticSCError>::from_result(arg.ok_or("option argument is none"))
+        let unwrapped =
+            SCResult::<String, StaticSCError>::from_result(arg.ok_or("option argument is none"))?;
+        Ok(unwrapped)
     }
 
     #[endpoint]
     fn result_echo_2(&self, arg: Option<String>) -> SCResult<String> {
-        arg.ok_or("option argument is none").into()
+        let unwrapped = arg.ok_or("option argument is none")?;
+        Ok(unwrapped)
     }
 
     #[endpoint]

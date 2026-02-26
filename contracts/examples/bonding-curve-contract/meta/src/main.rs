@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<bonding_curve_contract::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<bonding_curve_contract::AbiProvider>();
 }

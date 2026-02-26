@@ -1,9 +1,8 @@
-use dharitri_sc::{api::ManagedTypeApi, types::BigUint};
+use numbat_wasm::{api::ManagedTypeApi, types::BigUint};
 
-use dharitri_sc::derive_imports::*;
+numbat_wasm::derive_imports!();
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Clone)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, TypeAbi, Clone)]
 pub enum UnlockType<M: ManagedTypeApi> {
     FixedAmount {
         period_unlock_amount: BigUint<M>,
@@ -17,8 +16,7 @@ pub enum UnlockType<M: ManagedTypeApi> {
     },
 }
 
-#[type_abi]
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Eq, Clone)]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, PartialEq, Eq, TypeAbi, Clone)]
 pub struct Schedule<M: ManagedTypeApi> {
     pub group_total_amount: BigUint<M>,
     pub unlock_type: UnlockType<M>,

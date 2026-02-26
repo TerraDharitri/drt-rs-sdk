@@ -1,14 +1,13 @@
 [package]
 name = "pair-meta"
 version = "0.0.0"
-authors = ["you"]
-edition = "2024"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2018"
 publish = false
 
 [dependencies.order-book-pair]
 path = ".."
 
-[dependencies.dharitri-sc-meta-lib]
-version = "2.0.0"
-path = "../../../../../framework/meta-lib"
-default-features = false
+[dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../../../numbat-wasm-debug"

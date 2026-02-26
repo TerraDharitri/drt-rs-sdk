@@ -1,10 +1,9 @@
-use dharitri_sc::derive_imports::*;
+numbat_wasm::derive_imports!();
 
 use super::color::*;
 use random::*;
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, Clone, Default)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, Clone, TypeAbi, Default)]
 pub struct KittyGenes {
     pub fur_color: Color,
     pub eye_color: Color,
@@ -18,12 +17,5 @@ impl Randomizeable for KittyGenes {
             eye_color: Color::get_random(random),
             meow_power: random.next_u8(),
         }
-    }
-}
-
-impl KittyGenes {
-    pub fn get_as_u64(&self) -> u64 {
-        (((self.fur_color.as_u64() << 12) | self.eye_color.as_u64()) << 4)
-            | self.meow_power.to_be() as u64
     }
 }

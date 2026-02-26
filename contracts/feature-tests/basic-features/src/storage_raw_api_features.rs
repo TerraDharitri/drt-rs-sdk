@@ -1,6 +1,6 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait StorageRawApiFeatures {
     #[endpoint]
     fn storage_read_raw(&self, storage_key: ManagedBuffer) -> ManagedBuffer {

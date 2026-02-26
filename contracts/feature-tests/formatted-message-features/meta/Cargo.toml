@@ -1,16 +1,15 @@
 [package]
 name = "formatted-message-features-meta"
 version = "0.0.0"
-edition = "2024"
+edition = "2018"
 publish = false
-authors = ["you"]
+authors = ["Dharitri <contact@dharitri.org>"]
 
 [dev-dependencies]
 
 [dependencies.formatted-message-features]
 path = ".."
 
-[dependencies.dharitri-sc-meta-lib]
-version = "2.0.0"
-path = "../../../../framework/meta-lib"
-default-features = false
+[dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../../numbat-wasm-debug"

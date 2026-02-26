@@ -1,18 +1,17 @@
 #![no_std]
 
-dharitri_sc::imports!();
-dharitri_sc::derive_imports!();
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
 // used as mock attributes for NFTs
-#[type_abi]
-#[derive(TopEncode, TopDecode)]
+#[derive(TopEncode, TopDecode, TypeAbi)]
 pub struct Color {
     r: u8,
     g: u8,
     b: u8,
 }
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait LocalDcdtAndDcdtNft {
     #[init]
     fn init(&self) {}
@@ -27,13 +26,13 @@ pub trait LocalDcdtAndDcdtNft {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().rewa();
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
-                issue_cost.clone(),
+                issue_cost,
                 &token_display_name,
                 &token_ticker,
                 &initial_supply,
@@ -49,17 +48,18 @@ pub trait LocalDcdtAndDcdtNft {
                     can_add_special_roles: true,
                 },
             )
+            .async_call()
             .with_callback(self.callbacks().dcdt_issue_callback(&caller))
-            .async_call_and_exit()
+            .call_and_exit()
     }
 
     #[endpoint(localMint)]
-    fn local_mint(&self, token_identifier: DcdtTokenIdentifier, amount: BigUint) {
+    fn local_mint(&self, token_identifier: TokenIdentifier, amount: BigUint) {
         self.send().dcdt_local_mint(&token_identifier, 0, &amount);
     }
 
     #[endpoint(localBurn)]
-    fn local_burn(&self, token_identifier: DcdtTokenIdentifier, amount: BigUint) {
+    fn local_burn(&self, token_identifier: TokenIdentifier, amount: BigUint) {
         self.send().dcdt_local_burn(&token_identifier, 0, &amount);
     }
 
@@ -68,13 +68,13 @@ pub trait LocalDcdtAndDcdtNft {
     #[payable("REWA")]
     #[endpoint(nftIssue)]
     fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().rewa();
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_non_fungible(
-                issue_cost.clone(),
+                issue_cost,
                 &token_display_name,
                 &token_ticker,
                 NonFungibleTokenProperties {
@@ -87,15 +87,16 @@ pub trait LocalDcdtAndDcdtNft {
                     can_add_special_roles: true,
                 },
             )
+            .async_call()
             .with_callback(self.callbacks().nft_issue_callback(&caller))
-            .async_call_and_exit()
+            .call_and_exit()
     }
 
     #[endpoint(nftCreate)]
     #[allow(clippy::too_many_arguments)]
     fn nft_create(
         &self,
-        token_identifier: DcdtTokenIdentifier,
+        token_identifier: TokenIdentifier,
         amount: BigUint,
         name: ManagedBuffer,
         royalties: BigUint,
@@ -118,13 +119,13 @@ pub trait LocalDcdtAndDcdtNft {
     }
 
     #[endpoint(nftAddQuantity)]
-    fn nft_add_quantity(&self, token_identifier: DcdtTokenIdentifier, nonce: u64, amount: BigUint) {
+    fn nft_add_quantity(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
         self.send()
             .dcdt_local_mint(&token_identifier, nonce, &amount);
     }
 
     #[endpoint(nftBurn)]
-    fn nft_burn(&self, token_identifier: DcdtTokenIdentifier, nonce: u64, amount: BigUint) {
+    fn nft_burn(&self, token_identifier: TokenIdentifier, nonce: u64, amount: BigUint) {
         self.send()
             .dcdt_local_burn(&token_identifier, nonce, &amount);
     }
@@ -133,21 +134,19 @@ pub trait LocalDcdtAndDcdtNft {
     fn transfer_nft_via_async_call(
         &self,
         to: ManagedAddress,
-        token_identifier: DcdtTokenIdentifier,
+        token_identifier: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
     ) {
-        self.tx()
-            .to(to)
-            .dcdt((token_identifier, nonce, amount))
-            .async_call_and_exit();
+        self.send()
+            .transfer_dcdt_via_async_call(to, token_identifier, nonce, amount);
     }
 
     #[endpoint]
     fn transfer_nft_and_execute(
         &self,
         to: ManagedAddress,
-        token_identifier: DcdtTokenIdentifier,
+        token_identifier: TokenIdentifier,
         nonce: u64,
         amount: BigUint,
         function: ManagedBuffer,
@@ -158,15 +157,15 @@ pub trait LocalDcdtAndDcdtNft {
             arg_buffer.push_arg_raw(arg);
         }
 
-        let gas_left = self.blockchain().get_gas_left();
-
-        self.tx()
-            .to(&to)
-            .gas(gas_left)
-            .raw_call(function)
-            .arguments_raw(arg_buffer)
-            .single_dcdt(&token_identifier, nonce, &amount)
-            .transfer_execute();
+        let _ = self.send_raw().transfer_dcdt_nft_execute(
+            &to,
+            &token_identifier,
+            nonce,
+            &amount,
+            self.blockchain().get_gas_left(),
+            &function,
+            &arg_buffer,
+        );
     }
 
     // Semi-Fungible
@@ -174,13 +173,13 @@ pub trait LocalDcdtAndDcdtNft {
     #[payable("REWA")]
     #[endpoint(sftIssue)]
     fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().rewa();
+        let issue_cost = self.call_value().rewa_value();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_semi_fungible(
-                issue_cost.clone(),
+                issue_cost,
                 &token_display_name,
                 &token_ticker,
                 SemiFungibleTokenProperties {
@@ -193,8 +192,9 @@ pub trait LocalDcdtAndDcdtNft {
                     can_add_special_roles: true,
                 },
             )
+            .async_call()
             .with_callback(self.callbacks().nft_issue_callback(&caller))
-            .async_call_and_exit()
+            .call_and_exit()
     }
 
     // common
@@ -203,32 +203,34 @@ pub trait LocalDcdtAndDcdtNft {
     fn set_local_roles(
         &self,
         address: ManagedAddress,
-        token_identifier: DcdtTokenIdentifier,
+        token_identifier: TokenIdentifier,
         roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
         self.send()
             .dcdt_system_sc_proxy()
             .set_special_roles(&address, &token_identifier, roles.into_iter())
+            .async_call()
             .with_callback(self.callbacks().change_roles_callback())
-            .async_call_and_exit()
+            .call_and_exit()
     }
 
     #[endpoint(unsetLocalRoles)]
     fn unset_local_roles(
         &self,
         address: ManagedAddress,
-        token_identifier: DcdtTokenIdentifier,
+        token_identifier: TokenIdentifier,
         roles: MultiValueEncoded<DcdtLocalRole>,
     ) {
         self.send()
             .dcdt_system_sc_proxy()
             .unset_special_roles(&address, &token_identifier, roles.into_iter())
+            .async_call()
             .with_callback(self.callbacks().change_roles_callback())
-            .async_call_and_exit()
+            .call_and_exit()
     }
 
     #[endpoint(controlChanges)]
-    fn control_changes(&self, token: DcdtTokenIdentifier) {
+    fn control_changes(&self, token: TokenIdentifier) {
         let property_arguments = TokenPropertyArguments {
             can_freeze: Some(true),
             can_burn: Some(true),
@@ -238,19 +240,20 @@ pub trait LocalDcdtAndDcdtNft {
         self.send()
             .dcdt_system_sc_proxy()
             .control_changes(&token, &property_arguments)
-            .async_call_and_exit();
+            .async_call()
+            .call_and_exit();
     }
 
     // views
 
     #[view(getFungibleDcdtBalance)]
-    fn get_fungible_dcdt_balance(&self, token_identifier: &DcdtTokenIdentifier) -> BigUint {
+    fn get_fungible_dcdt_balance(&self, token_identifier: &TokenIdentifier) -> BigUint {
         self.blockchain()
             .get_dcdt_balance(&self.blockchain().get_sc_address(), token_identifier, 0)
     }
 
     #[view(getNftBalance)]
-    fn get_nft_balance(&self, token_identifier: &DcdtTokenIdentifier, nonce: u64) -> BigUint {
+    fn get_nft_balance(&self, token_identifier: &TokenIdentifier, nonce: u64) -> BigUint {
         self.blockchain().get_dcdt_balance(
             &self.blockchain().get_sc_address(),
             token_identifier,
@@ -259,7 +262,7 @@ pub trait LocalDcdtAndDcdtNft {
     }
 
     #[view(getCurrentNftNonce)]
-    fn get_current_nft_nonce(&self, token_identifier: &DcdtTokenIdentifier) -> u64 {
+    fn get_current_nft_nonce(&self, token_identifier: &TokenIdentifier) -> u64 {
         self.blockchain()
             .get_current_dcdt_nft_nonce(&self.blockchain().get_sc_address(), token_identifier)
     }
@@ -277,17 +280,18 @@ pub trait LocalDcdtAndDcdtNft {
         // so we can get the token identifier and amount from the call data
         match result {
             ManagedAsyncCallResult::Ok(()) => {
-                self.last_issued_token().set(token_identifier.unwrap_dcdt());
+                self.last_issued_token()
+                    .set(&token_identifier.unwrap_dcdt());
                 self.last_error_message().clear();
-            }
+            },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.tx().to(caller).rewa(&returned_tokens).transfer();
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);
-            }
+            },
         }
     }
 
@@ -295,23 +299,23 @@ pub trait LocalDcdtAndDcdtNft {
     fn nft_issue_callback(
         &self,
         caller: &ManagedAddress,
-        #[call_result] result: ManagedAsyncCallResult<DcdtTokenIdentifier>,
+        #[call_result] result: ManagedAsyncCallResult<TokenIdentifier>,
     ) {
         match result {
             ManagedAsyncCallResult::Ok(token_identifier) => {
                 self.last_issued_token().set(&token_identifier);
                 self.last_error_message().clear();
-            }
+            },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 let (token_identifier, returned_tokens) =
                     self.call_value().rewa_or_single_fungible_dcdt();
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.tx().to(caller).rewa(&returned_tokens).transfer();
+                    self.send().direct_rewa(caller, &returned_tokens);
                 }
 
                 self.last_error_message().set(&message.err_msg);
-            }
+            },
         }
     }
 
@@ -320,10 +324,10 @@ pub trait LocalDcdtAndDcdtNft {
         match result {
             ManagedAsyncCallResult::Ok(()) => {
                 self.last_error_message().clear();
-            }
+            },
             ManagedAsyncCallResult::Err(message) => {
                 self.last_error_message().set(&message.err_msg);
-            }
+            },
         }
     }
 
@@ -331,7 +335,7 @@ pub trait LocalDcdtAndDcdtNft {
 
     #[view(lastIssuedToken)]
     #[storage_mapper("lastIssuedToken")]
-    fn last_issued_token(&self) -> SingleValueMapper<DcdtTokenIdentifier>;
+    fn last_issued_token(&self) -> SingleValueMapper<TokenIdentifier>;
 
     #[view(lastErrorMessage)]
     #[storage_mapper("lastErrorMessage")]

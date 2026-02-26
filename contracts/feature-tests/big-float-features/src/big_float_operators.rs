@@ -1,7 +1,7 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// Checks that BigFloat operators work as expected.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 #[allow(clippy::redundant_clone)]
 pub trait BigFloatOperators {
     #[endpoint]

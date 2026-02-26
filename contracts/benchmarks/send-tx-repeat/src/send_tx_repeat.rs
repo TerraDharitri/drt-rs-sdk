@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait SendTxRepeat {
     #[init]
     fn init(&self) {}
@@ -11,7 +11,7 @@ pub trait SendTxRepeat {
     #[endpoint]
     fn repeat(&self, to: ManagedAddress, amount: BigUint, times: usize) {
         for _ in 0..times {
-            self.tx().to(&to).rewa(&amount).transfer();
+            self.send().direct_rewa(&to, &amount);
         }
     }
 }

@@ -1,10 +1,10 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 use crate::types::*;
 use core::num::NonZeroUsize;
 
 /// Test endpoint argument and result serialization.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait EchoTypes {
     #[endpoint]
     fn echo_u64(&self, i: u64) -> u64 {
@@ -107,7 +107,6 @@ pub trait EchoTypes {
         nz
     }
 
-    #[allow_multiple_var_args]
     #[view]
     fn echo_some_args_ignore_others(
         &self,

@@ -1,7 +1,7 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// ManagedBuffers interacting with the heap.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait ManagedBufferFeatures {
     #[endpoint]
     fn mbuffer_from_slice(&self, slice: &[u8]) -> ManagedBuffer {
@@ -34,16 +34,15 @@ pub trait ManagedBufferFeatures {
         starting_position: usize,
         slice_len: usize,
     ) -> OptionalValue<BoxedBytes> {
-        let mb_len = mb.len();
-        if starting_position > mb_len || starting_position + slice_len > mb_len {
-            return OptionalValue::None;
-        }
-        // If slice_len == 0, always return Some(empty)
         let mut result = BoxedBytes::zeros(slice_len);
-        if slice_len > 0 {
-            mb.load_slice(starting_position, result.as_mut_slice());
+        if mb
+            .load_slice(starting_position, result.as_mut_slice())
+            .is_ok()
+        {
+            OptionalValue::Some(result)
+        } else {
+            OptionalValue::None
         }
-        OptionalValue::Some(result)
     }
 
     #[endpoint]

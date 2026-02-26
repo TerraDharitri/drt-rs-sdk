@@ -1,2 +1,0 @@
-panic occurred: panicked at panic_features.rs:26:9:
-panic after log

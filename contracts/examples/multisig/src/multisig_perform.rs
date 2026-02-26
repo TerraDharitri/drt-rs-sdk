@@ -3,7 +3,7 @@ use crate::{
     user_role::UserRole,
 };
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
 
 /// Gas required to finish transaction after transfer-execute.
 const PERFORM_ACTION_FINISH_GAS: u64 = 300_000;
@@ -13,7 +13,7 @@ fn usize_add_isize(value: &mut usize, delta: isize) {
 }
 
 /// Contains all events that can be emitted by the contract.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait MultisigPerformModule:
     crate::multisig_state::MultisigStateModule + crate::multisig_events::MultisigEventsModule
 {
@@ -123,7 +123,7 @@ pub trait MultisigPerformModule:
             Action::AddBoardMember(board_member_address) => {
                 self.change_user_role(action_id, board_member_address, UserRole::BoardMember);
                 OptionalValue::None
-            }
+            },
             Action::AddProposer(proposer_address) => {
                 self.change_user_role(action_id, proposer_address, UserRole::Proposer);
 
@@ -133,7 +133,7 @@ pub trait MultisigPerformModule:
                     "quorum cannot exceed board size"
                 );
                 OptionalValue::None
-            }
+            },
             Action::RemoveUser(user_address) => {
                 self.change_user_role(action_id, user_address, UserRole::None);
                 let num_board_members = self.num_board_members().get();
@@ -147,7 +147,7 @@ pub trait MultisigPerformModule:
                     "quorum cannot exceed board size"
                 );
                 OptionalValue::None
-            }
+            },
             Action::ChangeQuorum(new_quorum) => {
                 require!(
                     new_quorum <= self.num_board_members().get(),
@@ -156,7 +156,7 @@ pub trait MultisigPerformModule:
                 self.quorum().set(new_quorum);
                 self.perform_change_quorum_event(action_id, new_quorum);
                 OptionalValue::None
-            }
+            },
             Action::SendTransferExecute(call_data) => {
                 let gas = self.gas_for_transfer_exec();
                 self.perform_transfer_execute_event(
@@ -167,15 +167,18 @@ pub trait MultisigPerformModule:
                     &call_data.endpoint_name,
                     call_data.arguments.as_multi(),
                 );
-                self.tx()
-                    .to(call_data.to)
-                    .rewa(call_data.rewa_amount)
-                    .gas(gas)
-                    .raw_call(call_data.endpoint_name)
-                    .arguments_raw(call_data.arguments.into())
-                    .transfer_execute();
+                let result = self.send_raw().direct_rewa_execute(
+                    &call_data.to,
+                    &call_data.rewa_amount,
+                    gas,
+                    &call_data.endpoint_name,
+                    &call_data.arguments.into(),
+                );
+                if let Result::Err(e) = result {
+                    sc_panic!(e);
+                }
                 OptionalValue::None
-            }
+            },
             Action::SendAsyncCall(call_data) => {
                 let gas_left = self.blockchain().get_gas_left();
                 self.perform_async_call_event(
@@ -186,15 +189,14 @@ pub trait MultisigPerformModule:
                     &call_data.endpoint_name,
                     call_data.arguments.as_multi(),
                 );
-
-                self.tx()
-                    .to(&call_data.to)
-                    .raw_call(call_data.endpoint_name)
-                    .arguments_raw(call_data.arguments.into())
-                    .rewa(call_data.rewa_amount)
-                    .callback(self.callbacks().perform_async_call_callback())
-                    .async_call_and_exit();
-            }
+                self.send()
+                    .contract_call::<()>(call_data.to, call_data.endpoint_name)
+                    .with_rewa_transfer(call_data.rewa_amount)
+                    .with_arguments_raw(call_data.arguments.into())
+                    .async_call()
+                    .with_callback(self.callbacks().perform_async_call_callback())
+                    .call_and_exit()
+            },
             Action::SCDeployFromSource {
                 amount,
                 source,
@@ -210,18 +212,15 @@ pub trait MultisigPerformModule:
                     gas_left,
                     arguments.as_multi(),
                 );
-                let new_address = self
-                    .tx()
-                    .rewa(amount)
-                    .gas(gas_left)
-                    .raw_deploy()
-                    .from_source(source)
-                    .code_metadata(code_metadata)
-                    .arguments_raw(arguments.into())
-                    .returns(ReturnsNewManagedAddress)
-                    .sync_call();
+                let (new_address, _) = self.send_raw().deploy_from_source_contract(
+                    gas_left,
+                    &amount,
+                    &source,
+                    code_metadata,
+                    &arguments.into(),
+                );
                 OptionalValue::Some(new_address)
-            }
+            },
             Action::SCUpgradeFromSource {
                 sc_address,
                 amount,
@@ -239,17 +238,16 @@ pub trait MultisigPerformModule:
                     gas_left,
                     arguments.as_multi(),
                 );
-                self.tx()
-                    .to(sc_address)
-                    .rewa(amount)
-                    .gas(gas_left)
-                    .raw_upgrade()
-                    .from_source(source)
-                    .code_metadata(code_metadata)
-                    .arguments_raw(arguments.into())
-                    .upgrade_async_call_and_exit();
+                self.send_raw().upgrade_from_source_contract(
+                    &sc_address,
+                    gas_left,
+                    &amount,
+                    &source,
+                    code_metadata,
+                    &arguments.into(),
+                );
                 OptionalValue::None
-            }
+            },
         }
     }
 
@@ -262,10 +260,10 @@ pub trait MultisigPerformModule:
         match call_result {
             ManagedAsyncCallResult::Ok(results) => {
                 self.async_call_success(results);
-            }
+            },
             ManagedAsyncCallResult::Err(err) => {
                 self.async_call_error(err.err_code, err.err_msg);
-            }
+            },
         }
     }
 

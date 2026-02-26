@@ -1,9 +1,9 @@
-use dharitri_sc::{derive_imports::*, imports::*};
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
 pub const MAX_DISTRIBUTION_PERCENTAGE: u64 = 100_000; // 100%
 
-#[type_abi]
-#[derive(ManagedVecItem, NestedEncode, NestedDecode)]
+#[derive(ManagedVecItem, NestedEncode, NestedDecode, TypeAbi)]
 pub struct Distribution<M: ManagedTypeApi> {
     pub address: ManagedAddress<M>,
     pub percentage: u64,
@@ -11,7 +11,7 @@ pub struct Distribution<M: ManagedTypeApi> {
     pub gas_limit: u64,
 }
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait DistributionModule {
     fn init_distribution(&self, distribution: ManagedVec<Distribution<Self::Api>>) {
         self.validate_distribution(&distribution);
@@ -33,11 +33,14 @@ pub trait DistributionModule {
             if payment_amount == 0 {
                 continue;
             }
-            self.tx()
-                .to(&distribution.address)
-                .raw_call(distribution.endpoint.clone())
-                .rewa_or_single_dcdt(token_id, token_nonce, &payment_amount)
-                .gas(distribution.gas_limit)
+            self.send()
+                .contract_call::<IgnoreValue>(distribution.address, distribution.endpoint)
+                .with_rewa_or_single_dcdt_token_transfer(
+                    token_id.clone(),
+                    token_nonce,
+                    payment_amount,
+                )
+                .with_gas_limit(distribution.gas_limit)
                 .transfer_execute();
         }
     }

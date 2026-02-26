@@ -1,17 +1,49 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 use hex_literal::hex;
-
-pub mod message_me_proxy;
-pub mod pay_me_proxy;
 
 static HARDCODED_ADDRESS: [u8; 32] =
     hex!("fefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefe");
 
-#[dharitri_sc::contract]
+mod pay_me_proxy {
+    numbat_wasm::imports!();
+
+    #[numbat_wasm::proxy]
+    pub trait PayMe {
+        #[payable("REWA")]
+        #[endpoint(payMe)]
+        fn pay_me(&self, arg1: i64);
+
+        #[payable("REWA")]
+        #[endpoint(payMeWithResult)]
+        fn pay_me_with_result(&self, arg1: i64);
+    }
+}
+
+mod message_me_proxy {
+    numbat_wasm::imports!();
+
+    #[numbat_wasm::proxy]
+    pub trait MessageMe {
+        #[init]
+        #[payable("REWA")]
+        fn init(&self, init_arg: i32) -> i32;
+
+        #[endpoint(messageMe)]
+        fn message_me(&self, arg1: i64, arg2: &BigUint, arg3: Vec<u8>, arg4: &ManagedAddress);
+    }
+}
+
+#[numbat_wasm::contract]
 pub trait ProxyTestFirst {
+    #[proxy]
+    fn pay_me_proxy(&self) -> pay_me_proxy::Proxy<Self::Api>;
+
+    #[proxy]
+    fn message_me_proxy(&self) -> message_me_proxy::Proxy<Self::Api>;
+
     #[storage_get("other_contract")]
     fn get_other_contract(&self) -> ManagedAddress;
 
@@ -29,19 +61,12 @@ pub trait ProxyTestFirst {
     #[payable("REWA")]
     #[endpoint(deploySecondContract)]
     fn deploy_second_contract(&self, code: ManagedBuffer) -> i32 {
-        let payment = self.call_value().rewa();
-
+        let payment = self.call_value().rewa_value();
         let (address, init_result) = self
-            .tx()
-            .typed(message_me_proxy::MessageMeProxy)
+            .message_me_proxy()
             .init(123)
-            .code(code)
-            .code_metadata(CodeMetadata::UPGRADEABLE)
-            .returns(ReturnsNewManagedAddress)
-            .returns(ReturnsResult)
-            .rewa(payment)
-            .sync_call();
-
+            .with_rewa_transfer(payment)
+            .deploy_contract::<i32>(&code, CodeMetadata::DEFAULT);
         self.set_other_contract(&address);
         init_result + 1
     }
@@ -49,76 +74,72 @@ pub trait ProxyTestFirst {
     #[payable("REWA")]
     #[endpoint(upgradeSecondContract)]
     fn upgrade_second_contract(&self, code: ManagedBuffer) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         let other_contract = self.get_other_contract();
 
-        self.tx()
-            .to(other_contract)
-            .typed(pay_me_proxy::PayMeProxy)
-            .upgrade()
-            .argument(&456)
-            .rewa(payment)
-            .code(code)
-            .code_metadata(CodeMetadata::UPGRADEABLE)
-            .upgrade_async_call_and_exit();
+        self.message_me_proxy()
+            .contract(other_contract)
+            .init(456)
+            .with_rewa_transfer(payment)
+            .upgrade_contract(&code, CodeMetadata::DEFAULT);
     }
 
     #[payable("REWA")]
     #[endpoint(forwardToOtherContract)]
     fn forward_to_other_contract(&self) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         let other_contract = self.get_other_contract();
-        self.tx()
-            .to(&other_contract)
-            .typed(pay_me_proxy::PayMeProxy)
+        self.pay_me_proxy()
+            .contract(other_contract)
             .pay_me(0x56)
-            .rewa(payment)
-            .async_call_and_exit();
+            .with_rewa_transfer(payment)
+            .async_call()
+            .call_and_exit()
     }
 
     #[payable("REWA")]
     #[endpoint(forwardToOtherContractWithCallback)]
     fn forward_to_other_contract_with_callback(&self) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         let other_contract = self.get_other_contract();
-        self.tx()
-            .to(&other_contract)
-            .typed(pay_me_proxy::PayMeProxy)
+        self.pay_me_proxy()
+            .contract(other_contract)
             .pay_me_with_result(0x56)
-            .rewa(payment)
-            .callback(self.callbacks().pay_callback())
-            .async_call_and_exit();
+            .with_rewa_transfer(payment)
+            .async_call()
+            .with_callback(self.callbacks().pay_callback())
+            .call_and_exit()
     }
 
     #[endpoint(messageOtherContract)]
     fn message_other_contract(&self) {
         let other_contract = self.get_other_contract();
-        self.tx()
-            .to(&other_contract)
-            .typed(message_me_proxy::MessageMeProxy)
+        self.message_me_proxy()
+            .contract(other_contract)
             .message_me(
                 0x01,
                 &BigUint::from(2u32),
                 [3u8; 3].to_vec(),
                 &ManagedAddress::from(&HARDCODED_ADDRESS),
             )
-            .async_call_and_exit()
+            .async_call()
+            .call_and_exit()
     }
 
     #[endpoint(messageOtherContractWithCallback)]
     fn message_other_contract_with_callback(&self) {
         let other_contract = self.get_other_contract();
-        self.tx()
-            .to(&other_contract)
-            .typed(message_me_proxy::MessageMeProxy)
+        self.message_me_proxy()
+            .contract(other_contract)
             .message_me(
                 0x01,
                 &BigUint::from(2u32),
                 [3u8; 3].to_vec(),
                 &ManagedAddress::from(&HARDCODED_ADDRESS),
             )
-            .callback(self.callbacks().message_callback())
-            .async_call_and_exit()
+            .async_call()
+            .with_callback(self.callbacks().message_callback())
+            .call_and_exit()
     }
 
     #[callback(payCallback)] // although uncommon, custom callback names are possible
@@ -126,8 +147,8 @@ pub trait ProxyTestFirst {
         match call_result {
             ManagedAsyncCallResult::Ok(cb_arg) => {
                 self.set_callback_info(cb_arg);
-            }
-            ManagedAsyncCallResult::Err(_) => {}
+            },
+            ManagedAsyncCallResult::Err(_) => {},
         }
     }
 

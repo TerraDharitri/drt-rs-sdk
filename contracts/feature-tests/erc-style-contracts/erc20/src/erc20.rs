@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait SimpleErc20Token {
     // STORAGE
 
@@ -15,7 +15,7 @@ pub trait SimpleErc20Token {
     ///
     /// Arguments:
     ///
-    /// * `address` The address to query the balance of
+    /// * `address` The address to query the the balance of
     ///
     #[view(balanceOf)]
     #[storage_mapper("balance")]

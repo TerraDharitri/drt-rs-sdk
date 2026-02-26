@@ -1,12 +1,13 @@
-use dharitri_sc::{
+use numbat_wasm::{
     api::ManagedTypeApi,
     types::{BigUint, ManagedBuffer},
 };
 
-dharitri_sc::derive_imports!();
+numbat_wasm::derive_imports!();
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, PartialEq, Eq, Debug, Clone)]
+#[derive(
+    NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Debug, Clone,
+)]
 pub struct ExampleStructManaged<M: ManagedTypeApi> {
     pub big_uint: BigUint<M>,
     pub int: u32,

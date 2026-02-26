@@ -5,9 +5,7 @@
             "commitHash": "<commit hash here>",
             "commitDate": "<commit date here>",
             "channel": "Channel",
-            "host": "<host>",
-            "short": "rustc <version> (<short hash> <date>)",
-            "llvmVersion": "x.x"
+            "short": "rustc <version> (<short hash> <date>)"
         },
         "contractCrate": {
             "name": "abi-tester",
@@ -15,13 +13,13 @@
             "gitVersion": "<git version here>"
         },
         "framework": {
-            "name": "dharitri-sc",
-            "version": "2.0.0"
+            "name": "numbat-wasm",
+            "version": "0.0.18"
         }
     },
     "docs": [
         "Contract whose sole purpose is to verify that",
-        "the ABI generation framework works as expected.",
+        "the ABI generation framework works sa expected.",
         "",
         "Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,",
         "including Rust docs."
@@ -31,7 +29,7 @@
         "docs": [
             "The external view init prepares a contract that looks in another contract's storage.",
             "It takes a single argument, the other contract's address",
-            "You won't find this constructors' definition in the contract, it gets injected automatically by the framework. See `dharitri_sc::external_view_contract`."
+            "You won't find this constructors' definition in the contract, it gets injected automatically by the framework. See `numbat_wasm::external_view_contract`."
         ],
         "inputs": [
             {
@@ -99,52 +97,6 @@
                     "indexed": true
                 }
             ]
-        },
-        {
-            "identifier": "empty_identifier_event",
-            "inputs": []
-        }
-    ],
-    "dcdtAttributes": [
-        {
-            "ticker": "TICKER1",
-            "type": "BigUint"
-        },
-        {
-            "ticker": "TICKER2",
-            "type": "bytes"
-        },
-        {
-            "ticker": "TICKER3",
-            "type": "u32"
-        },
-        {
-            "ticker": "STRUCT1",
-            "type": "AbiEnum"
-        },
-        {
-            "ticker": "STRUCT2",
-            "type": "AbiManagedType"
-        },
-        {
-            "ticker": "OnlyInDcdt",
-            "type": "OnlyShowsUpInDcdtAttr"
-        },
-        {
-            "ticker": "ExplicitDiscriminant",
-            "type": "ExplicitDiscriminant"
-        },
-        {
-            "ticker": "ExplicitDiscriminantMixed",
-            "type": "ExplicitDiscriminantMixed"
-        },
-        {
-            "ticker": "ManagedDecimalVar",
-            "type": "ManagedDecimal<usize>"
-        },
-        {
-            "ticker": "ManagedDecimalConst",
-            "type": "ManagedDecimalWrapper"
         }
     ],
     "hasCallback": false,
@@ -262,26 +214,6 @@
                     ],
                     "name": "tuple_madness",
                     "type": "tuple<OnlyShowsUpAsNested02,Option<AbiTestType>>"
-                }
-            ]
-        },
-        "AbiWithManagedBufferReadToEnd": {
-            "type": "struct",
-            "docs": [
-                "Its only purpose is to test that the ABI generator works fine."
-            ],
-            "fields": [
-                {
-                    "name": "endpoint",
-                    "type": "bytes"
-                },
-                {
-                    "name": "gas",
-                    "type": "u64"
-                },
-                {
-                    "name": "flush",
-                    "type": "bytes-read-to-end"
                 }
             ]
         },
@@ -409,87 +341,6 @@
                 }
             ]
         },
-        "ExplicitDiscriminant": {
-            "type": "enum",
-            "docs": [
-                "An enum with similar explicit discriminants"
-            ],
-            "variants": [
-                {
-                    "name": "Zero",
-                    "discriminant": 0
-                },
-                {
-                    "name": "Thirty",
-                    "discriminant": 30
-                },
-                {
-                    "name": "Twelve",
-                    "discriminant": 12
-                },
-                {
-                    "name": "Fifty",
-                    "discriminant": 50
-                },
-                {
-                    "name": "FiftyOne",
-                    "discriminant": 51
-                }
-            ]
-        },
-        "ExplicitDiscriminantMixed": {
-            "type": "enum",
-            "docs": [
-                "An enum with different explicit discriminants"
-            ],
-            "variants": [
-                {
-                    "name": "Zero",
-                    "discriminant": 0
-                },
-                {
-                    "name": "Unit",
-                    "discriminant": 3
-                },
-                {
-                    "name": "Tuple",
-                    "discriminant": 4,
-                    "fields": [
-                        {
-                            "name": "0",
-                            "type": "u16"
-                        }
-                    ]
-                },
-                {
-                    "name": "Five",
-                    "discriminant": 5
-                },
-                {
-                    "name": "Struct",
-                    "discriminant": 1,
-                    "fields": [
-                        {
-                            "name": "a",
-                            "type": "u8"
-                        },
-                        {
-                            "name": "b",
-                            "type": "u16"
-                        }
-                    ]
-                }
-            ]
-        },
-        "ManagedDecimalWrapper": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "field",
-                    "type": "ManagedDecimal<2>"
-                }
-            ]
-        },
         "OnlyShowsUpAsNested01": {
             "type": "struct",
             "docs": [
@@ -545,12 +396,6 @@
             ]
         },
         "OnlyShowsUpAsNested09": {
-            "type": "struct",
-            "docs": [
-                "Tests that the ABI generator also fetches types that only appear as fields."
-            ]
-        },
-        "OnlyShowsUpAsNested10": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
@@ -619,41 +464,6 @@
                 {
                     "name": "something",
                     "type": "()"
-                }
-            ]
-        },
-        "OnlyShowsUpInDcdtAttr": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "field",
-                    "type": "OnlyShowsUpAsNested10"
-                }
-            ]
-        },
-        "OperationCompletionStatus": {
-            "type": "explicit-enum",
-            "variants": [
-                {
-                    "docs": [
-                        "indicates that operation was completed"
-                    ],
-                    "name": "completed"
-                },
-                {
-                    "docs": [
-                        "indicates that operation was interrupted prematurely, due to low gas"
-                    ],
-                    "name": "interrupted"
-                }
-            ]
-        },
-        "Permission": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "0",
-                    "type": "u32"
                 }
             ]
         }

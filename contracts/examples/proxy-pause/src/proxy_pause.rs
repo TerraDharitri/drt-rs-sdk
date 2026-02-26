@@ -1,9 +1,21 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
-pub mod pause_sc_proxy;
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+mod pause_proxy {
+    numbat_wasm::imports!();
+
+    #[numbat_wasm::proxy]
+    pub trait Pausable {
+        #[endpoint]
+        fn pause(&self);
+
+        #[endpoint]
+        fn unpause(&self);
+    }
+}
+
+#[numbat_wasm::contract]
 pub trait PauseProxy {
     #[init]
     fn init(&self) {
@@ -36,26 +48,23 @@ pub trait PauseProxy {
 
     fn for_each_contract<F>(&self, f: F)
     where
-        F: Fn(pause_sc_proxy::PausableProxyMethods<TxScEnv<Self::Api>, (), &ManagedAddress, ()>),
+        F: Fn(pause_proxy::Proxy<Self::Api>),
     {
         for contract_address in self.contracts().iter() {
-            f(self
-                .tx()
-                .to(&contract_address)
-                .typed(pause_sc_proxy::PausableProxy));
+            f(self.pausable_contract().contract(contract_address));
         }
     }
 
     #[endpoint]
     fn pause(&self) {
         self.require_owner();
-        self.for_each_contract(|contract| contract.pause().sync_call());
+        self.for_each_contract(|mut contract| contract.pause().execute_on_dest_context());
     }
 
     #[endpoint]
     fn unpause(&self) {
         self.require_owner();
-        self.for_each_contract(|contract| contract.unpause().sync_call());
+        self.for_each_contract(|mut contract| contract.unpause().execute_on_dest_context());
     }
 
     fn require_owner(&self) {
@@ -72,4 +81,7 @@ pub trait PauseProxy {
     #[view]
     #[storage_mapper("contracts")]
     fn contracts(&self) -> SetMapper<ManagedAddress>;
+
+    #[proxy]
+    fn pausable_contract(&self) -> pause_proxy::Proxy<Self::Api>;
 }

@@ -1,9 +1,9 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 use core::num::NonZeroUsize;
 
-/// Exposes various methods of various types provided by dharitri-sc.
-#[dharitri_sc::module]
+/// Exposes various methods of various types provided by numbat-wasm.
+#[numbat_wasm::module]
 pub trait TypeFeatures {
     #[view]
     fn non_zero_usize_iter(&self, how_many: usize) -> MultiValueEncoded<NonZeroUsize> {

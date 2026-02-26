@@ -1,28 +1,17 @@
 #![no_std]
-dharitri_sc::imports!();
 
-#[dharitri_sc::contract]
+numbat_wasm::imports!();
+
+#[numbat_wasm::contract]
 pub trait MultiContractFeatures {
     #[init]
-    fn default_init(&self, sample_value: BigUint) {
+    fn init(&self, sample_value: BigUint) {
         self.sample_value().set(sample_value);
-    }
-
-    #[init]
-    #[label("alt-impl")]
-    fn alternative_init(&self) -> &'static str {
-        "alternative init"
     }
 
     #[view]
     #[storage_mapper("sample-value")]
     fn sample_value(&self) -> SingleValueMapper<BigUint>;
-
-    #[view(sample_value)]
-    #[label("alt-impl")]
-    fn alternative_sample_value(&self) -> &'static str {
-        "alternative message instead of sample value"
-    }
 
     #[view]
     #[label("mcs-external-view")]
@@ -43,19 +32,4 @@ pub trait MultiContractFeatures {
     fn sample_value_external_set(&self, sample_value: BigUint) {
         self.sample_value().set(sample_value);
     }
-
-    #[view]
-    fn example_feature_message(&self) -> &'static str {
-        example_feature_message()
-    }
-}
-
-#[cfg(feature = "example_feature")]
-fn example_feature_message() -> &'static str {
-    "example-feature on"
-}
-
-#[cfg(not(feature = "example_feature"))]
-fn example_feature_message() -> &'static str {
-    "example-feature off"
 }

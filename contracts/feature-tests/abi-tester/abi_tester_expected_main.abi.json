@@ -5,9 +5,7 @@
             "commitHash": "<commit hash here>",
             "commitDate": "<commit date here>",
             "channel": "Channel",
-            "host": "<host>",
-            "short": "rustc <version> (<short hash> <date>)",
-            "llvmVersion": "x.x"
+            "short": "rustc <version> (<short hash> <date>)"
         },
         "contractCrate": {
             "name": "abi-tester",
@@ -15,13 +13,13 @@
             "gitVersion": "<git version here>"
         },
         "framework": {
-            "name": "dharitri-sc",
-            "version": "2.0.0"
+            "name": "numbat-wasm",
+            "version": "0.0.18"
         }
     },
     "docs": [
         "Contract whose sole purpose is to verify that",
-        "the ABI generation framework works as expected.",
+        "the ABI generation framework works sa expected.",
         "",
         "Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,",
         "including Rust docs."
@@ -33,22 +31,6 @@
         ],
         "payableInTokens": [
             "REWA"
-        ],
-        "inputs": [
-            {
-                "name": "_constructor_arg_1",
-                "type": "i32"
-            },
-            {
-                "name": "_constructor_arg_2",
-                "type": "OnlyShowsUpInConstructor"
-            }
-        ],
-        "outputs": []
-    },
-    "upgradeConstructor": {
-        "docs": [
-            "Upgrade constructor."
         ],
         "inputs": [
             {
@@ -112,7 +94,6 @@
         },
         {
             "name": "multi_result_3",
-            "title": "result-3",
             "mutability": "mutable",
             "inputs": [],
             "outputs": [
@@ -250,21 +231,6 @@
             ]
         },
         {
-            "name": "process_managed_decimal",
-            "mutability": "mutable",
-            "inputs": [
-                {
-                    "name": "input",
-                    "type": "ManagedDecimal<10>"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "ManagedDecimal<usize>"
-                }
-            ]
-        },
-        {
             "name": "dcdt_local_role",
             "mutability": "mutable",
             "inputs": [],
@@ -291,25 +257,6 @@
             "outputs": [
                 {
                     "type": "DcdtTokenData"
-                }
-            ]
-        },
-        {
-            "name": "time_types",
-            "mutability": "mutable",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "u64"
-                },
-                {
-                    "type": "u64"
-                },
-                {
-                    "type": "u64"
-                },
-                {
-                    "type": "u64"
                 }
             ]
         },
@@ -350,21 +297,6 @@
             "outputs": [
                 {
                     "type": "List<AbiManagedVecItem>"
-                }
-            ]
-        },
-        {
-            "name": "echo_permission",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "p",
-                    "type": "Permission"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "Permission"
                 }
             ]
         },
@@ -432,31 +364,6 @@
             ]
         },
         {
-            "name": "operation_completion_status",
-            "mutability": "readonly",
-            "inputs": [],
-            "outputs": [
-                {
-                    "type": "OperationCompletionStatus"
-                }
-            ]
-        },
-        {
-            "name": "takes_object_with_managed_buffer_read_to_end",
-            "mutability": "readonly",
-            "inputs": [
-                {
-                    "name": "arg",
-                    "type": "AbiWithManagedBufferReadToEnd"
-                }
-            ],
-            "outputs": [
-                {
-                    "type": "bytes"
-                }
-            ]
-        },
-        {
             "name": "payable_rewa",
             "mutability": "mutable",
             "payableInTokens": [
@@ -513,52 +420,6 @@
                     "indexed": true
                 }
             ]
-        },
-        {
-            "identifier": "empty_identifier_event",
-            "inputs": []
-        }
-    ],
-    "dcdtAttributes": [
-        {
-            "ticker": "TICKER1",
-            "type": "BigUint"
-        },
-        {
-            "ticker": "TICKER2",
-            "type": "bytes"
-        },
-        {
-            "ticker": "TICKER3",
-            "type": "u32"
-        },
-        {
-            "ticker": "STRUCT1",
-            "type": "AbiEnum"
-        },
-        {
-            "ticker": "STRUCT2",
-            "type": "AbiManagedType"
-        },
-        {
-            "ticker": "OnlyInDcdt",
-            "type": "OnlyShowsUpInDcdtAttr"
-        },
-        {
-            "ticker": "ExplicitDiscriminant",
-            "type": "ExplicitDiscriminant"
-        },
-        {
-            "ticker": "ExplicitDiscriminantMixed",
-            "type": "ExplicitDiscriminantMixed"
-        },
-        {
-            "ticker": "ManagedDecimalVar",
-            "type": "ManagedDecimal<usize>"
-        },
-        {
-            "ticker": "ManagedDecimalConst",
-            "type": "ManagedDecimalWrapper"
         }
     ],
     "hasCallback": false,
@@ -676,26 +537,6 @@
                     ],
                     "name": "tuple_madness",
                     "type": "tuple<OnlyShowsUpAsNested02,Option<AbiTestType>>"
-                }
-            ]
-        },
-        "AbiWithManagedBufferReadToEnd": {
-            "type": "struct",
-            "docs": [
-                "Its only purpose is to test that the ABI generator works fine."
-            ],
-            "fields": [
-                {
-                    "name": "endpoint",
-                    "type": "bytes"
-                },
-                {
-                    "name": "gas",
-                    "type": "u64"
-                },
-                {
-                    "name": "flush",
-                    "type": "bytes-read-to-end"
                 }
             ]
         },
@@ -823,87 +664,6 @@
                 }
             ]
         },
-        "ExplicitDiscriminant": {
-            "type": "enum",
-            "docs": [
-                "An enum with similar explicit discriminants"
-            ],
-            "variants": [
-                {
-                    "name": "Zero",
-                    "discriminant": 0
-                },
-                {
-                    "name": "Thirty",
-                    "discriminant": 30
-                },
-                {
-                    "name": "Twelve",
-                    "discriminant": 12
-                },
-                {
-                    "name": "Fifty",
-                    "discriminant": 50
-                },
-                {
-                    "name": "FiftyOne",
-                    "discriminant": 51
-                }
-            ]
-        },
-        "ExplicitDiscriminantMixed": {
-            "type": "enum",
-            "docs": [
-                "An enum with different explicit discriminants"
-            ],
-            "variants": [
-                {
-                    "name": "Zero",
-                    "discriminant": 0
-                },
-                {
-                    "name": "Unit",
-                    "discriminant": 3
-                },
-                {
-                    "name": "Tuple",
-                    "discriminant": 4,
-                    "fields": [
-                        {
-                            "name": "0",
-                            "type": "u16"
-                        }
-                    ]
-                },
-                {
-                    "name": "Five",
-                    "discriminant": 5
-                },
-                {
-                    "name": "Struct",
-                    "discriminant": 1,
-                    "fields": [
-                        {
-                            "name": "a",
-                            "type": "u8"
-                        },
-                        {
-                            "name": "b",
-                            "type": "u16"
-                        }
-                    ]
-                }
-            ]
-        },
-        "ManagedDecimalWrapper": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "field",
-                    "type": "ManagedDecimal<2>"
-                }
-            ]
-        },
         "OnlyShowsUpAsNested01": {
             "type": "struct",
             "docs": [
@@ -959,12 +719,6 @@
             ]
         },
         "OnlyShowsUpAsNested09": {
-            "type": "struct",
-            "docs": [
-                "Tests that the ABI generator also fetches types that only appear as fields."
-            ]
-        },
-        "OnlyShowsUpAsNested10": {
             "type": "struct",
             "docs": [
                 "Tests that the ABI generator also fetches types that only appear as fields."
@@ -1033,41 +787,6 @@
                 {
                     "name": "something",
                     "type": "()"
-                }
-            ]
-        },
-        "OnlyShowsUpInDcdtAttr": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "field",
-                    "type": "OnlyShowsUpAsNested10"
-                }
-            ]
-        },
-        "OperationCompletionStatus": {
-            "type": "explicit-enum",
-            "variants": [
-                {
-                    "docs": [
-                        "indicates that operation was completed"
-                    ],
-                    "name": "completed"
-                },
-                {
-                    "docs": [
-                        "indicates that operation was interrupted prematurely, due to low gas"
-                    ],
-                    "name": "interrupted"
-                }
-            ]
-        },
-        "Permission": {
-            "type": "struct",
-            "fields": [
-                {
-                    "name": "0",
-                    "type": "u32"
                 }
             ]
         }

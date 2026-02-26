@@ -1,6 +1,6 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 #[only_owner]
 pub trait OnlyOwnerTestModule: super::only_owner_derived_mod::OnlyOwnerDerivedTestModule {
     #[endpoint]

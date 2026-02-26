@@ -1,6 +1,6 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait TokenIdentifierFeatures {
     #[endpoint]
     fn token_identifier_rewa(&self) -> RewaOrDcdtTokenIdentifier {
@@ -14,6 +14,6 @@ pub trait TokenIdentifierFeatures {
 
     #[endpoint]
     fn token_identifier_is_valid_2(&self, bytes: ManagedBuffer) -> bool {
-        DcdtTokenIdentifier::from(bytes).is_valid_dcdt_identifier()
+        TokenIdentifier::from(bytes).is_valid_dcdt_identifier()
     }
 }

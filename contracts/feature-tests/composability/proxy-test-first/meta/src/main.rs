@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<proxy_test_first::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<proxy_test_first::AbiProvider>();
 }

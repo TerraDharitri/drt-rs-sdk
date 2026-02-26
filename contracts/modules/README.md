@@ -1,7 +1,0 @@
-# Standard modules for DharitrI smart contracts
-
-[![Crates.io](https://img.shields.io/crates/v/dharitri-sc-modules)](https://crates.io/crates/dharitri-sc-modules)
-
-This crate contains several smart contract modules developed by team DharitrI, which can be used to add standard functionality to any smart contract.
-
-It is enough to add the module traits as supertraits of the contract traits to receive all endpoints and all functionality from the modules in contracts.

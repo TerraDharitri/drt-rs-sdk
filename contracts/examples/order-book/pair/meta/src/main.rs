@@ -1,3 +1,3 @@
 fn main() {
-    dharitri_sc_meta_lib::cli_main::<order_book_pair::AbiProvider>();
+    numbat_wasm_debug::meta::perform::<order_book_pair::AbiProvider>();
 }

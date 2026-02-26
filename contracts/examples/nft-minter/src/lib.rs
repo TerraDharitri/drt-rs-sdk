@@ -1,22 +1,20 @@
 #![no_std]
 
-use dharitri_sc::{derive_imports::*, imports::*};
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-pub mod nft_marketplace_proxy;
 mod nft_module;
 
-#[type_abi]
-#[derive(TopEncode, TopDecode)]
+#[derive(TypeAbi, TopEncode, TopDecode)]
 pub struct ExampleAttributes {
-    pub creation_timestamp: TimestampMillis,
+    pub creation_timestamp: u64,
 }
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait NftMinter: nft_module::NftModule {
     #[init]
     fn init(&self) {}
 
-    #[allow_multiple_var_args]
     #[allow(clippy::too_many_arguments)]
     #[allow(clippy::redundant_closure)]
     #[only_owner]
@@ -27,7 +25,7 @@ pub trait NftMinter: nft_module::NftModule {
         royalties: BigUint,
         uri: ManagedBuffer,
         selling_price: BigUint,
-        opt_token_used_as_payment: OptionalValue<DcdtTokenIdentifier>,
+        opt_token_used_as_payment: OptionalValue<TokenIdentifier>,
         opt_token_used_as_payment_nonce: OptionalValue<u64>,
     ) {
         let token_used_as_payment = match opt_token_used_as_payment {
@@ -49,7 +47,7 @@ pub trait NftMinter: nft_module::NftModule {
         };
 
         let attributes = ExampleAttributes {
-            creation_timestamp: self.blockchain().get_block_timestamp_millis(),
+            creation_timestamp: self.blockchain().get_block_timestamp(),
         };
         self.create_nft_with_attributes(
             name,
@@ -70,14 +68,34 @@ pub trait NftMinter: nft_module::NftModule {
     fn claim_royalties_from_marketplace(
         &self,
         marketplace_address: ManagedAddress,
-        token_id: DcdtTokenIdentifier,
+        token_id: TokenIdentifier,
         token_nonce: u64,
     ) {
         let caller = self.blockchain().get_caller();
-        self.tx()
-            .to(&marketplace_address)
-            .typed(nft_marketplace_proxy::NftMarketplaceProxy)
+        self.marketplace_proxy(marketplace_address)
             .claim_tokens(token_id, token_nonce, caller)
-            .async_call_and_exit();
+            .async_call()
+            .call_and_exit()
+    }
+
+    #[proxy]
+    fn marketplace_proxy(
+        &self,
+        sc_address: ManagedAddress,
+    ) -> nft_marketplace_proxy::Proxy<Self::Api>;
+}
+
+mod nft_marketplace_proxy {
+    numbat_wasm::imports!();
+
+    #[numbat_wasm::proxy]
+    pub trait NftMarketplace {
+        #[endpoint(claimTokens)]
+        fn claim_tokens(
+            &self,
+            token_id: TokenIdentifier,
+            token_nonce: u64,
+            claim_destination: ManagedAddress,
+        );
     }
 }

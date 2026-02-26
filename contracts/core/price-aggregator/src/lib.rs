@@ -1,30 +1,24 @@
 #![no_std]
-// TODO: remove once minimum version is 1.87+
-#![allow(unknown_lints)]
-#![allow(clippy::collapsible_if)]
-#![allow(clippy::manual_is_multiple_of)]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 mod events;
 pub mod median;
 pub mod price_aggregator_data;
+pub mod staking;
 
-use events::{Round, Timestamp};
-use dharitri_sc_modules::staking;
 use price_aggregator_data::{OracleStatus, PriceFeed, TimestampedPrice, TokenPair};
 
 const SUBMISSION_LIST_MAX_LEN: usize = 50;
-const SUBMISSION_LIST_MIN_LEN: usize = 3;
-const FIRST_SUBMISSION_TIMESTAMP_MAX_DIFF_SECONDS: DurationSeconds = DurationSeconds::new(30);
-pub const MAX_ROUND_DURATION_SECONDS: DurationSeconds = DurationSeconds::new(1_800); // 30 minutes
-const PAUSED_ERROR_MSG: &[u8] = b"Contract is paused";
-const PAIR_DECIMALS_NOT_CONFIGURED_ERROR: &[u8] = b"pair decimals not configured";
-const WRONG_NUMBER_OF_DECIMALS_ERROR: &[u8] = b"wrong number of decimals";
+const FIRST_SUBMISSION_TIMESTAMP_MAX_DIFF_SECONDS: u64 = 30;
+pub const MAX_ROUND_DURATION_SECONDS: u64 = 1_800; // 30 minutes
+static PAUSED_ERROR_MSG: &[u8] = b"Contract is paused";
+static PAIR_DECIMALS_NOT_CONFIGURED_ERROR: &[u8] = b"pair decimals not configured";
+static WRONG_NUMBER_OF_DECIMALS_ERROR: &[u8] = b"wrong number of decimals";
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait PriceAggregator:
-    dharitri_sc_modules::pause::PauseModule + staking::StakingModule + events::EventsModule
+    numbat_wasm_modules::pause::PauseModule + staking::StakingModule + events::EventsModule
 {
     #[init]
     fn init(
@@ -50,44 +44,6 @@ pub trait PriceAggregator:
         self.submission_count().set(submission_count);
 
         self.set_paused(true);
-    }
-
-    #[upgrade]
-    fn upgrade(&self) {
-        self.set_paused(true);
-    }
-
-    #[only_owner]
-    #[endpoint(changeAmounts)]
-    fn change_amounts(&self, staking_amount: BigUint, slash_amount: BigUint) {
-        require!(
-            staking_amount > 0 && slash_amount > 0,
-            "Staking and slash amount cannot be 0"
-        );
-        require!(
-            slash_amount <= staking_amount,
-            "Slash amount cannot be higher than required stake"
-        );
-
-        let user_whitelist = self.user_whitelist();
-        let slash_quorum = self.slash_quorum().get();
-
-        let mut users_owning_new_amount = 0;
-        for user in user_whitelist.iter() {
-            if staking_amount < self.staked_amount(&user).get() {
-                users_owning_new_amount += 1;
-            }
-            if users_owning_new_amount > slash_quorum {
-                break;
-            }
-        }
-
-        require!(
-            users_owning_new_amount > slash_quorum,
-            "New staking amount is too big compared to members staked amount"
-        );
-        self.required_stake_amount().set(staking_amount);
-        self.slash_amount().set(slash_amount);
     }
 
     #[only_owner]
@@ -128,24 +84,29 @@ pub trait PriceAggregator:
         &self,
         from: ManagedBuffer,
         to: ManagedBuffer,
-        submission_timestamp: Timestamp,
+        submission_timestamp: u64,
         price: BigUint,
         decimals: u8,
     ) {
         self.require_not_paused();
         self.require_is_oracle();
 
-        self.require_valid_submission_timestamp(submission_timestamp);
+        let current_timestamp = self.blockchain().get_block_timestamp();
+        require!(
+            submission_timestamp <= current_timestamp,
+            "Timestamp is from the future"
+        );
 
         self.check_decimals(&from, &to, decimals);
 
-        self.submit_unchecked(from, to, price, decimals);
+        self.submit_unchecked(from, to, submission_timestamp, price, decimals);
     }
 
     fn submit_unchecked(
         &self,
         from: ManagedBuffer,
         to: ManagedBuffer,
+        submission_timestamp: u64,
         price: BigUint,
         decimals: u8,
     ) {
@@ -159,15 +120,11 @@ pub trait PriceAggregator:
         let first_sub_time_mapper = self.first_submission_timestamp(&token_pair);
         let last_sub_time_mapper = self.last_submission_timestamp(&token_pair);
 
-        let mut round_id = 0;
-        let wrapped_rounds = self.rounds().get(&token_pair);
-        if wrapped_rounds.is_some() {
-            round_id = wrapped_rounds.unwrap().len() + 1;
-        }
-
-        let current_timestamp = self.blockchain().get_block_timestamp_seconds();
+        let current_timestamp = self.blockchain().get_block_timestamp();
         let mut is_first_submission = false;
         let mut first_submission_timestamp = if submissions.is_empty() {
+            self.require_valid_first_submission(submission_timestamp, current_timestamp);
+
             first_sub_time_mapper.set(current_timestamp);
             is_first_submission = true;
 
@@ -178,38 +135,24 @@ pub trait PriceAggregator:
 
         // round was not completed in time, so it's discarded
         if current_timestamp > first_submission_timestamp + MAX_ROUND_DURATION_SECONDS {
+            self.require_valid_first_submission(submission_timestamp, current_timestamp);
+
             submissions.clear();
             first_sub_time_mapper.set(current_timestamp);
             last_sub_time_mapper.set(current_timestamp);
 
             first_submission_timestamp = current_timestamp;
             is_first_submission = true;
-            self.discard_round_event(&token_pair.from.clone(), &token_pair.to.clone(), round_id)
         }
 
         let caller = self.blockchain().get_caller();
-        let has_caller_already_submitted = submissions.contains_key(&caller);
-        let accepted = !has_caller_already_submitted
-            && (is_first_submission || current_timestamp >= first_submission_timestamp);
+        let accepted = !submissions.contains_key(&caller)
+            && (is_first_submission || submission_timestamp >= first_submission_timestamp);
         if accepted {
-            submissions.insert(caller.clone(), price.clone());
+            submissions.insert(caller, price);
             last_sub_time_mapper.set(current_timestamp);
 
-            self.create_new_round(token_pair.clone(), round_id, submissions, decimals);
-            self.add_submission_event(
-                &token_pair.from.clone(),
-                &token_pair.to.clone(),
-                round_id,
-                &price,
-            );
-        } else {
-            self.emit_discard_submission_event(
-                &token_pair,
-                round_id,
-                current_timestamp,
-                first_submission_timestamp,
-                has_caller_already_submitted,
-            );
+            self.create_new_round(token_pair, submissions, decimals);
         }
 
         self.oracle_status()
@@ -220,12 +163,7 @@ pub trait PriceAggregator:
             });
     }
 
-    fn require_valid_submission_timestamp(&self, submission_timestamp: Timestamp) {
-        let current_timestamp = self.blockchain().get_block_timestamp_seconds();
-        require!(
-            submission_timestamp <= current_timestamp,
-            "Timestamp is from the future"
-        );
+    fn require_valid_first_submission(&self, submission_timestamp: u64, current_timestamp: u64) {
         require!(
             current_timestamp - submission_timestamp <= FIRST_SUBMISSION_TIMESTAMP_MAX_DIFF_SECONDS,
             "First submission too old"
@@ -235,22 +173,24 @@ pub trait PriceAggregator:
     #[endpoint(submitBatch)]
     fn submit_batch(
         &self,
-        submissions: MultiValueEncoded<
-            MultiValue5<ManagedBuffer, ManagedBuffer, Timestamp, BigUint, u8>,
-        >,
+        submissions: MultiValueEncoded<MultiValue5<ManagedBuffer, ManagedBuffer, u64, BigUint, u8>>,
     ) {
         self.require_not_paused();
         self.require_is_oracle();
 
+        let current_timestamp = self.blockchain().get_block_timestamp();
         for (from, to, submission_timestamp, price, decimals) in submissions
             .into_iter()
             .map(|submission| submission.into_tuple())
         {
-            self.require_valid_submission_timestamp(submission_timestamp);
+            require!(
+                submission_timestamp <= current_timestamp,
+                "Timestamp is from the future"
+            );
 
             self.check_decimals(&from, &to, decimals);
 
-            self.submit_unchecked(from, to, price, decimals);
+            self.submit_unchecked(from, to, submission_timestamp, price, decimals);
         }
     }
 
@@ -264,7 +204,7 @@ pub trait PriceAggregator:
 
     fn require_valid_submission_count(&self, submission_count: usize) {
         require!(
-            submission_count >= SUBMISSION_LIST_MIN_LEN
+            submission_count >= 1
                 && submission_count <= self.oracle_status().len()
                 && submission_count <= SUBMISSION_LIST_MAX_LEN,
             "Invalid submission count"
@@ -274,7 +214,6 @@ pub trait PriceAggregator:
     fn create_new_round(
         &self,
         token_pair: TokenPair<Self::Api>,
-        round: Round,
         mut submissions: MapMapper<ManagedAddress, BigUint>,
         decimals: u8,
     ) {
@@ -295,7 +234,7 @@ pub trait PriceAggregator:
             let price = price_opt.unwrap_or_else(|| sc_panic!("no submissions"));
             let price_feed = TimestampedPrice {
                 price,
-                timestamp: self.blockchain().get_block_timestamp_seconds(),
+                timestamp: self.blockchain().get_block_timestamp(),
                 decimals,
             };
 
@@ -308,7 +247,7 @@ pub trait PriceAggregator:
                 .or_default()
                 .get()
                 .push(&price_feed);
-            self.emit_new_round_event(&token_pair, round, &price_feed);
+            self.emit_new_round_event(&token_pair, &price_feed);
         }
     }
 
@@ -330,16 +269,16 @@ pub trait PriceAggregator:
         &self,
         from: ManagedBuffer,
         to: ManagedBuffer,
-    ) -> MultiValue6<u32, ManagedBuffer, ManagedBuffer, Timestamp, BigUint, u8> {
-        require!(self.not_paused(), PAUSED_ERROR_MSG);
+    ) -> SCResult<MultiValue6<u32, ManagedBuffer, ManagedBuffer, u64, BigUint, u8>> {
+        require_old!(self.not_paused(), PAUSED_ERROR_MSG);
 
         let token_pair = TokenPair { from, to };
         let round_values = self
             .rounds()
             .get(&token_pair)
-            .unwrap_or_else(|| sc_panic!("token pair not found"));
+            .ok_or("token pair not found")?;
         let feed = self.make_price_feed(token_pair, round_values);
-        (
+        Ok((
             feed.round_id,
             feed.from,
             feed.to,
@@ -347,7 +286,7 @@ pub trait PriceAggregator:
             feed.price,
             feed.decimals,
         )
-            .into()
+            .into())
     }
 
     #[view(latestPriceFeedOptional)]
@@ -355,8 +294,8 @@ pub trait PriceAggregator:
         &self,
         from: ManagedBuffer,
         to: ManagedBuffer,
-    ) -> OptionalValue<MultiValue6<u32, ManagedBuffer, ManagedBuffer, Timestamp, BigUint, u8>> {
-        Some(self.latest_price_feed(from, to)).into()
+    ) -> OptionalValue<MultiValue6<u32, ManagedBuffer, ManagedBuffer, u64, BigUint, u8>> {
+        self.latest_price_feed(from, to).ok().into()
     }
 
     #[only_owner]
@@ -385,7 +324,6 @@ pub trait PriceAggregator:
     }
 
     #[view(getOracles)]
-    #[title("oracles")]
     fn get_oracles(&self) -> MultiValueEncoded<ManagedAddress> {
         let mut result = MultiValueEncoded::new();
         for key in self.oracle_status().keys() {
@@ -405,11 +343,9 @@ pub trait PriceAggregator:
     #[only_owner]
     #[endpoint(setPairDecimals)]
     fn set_pair_decimals(&self, from: ManagedBuffer, to: ManagedBuffer, decimals: u8) {
-        let pair_decimals_mapper = self.pair_decimals(&from, &to);
-        if !pair_decimals_mapper.is_empty() {
-            self.require_paused();
-        }
-        pair_decimals_mapper.set(Some(decimals));
+        self.require_paused();
+
+        self.pair_decimals(&from, &to).set(Some(decimals));
         let pair = TokenPair { from, to };
         self.clear_submissions(&pair);
     }
@@ -452,13 +388,13 @@ pub trait PriceAggregator:
     fn first_submission_timestamp(
         &self,
         token_pair: &TokenPair<Self::Api>,
-    ) -> SingleValueMapper<Timestamp>;
+    ) -> SingleValueMapper<u64>;
 
     #[storage_mapper("last_submission_timestamp")]
     fn last_submission_timestamp(
         &self,
         token_pair: &TokenPair<Self::Api>,
-    ) -> SingleValueMapper<Timestamp>;
+    ) -> SingleValueMapper<u64>;
 
     #[storage_mapper("submissions")]
     fn submissions(

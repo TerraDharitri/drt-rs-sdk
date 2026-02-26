@@ -1,0 +1,18 @@
+[package]
+name = "crypto-bubbles-legacy"
+version = "0.0.0"
+authors = ["Dharitri <contact@dharitri.org>"]
+edition = "2018"
+publish = false
+
+[lib]
+path = "src/crypto_bubbles_legacy.rs"
+
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../../numbat-wasm"
+features = ["alloc"]
+
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../../numbat-wasm-debug"

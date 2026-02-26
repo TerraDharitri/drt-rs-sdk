@@ -1,15 +1,15 @@
 #![no_std]
 
-use dharitri_sc::{derive_imports::*, imports::*};
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-#[type_abi]
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, Clone)]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi, Clone)]
 pub struct TokenIdPair<M: ManagedTypeApi> {
-    first_token_id: TokenId<M>,
-    second_token_id: TokenId<M>,
+    first_token_id: TokenIdentifier<M>,
+    second_token_id: TokenIdentifier<M>,
 }
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Factory {
     #[init]
     fn init(&self, pair_template_address: ManagedAddress) {
@@ -24,19 +24,13 @@ pub trait Factory {
         arguments.push_arg(&token_id_pair.first_token_id);
         arguments.push_arg(&token_id_pair.second_token_id);
 
-        let gas_left = self.blockchain().get_gas_left();
-        let source = self.pair_template_address().get();
-
-        let pair_address = self
-            .tx()
-            .gas(gas_left)
-            .raw_deploy()
-            .arguments_raw(arguments)
-            .from_source(source)
-            .code_metadata(CodeMetadata::DEFAULT)
-            .returns(ReturnsNewManagedAddress)
-            .sync_call();
-
+        let (pair_address, _) = self.send_raw().deploy_from_source_contract(
+            self.blockchain().get_gas_left(),
+            &BigUint::zero(),
+            &self.pair_template_address().get(),
+            CodeMetadata::DEFAULT,
+            &arguments,
+        );
         self.pairs().insert(token_id_pair, pair_address.clone());
 
         pair_address

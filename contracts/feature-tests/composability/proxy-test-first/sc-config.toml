@@ -1,3 +1,0 @@
-# the only purpose of this config is to specify the allocator
-[contracts.proxy-test-first]
-allocator = "static64k"

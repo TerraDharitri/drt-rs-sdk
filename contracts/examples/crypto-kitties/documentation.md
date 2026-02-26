@@ -5,7 +5,7 @@ The cryptokitties contracts suite is meant to show a relatively simple example o
 The implementation is split into three contracts: 
 - kitty-ownership - responsible for keeping track of kitties, their characteristics and their owners, and it also handles the breeding logic
 - kitty-genetic-alg - mock genetic algorithm, which can be further extended if needed
-- kitty-auction - lets users auction their kitties, either outright selling them or auctioning their right to be used as a sire for breeding
+- kitty-auction - lets user auction their kitties, either outright selling them or auctioning their right to be used as a sire for breeding
 
 Their role will be detailed in their own section.  
 
@@ -77,7 +77,7 @@ Of course, this can be made as simple or as complex as wanted. You could even im
 
 # Kitty Auction Contract
 
-This is the contract that handles kitty auctioning. There are two types of auctions supported:
+This is the contract that handles kitty auctioning. The are two types of auctions supported:
 - selling auction: Once the auction is complete, the kitty is sold to the winner
 - siring auction: The winner of the auction gets the right to use the kitty as a sire for one of their matron kitties
 
@@ -201,7 +201,7 @@ This function ends the auction for the kitty if one of the end conditions has be
 
 Anyone may call this function, not only the ones involved in the auction.
 
-If this was a selling auction, the `current_bid` is sent to the `kitty_owner` and the kitty's ownership is transferred to `current_winner`. Auction is then cleared from storage.
+If this was a selling auction, the `current_bid` is sent to the `kitty_owner` and the kitty's ownership is transfered to `current_winner`. Auction is then cleared from storage.
 
 If this was a siring auction, the `current_bid` is sent to the `kitty_owner` and the kitty's `sire_allowed_address` is set to `current_winner`.
 
@@ -233,7 +233,7 @@ fn init(
 )
 ```
 
-Each breeding will cost a fixed amount of REWA. The birth operation can cost a lot of gas, depending on the implementation of the genetic algorithm, so whoever calls the give_birth method (will be discussed later) will get the deposited `birth_fee`.
+Each breeding will cost a fixed amount of REWA. The birth operation can cost a lot of gas, depending on the implementation of the genetic algortihm, so whoever calls the give_birth method (will be discussed later) will get the deposited `birth_fee`.
 
 The next two arguments are the addresses of the other two contracts: the kitty-auction contract and the kitty-genetic-alg contract. These can either be set now or later by the owner, using the appropriate setter methods.
 
@@ -289,7 +289,7 @@ If the call is successful, the `cooldown` period is triggered and the `sire_allo
 `#[endpoint(giveBirth)]`  
 `fn give_birth(matron_id: u32)`
 
-If the kitty is pregnant and the gestation period has passed, a new kitty is created by the `Kitty Genetic Alg` contract and its ownership is given to the `matron`'s owner. Anyone may call this function.
+If the kitty is pregant and the gestation period has passed, a new kitty is created by the `Kitty Genetic Alg` contract and its ownership is given to the `matron`'s owner. Anyone may call this function.
 
 # General Flow
 
@@ -301,4 +301,4 @@ The `Kitty-Genetic-Alg` contract is never meant to be called directly. People ca
 
 # Conclusion
 
-Cryptokitties aims to show the power of NFTs by also making it easier to understand for people not familiar with the technology, and we hope this example gives birth to a whole lot of community-driven projects!
+Crpytokitties aims to show the power of NFTs by also making it easier to understand for people not familiar with the technology, and we hope this example gives birth to a whole lot of community-driven projects!

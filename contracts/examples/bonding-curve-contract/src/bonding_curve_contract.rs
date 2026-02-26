@@ -1,15 +1,16 @@
 #![no_std]
 
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-use function_selector::FunctionSelector;
-use dharitri_sc_modules::{
+use numbat_wasm_modules::{
     bonding_curve,
     bonding_curve::utils::{events, owner_endpoints, storage, user_endpoints},
 };
+use function_selector::FunctionSelector;
 pub mod function_selector;
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Contract:
     bonding_curve::BondingCurveModule
     + storage::StorageModule
@@ -20,18 +21,18 @@ pub trait Contract:
     #[init]
     fn init(&self) {}
 
-    #[payable]
+    #[payable("*")]
     #[endpoint(sellToken)]
     fn sell_token_endpoint(&self) {
         self.sell_token::<FunctionSelector<Self::Api>>();
     }
 
-    #[payable]
+    #[payable("*")]
     #[endpoint(buyToken)]
     fn buy_token_endpoint(
         &self,
         requested_amount: BigUint,
-        requested_token: DcdtTokenIdentifier,
+        requested_token: TokenIdentifier,
         requested_nonce: OptionalValue<u64>,
     ) {
         self.buy_token::<FunctionSelector<Self::Api>>(
@@ -42,15 +43,15 @@ pub trait Contract:
     }
 
     #[endpoint(deposit)]
-    #[payable]
-    fn deposit_endpoint(&self, payment_token: OptionalValue<DcdtTokenIdentifier>) {
+    #[payable("*")]
+    fn deposit_endpoint(&self, payment_token: OptionalValue<TokenIdentifier>) {
         self.deposit::<FunctionSelector<Self::Api>>(payment_token)
     }
 
     #[endpoint(setBondingCurve)]
     fn set_bonding_curve_endpoint(
         &self,
-        identifier: DcdtTokenIdentifier,
+        identifier: TokenIdentifier,
         function: FunctionSelector<Self::Api>,
         sell_availability: bool,
     ) {
@@ -66,12 +67,12 @@ pub trait Contract:
     }
 
     #[view]
-    fn view_buy_price(&self, amount: BigUint, identifier: DcdtTokenIdentifier) -> BigUint {
+    fn view_buy_price(&self, amount: BigUint, identifier: TokenIdentifier) -> BigUint {
         self.get_buy_price::<FunctionSelector<Self::Api>>(amount, identifier)
     }
 
     #[view]
-    fn view_sell_price(&self, amount: BigUint, identifier: DcdtTokenIdentifier) -> BigUint {
+    fn view_sell_price(&self, amount: BigUint, identifier: TokenIdentifier) -> BigUint {
         self.get_sell_price::<FunctionSelector<Self::Api>>(amount, identifier)
     }
 }

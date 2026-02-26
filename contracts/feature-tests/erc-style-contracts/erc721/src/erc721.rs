@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait NonFungibleTokens {
     #[init]
     fn init(&self, initial_minted: u64) {

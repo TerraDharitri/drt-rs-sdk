@@ -1,20 +1,19 @@
 [package]
-name = "dharitri-sc-wrewa-swap-meta"
-version = "2.0.0"
+name = "numbat-sc-wrewa-swap-meta"
+version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2024"
+edition = "2018"
 publish = false
 
 [dev-dependencies]
 
-[dependencies.dharitri-sc-wrewa-swap]
+[dependencies.numbat-sc-wrewa-swap]
 path = ".."
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../../framework/base"
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../../numbat-wasm"
 
-[dependencies.dharitri-sc-meta-lib]
-version = "2.0.0"
-path = "../../../../framework/meta-lib"
-default-features = false
+[dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../../numbat-wasm-debug"

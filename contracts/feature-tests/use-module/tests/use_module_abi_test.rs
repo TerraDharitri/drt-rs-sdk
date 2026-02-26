@@ -1,22 +1,26 @@
-use dharitri_sc_meta_lib::abi_json;
-use dharitri_sc_scenario::imports::*;
+use numbat_wasm_debug::*;
 
 use std::{fs, fs::File, io::Write};
 
 #[test]
 fn use_module_abi_generated_ok() {
-    let mut blockchain = ScenarioWorld::new();
+    let mut blockchain = BlockchainMock::new();
     blockchain.set_current_dir_from_workspace("contracts/feature-tests/use-module");
 
     // generate ABI
-    let multi_contract_config = dharitri_sc_meta_lib::multi_contract_config::<
-        use_module::AbiProvider,
-    >(blockchain.current_dir().as_path());
+    let multi_contract_config =
+        numbat_wasm_debug::meta::multi_contract_config::<use_module::AbiProvider>(
+            blockchain
+                .current_dir
+                .join("multicontract.toml")
+                .to_str()
+                .unwrap(),
+        );
 
     let main_contract = multi_contract_config.find_contract("use-module");
-    assert!(!main_contract.settings.external_view);
+    assert!(!main_contract.external_view);
     let view_contract = multi_contract_config.find_contract("use-module-view");
-    assert!(view_contract.settings.external_view);
+    assert!(view_contract.external_view);
     assert_eq!(
         view_contract.endpoint_names(),
         vec!["external_view_mod_a", "external_view_mod_b"]

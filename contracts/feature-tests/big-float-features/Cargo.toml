@@ -2,17 +2,24 @@
 name = "big-float-features"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2024"
+edition = "2018"
 publish = false
 
 [lib]
 path = "src/big_float_main.rs"
 
-[dependencies.dharitri-sc]
-version = "2.0.0"
-path = "../../../framework/base"
+[dependencies.numbat-wasm]
+version = "0.0.18"
+path = "../../../numbat-wasm"
+features = ["big-float"]
 
-[dev-dependencies.dharitri-sc-scenario]
-version = "2.0.0"
-features = ["wasmer-experimental"]
-path = "../../../framework/scenario"
+[dev-dependencies.numbat-wasm-debug]
+version = "0.0.18"
+path = "../../../numbat-wasm-debug"
+
+[dependencies.numbat-wasm-modules]
+version = "0.0.18"
+path = "../../../numbat-wasm-modules"
+
+[dev-dependencies.dcdt-system-sc-mock]
+path = "../dcdt-system-sc-mock"

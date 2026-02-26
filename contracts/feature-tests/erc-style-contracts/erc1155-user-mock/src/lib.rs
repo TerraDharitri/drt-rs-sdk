@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Erc1155UserMock {
     #[init]
     fn init(&self) {}
@@ -23,8 +23,8 @@ pub trait Erc1155UserMock {
         &self,
         _operator: ManagedAddress,
         _from: ManagedAddress,
-        _type_ids: ManagedVec<BigUint>,
-        _values: ManagedVec<BigUint>,
+        _type_ids: Vec<BigUint>,
+        _values: Vec<BigUint>,
         _data: ManagedBuffer,
     ) {
     }

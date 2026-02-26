@@ -1,7 +1,7 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// Storage mapper test.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait QueueMapperFeatures {
     #[view]
     #[storage_mapper("queue_mapper")]
@@ -20,9 +20,9 @@ pub trait QueueMapperFeatures {
     }
 
     #[endpoint]
-    fn queue_mapper_front(&self) -> u32 {
+    fn queue_mapper_front(&self) -> SCResult<u32> {
         if let Some(front) = self.queue_mapper().front() {
-            return front;
+            return Ok(front);
         }
         sc_panic!("Queue empty!")
     }

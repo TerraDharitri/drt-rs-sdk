@@ -1,17 +1,20 @@
-use dharitri_sc_scenario::imports::*;
+use numbat_wasm::types::{BigUint, ManagedVec};
+use numbat_wasm_debug::*;
 
 use basic_features::managed_vec_features::ManagedVecFeatures;
 
 #[test]
 fn test_managed_vec_new() {
-    let bf = basic_features::contract_obj::<StaticApi>();
+    let _ = DebugApi::dummy();
+    let bf = basic_features::contract_obj::<DebugApi>();
     let result = bf.managed_vec_new();
     assert_eq!(ManagedVec::new(), result);
 }
 
 #[test]
 fn test_managed_vec_eq() {
-    let bf = basic_features::contract_obj::<StaticApi>();
+    let _ = DebugApi::dummy();
+    let bf = basic_features::contract_obj::<DebugApi>();
 
     let mut mv1 = ManagedVec::new();
     mv1.push(BigUint::from(1u32));
@@ -34,7 +37,8 @@ fn test_managed_vec_eq() {
 
 #[test]
 fn test_managed_vec_set() {
-    let bf = basic_features::contract_obj::<StaticApi>();
+    let _ = DebugApi::dummy();
+    let bf = basic_features::contract_obj::<DebugApi>();
 
     let mut mv1 = ManagedVec::new();
     mv1.push(BigUint::from(1u32));
@@ -44,5 +48,5 @@ fn test_managed_vec_set() {
     mv2.push(BigUint::from(1u32));
     mv2.push(BigUint::from(5u32));
     mv2.push(BigUint::from(3u32));
-    assert_eq!(bf.managed_vec_set(mv1, 1, BigUint::from(5u64)), mv2);
+    assert_eq!(bf.managed_vec_set(mv1, 1, &BigUint::from(5u64)), mv2);
 }

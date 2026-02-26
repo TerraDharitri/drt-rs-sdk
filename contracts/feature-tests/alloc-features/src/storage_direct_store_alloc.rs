@@ -1,9 +1,9 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 use crate::types::*;
 
 /// Storage tests: direct store from the heap to storage.
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait StorageStoreFeatures {
     #[endpoint]
     #[storage_set("vec_u8")]

@@ -1,31 +1,18 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-use dharitri_sc::codec::Empty;
+use numbat_wasm::numbat_codec::Empty;
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
 /// General test contract.
 /// Used especially for investigating async calls and contract interaction in general.
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait Vault {
     #[init]
     fn init(&self, opt_arg_to_echo: OptionalValue<ManagedBuffer>) -> OptionalValue<ManagedBuffer> {
         opt_arg_to_echo
     }
-
-    #[upgrade]
-    #[label("upgrade")]
-    fn upgrade(
-        &self,
-        opt_arg_to_echo: OptionalValue<ManagedBuffer>,
-    ) -> MultiValue2<&'static str, OptionalValue<ManagedBuffer>> {
-        self.upgraded_event();
-        ("upgraded", opt_arg_to_echo).into()
-    }
-
-    #[event("upgraded")]
-    fn upgraded_event(&self);
 
     #[endpoint]
     fn echo_arguments(
@@ -50,15 +37,15 @@ pub trait Vault {
         self.blockchain().get_caller()
     }
 
-    fn all_transfers_multi(&self) -> MultiValueEncoded<PaymentMultiValue> {
-        self.call_value().all().clone().into_multi_value()
+    fn dcdt_transfers_multi(&self) -> MultiValueEncoded<DcdtTokenPaymentMultiValue> {
+        self.call_value().all_dcdt_transfers().into_multi_value()
     }
 
     #[payable("*")]
     #[endpoint]
     fn accept_funds(&self) {
-        let dcdt_transfers_multi = self.all_transfers_multi();
-        self.accept_funds_event(&dcdt_transfers_multi);
+        let dcdt_transfers_multi = self.dcdt_transfers_multi();
+        self.accept_funds_event(&self.call_value().rewa_value(), &dcdt_transfers_multi);
 
         self.call_counts(ManagedBuffer::from(b"accept_funds"))
             .update(|c| *c += 1);
@@ -66,14 +53,17 @@ pub trait Vault {
 
     #[payable("*")]
     #[endpoint]
-    fn accept_funds_echo_payment(&self) -> MultiValueEncoded<PaymentMultiValue> {
-        let dcdt_transfers_multi = self.all_transfers_multi();
-        self.accept_funds_event(&dcdt_transfers_multi);
+    fn accept_funds_echo_payment(
+        &self,
+    ) -> MultiValue2<BigUint, MultiValueEncoded<DcdtTokenPaymentMultiValue>> {
+        let rewa_value = self.call_value().rewa_value();
+        let dcdt_transfers_multi = self.dcdt_transfers_multi();
+        self.accept_funds_event(&rewa_value, &dcdt_transfers_multi);
 
         self.call_counts(ManagedBuffer::from(b"accept_funds_echo_payment"))
             .update(|c| *c += 1);
 
-        dcdt_transfers_multi
+        (rewa_value, dcdt_transfers_multi).into()
     }
 
     #[payable("*")]
@@ -85,8 +75,8 @@ pub trait Vault {
     #[payable("*")]
     #[endpoint]
     fn reject_funds(&self) {
-        let dcdt_transfers_multi = self.all_transfers_multi();
-        self.reject_funds_event(&dcdt_transfers_multi);
+        let dcdt_transfers_multi = self.dcdt_transfers_multi();
+        self.reject_funds_event(&self.call_value().rewa_value(), &dcdt_transfers_multi);
         sc_panic!("reject_funds");
     }
 
@@ -94,19 +84,24 @@ pub trait Vault {
     #[endpoint]
     fn retrieve_funds_with_transfer_exec(
         &self,
-        token: DcdtTokenIdentifier,
+        #[payment_multi] _payments: ManagedVec<DcdtTokenPayment<Self::Api>>,
+        token: TokenIdentifier,
         amount: BigUint,
         opt_receive_func: OptionalValue<ManagedBuffer>,
     ) {
         let caller = self.blockchain().get_caller();
         let func_name = opt_receive_func.into_option().unwrap_or_default();
 
-        self.tx()
-            .to(&caller)
-            .gas(50_000_000u64)
-            .raw_call(func_name)
-            .single_dcdt(&token, 0u64, &amount)
-            .transfer_execute();
+        self.send_raw()
+            .transfer_dcdt_execute(
+                &caller,
+                &token,
+                &amount,
+                50_000_000,
+                &func_name,
+                &ManagedArgBuffer::new(),
+            )
+            .unwrap_or_else(|_| sc_panic!("DCDT transfer failed"));
     }
 
     #[endpoint]
@@ -115,57 +110,41 @@ pub trait Vault {
         let caller = self.blockchain().get_caller();
 
         if let Some(dcdt_token_id) = token.into_dcdt_option() {
-            self.tx()
-                .to(caller)
-                .dcdt((dcdt_token_id, nonce, amount))
-                .transfer();
+            self.send()
+                .transfer_dcdt_via_async_call(caller, dcdt_token_id, nonce, amount);
         } else {
-            self.tx().to(caller).rewa(amount).transfer();
+            self.send().direct_rewa(&caller, &amount);
         }
     }
 
     #[endpoint]
-    #[payable("*")]
-    fn retrieve_funds_rewa_or_single_dcdt(&self) {
-        if let Some(payment) = self.call_value().single_optional() {
-            self.retrieve_funds_event(
-                payment.token_identifier.as_legacy(),
-                payment.token_nonce,
-                payment.amount.as_big_uint(),
-            );
+    fn retrieve_multi_funds_async(
+        &self,
+        token_payments: MultiValueEncoded<MultiValue3<TokenIdentifier, u64, BigUint>>,
+    ) {
+        let caller = self.blockchain().get_caller();
+        let mut all_payments = ManagedVec::new();
 
-            self.tx().to(ToCaller).payment(payment).transfer();
+        for multi_arg in token_payments.into_iter() {
+            let (token_id, nonce, amount) = multi_arg.into_tuple();
+
+            all_payments.push(DcdtTokenPayment::new(token_id, nonce, amount));
         }
-    }
 
-    #[endpoint]
-    #[payable("*")]
-    fn retrieve_received_funds_immediately(&self) {
-        let tokens = self.call_value().all();
-
-        self.tx().to(ToCaller).payment(tokens).transfer();
-    }
-
-    #[endpoint]
-    fn retrieve_funds_multi(&self, transfers: MultiValueEncoded<PaymentMultiValue>) {
-        self.retrieve_funds_multi_event(&transfers);
-
-        self.tx()
-            .to(ToCaller)
-            .payment(transfers.convert_payment())
-            .transfer();
+        self.send()
+            .transfer_multiple_dcdt_via_async_call(caller, all_payments);
     }
 
     #[payable("*")]
     #[endpoint]
-    fn burn_and_create_retrieve_async(&self) {
+    fn burn_and_create_retrive_async(&self) {
         let payments = self.call_value().all_dcdt_transfers();
         let mut uris = ManagedVec::new();
         uris.push(ManagedBuffer::new());
 
         let mut new_tokens = ManagedVec::new();
 
-        for payment in payments.iter() {
+        for payment in payments.into_iter() {
             // burn old tokens
             self.send().dcdt_local_burn(
                 &payment.token_identifier,
@@ -185,26 +164,30 @@ pub trait Vault {
             );
 
             new_tokens.push(DcdtTokenPayment::new(
-                payment.token_identifier.clone(),
+                payment.token_identifier,
                 new_token_nonce,
-                payment.amount.clone(),
+                payment.amount,
             ));
         }
 
-        self.tx().to(ToCaller).payment(new_tokens).transfer();
+        self.send()
+            .transfer_multiple_dcdt_via_async_call(self.blockchain().get_caller(), new_tokens);
     }
 
-    #[endpoint]
-    #[payable("*")]
-    fn explicit_panic(&self) {
-        sc_panic!("explicit panic");
-    }
-
+    /// TODO: invert token_payment and token_nonce, for consistency.
     #[event("accept_funds")]
-    fn accept_funds_event(&self, #[indexed] multi_dcdt: &MultiValueEncoded<PaymentMultiValue>);
+    fn accept_funds_event(
+        &self,
+        #[indexed] rewa_value: &BigUint,
+        #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
+    );
 
     #[event("reject_funds")]
-    fn reject_funds_event(&self, #[indexed] multi_dcdt: &MultiValueEncoded<PaymentMultiValue>);
+    fn reject_funds_event(
+        &self,
+        #[indexed] rewa_value: &BigUint,
+        #[indexed] multi_dcdt: &MultiValueEncoded<DcdtTokenPaymentMultiValue>,
+    );
 
     #[event("retrieve_funds")]
     fn retrieve_funds_event(
@@ -212,12 +195,6 @@ pub trait Vault {
         #[indexed] token: &RewaOrDcdtTokenIdentifier,
         #[indexed] nonce: u64,
         #[indexed] amount: &BigUint,
-    );
-
-    #[event("retrieve_funds_multi")]
-    fn retrieve_funds_multi_event(
-        &self,
-        #[indexed] transfers: &MultiValueEncoded<PaymentMultiValue>,
     );
 
     #[endpoint]

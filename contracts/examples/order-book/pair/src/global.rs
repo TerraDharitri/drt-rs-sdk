@@ -1,6 +1,7 @@
-use dharitri_sc::imports::*;
+numbat_wasm::imports!();
+numbat_wasm::derive_imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait GlobalOperationModule {
     #[only_owner]
     #[endpoint(startGlobalOperation)]

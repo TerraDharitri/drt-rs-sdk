@@ -1,35 +1,16 @@
-mod af_proxy;
-use dharitri_sc::types::{TestAddress, TestSCAddress};
-use dharitri_sc_scenario::{
-    ExpectMessage, ScenarioTxRun, ScenarioWorld, imports::ExecutorConfig,
-};
+use numbat_wasm::types::{SCResult, StaticSCError};
+use numbat_wasm_debug::*;
 
-const OWNER_ADDRESS: TestAddress = TestAddress::new("owner");
-const CODE_EXPR: &str = "drtsc:output/alloc-features.drtsc.json";
-const SC_AF: TestSCAddress = TestSCAddress::new("alloc-features");
-
-fn world() -> ScenarioWorld {
-    let mut blockchain = ScenarioWorld::new().executor_config(ExecutorConfig::full_suite());
-
-    blockchain.set_current_dir_from_workspace("contracts/feature-tests/alloc-features");
-    blockchain.register_contract(CODE_EXPR, alloc_features::ContractBuilder);
-    blockchain
-}
+use alloc_features::macro_features_legacy::MacroFeaturesLegacy;
 
 /// Likely to be removed soon.
 #[test]
 fn test_sc_error() {
-    let mut world = world();
-    let code = world.code_expression(CODE_EXPR);
-
-    world.account(OWNER_ADDRESS).nonce(1);
-    world.account(SC_AF).code(code);
-    world
-        .tx()
-        .from(OWNER_ADDRESS)
-        .to(SC_AF)
-        .typed(af_proxy::AllocFeaturesProxy)
-        .return_sc_error()
-        .returns(ExpectMessage("return_sc_error"))
-        .run();
+    let _ = DebugApi::dummy();
+    let bf = alloc_features::contract_obj::<DebugApi>();
+    let result = bf.return_sc_error();
+    assert_eq!(
+        SCResult::Err(StaticSCError::from(&b"return_sc_error"[..])),
+        result
+    );
 }

@@ -1,6 +1,6 @@
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::module]
+#[numbat_wasm::module]
 pub trait BigIntMethods {
     #[endpoint]
     fn sqrt_big_uint(&self, a: BigUint) -> BigUint {
@@ -14,12 +14,12 @@ pub trait BigIntMethods {
 
     #[endpoint]
     fn log2_big_uint(&self, a: BigUint) -> u32 {
-        a.log2_floor().unwrap_or_default()
+        a.log2()
     }
 
     #[endpoint]
     fn log2_big_uint_ref(&self, a: &BigUint) -> u32 {
-        a.log2_floor().unwrap_or_default()
+        a.log2()
     }
 
     #[endpoint]
@@ -48,7 +48,7 @@ pub trait BigIntMethods {
     }
 
     #[endpoint]
-    fn biguint_overwrite_u64(&self, mut bu: BigUint, small: u64) -> BigUint {
+    fn biguint_overwrite_u64(&self, bu: BigUint, small: u64) -> BigUint {
         bu.overwrite_u64(small);
         bu
     }
@@ -66,11 +66,6 @@ pub trait BigIntMethods {
     #[endpoint]
     fn big_uint_from_u64_2(&self, small: u64) -> BigUint {
         small.into()
-    }
-
-    #[endpoint]
-    fn biguint_from_u128(&self) -> BigUint {
-        BigUint::from(u128::MAX)
     }
 
     #[endpoint]
@@ -122,24 +117,5 @@ pub trait BigIntMethods {
     #[endpoint]
     fn big_int_from_biguint(&self, sign: Sign, unsigned: BigUint) -> BigInt {
         BigInt::from_biguint(sign, unsigned)
-    }
-
-    // mixed operations (explicit conversions)
-
-    #[endpoint]
-    fn add_big_int_big_uint(&self, a: BigInt, b: BigUint) -> BigInt {
-        a + b.into_big_int()
-    }
-    #[endpoint]
-    fn add_big_uint_big_int(&self, a: BigUint, b: BigInt) -> BigInt {
-        a.into_big_int() + b
-    }
-    #[endpoint]
-    fn add_big_int_big_uint_ref(&self, a: &BigInt, b: &BigUint) -> BigInt {
-        a + b.as_big_int()
-    }
-    #[endpoint]
-    fn add_big_uint_big_int_ref(&self, a: &BigUint, b: &BigInt) -> BigInt {
-        a.as_big_int() + b
     }
 }

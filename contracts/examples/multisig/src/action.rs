@@ -1,12 +1,11 @@
-use dharitri_sc::{
+use numbat_wasm::{
     api::ManagedTypeApi,
     types::{BigUint, CodeMetadata, ManagedAddress, ManagedBuffer, ManagedVec},
 };
 
-use dharitri_sc::derive_imports::*;
+numbat_wasm::derive_imports!();
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, Clone)]
+#[derive(NestedEncode, NestedDecode, TypeAbi, Clone)]
 pub struct CallActionData<M: ManagedTypeApi> {
     pub to: ManagedAddress<M>,
     pub rewa_amount: BigUint<M>,
@@ -14,8 +13,7 @@ pub struct CallActionData<M: ManagedTypeApi> {
     pub arguments: ManagedVec<M, ManagedBuffer<M>>,
 }
 
-#[type_abi]
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, Clone)]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi, Clone)]
 pub enum Action<M: ManagedTypeApi> {
     Nothing,
     AddBoardMember(ManagedAddress<M>),
@@ -49,8 +47,7 @@ impl<M: ManagedTypeApi> Action<M> {
 }
 
 /// Not used internally, just to retrieve results via endpoint.
-#[type_abi]
-#[derive(TopEncode)]
+#[derive(TopEncode, TypeAbi)]
 pub struct ActionFullInfo<M: ManagedTypeApi> {
     pub action_id: usize,
     pub action_data: Action<M>,
@@ -59,13 +56,13 @@ pub struct ActionFullInfo<M: ManagedTypeApi> {
 
 #[cfg(test)]
 mod test {
-    use dharitri_sc_scenario::api::StaticApi;
+    use numbat_wasm_debug::DebugApi;
 
     use super::Action;
 
     #[test]
     fn test_is_pending() {
-        assert!(!Action::<StaticApi>::Nothing.is_pending());
-        assert!(Action::<StaticApi>::ChangeQuorum(5).is_pending());
+        assert!(!Action::<DebugApi>::Nothing.is_pending());
+        assert!(Action::<DebugApi>::ChangeQuorum(5).is_pending());
     }
 }

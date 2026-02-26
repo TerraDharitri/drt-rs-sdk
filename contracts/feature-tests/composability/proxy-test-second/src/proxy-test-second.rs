@@ -1,8 +1,8 @@
 #![no_std]
 
-dharitri_sc::imports!();
+numbat_wasm::imports!();
 
-#[dharitri_sc::contract]
+#[numbat_wasm::contract]
 pub trait ProxyTestSecond {
     #[storage_set("last_payment")]
     fn set_last_payment(&self, last_payment: &BigUint);
@@ -28,22 +28,16 @@ pub trait ProxyTestSecond {
     #[init]
     #[payable("REWA")]
     fn init(&self, init_arg: i32) -> i32 {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         self.set_last_payment(&payment);
         self.set_init_arg(init_arg);
         init_arg + 1
     }
 
-    #[upgrade]
-    #[payable("REWA")]
-    fn upgrade(&self, init_arg: i32) -> i32 {
-        self.init(init_arg)
-    }
-
     #[payable("REWA")]
     #[endpoint(payMe)]
     fn pay_me(&self, arg1: i64) {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         self.set_last_payment(&payment);
         self.set_pay_me_arg(arg1);
     }
@@ -51,7 +45,7 @@ pub trait ProxyTestSecond {
     #[payable("REWA")]
     #[endpoint(payMeWithResult)]
     fn pay_me_with_result_endpoint(&self, arg1: i64) -> i64 {
-        let payment = self.call_value().rewa();
+        let payment = self.call_value().rewa_value();
         self.set_last_payment(&payment);
         self.set_pay_me_arg(arg1);
 
