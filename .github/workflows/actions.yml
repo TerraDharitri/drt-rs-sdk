@@ -13,7 +13,7 @@ permissions:
 jobs:
   contracts:
     name: Contracts
-    uses: ./.github/workflows/contracts.yml
+    uses: TerraDharitri/drt-sc-actions/.github/workflows/contracts.yml@v1.0.3
     with:
       rust-toolchain: nightly-2022-10-12
       vmtools-version: v1.4.60
