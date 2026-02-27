@@ -5,30 +5,40 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
 
 jobs:
   format_tests:
     name: LLDB formatter tests
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+
+      - name: Install Rust nightly toolchain
+        uses: actions-rs/toolchain@v1
         with:
+          toolchain: nightly-2024-10-12
+          override: true
           default: true
-          toolchain: nightly-2022-10-12
 
       - name: Download vscode-lldb
         uses: robinraju/release-downloader@v1.5
         with:
           repository: vadimcn/vscode-lldb
-          latest: true
+          tag: v1.7.0
           fileName: codelldb-x86_64-linux.vsix
 
       - name: Setup vscode-lldb
         run: |
           unzip codelldb-x86_64-linux.vsix -d vscode-lldb
-          mkdir -p $HOME/.vscode/extensions/vadimcn.vscode-lldb-x.x.x/
-          mv vscode-lldb/extension/* $HOME/.vscode/extensions/vadimcn.vscode-lldb-x.x.x/
+          mkdir -p $HOME/.vscode/extensions/vadimcn.vscode-lldb-1.7.0/
+          mv vscode-lldb/extension/* $HOME/.vscode/extensions/vadimcn.vscode-lldb-1.7.0/
+
+      - name: Check versions
+        run: |
+          rustc --version
+          ~/.vscode/extensions/vadimcn.vscode-lldb-1.7.0/lldb/bin/lldb --version
 
       - name: Run the rust tests
         run: |

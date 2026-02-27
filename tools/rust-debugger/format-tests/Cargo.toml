@@ -22,3 +22,6 @@ home = "0.5.3"
 
 [workspace]
 members = ["."]
+
+[dependencies]
+home = "=0.5.11"
