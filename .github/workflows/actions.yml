@@ -19,7 +19,7 @@ jobs:
     with:
       rust-toolchain: 1.88
       path-to-sc-meta: framework/meta
-      drt-go-scenario-version: v4.0.0
+      drt-go-scenario-version: v1.0.0
       enable-interactor-tests: true
       coverage-args: --ignore-filename-regex='meta/src' --ignore-filename-regex='wasm-adapter' --ignore-filename-regex='benchmarks/' --ignore-filename-regex='tests/' --output ./coverage.md
     secrets:
