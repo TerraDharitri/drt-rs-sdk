@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev-shannu
   pull_request:
 
 permissions:
@@ -25,7 +26,7 @@ jobs:
           target: wasm32-unknown-unknown
 
       - name: Install sc-meta
-        run: cargo install dharitri-sc-meta
+        run: cargo install --path framework/meta
 
       - name: Run sc-meta commands
         run: |
