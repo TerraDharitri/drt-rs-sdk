@@ -1,8 +1,9 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 mod abi_enum;
+pub mod abi_proxy;
 mod abi_test_type;
 mod only_nested;
 
@@ -11,16 +12,32 @@ use abi_test_type::*;
 use only_nested::*;
 
 /// Contract whose sole purpose is to verify that
-/// the ABI generation framework works sa expected.
+/// the ABI generation framework works as expected.
 ///
 /// Note: any change in this contract must also be reflected in `abi_test_expected.abi.json`,
 /// including Rust docs.
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
+#[dcdt_attribute("TICKER1", BigUint)]
+#[dcdt_attribute("TICKER2", ManagedBuffer)]
+#[dcdt_attribute("TICKER3", u32)]
+#[dcdt_attribute("STRUCT1", AbiEnum)]
+#[dcdt_attribute("STRUCT2", AbiManagedType<Self::Api>)]
+#[dcdt_attribute("OnlyInDcdt", OnlyShowsUpInDcdtAttr)]
+#[dcdt_attribute("ExplicitDiscriminant", ExplicitDiscriminant)]
+#[dcdt_attribute("ExplicitDiscriminantMixed", ExplicitDiscriminantMixed)]
+#[dcdt_attribute("ManagedDecimalVar", ManagedDecimal<Self::Api, NumDecimals>)]
+#[dcdt_attribute("ManagedDecimalConst", ManagedDecimalWrapper<Self::Api>)]
 pub trait AbiTester {
     /// Contract constructor.
     #[init]
     #[payable("REWA")]
     fn init(&self, _constructor_arg_1: i32, _constructor_arg_2: OnlyShowsUpInConstructor) {}
+
+    /// Upgrade constructor.
+    #[upgrade]
+    fn upgrade(&self, _constructor_arg_1: i32, _constructor_arg_2: OnlyShowsUpInConstructor) {
+        self.init(_constructor_arg_1, _constructor_arg_2)
+    }
 
     /// Example endpoint docs.
     #[endpoint]
@@ -41,6 +58,7 @@ pub trait AbiTester {
     fn take_managed_type(&self, _arg: AbiManagedType<Self::Api>) {}
 
     #[endpoint]
+    #[title("result-3")]
     #[output_name("multi-result-1")]
     #[output_name("multi-result-2")]
     #[output_name("multi-result-3")]
@@ -93,6 +111,14 @@ pub trait AbiTester {
     }
 
     #[endpoint]
+    fn process_managed_decimal(
+        &self,
+        input: ManagedDecimal<Self::Api, ConstDecimals<U10>>,
+    ) -> ManagedDecimal<Self::Api, usize> {
+        input.into()
+    }
+
+    #[endpoint]
     fn dcdt_local_role(&self) -> DcdtLocalRole {
         DcdtLocalRole::None
     }
@@ -127,6 +153,11 @@ pub trait AbiTester {
     }
 
     #[view]
+    fn echo_permission(&self, p: Permission) -> Permission {
+        p
+    }
+
+    #[view]
     fn item_for_array(&self, _array: &[OnlyShowsUpAsNestedInArray; 5]) {}
 
     #[view]
@@ -148,6 +179,19 @@ pub trait AbiTester {
     #[view]
     fn item_for_option(&self) -> Option<OnlyShowsUpAsNestedInOption> {
         None
+    }
+
+    #[view]
+    fn operation_completion_status(&self) -> OperationCompletionStatus {
+        OperationCompletionStatus::Completed
+    }
+
+    #[view]
+    fn takes_object_with_managed_buffer_read_to_end(
+        &self,
+        arg: AbiWithManagedBufferReadToEnd<Self::Api>,
+    ) -> ManagedBuffer {
+        arg.flush.into_managed_buffer()
     }
 
     #[endpoint]
@@ -174,6 +218,9 @@ pub trait AbiTester {
 
     #[event("address-h256-event")]
     fn address_h256_event(&self, #[indexed] address: &Address, #[indexed] h256: &H256);
+
+    #[event]
+    fn empty_identifier_event(&self);
 
     #[endpoint]
     #[label("label1")]

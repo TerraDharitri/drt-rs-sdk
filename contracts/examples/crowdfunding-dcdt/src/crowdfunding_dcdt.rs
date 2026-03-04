@@ -1,16 +1,17 @@
 #![no_std]
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
+pub mod crowdfunding_dcdt_proxy;
 
-#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy, Debug)]
+#[type_abi]
+#[derive(TopEncode, TopDecode, PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Status {
     FundingPeriod,
     Successful,
     Failed,
 }
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Crowdfunding {
     #[init]
     fn init(&self, target: BigUint, deadline: u64, token_identifier: RewaOrDcdtTokenIdentifier) {
@@ -28,7 +29,7 @@ pub trait Crowdfunding {
     }
 
     #[endpoint]
-    #[payable("*")]
+    #[payable]
     fn fund(&self) {
         let (token, _, payment) = self.call_value().rewa_or_single_dcdt().into_tuple();
 
@@ -54,6 +55,7 @@ pub trait Crowdfunding {
     }
 
     #[view(getCurrentFunds)]
+    #[title("currentFunds")]
     fn get_current_funds(&self) -> BigUint {
         let token = self.cf_token_identifier().get();
 
@@ -74,8 +76,10 @@ pub trait Crowdfunding {
                 let token_identifier = self.cf_token_identifier().get();
                 let sc_balance = self.get_current_funds();
 
-                self.send()
-                    .direct(&caller, &token_identifier, 0, &sc_balance);
+                self.tx()
+                    .to(&caller)
+                    .rewa_or_single_dcdt(&token_identifier, 0, &sc_balance)
+                    .transfer();
             },
             Status::Failed => {
                 let caller = self.blockchain().get_caller();
@@ -85,7 +89,10 @@ pub trait Crowdfunding {
                     let token_identifier = self.cf_token_identifier().get();
 
                     self.deposit(&caller).clear();
-                    self.send().direct(&caller, &token_identifier, 0, &deposit);
+                    self.tx()
+                        .to(&caller)
+                        .rewa_or_single_dcdt(&token_identifier, 0, &deposit)
+                        .transfer();
                 }
             },
         }
@@ -100,18 +107,22 @@ pub trait Crowdfunding {
     // storage
 
     #[view(getTarget)]
+    #[title("target")]
     #[storage_mapper("target")]
     fn target(&self) -> SingleValueMapper<BigUint>;
 
     #[view(getDeadline)]
+    #[title("deadline")]
     #[storage_mapper("deadline")]
     fn deadline(&self) -> SingleValueMapper<u64>;
 
     #[view(getDeposit)]
+    #[title("deposit")]
     #[storage_mapper("deposit")]
     fn deposit(&self, donor: &ManagedAddress) -> SingleValueMapper<BigUint>;
 
     #[view(getCrowdfundingTokenIdentifier)]
+    #[title("tokenIdentifier")]
     #[storage_mapper("tokenIdentifier")]
     fn cf_token_identifier(&self) -> SingleValueMapper<RewaOrDcdtTokenIdentifier>;
 }

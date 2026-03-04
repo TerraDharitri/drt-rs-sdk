@@ -1,3 +1,3 @@
 fn main() {
-    numbat_wasm_debug::meta::perform::<vec_repeat::AbiProvider>();
+    dharitri_sc_meta_lib::cli_main::<vec_repeat::AbiProvider>();
 }

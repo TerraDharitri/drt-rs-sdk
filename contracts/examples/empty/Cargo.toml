@@ -2,19 +2,19 @@
 name = "empty"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
 path = "src/empty.rs"
 
-[dependencies.numbat-wasm]
-version = "0.0.18"
-path = "../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.20.0"
+path = "../../../framework/base"
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.18"
-path = "../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.20.0"
+path = "../../../framework/scenario"
 
 [dev-dependencies]
-num-bigint = "0.4.2"
+num-bigint = "0.4"

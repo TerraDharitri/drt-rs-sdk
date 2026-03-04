@@ -1,11 +1,9 @@
 #![no_std]
 
-numbat_wasm::imports!();
-
-use kitty::{kitty_genes::*, Kitty};
+use kitty::{Kitty, KittyGenes};
 use random::Random;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait KittyGeneticAlg {
     #[init]
     fn init(&self) {}

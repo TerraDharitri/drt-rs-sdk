@@ -1,10 +1,10 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 const REWA_DECIMALS: usize = 18;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Child {
     #[init]
     fn init(&self) {}
@@ -17,11 +17,11 @@ pub trait Child {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa();
         self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
-                issue_cost,
+                issue_cost.clone(),
                 &token_display_name,
                 &token_ticker,
                 &initial_supply,
@@ -37,9 +37,8 @@ pub trait Child {
                     can_add_special_roles: true,
                 },
             )
-            .async_call()
             .with_callback(self.callbacks().dcdt_issue_callback())
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     // callbacks
@@ -47,7 +46,7 @@ pub trait Child {
     #[callback]
     fn dcdt_issue_callback(&self, #[call_result] _result: IgnoreValue) {
         let (token_identifier, _amount) = self.call_value().single_fungible_dcdt();
-        self.wrapped_rewa_token_identifier().set(&token_identifier);
+        self.wrapped_rewa_token_identifier().set(token_identifier);
     }
 
     // storage

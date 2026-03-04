@@ -1,17 +1,4 @@
-use numbat_wasm::{
-    numbat_codec::multi_types::OptionalValue,
-    dcdt::DCDTSystemSmartContractProxy,
-    types::{
-        heap::{Address, BoxedBytes},
-        BigFloat, BigInt, BigUint, RewaOrDcdtTokenIdentifier, DcdtTokenPayment, ManagedAddress,
-        ManagedBuffer, ManagedByteArray, ManagedOption, ManagedType, ManagedVec, TokenIdentifier,
-    },
-};
-use numbat_wasm_debug::{
-    api::DebugHandle,
-    num_bigint::{BigInt as RustBigInt, BigUint as RustBigUint},
-    DebugApi,
-};
+use dharitri_sc_scenario::imports::*;
 
 macro_rules! push {
     ($list: ident, $name:ident, $expected: expr ) => {{
@@ -61,13 +48,40 @@ fn main() {
     push!(to_check, bigfloat, "-1234.5678");
 
     let managed_buffer: ManagedBuffer<DebugApi> = ManagedBuffer::new_from_bytes(b"hello world");
-    push!(to_check, managed_buffer, "(11) 0x68656c6c6f20776f726c64");
+    push!(
+        to_check,
+        managed_buffer,
+        "\"hello world\" - (11) 0x68656c6c6f20776f726c64"
+    );
+
+    let test_sc_address: TestSCAddress = TestSCAddress::new("multi-transfer");
+    push!(to_check, test_sc_address, "\"sc:multi-transfer\"");
+
+    let test_address: TestAddress = TestAddress::new("owner-test");
+    push!(to_check, test_address, "\"address:owner-test\"");
+
+    let hex_dcdt_safe: [u8; 32] =
+        hex::decode(b"00000000000000000500646364742d736166655f5f5f5f5f5f5f5f5f5f5f5f5f")
+            .unwrap_or_else(|_| panic!("Unable to decode hexadecimal address"))
+            .try_into()
+            .unwrap_or_else(|address: Vec<u8>| {
+                panic!(
+                    "Invalid length: expected 32 bytes but got {}",
+                    address.len()
+                )
+            });
+    let hex_dcdt_safe_address = Address::new(hex_dcdt_safe);
+    let dcdt_safe_managed_address: ManagedAddress<DebugApi> =
+        ManagedAddress::from(hex_dcdt_safe_address);
+    push!(to_check, dcdt_safe_managed_address, "\"dcdt-safe_____________\" - (32) 0x00000000000000000500646364742d736166655f5f5f5f5f5f5f5f5f5f5f5f5f");
+
+    let test_token_identifier: TestTokenIdentifier = TestTokenIdentifier::new("TEST-123456");
+    push!(to_check, test_token_identifier, "\"str:TEST-123456\"");
 
     let token_identifier: TokenIdentifier<DebugApi> = TokenIdentifier::from("MYTOK-123456");
     push!(to_check, token_identifier, "\"MYTOK-123456\"");
 
-    let system_sc = DCDTSystemSmartContractProxy::<DebugApi>::new_proxy_obj();
-    let managed_address = system_sc.dcdt_system_sc_address();
+    let managed_address = DCDTSystemSCAddress.to_managed_address::<DebugApi>();
     push!(
         to_check,
         managed_address,
@@ -76,7 +90,7 @@ fn main() {
 
     let managed_byte_array: ManagedByteArray<DebugApi, 4> =
         ManagedByteArray::new_from_bytes(b"test");
-    push!(to_check, managed_byte_array, "(4) 0x74657374");
+    push!(to_check, managed_byte_array, "\"test\" - (4) 0x74657374");
 
     let managed_option_some_token_identifier: ManagedOption<DebugApi, TokenIdentifier<DebugApi>> =
         ManagedOption::some(token_identifier.clone());
@@ -152,7 +166,7 @@ fn main() {
     > = ManagedOption::some(managed_vec_of_addresses.clone());
     push!(to_check, managed_option_of_vec_of_addresses, "ManagedOption::some((1) { [0] = (32) 0x000000000000000000010000000000000000000000000000000000000002ffff })");
 
-    // 5. Numbat wasm - heap
+    // 5. SC wasm - heap
     let heap_address: Address = managed_address.to_address();
     push!(
         to_check,
@@ -171,10 +185,10 @@ fn main() {
     push!(
         to_check,
         managed_vec_of_managed_buffers,
-        "(3) { [0] = (2) 0x6162, [1] = (4) 0x61626364, [2] = (12) 0x6162636465666768696a6b6c }"
+        "(3) { [0] = \"ab\" - (2) 0x6162, [1] = \"abcd\" - (4) 0x61626364, [2] = \"abcdefghijkl\" - (12) 0x6162636465666768696a6b6c }"
     );
 
-    // 6. Numbat codec - Multi-types
+    // 6. Dharitri codec - Multi-types
     let optional_value_some: OptionalValue<BigUint<DebugApi>> =
         OptionalValue::Some(BigUint::from(42u64));
     push!(to_check, optional_value_some, "OptionalValue::Some(42)");
@@ -186,7 +200,7 @@ fn main() {
 
     let invalid_handle = DebugHandle::from(-1000);
     let biguint_with_invalid_handle: BigUint<DebugApi> =
-        BigUint::from_handle(invalid_handle.clone());
+        unsafe { BigUint::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         biguint_with_invalid_handle,
@@ -194,7 +208,7 @@ fn main() {
     );
 
     let big_float_with_invalid_handle: BigFloat<DebugApi> =
-        BigFloat::from_handle(invalid_handle.clone());
+        unsafe { BigFloat::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         big_float_with_invalid_handle,
@@ -202,7 +216,7 @@ fn main() {
     );
 
     let managed_buffer_with_invalid_handle: ManagedBuffer<DebugApi> =
-        ManagedBuffer::from_handle(invalid_handle.clone());
+        unsafe { ManagedBuffer::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         managed_buffer_with_invalid_handle,
@@ -210,7 +224,7 @@ fn main() {
     );
 
     let token_identifier_with_invalid_handle: TokenIdentifier<DebugApi> =
-        TokenIdentifier::from_handle(invalid_handle.clone());
+        unsafe { TokenIdentifier::from_handle(invalid_handle.clone()) };
     push!(
         to_check,
         token_identifier_with_invalid_handle,
@@ -218,7 +232,7 @@ fn main() {
     );
 
     let optional_value_some_with_invalid_handle: OptionalValue<BigUint<DebugApi>> =
-        OptionalValue::Some(BigUint::from_handle(invalid_handle.clone()));
+        OptionalValue::Some(unsafe { BigUint::from_handle(invalid_handle.clone()) });
     push!(
         to_check,
         optional_value_some_with_invalid_handle,

@@ -1,24 +1,27 @@
 #![no_std]
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
-use numbat_wasm_modules::ongoing_operation::{
+use dharitri_sc::{derive_imports::*, imports::*};
+use dharitri_sc_modules::ongoing_operation::{
     CONTINUE_OP, DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, STOP_OP,
 };
 
+pub mod rewards_distribution_proxy;
+pub mod seed_nft_minter_proxy;
 type Epoch = u64;
 
 pub const EPOCHS_IN_WEEK: Epoch = 7;
 pub const MAX_PERCENTAGE: u64 = 100_000; // 100%
 pub const DIVISION_SAFETY_CONSTANT: u64 = 1_000_000_000_000;
 
-#[derive(ManagedVecItem, NestedEncode, NestedDecode, TypeAbi)]
+#[type_abi]
+#[derive(ManagedVecItem, NestedEncode, NestedDecode)]
 pub struct Bracket {
     pub index_percent: u64,
     pub bracket_reward_percent: u64,
 }
 
-#[derive(ManagedVecItem, NestedEncode, NestedDecode, TypeAbi)]
+#[type_abi]
+#[derive(ManagedVecItem, NestedEncode, NestedDecode, Clone)]
 pub struct ComputedBracket<M: ManagedTypeApi> {
     pub end_index: u64,
     pub nft_reward_percent: BigUint<M>,
@@ -32,25 +35,29 @@ pub struct RaffleProgress<M: ManagedTypeApi> {
     pub computed_brackets: ManagedVec<M, ComputedBracket<M>>,
 }
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait RewardsDistribution:
-    numbat_wasm_modules::ongoing_operation::OngoingOperationModule
+    dharitri_sc_modules::ongoing_operation::OngoingOperationModule
 {
     #[init]
     fn init(&self, seed_nft_minter_address: ManagedAddress, brackets: ManagedVec<Bracket>) {
         self.seed_nft_minter_address().set(&seed_nft_minter_address);
 
-        let nft_token_id: TokenIdentifier = self
-            .seed_nft_minter_proxy(seed_nft_minter_address)
-            .get_nft_token_id()
-            .execute_on_dest_context();
+        let nft_token_id = self
+            .tx()
+            .to(&seed_nft_minter_address)
+            .typed(seed_nft_minter_proxy::SeedNftMinterProxy)
+            .nft_token_id()
+            .returns(ReturnsResult)
+            .sync_call();
+
         self.nft_token_id().set(nft_token_id);
 
         self.validate_brackets(&brackets);
         self.brackets().set(brackets);
     }
 
-    #[payable("*")]
+    #[payable]
     #[endpoint(depositRoyalties)]
     fn deposit_royalties(&self) {
         let payment = self.call_value().rewa_or_single_dcdt();
@@ -67,7 +74,7 @@ pub trait RewardsDistribution:
             .unwrap_or_else(|| self.new_raffle());
         let mut rng = RandomnessSource::default();
 
-        let mut bracket = raffle.computed_brackets.get(0);
+        let mut bracket = raffle.computed_brackets.get(0).clone();
 
         let run_result = self.run_while_it_has_gas(DEFAULT_MIN_GAS_TO_SAVE_PROGRESS, || {
             let ticket = self.shuffle_and_pick_single_ticket(
@@ -131,7 +138,7 @@ pub trait RewardsDistribution:
     ) {
         while ticket > bracket.end_index {
             computed_brackets.remove(0);
-            *bracket = computed_brackets.get(0);
+            *bracket = computed_brackets.get(0).clone();
         }
     }
 
@@ -176,10 +183,15 @@ pub trait RewardsDistribution:
         });
 
         let seed_nft_minter_address = self.seed_nft_minter_address().get();
-        let ticket_count: u64 = self
-            .seed_nft_minter_proxy(seed_nft_minter_address)
-            .get_nft_count()
-            .execute_on_dest_context();
+
+        let ticket_count = self
+            .tx()
+            .to(&seed_nft_minter_address)
+            .typed(seed_nft_minter_proxy::SeedNftMinterProxy)
+            .nft_count()
+            .returns(ReturnsResult)
+            .sync_call();
+
         let brackets = self.brackets().get();
 
         let computed_brackets = self.compute_brackets(brackets, ticket_count);
@@ -235,7 +247,7 @@ pub trait RewardsDistribution:
         );
     }
 
-    #[payable("*")]
+    #[payable]
     #[endpoint(claimRewards)]
     fn claim_rewards(
         &self,
@@ -267,10 +279,15 @@ pub trait RewardsDistribution:
             }
         }
 
-        self.send()
-            .direct_non_zero_rewa(&caller, &total_rewa_reward);
-        self.send().direct_multi(&caller, &rewards);
-        self.send().direct_multi(&caller, &nfts);
+        self.tx()
+            .to(&caller)
+            .rewa(total_rewa_reward)
+            .transfer_if_not_empty();
+        self.tx()
+            .to(&caller)
+            .payment(rewards)
+            .transfer_if_not_empty();
+        self.tx().to(&caller).payment(nfts).transfer_if_not_empty();
     }
 
     fn claim_reward_token(
@@ -418,9 +435,6 @@ pub trait RewardsDistribution:
 
     #[storage_mapper("raffleProgress")]
     fn raffle_progress(&self) -> SingleValueMapper<Option<RaffleProgress<Self::Api>>>;
-
-    #[proxy]
-    fn seed_nft_minter_proxy(&self, address: ManagedAddress) -> seed_nft_minter::Proxy<Self::Api>;
 }
 
 fn ticket_to_storage(position: u64, ticket_id: u64) -> u64 {
@@ -436,18 +450,5 @@ fn ticket_from_storage(position: u64, ticket_id: u64) -> u64 {
         position
     } else {
         ticket_id
-    }
-}
-
-mod seed_nft_minter {
-    numbat_wasm::imports!();
-
-    #[numbat_wasm::proxy]
-    pub trait SeedNftMinter {
-        #[endpoint(getNftCount)]
-        fn get_nft_count(&self) -> u64;
-
-        #[endpoint(getNftTokenId)]
-        fn get_nft_token_id(&self) -> TokenIdentifier;
     }
 }

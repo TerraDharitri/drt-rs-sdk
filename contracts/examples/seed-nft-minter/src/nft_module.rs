@@ -1,21 +1,21 @@
 use crate::distribution_module;
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 
-use numbat_wasm_modules::default_issue_callbacks;
+use dharitri_sc_modules::default_issue_callbacks;
 
 const NFT_AMOUNT: u32 = 1;
 const ROYALTIES_MAX: u32 = 10_000; // 100%
 
-#[derive(TypeAbi, TopEncode, TopDecode)]
+#[type_abi]
+#[derive(TopEncode, TopDecode)]
 pub struct PriceTag<M: ManagedTypeApi> {
     pub token: RewaOrDcdtTokenIdentifier<M>,
     pub nonce: u64,
     pub amount: BigUint<M>,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait NftModule:
     distribution_module::DistributionModule + default_issue_callbacks::DefaultIssueCallbacksModule
 {
@@ -25,10 +25,10 @@ pub trait NftModule:
     #[payable("REWA")]
     #[endpoint(issueToken)]
     fn issue_token(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa();
         self.nft_token_id().issue_and_set_all_roles(
             DcdtTokenType::NonFungible,
-            issue_cost,
+            issue_cost.clone(),
             token_display_name,
             token_ticker,
             0,
@@ -38,7 +38,7 @@ pub trait NftModule:
 
     // endpoints
 
-    #[payable("*")]
+    #[payable]
     #[endpoint(buyNft)]
     fn buy_nft(&self, nft_nonce: u64) {
         let payment = self.call_value().rewa_or_single_dcdt();
@@ -66,13 +66,11 @@ pub trait NftModule:
         self.price_tag(nft_nonce).clear();
 
         let nft_token_id = self.nft_token_id().get_token_id();
-        let caller = self.blockchain().get_caller();
-        self.send().direct_dcdt(
-            &caller,
-            &nft_token_id,
-            nft_nonce,
-            &BigUint::from(NFT_AMOUNT),
-        );
+
+        self.tx()
+            .to(ToCaller)
+            .single_dcdt(&nft_token_id, nft_nonce, &BigUint::from(NFT_AMOUNT))
+            .transfer();
 
         self.distribute_funds(
             &payment.token_identifier,

@@ -2,17 +2,20 @@
 name = "str-repeat"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
 path = "src/str_repeat.rs"
 
-[dependencies.numbat-wasm]
-version = "0.0.18"
-path = "../../../numbat-wasm"
+[features]
+managed-buffer-builder-cached = ["dharitri-sc/managed-buffer-builder-cached"]
+
+[dependencies.dharitri-sc]
+version = "1.20.0"
+path = "../../../framework/base"
 features = ["alloc"]
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.18"
-path = "../../../numbat-wasm-debug"
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.20.0"
+path = "../../../framework/scenario"

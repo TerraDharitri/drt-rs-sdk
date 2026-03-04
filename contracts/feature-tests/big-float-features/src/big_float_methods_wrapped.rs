@@ -1,8 +1,8 @@
 use crate::big_float_methods;
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait BigFloatWrappedMethods: big_float_methods::BigFloatMethods {
     #[endpoint]
     fn new_from_parts_big_float_wrapped(

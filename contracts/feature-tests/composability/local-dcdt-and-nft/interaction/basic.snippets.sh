@@ -1,4 +1,4 @@
-ALICE="/home/numbat/numbat-sdk/drtpy/testnet/wallets/users/alice.pem"
+ALICE="/home/numbat/dharitri-sdk/testwallets/latest/users/alice.pem"
 ADDRESS=$(drtpy data load --key=address-testnet)
 ADDRESS_DECODED=$(drtpy wallet bech32 --decode ${ADDRESS})
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)

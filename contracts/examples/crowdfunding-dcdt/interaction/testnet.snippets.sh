@@ -3,7 +3,7 @@ BOB="${USERS}/bob.pem"
 
 ADDRESS=$(drtpy data load --key=address-testnet)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)
-PROXY=https://testnet-api.numbat.com
+PROXY=https://testnet-api.dharitri.org
 
 DEPLOY_GAS="80000000"
 TARGET=10
@@ -68,7 +68,7 @@ getDeadline() {
 
 # BOB's deposit
 getDeposit() {
-    local BOB_ADDRESS_BECH32=drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqzu66jx
+    local BOB_ADDRESS_BECH32=drt1spyavw0956vq68xj8y4tenjpq2wd5a9p2c6j8gsz7ztyrnpxrruqlqde3c
     local BOB_ADDRESS_HEX=0x$(drtpy wallet bech32 --decode ${BOB_ADDRESS_BECH32})
 
     drtpy --verbose contract query ${ADDRESS} --function="getDeposit" --arguments ${BOB_ADDRESS_HEX} --proxy=${PROXY} --chain=T

@@ -1,6 +1,6 @@
 USER_PEM=""
 USER_ADDRESS_BECH32=
-USER_ADDDRESS_HEX="0x$(drtpy wallet bech32 --decode ${USER_ADDRESS_BECH32})"
+USER_ADDRESS_HEX="0x$(drtpy wallet bech32 --decode ${USER_ADDRESS_BECH32})"
 
 RECEIVER_ADDRESS_BECH32=
 RECEIVER_ADDRESS_HEX="0x$(drtpy wallet bech32 --decode ${RECEIVER_ADDRESS_BECH32})"
@@ -9,7 +9,7 @@ TOKEN_ID=""
 TOKEN_ID_HEX="0x$(echo -n ${TOKEN_ID} | xxd -p -u | tr -d '\n')"
 TOKEN_AMOUNT_PER_TX=100
 
-PROXY="https://testnet-gateway.numbat.com"
+PROXY="https://testnet-gateway.dharitri.org"
 CHAIN_ID="T"
 
 SC_WITH_ROLE_ADDRESS_BECH32=
@@ -18,10 +18,10 @@ SC_WITH_ROLE_ADDRESS_HEX="0x$(drtpy wallet bech32 --decode ${SC_WITH_ROLE_ADDRES
 SC_DEST_ADDRESS_BECH32=
 SC_DEST_ADDRESS_HEX="0x$(drtpy wallet bech32 --decode ${SC_DEST_ADDRESS_BECH32})"
 
-DCDT_SYSTEM_SC_ADDRESS=drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u
+DCDT_SYSTEM_SC_ADDRESS=drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez
 DCDT_TRANSFER_FUNC_NAME="DCDTTransfer"
 DCDT_MULTI_TRANSFER_FUNC_NAME="MultiDCDTNFTTransfer"
-TRANSFER_ROLE_NAME_HEX=0x444344545472616E73666572526F6C65
+TRANSFER_ROLE_NAME_HEX=0x526577615472616E73666572526F6C65
 
 FORWARD_FUNC_NAME_ASCII="forwardPayments"
 FORWARD_FUNC_NAME_HEX=0x666F72776172645061796D656E7473

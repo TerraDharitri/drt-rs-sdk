@@ -1,14 +1,15 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
-#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode, TypeAbi)]
+#[type_abi]
+#[derive(TopEncode, TopDecode, NestedEncode, NestedDecode)]
 pub struct TokenAttributesStruct<M: ManagedTypeApi> {
     field_biguint: BigUint<M>,
     field_u64: u64,
     field_vec_u32: ManagedVec<M, u32>,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait TokenAttributesMapperFeatures {
     #[storage_mapper("TokenAttributes")]
     fn token_attributes(&self) -> TokenAttributesMapper;

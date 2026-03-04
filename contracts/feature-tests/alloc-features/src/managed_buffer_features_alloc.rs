@@ -1,7 +1,7 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 /// ManagedBuffers interacting with the heap.
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait ManagedBufferFeatures {
     #[endpoint]
     fn mbuffer_from_slice(&self, slice: &[u8]) -> ManagedBuffer {

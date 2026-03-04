@@ -1,16 +1,17 @@
 [package]
 name = "parent-meta"
 version = "0.0.0"
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies.parent]
 path = ".."
 
-[dependencies.numbat-wasm]
-version = "0.0.18"
-path = "../../../../../../numbat-wasm"
+[dependencies.dharitri-sc]
+version = "1.20.0"
+path = "../../../../../../framework/base"
 
-[dependencies.numbat-wasm-debug]
-version = "0.0.18"
-path = "../../../../../../numbat-wasm-debug"
+[dependencies.dharitri-sc-meta-lib]
+version = "1.20.0"
+path = "../../../../../../framework/meta-lib"
+default-features = false

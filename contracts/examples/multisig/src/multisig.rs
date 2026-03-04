@@ -4,24 +4,26 @@ pub mod action;
 pub mod multisig_events;
 pub mod multisig_perform;
 pub mod multisig_propose;
+pub mod multisig_proxy;
 pub mod multisig_state;
+pub mod multisig_view_proxy;
 pub mod user_role;
 
 use action::ActionFullInfo;
 use user_role::UserRole;
 
-numbat_wasm::imports!();
+use dharitri_sc::imports::*;
 
 /// Multi-signature smart contract implementation.
 /// Acts like a wallet that needs multiple signers for any action performed.
 /// See the readme file for more detailed documentation.
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Multisig:
     multisig_state::MultisigStateModule
     + multisig_propose::MultisigProposeModule
     + multisig_perform::MultisigPerformModule
     + multisig_events::MultisigEventsModule
-    + numbat_wasm_modules::dns::DnsModule
+    + dharitri_sc_modules::dns::DnsModule
 {
     #[init]
     fn init(&self, quorum: usize, board: MultiValueEncoded<ManagedAddress>) {
@@ -41,8 +43,13 @@ pub trait Multisig:
         self.quorum().set(quorum);
     }
 
+    #[upgrade]
+    fn upgrade(&self, quorum: usize, board: MultiValueEncoded<ManagedAddress>) {
+        self.init(quorum, board)
+    }
+
     /// Allows the contract to receive funds even if it is marked as unpayable in the protocol.
-    #[payable("*")]
+    #[payable]
     #[endpoint]
     fn deposit(&self) {}
 

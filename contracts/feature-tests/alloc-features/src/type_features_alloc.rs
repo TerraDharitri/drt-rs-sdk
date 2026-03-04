@@ -1,7 +1,7 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Various features of heap-allocated types.
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait AllocTypeFeatures {
     // H256
 

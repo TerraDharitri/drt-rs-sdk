@@ -1,6 +1,7 @@
-numbat_wasm::derive_imports!();
+dharitri_sc::derive_imports!();
 
-#[derive(TopEncode, TopDecode, TypeAbi, PartialEq, Eq, Clone, Copy)]
+#[type_abi]
+#[derive(TopEncode, TopDecode, PartialEq, Eq, Clone, Copy)]
 pub enum Status {
     Inactive,
     Running,

@@ -2,16 +2,20 @@
 name = "factorial"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [lib]
 path = "src/factorial.rs"
 
-[dependencies.numbat-wasm]
-version = "0.0.18"
-path = "../../../numbat-wasm"
+[features]
+compiled-sc-tests = ["dharitri-sc-scenario/compiled-sc-tests"]
 
-[dev-dependencies.numbat-wasm-debug]
-version = "0.0.18"
-path = "../../../numbat-wasm-debug"
+[dependencies.dharitri-sc]
+version = "1.20.0"
+path = "../../../framework/base"
+
+[dev-dependencies.dharitri-sc-scenario]
+version = "1.20.0"
+features = ["wasmer-experimental"]
+path = "../../../framework/scenario"

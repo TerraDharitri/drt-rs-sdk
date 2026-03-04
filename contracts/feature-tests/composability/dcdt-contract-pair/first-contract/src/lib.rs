@@ -1,12 +1,12 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-const DCDT_TRANSFER_STRING: &[u8] = b"DCDTTransfer";
-const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &[u8] = b"acceptDcdtPayment";
-const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &[u8] = b"rejectDcdtPayment";
+const DCDT_TRANSFER_STRING: &str = "DCDTTransfer";
+const SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT: &str = "acceptDcdtPayment";
+const SECOND_CONTRACT_REJECT_DCDT_PAYMENT: &str = "rejectDcdtPayment";
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait FirstContract {
     #[init]
     fn init(
@@ -25,7 +25,7 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
@@ -45,13 +45,13 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
         self.call_dcdt_second_contract(
             &expected_token_identifier,
-            &(dcdt_value / 2u32),
+            &(dcdt_value.clone() / 2u32),
             &self.get_second_contract_address(),
             &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
             &ManagedVec::new(),
@@ -65,7 +65,7 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
@@ -86,18 +86,17 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
-        let _ = self.send_raw().transfer_dcdt_execute(
-            &second_contract_address,
-            &expected_token_identifier,
-            &dcdt_value,
-            self.blockchain().get_gas_left(),
-            &ManagedBuffer::from(SECOND_CONTRACT_REJECT_DCDT_PAYMENT),
-            &ManagedArgBuffer::new(),
-        );
+        let gas_left = self.blockchain().get_gas_left();
+        self.tx()
+            .to(&second_contract_address)
+            .gas(gas_left)
+            .raw_call(SECOND_CONTRACT_REJECT_DCDT_PAYMENT)
+            .single_dcdt(&expected_token_identifier, 0u64, &dcdt_value)
+            .transfer_execute();
     }
 
     #[payable("*")]
@@ -108,18 +107,17 @@ pub trait FirstContract {
         let expected_token_identifier = self.get_contract_dcdt_token_identifier();
 
         require!(
-            actual_token_identifier == expected_token_identifier,
+            *actual_token_identifier == expected_token_identifier,
             "Wrong dcdt token"
         );
 
-        let _ = self.send_raw().transfer_dcdt_execute(
-            &second_contract_address,
-            &expected_token_identifier,
-            &dcdt_value,
-            self.blockchain().get_gas_left(),
-            &ManagedBuffer::from(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT),
-            &ManagedArgBuffer::new(),
-        );
+        let gas_left = self.blockchain().get_gas_left();
+        self.tx()
+            .to(&second_contract_address)
+            .gas(gas_left)
+            .raw_call(SECOND_CONTRACT_ACCEPT_DCDT_PAYMENT)
+            .single_dcdt(&expected_token_identifier, 0u64, &dcdt_value)
+            .transfer_execute();
     }
 
     fn call_dcdt_second_contract(
@@ -134,16 +132,15 @@ pub trait FirstContract {
         arg_buffer.push_arg(dcdt_token_identifier);
         arg_buffer.push_arg(amount);
         arg_buffer.push_arg(func_name);
-        for arg in args.into_iter() {
-            arg_buffer.push_arg_raw(arg);
+        for arg in args {
+            arg_buffer.push_arg_raw(arg.clone());
         }
 
-        self.send_raw().async_call_raw(
-            to,
-            &BigUint::zero(),
-            &ManagedBuffer::from(DCDT_TRANSFER_STRING),
-            &arg_buffer,
-        );
+        self.tx()
+            .to(to)
+            .raw_call(DCDT_TRANSFER_STRING)
+            .arguments_raw(arg_buffer)
+            .async_call_and_exit();
     }
 
     // storage

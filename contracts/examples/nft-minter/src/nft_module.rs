@@ -1,17 +1,17 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+use dharitri_sc::{derive_imports::*, imports::*};
 
 const NFT_AMOUNT: u32 = 1;
 const ROYALTIES_MAX: u32 = 10_000;
 
-#[derive(TypeAbi, TopEncode, TopDecode)]
+#[type_abi]
+#[derive(TopEncode, TopDecode)]
 pub struct PriceTag<M: ManagedTypeApi> {
     pub token: RewaOrDcdtTokenIdentifier<M>,
     pub nonce: u64,
     pub amount: BigUint<M>,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait NftModule {
     // endpoints - owner-only
 
@@ -21,11 +21,11 @@ pub trait NftModule {
     fn issue_token(&self, token_name: ManagedBuffer, token_ticker: ManagedBuffer) {
         require!(self.nft_token_id().is_empty(), "Token already issued");
 
-        let payment_amount = self.call_value().rewa_value();
+        let payment_amount = self.call_value().rewa();
         self.send()
             .dcdt_system_sc_proxy()
             .issue_non_fungible(
-                payment_amount,
+                payment_amount.clone(),
                 &token_name,
                 &token_ticker,
                 NonFungibleTokenProperties {
@@ -38,9 +38,8 @@ pub trait NftModule {
                     can_add_special_roles: true,
                 },
             )
-            .async_call()
             .with_callback(self.callbacks().issue_callback())
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     #[only_owner]
@@ -51,17 +50,16 @@ pub trait NftModule {
         self.send()
             .dcdt_system_sc_proxy()
             .set_special_roles(
-                &self.blockchain().get_sc_address(),
-                &self.nft_token_id().get(),
+                self.blockchain().get_sc_address(),
+                self.nft_token_id().get(),
                 [DcdtLocalRole::NftCreate][..].iter().cloned(),
             )
-            .async_call()
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     // endpoints
 
-    #[payable("*")]
+    #[payable]
     #[endpoint(buyNft)]
     fn buy_nft(&self, nft_nonce: u64) {
         let payment = self.call_value().rewa_or_single_dcdt();
@@ -89,21 +87,14 @@ pub trait NftModule {
         self.price_tag(nft_nonce).clear();
 
         let nft_token_id = self.nft_token_id().get();
-        let caller = self.blockchain().get_caller();
-        self.send().direct_dcdt(
-            &caller,
-            &nft_token_id,
-            nft_nonce,
-            &BigUint::from(NFT_AMOUNT),
-        );
+
+        self.tx()
+            .to(ToCaller)
+            .single_dcdt(&nft_token_id, nft_nonce, &BigUint::from(NFT_AMOUNT))
+            .transfer();
 
         let owner = self.blockchain().get_owner_address();
-        self.send().direct(
-            &owner,
-            &payment.token_identifier,
-            payment.token_nonce,
-            &payment.amount,
-        );
+        self.tx().to(owner).payment(payment).transfer();
     }
 
     // views
@@ -133,14 +124,12 @@ pub trait NftModule {
     ) {
         match result {
             ManagedAsyncCallResult::Ok(token_id) => {
-                self.nft_token_id().set(&token_id.unwrap_dcdt());
+                self.nft_token_id().set(token_id.unwrap_dcdt());
             },
             ManagedAsyncCallResult::Err(_) => {
-                let caller = self.blockchain().get_owner_address();
                 let returned = self.call_value().rewa_or_single_dcdt();
                 if returned.token_identifier.is_rewa() && returned.amount > 0 {
-                    self.send()
-                        .direct(&caller, &returned.token_identifier, 0, &returned.amount);
+                    self.tx().to(ToCaller).rewa(returned.amount).transfer();
                 }
             },
         }

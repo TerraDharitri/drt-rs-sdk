@@ -2,12 +2,13 @@
 name = "linked-list-repeat-meta"
 version = "0.0.0"
 authors = ["Dharitri <contact@dharitri.org>"]
-edition = "2018"
+edition = "2021"
 publish = false
 
 [dependencies.linked-list-repeat]
 path = ".."
 
-[dependencies.numbat-wasm-debug]
-version = "0.0.18"
-path = "../../../../../numbat-wasm-debug"
+[dependencies.dharitri-sc-meta-lib]
+version = "1.20.0"
+path = "../../../../../framework/meta-lib"
+default-features = false

@@ -13,8 +13,8 @@
             "gitVersion": "<git version here>"
         },
         "framework": {
-            "name": "numbat-wasm",
-            "version": "0.0.18"
+            "name": "dharitri-sc",
+            "version": "1.20.0"
         }
     },
     "docs": [
@@ -55,6 +55,18 @@
                     "type": "bool"
                 }
             ]
+        },
+        {
+            "name": "call_contract_base_full_path_endpoint",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
+        },
+        {
+            "name": "call_contract_base_endpoint",
+            "mutability": "mutable",
+            "inputs": [],
+            "outputs": []
         },
         {
             "name": "call_mod_a",
@@ -333,7 +345,7 @@
             "docs": [
                 "Queue a proposal for execution.",
                 "This can be done only if the proposal has reached the quorum.",
-                "A proposal is considered successful and ready for queing if",
+                "A proposal is considered successful and ready for queuing if",
                 "total_votes - total_downvotes >= quorum"
             ],
             "name": "queue",
@@ -667,6 +679,17 @@
             "outputs": []
         },
         {
+            "name": "cancelVoteSlashMember",
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "member_to_slash",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
+        {
             "name": "slashMember",
             "mutability": "mutable",
             "inputs": [
@@ -977,6 +1000,28 @@
                     "type": "DcdtTokenPayment"
                 }
             ]
+        },
+        {
+            "identifier": "pauseContract",
+            "inputs": []
+        },
+        {
+            "identifier": "unpauseContract",
+            "inputs": []
+        }
+    ],
+    "dcdtAttributes": [
+        {
+            "ticker": "INMODULE",
+            "type": "u32"
+        },
+        {
+            "ticker": "TICKER1",
+            "type": "BigUint"
+        },
+        {
+            "ticker": "TICKER2",
+            "type": "bytes"
         }
     ],
     "hasCallback": true,
@@ -1108,6 +1153,23 @@
                 {
                     "name": "WaitingForFees",
                     "discriminant": 6
+                }
+            ]
+        },
+        "OperationCompletionStatus": {
+            "type": "explicit-enum",
+            "variants": [
+                {
+                    "docs": [
+                        "indicates that operation was completed"
+                    ],
+                    "name": "completed"
+                },
+                {
+                    "docs": [
+                        "indicates that operation was interrupted prematurely, due to low gas"
+                    ],
+                    "name": "interrupted"
                 }
             ]
         },

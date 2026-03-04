@@ -1,7 +1,6 @@
 #![no_std]
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+use dharitri_sc::imports::*;
 
 mod contract_data;
 
@@ -9,7 +8,7 @@ use contract_data::{Schedule, UnlockType};
 
 const PERCENTAGE_TOTAL: u64 = 100;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait TokenRelease {
     // The SC initializes with the setup period started. After the initial setup, the SC offers a function that ends the setup period.
     // There is no function to start the setup period back on, so once the setup period is ended, it cannot be changed.
@@ -313,8 +312,10 @@ pub trait TokenRelease {
         address: &ManagedAddress,
         amount: &BigUint,
     ) {
-        self.send()
-            .direct_dcdt(address, token_identifier, 0, amount);
+        self.tx()
+            .to(address)
+            .single_dcdt(token_identifier, 0, amount)
+            .transfer();
     }
 
     fn mint_all_tokens(&self, token_identifier: &TokenIdentifier, amount: &BigUint) {

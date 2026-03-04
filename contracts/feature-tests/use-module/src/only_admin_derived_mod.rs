@@ -1,6 +1,6 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait OnlyAdminDerivedTestModule {
     #[view]
     fn call_derived_not_admin_only(&self) {}

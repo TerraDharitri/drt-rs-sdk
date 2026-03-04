@@ -1,24 +1,25 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
-#[derive(TypeAbi, TopEncode, TopDecode)]
+#[type_abi]
+#[derive(TopEncode, TopDecode)]
 pub struct RgbColor {
     r: u8,
     g: u8,
     b: u8,
 }
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait NonFungibleTokenMapperFeatures:
-    numbat_wasm_modules::default_issue_callbacks::DefaultIssueCallbacksModule
+    dharitri_sc_modules::default_issue_callbacks::DefaultIssueCallbacksModule
 {
     #[payable("REWA")]
     #[endpoint]
     fn issue_and_set_all_roles_meta(&self, token_ticker: ManagedBuffer) {
-        let payment = self.call_value().rewa_value();
+        let payment = self.call_value().rewa();
         self.non_fungible_token_mapper().issue_and_set_all_roles(
-            DcdtTokenType::Meta,
-            payment,
+            DcdtTokenType::MetaFungible,
+            payment.clone(),
             ManagedBuffer::new(),
             token_ticker,
             0,

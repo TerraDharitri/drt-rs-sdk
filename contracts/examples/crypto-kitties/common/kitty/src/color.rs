@@ -1,8 +1,9 @@
-numbat_wasm::derive_imports!();
+use dharitri_sc::derive_imports::*;
 
 use random::*;
 
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, Clone, TypeAbi, Default)]
+#[type_abi]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, Clone, Default)]
 pub struct Color {
     pub r: u8,
     pub g: u8,
@@ -34,5 +35,11 @@ impl Randomizeable for Color {
             g: random.next_u8(),
             b: random.next_u8(),
         }
+    }
+}
+
+impl Color {
+    pub fn as_u64(&self) -> u64 {
+        ((((self.r as u64) << 16) | self.g as u64) << 8) | self.b as u64
     }
 }

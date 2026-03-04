@@ -1,3 +1,3 @@
 fn main() {
-    numbat_wasm_debug::meta::perform::<alloc_features::AbiProvider>();
+    dharitri_sc_meta_lib::cli_main::<alloc_features::AbiProvider>();
 }

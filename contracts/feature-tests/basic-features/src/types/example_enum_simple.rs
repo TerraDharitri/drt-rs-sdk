@@ -1,7 +1,8 @@
-numbat_wasm::derive_imports!();
+dharitri_sc::derive_imports!();
 
-/// Copied from numbat-wasm serialization tests.
-#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode, TypeAbi)]
+/// Copied from dharitri-sc serialization tests.
+#[type_abi]
+#[derive(NestedEncode, NestedDecode, TopEncode, TopDecode)]
 pub enum ExampleEnumSimple {
     /// Variant 0 doc comment.
     /// This will show up in the ABI.

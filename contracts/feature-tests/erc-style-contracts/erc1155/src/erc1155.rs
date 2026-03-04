@@ -1,12 +1,12 @@
 #![no_std]
 #![allow(clippy::type_complexity)]
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 pub mod erc1155_user_proxy;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Erc1155 {
     #[init]
     fn init(&self) {}
@@ -52,7 +52,7 @@ pub trait Erc1155 {
         self.try_reserve_fungible(&from, &type_id, &amount);
 
         if self.blockchain().is_smart_contract(&to) {
-            self.peform_async_call_single_transfer(from, to, type_id, amount, data);
+            self.perform_async_call_single_transfer(from, to, type_id, amount, data);
         } else {
             self.increase_balance(&to, &type_id, &amount);
         }
@@ -69,7 +69,7 @@ pub trait Erc1155 {
         self.try_reserve_non_fungible(&from, &type_id, &nft_id);
 
         if self.blockchain().is_smart_contract(&to) {
-            self.peform_async_call_single_transfer(from, to, type_id, nft_id, data);
+            self.perform_async_call_single_transfer(from, to, type_id, nft_id, data);
         } else {
             let amount = BigUint::from(1u32);
             self.increase_balance(&to, &type_id, &amount);
@@ -101,7 +101,7 @@ pub trait Erc1155 {
         );
         require!(
             type_ids.len() == values.len(),
-            "Id and value lenghts do not match"
+            "Id and value lengths do not match"
         );
 
         // storage edits are rolled back in case of SCError,
@@ -127,7 +127,7 @@ pub trait Erc1155 {
         }
 
         if is_receiver_smart_contract {
-            self.peform_async_call_batch_transfer(from, to, type_ids, values, &data);
+            self.perform_async_call_batch_transfer(from, to, type_ids, values, &data);
         }
     }
 
@@ -160,7 +160,7 @@ pub trait Erc1155 {
             self.token_owner(type_id, nft_id).set(to);
         } else {
             self.token_owner(type_id, nft_id)
-                .set(&ManagedAddress::zero());
+                .set(ManagedAddress::zero());
         }
     }
 
@@ -320,7 +320,7 @@ pub trait Erc1155 {
         let amount = BigUint::from(1u32);
         self.decrease_balance(owner, type_id, &amount);
         self.token_owner(type_id, nft_id)
-            .set(&ManagedAddress::zero());
+            .set(ManagedAddress::zero());
     }
 
     /// Range is inclusive for both `start` and `end`
@@ -340,7 +340,7 @@ pub trait Erc1155 {
         }
     }
 
-    fn peform_async_call_single_transfer(
+    fn perform_async_call_single_transfer(
         &self,
         from: ManagedAddress,
         to: ManagedAddress,
@@ -350,19 +350,20 @@ pub trait Erc1155 {
     ) {
         let caller = self.blockchain().get_caller();
 
-        self.erc1155_user_proxy(to.clone())
+        self.tx()
+            .to(to.clone())
+            .typed(erc1155_user_proxy::Erc1155UserProxy)
             .on_erc1155_received(caller, from.clone(), type_id.clone(), value.clone(), data)
-            .async_call()
-            .with_callback(self.callbacks().transfer_callback(
+            .callback(self.callbacks().transfer_callback(
                 from,
                 to,
                 [type_id].to_vec(),
                 [value].to_vec(),
             ))
-            .call_and_exit()
+            .async_call_and_exit();
     }
 
-    fn peform_async_call_batch_transfer(
+    fn perform_async_call_batch_transfer(
         &self,
         from: ManagedAddress,
         to: ManagedAddress,
@@ -372,7 +373,9 @@ pub trait Erc1155 {
     ) {
         let caller = self.blockchain().get_caller();
 
-        self.erc1155_user_proxy(to.clone())
+        self.tx()
+            .to(to.clone())
+            .typed(erc1155_user_proxy::Erc1155UserProxy)
             .on_erc1155_batch_received(
                 caller,
                 from.clone(),
@@ -380,14 +383,13 @@ pub trait Erc1155 {
                 values.to_vec(),
                 data,
             )
-            .async_call()
-            .with_callback(self.callbacks().transfer_callback(
+            .callback(self.callbacks().transfer_callback(
                 from,
                 to,
                 type_ids.to_vec(),
                 values.to_vec(),
             ))
-            .call_and_exit()
+            .async_call_and_exit();
     }
 
     // callbacks
@@ -417,14 +419,6 @@ pub trait Erc1155 {
             }
         }
     }
-
-    // proxy
-
-    #[proxy]
-    fn erc1155_user_proxy(
-        &self,
-        sc_address: ManagedAddress,
-    ) -> erc1155_user_proxy::Proxy<Self::Api>;
 
     // storage
 

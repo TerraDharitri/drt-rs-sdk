@@ -1,5 +1,4 @@
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+use dharitri_sc::imports::*;
 
 use crate::common::{FeeConfig, FeeConfigEnum};
 
@@ -11,10 +10,10 @@ use super::{
     },
 };
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait ValidationModule: common::CommonModule {
     fn require_valid_order_input_amount(&self, params: &OrderInputParams<Self::Api>) {
-        require!(params.amount != BigUint::zero(), "Amout cannot be zero");
+        require!(params.amount != BigUint::zero(), "Amount cannot be zero");
         require!(
             self.calculate_fee_amount(
                 &params.amount,
@@ -73,22 +72,28 @@ pub trait ValidationModule: common::CommonModule {
         let (token_id, amount) = self.call_value().single_fungible_dcdt();
         let second_token_id = self.second_token_id().get();
         require!(
-            token_id == second_token_id,
+            *token_id == second_token_id,
             "Token in and second token id should be the same"
         );
 
-        Payment { token_id, amount }
+        Payment {
+            token_id: token_id.clone(),
+            amount: amount.clone(),
+        }
     }
 
     fn require_valid_sell_payment(&self) -> Payment<Self::Api> {
         let (token_id, amount) = self.call_value().single_fungible_dcdt();
         let first_token_id = self.first_token_id().get();
         require!(
-            token_id == first_token_id,
+            *token_id == first_token_id,
             "Token in and first token id should be the same"
         );
 
-        Payment { token_id, amount }
+        Payment {
+            token_id: token_id.clone(),
+            amount: amount.clone(),
+        }
     }
 
     fn require_valid_match_input_order_ids(&self, order_ids: &ManagedVec<u64>) {

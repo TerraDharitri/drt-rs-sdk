@@ -1,15 +1,17 @@
 #![no_std]
 #![allow(clippy::suspicious_operation_groupings)]
 
-numbat_wasm::imports!();
+pub mod kitty_genetic_alg_proxy;
+use dharitri_sc::imports::*;
+use kitty::{Kitty, KittyGenes};
 
 use core::cmp::max;
 
-use kitty::{kitty_genes::*, Kitty};
 use random::*;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait KittyOwnership {
+    #[allow_multiple_var_args]
     #[init]
     fn init(
         &self,
@@ -51,7 +53,7 @@ pub trait KittyOwnership {
             .blockchain()
             .get_sc_balance(&RewaOrDcdtTokenIdentifier::rewa(), 0);
 
-        self.send().direct_rewa(&caller, &rewa_balance);
+        self.tx().to(&caller).rewa(&rewa_balance).transfer();
     }
 
     // views/endpoints - ERC721 required
@@ -285,11 +287,11 @@ pub trait KittyOwnership {
         require!(self.is_valid_id(matron_id), "Invalid matron id!");
         require!(self.is_valid_id(sire_id), "Invalid sire id!");
 
-        let payment = self.call_value().rewa_value();
+        let payment = self.call_value().rewa();
         let auto_birth_fee = self.birth_fee().get();
         let caller = self.blockchain().get_caller();
 
-        require!(payment == auto_birth_fee, "Wrong fee!");
+        require!(*payment == auto_birth_fee, "Wrong fee!");
         require!(
             caller == self.kitty_owner(matron_id).get(),
             "Only the owner of the matron can call this function!"
@@ -334,14 +336,16 @@ pub trait KittyOwnership {
 
         let gene_science_contract_address = self.get_gene_science_contract_address_or_default();
         if !gene_science_contract_address.is_zero() {
-            self.kitty_genetic_alg_proxy(gene_science_contract_address)
+            let caller = self.blockchain().get_caller();
+            self.tx()
+                .to(&gene_science_contract_address)
+                .typed(kitty_genetic_alg_proxy::KittyGeneticAlgProxy)
                 .generate_kitty_genes(matron, sire)
-                .async_call()
-                .with_callback(
+                .callback(
                     self.callbacks()
-                        .generate_kitty_genes_callback(matron_id, self.blockchain().get_caller()),
+                        .generate_kitty_genes_callback(matron_id, caller),
                 )
-                .call_and_exit()
+                .async_call_and_exit();
         } else {
             sc_panic!("Gene science contract address not set!")
         }
@@ -568,7 +572,7 @@ pub trait KittyOwnership {
 
                 // send birth fee to caller
                 let fee = self.birth_fee().get();
-                self.send().direct_rewa(&original_caller, &fee);
+                self.tx().to(&original_caller).rewa(&fee).transfer();
             },
             ManagedAsyncCallResult::Err(_) => {
                 // this can only fail if the kitty_genes contract address is invalid
@@ -576,11 +580,6 @@ pub trait KittyOwnership {
             },
         }
     }
-
-    // proxy
-
-    #[proxy]
-    fn kitty_genetic_alg_proxy(&self, to: ManagedAddress) -> kitty_genetic_alg::Proxy<Self::Api>;
 
     // storage - General
 

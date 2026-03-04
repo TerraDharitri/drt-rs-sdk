@@ -1,8 +1,8 @@
-use numbat_wasm_modules::only_admin;
+use dharitri_sc_modules::only_admin;
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 #[only_admin]
 pub trait OnlyAdminTestModule:
     super::only_admin_derived_mod::OnlyAdminDerivedTestModule + only_admin::OnlyAdminModule

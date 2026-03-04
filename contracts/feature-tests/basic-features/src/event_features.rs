@@ -1,7 +1,7 @@
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
 /// Tests event logs.
-#[numbat_wasm::module]
+#[dharitri_sc::module]
 pub trait EventFeatures {
     #[event("event_a")]
     fn event_a(&self, data: u32);
@@ -19,7 +19,8 @@ pub trait EventFeatures {
         }
     }
 
-    #[event("event_b")]
+    /// If event identifier is missing, the name of the method will be used.
+    #[event]
     fn event_b(
         &self,
         #[indexed] arg1: &BigUint,

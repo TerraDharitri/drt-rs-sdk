@@ -1,3 +1,3 @@
 fn main() {
-    numbat_wasm_debug::meta::perform::<lottery_dcdt::AbiProvider>();
+    dharitri_sc_meta_lib::cli_main::<lottery_dcdt::AbiProvider>();
 }

@@ -1,6 +1,6 @@
 #![no_std]
 
-numbat_wasm::imports!();
+use dharitri_sc::imports::*;
 
 mod lottery_info;
 mod status;
@@ -12,11 +12,12 @@ const PERCENTAGE_TOTAL: u32 = 100;
 const THIRTY_DAYS_IN_SECONDS: u64 = 60 * 60 * 24 * 30;
 const MAX_TICKETS: usize = 800;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Lottery {
     #[init]
     fn init(&self) {}
 
+    #[allow_multiple_var_args]
     #[endpoint]
     fn start(
         &self,
@@ -43,6 +44,7 @@ pub trait Lottery {
         );
     }
 
+    #[allow_multiple_var_args]
     #[endpoint(createLotteryPool)]
     fn create_lottery_pool(
         &self,
@@ -69,6 +71,7 @@ pub trait Lottery {
         );
     }
 
+    #[allow_multiple_var_args]
     #[allow(clippy::too_many_arguments)]
     fn start_lottery(
         &self,
@@ -145,7 +148,7 @@ pub trait Lottery {
         if let Some(whitelist) = opt_whitelist.as_option() {
             let mut mapper = self.lottery_whitelist(&lottery_name);
             for addr in &*whitelist {
-                mapper.insert(addr);
+                mapper.insert(addr.clone());
             }
         }
 
@@ -163,7 +166,7 @@ pub trait Lottery {
     }
 
     #[endpoint]
-    #[payable("*")]
+    #[payable]
     fn buy_ticket(&self, lottery_name: ManagedBuffer) {
         let (token_identifier, payment) = self.call_value().rewa_or_single_fungible_dcdt();
 
@@ -288,19 +291,19 @@ pub trait Lottery {
                 &BigUint::from(info.prize_distribution.get(i)),
             );
 
-            self.send()
-                .direct(&winner_address, &info.token_identifier, 0, &prize);
+            self.tx()
+                .to(&winner_address)
+                .rewa_or_single_dcdt(&info.token_identifier, 0, &prize)
+                .transfer();
             info.prize_pool -= prize;
         }
 
         // send leftover to first place
         let first_place_winner = ticket_holders_mapper.get(winning_tickets[0]);
-        self.send().direct(
-            &first_place_winner,
-            &info.token_identifier,
-            0,
-            &info.prize_pool,
-        );
+        self.tx()
+            .to(&first_place_winner)
+            .rewa_or_single_dcdt(&info.token_identifier, 0, &info.prize_pool)
+            .transfer();
     }
 
     fn clear_storage(&self, lottery_name: &ManagedBuffer) {

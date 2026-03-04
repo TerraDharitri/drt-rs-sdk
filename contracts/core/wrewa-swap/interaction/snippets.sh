@@ -1,11 +1,11 @@
-ALICE="/home/numbat/numbat-sdk/drtpy/testnet/wallets/users/alice.pem"
-BOB="/home/numbat/numbat-sdk/drtpy/testnet/wallets/users/bob.pem"
+ALICE="~/dharitri-sdk/testwallets/latest/users/alice.pem"
+BOB="~/dharitri-sdk/testwallets/latest/users/bob.pem"
 ADDRESS=$(drtpy data load --key=address-testnet-rewa-dcdt-swap)
 DEPLOY_TRANSACTION=$(drtpy data load --key=deployTransaction-testnet)
-PROXY=https://testnet-gateway.numbat.com
+PROXY=https://testnet-gateway.dharitri.org
 CHAIN_ID=T
 
-DCDT_SYSTEM_SC_ADDRESS=drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls8a5w6u
+DCDT_SYSTEM_SC_ADDRESS=drt1qqqqqqqqqqqqqqqpqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzllls6prdez
 
 deploy() {
     ######################################################################
@@ -18,8 +18,8 @@ deploy() {
     --arguments ${WRAPPED_REWA_TOKEN_ID} \
     --send --outfile="deploy-testnet.interaction.json" --proxy=${PROXY} --chain=${CHAIN_ID} || return
 
-    TRANSACTION=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['hash']")
-    ADDRESS=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emitted_tx']['address']")
+    TRANSACTION=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['emittedTransactionHash']")
+    ADDRESS=$(drtpy data parse --file="deploy-testnet.interaction.json" --expression="data['contractAddress']")
 
     drtpy data store --key=address-testnet --value=${ADDRESS}
     drtpy data store --key=deployTransaction-testnet-rewa-dcdt-swap --value=${TRANSACTION}
@@ -49,8 +49,8 @@ issueWrappedRewa() {
 }
 
 setLocalRoles() {
-    local LOCAL_MINT_ROLE=0x44434454526f6c654c6f63616c4d696e74 # "DCDTRoleLocalMint"
-    local LOCAL_BURN_ROLE=0x44434454526f6c654c6f63616c4275726e # "DCDTRoleLocalBurn"
+    local LOCAL_MINT_ROLE=0x52657761526f6c654c6f63616c4d696e74 # "DCDTRoleLocalMint"
+    local LOCAL_BURN_ROLE=0x52657761526f6c654c6f63616c4275726e # "DCDTRoleLocalBurn"
     local ADDRESS_HEX = $(drtpy wallet bech32 --decode ${ADDRESS})
 
     drtpy --verbose contract call ${DCDT_SYSTEM_SC_ADDRESS} --recall-nonce --pem=${ALICE} \

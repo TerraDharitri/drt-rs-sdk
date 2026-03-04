@@ -1,11 +1,15 @@
 #![no_std]
+#![allow(unused_imports)]
 
-numbat_wasm::imports!();
+use dharitri_sc::imports::*;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait Factorial {
     #[init]
     fn init(&self) {}
+
+    #[upgrade]
+    fn upgrade(&self) {}
 
     #[endpoint]
     fn factorial(&self, value: BigUint) -> BigUint {

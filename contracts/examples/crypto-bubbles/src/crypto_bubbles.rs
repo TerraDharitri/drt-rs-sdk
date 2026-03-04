@@ -1,8 +1,8 @@
 #![no_std]
 
-numbat_wasm::imports!();
+use dharitri_sc::imports::*;
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait CryptoBubbles {
     /// constructor function
     /// is called immediately after the contract is created
@@ -13,10 +13,10 @@ pub trait CryptoBubbles {
     #[payable("REWA")]
     #[endpoint(topUp)]
     fn top_up(&self) {
-        let payment = self.call_value().rewa_value();
+        let payment = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
         self.player_balance(&caller)
-            .update(|balance| *balance += &payment);
+            .update(|balance| *balance += &*payment);
 
         self.top_up_event(&caller, &payment);
     }
@@ -38,7 +38,7 @@ pub trait CryptoBubbles {
             *balance -= amount;
         });
 
-        self.send().direct_rewa(player, amount);
+        self.tx().to(player).rewa(amount).transfer();
 
         self.withdraw_event(player, amount);
     }
@@ -63,7 +63,7 @@ pub trait CryptoBubbles {
     #[payable("REWA")]
     #[endpoint(joinGame)]
     fn join_game(&self, game_index: BigUint) {
-        let bet = self.call_value().rewa_value();
+        let bet = self.call_value().rewa();
         let player = self.blockchain().get_caller();
         self.top_up();
         self.add_player_to_game_state_change(&game_index, &player, &bet)

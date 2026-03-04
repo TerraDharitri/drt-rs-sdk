@@ -1,8 +1,8 @@
 #![no_std]
 
-numbat_wasm::imports!();
+dharitri_sc::imports!();
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait SecondContract {
     #[init]
     fn init(&self, dcdt_token_identifier: RewaOrDcdtTokenIdentifier) {

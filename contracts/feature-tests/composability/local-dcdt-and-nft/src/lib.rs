@@ -1,17 +1,18 @@
 #![no_std]
 
-numbat_wasm::imports!();
-numbat_wasm::derive_imports!();
+dharitri_sc::imports!();
+dharitri_sc::derive_imports!();
 
 // used as mock attributes for NFTs
-#[derive(TopEncode, TopDecode, TypeAbi)]
+#[type_abi]
+#[derive(TopEncode, TopDecode)]
 pub struct Color {
     r: u8,
     g: u8,
     b: u8,
 }
 
-#[numbat_wasm::contract]
+#[dharitri_sc::contract]
 pub trait LocalDcdtAndDcdtNft {
     #[init]
     fn init(&self) {}
@@ -26,13 +27,13 @@ pub trait LocalDcdtAndDcdtNft {
         token_ticker: ManagedBuffer,
         initial_supply: BigUint,
     ) {
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_fungible(
-                issue_cost,
+                issue_cost.clone(),
                 &token_display_name,
                 &token_ticker,
                 &initial_supply,
@@ -48,9 +49,8 @@ pub trait LocalDcdtAndDcdtNft {
                     can_add_special_roles: true,
                 },
             )
-            .async_call()
             .with_callback(self.callbacks().dcdt_issue_callback(&caller))
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     #[endpoint(localMint)]
@@ -68,13 +68,13 @@ pub trait LocalDcdtAndDcdtNft {
     #[payable("REWA")]
     #[endpoint(nftIssue)]
     fn nft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_non_fungible(
-                issue_cost,
+                issue_cost.clone(),
                 &token_display_name,
                 &token_ticker,
                 NonFungibleTokenProperties {
@@ -87,9 +87,8 @@ pub trait LocalDcdtAndDcdtNft {
                     can_add_special_roles: true,
                 },
             )
-            .async_call()
             .with_callback(self.callbacks().nft_issue_callback(&caller))
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     #[endpoint(nftCreate)]
@@ -138,8 +137,10 @@ pub trait LocalDcdtAndDcdtNft {
         nonce: u64,
         amount: BigUint,
     ) {
-        self.send()
-            .transfer_dcdt_via_async_call(to, token_identifier, nonce, amount);
+        self.tx()
+            .to(to)
+            .dcdt((token_identifier, nonce, amount))
+            .async_call_and_exit();
     }
 
     #[endpoint]
@@ -157,15 +158,15 @@ pub trait LocalDcdtAndDcdtNft {
             arg_buffer.push_arg_raw(arg);
         }
 
-        let _ = self.send_raw().transfer_dcdt_nft_execute(
-            &to,
-            &token_identifier,
-            nonce,
-            &amount,
-            self.blockchain().get_gas_left(),
-            &function,
-            &arg_buffer,
-        );
+        let gas_left = self.blockchain().get_gas_left();
+
+        self.tx()
+            .to(&to)
+            .gas(gas_left)
+            .raw_call(function)
+            .arguments_raw(arg_buffer)
+            .single_dcdt(&token_identifier, nonce, &amount)
+            .transfer_execute();
     }
 
     // Semi-Fungible
@@ -173,13 +174,13 @@ pub trait LocalDcdtAndDcdtNft {
     #[payable("REWA")]
     #[endpoint(sftIssue)]
     fn sft_issue(&self, token_display_name: ManagedBuffer, token_ticker: ManagedBuffer) {
-        let issue_cost = self.call_value().rewa_value();
+        let issue_cost = self.call_value().rewa();
         let caller = self.blockchain().get_caller();
 
         self.send()
             .dcdt_system_sc_proxy()
             .issue_semi_fungible(
-                issue_cost,
+                issue_cost.clone(),
                 &token_display_name,
                 &token_ticker,
                 SemiFungibleTokenProperties {
@@ -192,9 +193,8 @@ pub trait LocalDcdtAndDcdtNft {
                     can_add_special_roles: true,
                 },
             )
-            .async_call()
             .with_callback(self.callbacks().nft_issue_callback(&caller))
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     // common
@@ -209,9 +209,8 @@ pub trait LocalDcdtAndDcdtNft {
         self.send()
             .dcdt_system_sc_proxy()
             .set_special_roles(&address, &token_identifier, roles.into_iter())
-            .async_call()
             .with_callback(self.callbacks().change_roles_callback())
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     #[endpoint(unsetLocalRoles)]
@@ -224,9 +223,8 @@ pub trait LocalDcdtAndDcdtNft {
         self.send()
             .dcdt_system_sc_proxy()
             .unset_special_roles(&address, &token_identifier, roles.into_iter())
-            .async_call()
             .with_callback(self.callbacks().change_roles_callback())
-            .call_and_exit()
+            .async_call_and_exit()
     }
 
     #[endpoint(controlChanges)]
@@ -240,8 +238,7 @@ pub trait LocalDcdtAndDcdtNft {
         self.send()
             .dcdt_system_sc_proxy()
             .control_changes(&token, &property_arguments)
-            .async_call()
-            .call_and_exit();
+            .async_call_and_exit();
     }
 
     // views
@@ -280,14 +277,13 @@ pub trait LocalDcdtAndDcdtNft {
         // so we can get the token identifier and amount from the call data
         match result {
             ManagedAsyncCallResult::Ok(()) => {
-                self.last_issued_token()
-                    .set(&token_identifier.unwrap_dcdt());
+                self.last_issued_token().set(token_identifier.unwrap_dcdt());
                 self.last_error_message().clear();
             },
             ManagedAsyncCallResult::Err(message) => {
                 // return issue cost to the caller
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens);
+                    self.tx().to(caller).rewa(&returned_tokens).transfer();
                 }
 
                 self.last_error_message().set(&message.err_msg);
@@ -311,7 +307,7 @@ pub trait LocalDcdtAndDcdtNft {
                 let (token_identifier, returned_tokens) =
                     self.call_value().rewa_or_single_fungible_dcdt();
                 if token_identifier.is_rewa() && returned_tokens > 0 {
-                    self.send().direct_rewa(caller, &returned_tokens);
+                    self.tx().to(caller).rewa(&returned_tokens).transfer();
                 }
 
                 self.last_error_message().set(&message.err_msg);

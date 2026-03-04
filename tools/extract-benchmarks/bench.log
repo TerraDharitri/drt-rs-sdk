@@ -1,0 +1,4857 @@
+Running tests in ./ ...
+Executing cargo test ...
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test abi_tester_dcdt_attr_abi_generated_ok ... ok
+test abi_deserialization_check ... ok
+test check_multi_contract_config ... ok
+test abi_tester_abi_generated_ok ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test adder_blackbox ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 2 tests
+test adder_go ... ok
+test interactor_trace_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test interactor_trace_rs ... ok
+test adder_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 1 test
+test adder_unit_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test adder_whitebox ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_sc_error ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 4 tests
+test test_managed_address_from ... ok
+test test_managed_buffer_from ... ok
+test test_managed_buffer_set_slice ... ok
+test test_managed_buffer_set_slice_should_panic - should panic ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 23 tests
+test boxed_bytes_zeros_go ... ok
+test echo_boxed_bytes_go ... ok
+test echo_slice_u_8_go ... ok
+test echo_varargs_u_32_alloc_go ... ok
+test echo_ser_ex_1_go ... ok
+test echo_async_result_empty_go ... ok
+test echo_multi_value_tuples_alloc_go ... ok
+test echo_big_int_nested_alloc_go ... ok
+test echo_str_go ... ok
+test managed_buffer_concat_2_go ... ok
+test fail_memory_go ... ok
+test echo_string_go ... ok
+test managed_buffer_load_slice_go ... ok
+test echo_vec_u_8_go ... ok
+test echo_str_box_go ... ok
+test leaking_memory_go ... ok
+test managed_buffer_overwrite_go ... ok
+test managed_buffer_set_slice_go ... ok
+test only_owner_legacy_go ... ok
+test sc_result_go ... ok
+test storage_address_go ... ok
+test storage_opt_address_go ... ok
+test storage_vec_u_8_go ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 23 tests
+test fail_memory_rs ... ignored
+test leaking_memory_rs ... ignored
+test echo_slice_u_8_rs ... ok
+test managed_buffer_load_slice_rs ... ok
+test managed_buffer_set_slice_rs ... ok
+test echo_multi_value_tuples_alloc_rs ... ok
+test echo_str_box_rs ... ok
+test echo_string_rs ... ok
+test echo_async_result_empty_rs ... ok
+test echo_ser_ex_1_rs ... ok
+test echo_big_int_nested_alloc_rs ... ok
+test echo_varargs_u_32_alloc_rs ... ok
+test echo_str_rs ... ok
+test managed_buffer_concat_2_rs ... ok
+test echo_vec_u_8_rs ... ok
+test managed_buffer_overwrite_rs ... ok
+test boxed_bytes_zeros_rs ... ok
+test echo_boxed_bytes_rs ... ok
+test sc_result_rs ... ok
+test storage_address_rs ... ok
+test only_owner_legacy_rs ... ok
+test storage_vec_u_8_rs ... ok
+test storage_opt_address_rs ... ok
+
+test result: ok. 21 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 3.39s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test block_info_ms_go ... ignored, TODO: awaiting for Barnard release
+test code_hash_go ... ignored, TODO: awaiting for Barnard release
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test code_hash_rs ... ignored, not yet supported
+test block_info_ms_rs ... ok
+
+test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test test_big_int_zero ... ok
+test test_big_uint_zero ... ok
+test test_big_int_from ... ok
+test test_big_uint_from ... ok
+test test_big_uint_bitwise_shift ... ok
+test test_big_uint_bitwise_and ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test is_builtin_function_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+
+running 2 tests
+test test_managed_address_zero ... ok
+test test_managed_buffer_new_empty ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test managed_decimal_logarithm_test ... ok
+test managed_decimal_test ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 1 test
+test managed_option_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 3 tests
+test test_managed_vec_eq ... ok
+test test_managed_vec_new ... ok
+test test_managed_vec_set ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test ordered_binary_tree_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+
+running 1 test
+test rewa_decimal_blackbox_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+
+running 103 tests
+test crypto_verify_bls_aggregated_signature_go ... ignored, TODO: error message changed, unignore after Barnard
+test crypto_verify_bls_go ... ignored, TODO: error message changed, unignore after Barnard
+test crypto_verify_bls_share_go ... ignored, TODO: error message changed, unignore after Barnard
+test crypto_verify_ed_25519_go ... ignored, TODO: error message changed, unignore after Barnard
+test block_info_go ... ok
+test crypto_elliptic_curves_go ... ok
+test big_int_to_i_64_go ... ok
+test codec_err_go ... ok
+test big_uint_pow_go ... ok
+test crypto_ripemd_160_go ... ok
+test big_num_conversions_go ... ok
+test crypto_verify_secp_256_r_1_go ... ignored, TODO: error message changed, unignore after Barnard
+test echo_array_u_8_go ... ok
+test crypto_keccak_256_go ... ok
+test count_ones_go ... ok
+test big_uint_from_u_64_go ... ok
+test big_uint_to_u_64_go ... ok
+test crypto_sha_256_go ... ok
+test big_int_from_i_64_go ... ok
+test big_uint_sqrt_go ... ok
+test crypto_verify_secp_256_k_1_go ... ok
+test big_uint_eq_u_64_go ... ok
+test echo_big_int_nested_go ... ok
+test echo_big_int_top_go ... ok
+test echo_big_uint_go ... ok
+test echo_i_32_go ... ok
+test echo_i_64_go ... ok
+test echo_ignore_go ... ok
+test echo_arrayvec_go ... ok
+test echo_managed_vec_go ... ok
+test echo_multi_value_tuples_go ... ok
+test echo_nothing_go ... ok
+test echo_tuple_into_multiresult_go ... ok
+test echo_u_64_go ... ok
+test echo_usize_go ... ok
+test echo_varags_vec_with_counted_go ... ok
+test echo_varargs_managed_eager_go ... ok
+test echo_varargs_managed_sum_go ... ok
+test echo_varargs_u_32_go ... ok
+test events_go ... ok
+test get_caller_go ... ok
+test echo_managed_async_result_empty_go ... ok
+test echo_managed_bytes_go ... ok
+test echo_varags_vec_with_counted_pairs_go ... ok
+test get_code_metadata_go ... ok
+test get_shard_of_address_go ... ignored, TODO: missing support from scenario-go
+test get_cumulated_validator_rewards_go ... ok
+test is_builtin_function_go ... ok
+test managed_address_array_go ... ok
+test managed_address_managed_buffer_go ... ok
+test managed_buffer_concat_go ... ok
+test managed_buffer_copy_slice_go ... ok
+test managed_buffer_eq_go ... ok
+test managed_buffer_set_random_go ... ok
+test managed_decimal_go ... ok
+test managed_decimal_logarithm_go ... ok
+test managed_vec_address_push_go ... ok
+test managed_vec_biguint_push_go ... ok
+test new_address_go ... ok
+test only_owner_go ... ok
+test only_user_account_go ... ok
+test out_of_gas_go ... ok
+test panic_go ... ok
+test return_codes_go ... ok
+test sc_properties_go ... ok
+test send_dcdt_to_nonexisting_account_go ... ok
+test small_num_overflow_go ... ok
+test storage_big_int_go ... ok
+test storage_big_uint_go ... ok
+test storage_bool_go ... ok
+test storage_clear_go ... ok
+test storage_i_64_bad_go ... ok
+test storage_i_64_go ... ok
+test storage_load_from_address_go ... ok
+test storage_managed_address_go ... ok
+test storage_map_1_go ... ok
+test storage_map_2_go ... ok
+test storage_map_3_go ... ok
+test storage_mapper_fungible_token_go ... ignored, currently not supported. TODO: investigate
+test storage_mapper_address_to_id_go ... ok
+test storage_mapper_get_at_address_extra_key_go ... ok
+test storage_mapper_get_at_address_go ... ok
+test storage_mapper_linked_list_go ... ok
+test storage_mapper_map_go ... ok
+test storage_mapper_map_storage_go ... ok
+test storage_mapper_non_fungible_token_go ... ok
+test storage_mapper_queue_go ... ok
+test storage_mapper_set_go ... ok
+test storage_mapper_single_value_go ... ok
+test storage_mapper_timelock_at_address_go ... ok
+test storage_mapper_timelock_go ... ok
+test storage_mapper_token_attributes_go ... ok
+test storage_mapper_unique_id_go ... ok
+test storage_mapper_vec_go ... ok
+test storage_mapper_whitelist_go ... ok
+test storage_opt_managed_addr_go ... ok
+test storage_raw_api_features_go ... ok
+test storage_reserved_go ... ok
+test storage_u_64_bad_go ... ok
+test storage_u_64_go ... ok
+test storage_usize_bad_go ... ok
+test storage_usize_go ... ok
+test struct_eq_go ... ok
+
+test result: ok. 96 passed; 0 failed; 7 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 103 tests
+test crypto_elliptic_curves_rs ... ignored
+test crypto_ripemd_160_rs ... ignored
+test crypto_verify_bls_aggregated_signature_rs ... ignored
+test crypto_verify_bls_rs ... ignored
+test crypto_verify_bls_share_rs ... ignored
+test crypto_verify_secp_256_k_1_rs ... ignored
+test crypto_verify_secp_256_r_1_rs ... ignored
+test big_int_to_i_64_rs ... ok
+test big_int_from_i_64_rs ... ok
+test crypto_sha_256_rs ... ok
+test big_uint_eq_u_64_rs ... ok
+test big_num_conversions_rs ... ok
+test big_uint_from_u_64_rs ... ok
+test block_info_rs ... ok
+test crypto_keccak_256_rs ... ok
+test crypto_verify_ed_25519_rs ... ok
+test codec_err_rs ... ok
+test count_ones_rs ... ok
+test echo_array_u_8_rs ... ok
+test echo_arrayvec_rs ... ok
+test big_uint_to_u_64_rs ... ok
+test big_uint_sqrt_rs ... ok
+test big_uint_pow_rs ... ok
+test echo_ignore_rs ... ok
+test echo_managed_async_result_empty_rs ... ok
+test echo_managed_bytes_rs ... ok
+test echo_managed_vec_rs ... ok
+test echo_multi_value_tuples_rs ... ok
+test echo_nothing_rs ... ok
+test echo_tuple_into_multiresult_rs ... ok
+test echo_big_uint_rs ... ok
+test echo_big_int_top_rs ... ok
+test echo_i_32_rs ... ok
+test echo_i_64_rs ... ok
+test echo_big_int_nested_rs ... ok
+test echo_varags_vec_with_counted_rs ... ok
+test echo_varags_vec_with_counted_pairs_rs ... ok
+test echo_u_64_rs ... ok
+test managed_buffer_set_random_rs ... ignored
+test echo_usize_rs ... ok
+test echo_varargs_managed_sum_rs ... ok
+test get_caller_rs ... ok
+test get_cumulated_validator_rewards_rs ... ok
+test events_rs ... ok
+test echo_varargs_managed_eager_rs ... ok
+test echo_varargs_u_32_rs ... ok
+test managed_address_managed_buffer_rs ... ok
+test out_of_gas_rs ... ignored
+test is_builtin_function_rs ... ok
+test get_shard_of_address_rs ... ok
+test send_dcdt_to_nonexisting_account_rs ... ignored, unsupported
+test managed_address_array_rs ... ok
+test managed_buffer_concat_rs ... ok
+test get_code_metadata_rs ... ok
+test managed_buffer_copy_slice_rs ... ok
+test managed_buffer_eq_rs ... ok
+test managed_decimal_rs ... ok
+test managed_decimal_logarithm_rs ... ok
+test managed_vec_address_push_rs ... ok
+test managed_vec_biguint_push_rs ... ok
+test return_codes_rs ... ok
+test new_address_rs ... ok
+test only_owner_rs ... ok
+test panic_rs ... ok
+test storage_mapper_fungible_token_rs ... ignored
+test storage_i_64_bad_rs ... ok
+test only_user_account_rs ... ok
+test storage_big_uint_rs ... ok
+test small_num_overflow_rs ... ok
+test storage_clear_rs ... ok
+test storage_mapper_non_fungible_token_rs ... ignored
+test storage_bool_rs ... ok
+test storage_i_64_rs ... ok
+test storage_big_int_rs ... ok
+test sc_properties_rs ... ok
+test storage_load_from_address_rs ... ok
+test storage_managed_address_rs ... ok
+test storage_map_1_rs ... ok
+test storage_mapper_address_to_id_rs ... ok
+test storage_map_2_rs ... ok
+test storage_map_3_rs ... ok
+test storage_mapper_get_at_address_extra_key_rs ... ok
+test storage_mapper_get_at_address_rs ... ok
+test storage_mapper_timelock_at_address_rs ... ok
+test storage_mapper_timelock_rs ... ok
+test storage_mapper_queue_rs ... ok
+test storage_mapper_set_rs ... ok
+test storage_mapper_linked_list_rs ... ok
+test storage_mapper_token_attributes_rs ... ok
+test storage_mapper_unique_id_rs ... ok
+test storage_reserved_rs ... ok
+test storage_u_64_bad_rs ... ok
+test storage_raw_api_features_rs ... ok
+test storage_opt_managed_addr_rs ... ok
+test storage_mapper_vec_rs ... ok
+test storage_mapper_single_value_rs ... ok
+test struct_eq_rs ... ok
+test storage_usize_bad_rs ... ok
+test storage_mapper_map_storage_rs ... ok
+test storage_mapper_map_rs ... ok
+test storage_u_64_rs ... ok
+test storage_usize_rs ... ok
+test storage_mapper_whitelist_rs ... ok
+
+test result: ok. 91 passed; 0 failed; 12 ignored; 0 measured; 0 filtered out; finished in 1.09s
+
+
+running 3 tests
+test sparse_array_test ... ok
+test sparse_array_create_over_capacity_test - should panic ... ok
+test sparse_array_get_invalid_index_test - should panic ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test storage_mapper_get_at_address_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test timelock_mapper_test ... ok
+test timelock_mapper_at_address_test ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+
+running 3 tests
+test test_token_identifier_rewa ... ok
+test test_token_identifier_is_valid ... ok
+test test_token_identifier_compare ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test chain_simulator_bf_get_special_roles_test ... ignored
+test send_dcdt_to_non_existent_address_test ... ignored
+test simulator_basic_features_test ... ignored
+test simulator_crypto_test ... ignored, signature verification is currently unavailable
+
+test result: ok. 0 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test set_state_cs_test ... ignored
+test set_state_from_file_cs_test ... ignored
+test set_state_overwrite_cs_test ... ignored
+test simulator_upgrade_test ... ignored
+
+test result: ok. 0 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 10 tests
+test big_float_operator_checks_go ... ignored, TODO: error message changed, unignore after Barnard
+test big_float_new_from_big_uint_go ... ok
+test big_float_new_from_parts_go ... ok
+test big_float_ln_go ... ok
+test big_float_new_from_managed_buffer_go ... ok
+test big_float_new_from_big_int_go ... ok
+test big_float_new_from_int_go ... ok
+test big_float_new_from_sci_go ... ok
+test big_float_new_from_frac_go ... ok
+test big_float_operators_go ... ok
+
+test result: ok. 9 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 10 tests
+test big_float_new_from_managed_buffer_rs ... ignored
+test big_float_operator_checks_rs ... ignored
+test big_float_new_from_big_uint_rs ... ok
+test big_float_ln_rs ... ok
+test big_float_new_from_big_int_rs ... ok
+test big_float_new_from_sci_rs ... ok
+test big_float_new_from_frac_rs ... ok
+test big_float_new_from_parts_rs ... ok
+test big_float_new_from_int_rs ... ok
+test big_float_operators_rs ... ok
+
+test result: ok. 8 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test deposit_more_view_go ... ok
+test buy_go ... ok
+test sell_go ... ok
+test deploy_go ... ok
+test deposit_go ... ok
+test set_bonding_curve_go ... ok
+test claim_go ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test deploy_rs ... ok
+test deposit_rs ... ok
+test set_bonding_curve_rs ... ok
+test buy_rs ... ok
+test sell_rs ... ok
+test deposit_more_view_rs ... ok
+test claim_rs ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test transfer_fungible_promise_no_callback_blackbox_test ... ok
+test transfer_fungible_promise_with_callback_blackbox_test ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 2 tests
+test transfer_fungible_promise_no_callback_test ... ok
+test transfer_fungible_promise_with_callback_test ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 135 tests
+test forw_raw_async_accept_dcdt_go ... ok
+test builtin_func_delete_user_name_go ... ok
+test builtin_func_set_user_name_go ... ok
+test forw_queue_async_go ... ok
+test forw_raw_async_echo_go ... ok
+test forw_raw_async_accept_rewa_go ... ok
+test forw_raw_async_send_and_retrieve_multi_transfer_funds_go ... ok
+test forw_raw_builtin_nft_local_mint_via_async_call_go ... ok
+test forw_raw_builtin_nft_local_mint_via_sync_call_go ... ok
+test forw_raw_call_async_retrieve_multi_transfer_go ... ok
+test forw_raw_contract_deploy_go ... ok
+test forw_raw_contract_upgrade_go ... ok
+test forw_raw_contract_upgrade_self_go ... ok
+test forw_raw_direct_dcdt_go ... ok
+test forw_raw_direct_multi_dcdt_go ... ok
+test forw_raw_direct_rewa_go ... ok
+test forw_raw_init_async_go ... ok
+test forw_raw_init_sync_accept_rewa_go ... ok
+test forw_raw_init_sync_echo_go ... ok
+test forw_raw_sync_echo_caller_go ... ok
+test forw_raw_sync_fallible_go ... ignored, requires Barnard
+test forw_raw_sync_echo_go ... ok
+test forw_raw_sync_readonly_go ... ok
+test forw_raw_sync_reject_go ... ok
+test forw_raw_sync_rewa_go ... ok
+test forw_raw_sync_same_context_go ... ok
+test forw_raw_sync_same_context_rewa_go ... ok
+test forw_raw_transf_exec_fallible_0_accept_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_0_reject_go ... ignored, requires Barnard
+test forw_raw_transf_exec_accept_rewa_go ... ok
+test forw_raw_transf_exec_fallible_dcdt_accept_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_dcdt_reject_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_multi_dcdt_accept_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_multi_dcdt_reject_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_multi_rewa_accept_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_multi_rewa_reject_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_rewa_accept_go ... ignored, requires Barnard
+test forw_raw_transf_exec_fallible_rewa_reject_go ... ignored, requires Barnard
+test forw_raw_transf_exec_reject_rewa_go ... ignored, requires Barnard
+test forw_raw_transfer_fallible_multi_err_go ... ignored, requires Barnard
+test forw_raw_transfer_fallible_multi_ok_go ... ignored, requires Barnard
+test forw_raw_transfer_fallible_rewa_go ... ignored, requires Barnard
+test forwarder_builtin_nft_add_quantity_go ... ok
+test forwarder_builtin_nft_burn_go ... ok
+test forwarder_builtin_nft_create_go ... ok
+test forwarder_builtin_nft_local_burn_go ... ok
+test forwarder_builtin_nft_local_mint_go ... ok
+test forwarder_call_async_accept_dcdt_go ... ok
+test forwarder_call_async_accept_nft_go ... ok
+test forwarder_call_async_accept_rewa_go ... ok
+test forwarder_call_async_multi_transfer_go ... ok
+test forwarder_call_async_multi_transfer_rewa_accept_go ... ok
+test forwarder_call_async_multi_transfer_rewa_reject_go ... ignored, denali bug
+test forwarder_call_async_retrieve_dcdt_go ... ok
+test forwarder_call_async_retrieve_nft_go ... ok
+test forwarder_call_async_retrieve_rewa_go ... ok
+test forwarder_call_sync_accept_dcdt_go ... ok
+test forwarder_call_sync_accept_multi_transfer_go ... ok
+test forwarder_call_sync_accept_nft_go ... ok
+test forwarder_call_sync_accept_rewa_go ... ok
+test forwarder_call_sync_accept_then_read_dcdt_go ... ok
+test forwarder_call_sync_accept_then_read_nft_go ... ok
+test forwarder_call_sync_fallible_multi_transfer_rewa_accept_go ... ignored, requires Barnard
+test forwarder_call_sync_accept_then_read_rewa_go ... ok
+test forwarder_call_sync_fallible_multi_transfer_rewa_reject_go ... ignored, requires Barnard
+test forwarder_call_sync_multi_transfer_rewa_accept_go ... ok
+test forwarder_call_sync_retrieve_bt_legacy_dcdt_go ... ok
+test forwarder_call_sync_retrieve_bt_legacy_nft_go ... ok
+test forwarder_call_sync_retrieve_bt_legacy_rewa_go ... ok
+test forwarder_call_sync_retrieve_bt_multi_dcdt_go ... ok
+test forwarder_call_sync_retrieve_bt_multi_go ... ok
+test forwarder_call_sync_retrieve_bt_multi_twice_go ... ignored, TODO: Barnard
+test forwarder_call_sync_retrieve_bt_multi_twice_reset_go ... ignored, TODO: Barnard
+test forwarder_call_sync_retrieve_bt_multi_rewa_go ... ok
+test forwarder_call_sync_retrieve_nft_go ... ok
+test forwarder_call_sync_retrieve_rewa_go ... ok
+test forwarder_call_sync_retrieve_dcdt_go ... ok
+test forwarder_call_transf_exec_multi_transfer_dcdt_reject_go ... ok
+test forwarder_call_transf_exec_multi_transfer_dcdt_accept_go ... ok
+test forwarder_call_transf_exec_multi_transfer_rewa_reject_go ... ignored, denali bug
+test forwarder_call_transf_exec_multi_transfer_rewa_accept_go ... ok
+test forwarder_call_transf_exec_accept_return_values_go ... ok
+test forwarder_call_transf_exec_rewa_accept_go ... ok
+test forwarder_call_transf_exec_rewa_accept_twice_go ... ok
+test forwarder_call_transf_exec_single_dcdt_accept_go ... ok
+test forwarder_call_transf_exec_single_dcdt_accept_twice_go ... ok
+test forwarder_call_transf_exec_single_nft_accept_go ... ok
+test forwarder_call_transf_exec_single_nft_reject_go ... ok
+test forwarder_call_transf_exec_single_sft_twice_accept_go ... ok
+test forwarder_contract_change_owner_go ... ok
+test forwarder_contract_deploy_go ... ok
+test forwarder_contract_upgrade_go ... ok
+test forwarder_get_dcdt_local_roles_go ... ok
+test forwarder_get_dcdt_token_data_go ... ok
+test forwarder_nft_add_uri_go ... ok
+test forwarder_nft_create_and_send_go ... ok
+test forwarder_nft_create_go ... ok
+test forwarder_nft_current_nonce_go ... ok
+test forwarder_nft_decode_complex_attributes_go ... ok
+test forwarder_nft_transfer_async_go ... ok
+test forwarder_nft_update_attributes_go ... ok
+test forwarder_nft_transfer_exec_go ... ok
+test forwarder_no_endpoint_go ... ok
+test forwarder_retrieve_funds_with_accept_func_go ... ok
+test forwarder_send_dcdt_multi_transfer_go ... ok
+test forwarder_sync_echo_go ... ok
+test forwarder_transfer_dcdt_with_fees_go ... ok
+test forwarder_validate_token_identifier_go ... ok
+test promises_call_async_accept_dcdt_go ... ok
+test promises_call_async_retrieve_dcdt_go ... ignored, TODO
+test promises_call_async_retrieve_rewa_go ... ignored, TODO
+test promises_call_callback_directly_go ... ignored, TODO
+test promises_call_async_accept_rewa_go ... ok
+test promises_call_transfer_callback_dcdt_go ... ok
+test promises_call_transfer_callback_rewa_go ... ok
+test promises_multi_transfer_go ... ignored, TODO
+test promises_single_transfer_gas_1_go ... ignored, gas
+test promises_multi_transfer_err_go ... ok
+test promises_single_transfer_gas_2_go ... ignored, gas
+test promises_single_transfer_go ... ok
+test proxy_test_init_go ... ok
+test proxy_test_message_other_shard_callback_go ... ok
+test proxy_test_message_other_shard_go ... ok
+test proxy_test_message_same_shard_go ... ok
+test proxy_test_message_same_shard_callback_go ... ok
+test proxy_test_payment_other_shard_callback_go ... ok
+test proxy_test_payment_other_shard_go ... ok
+test proxy_test_payment_same_shard_callback_go ... ok
+test proxy_test_payment_same_shard_go ... ok
+test proxy_test_upgrade_go ... ok
+test recursive_caller_dcdt_1_go ... ok
+test recursive_caller_rewa_1_go ... ok
+test send_dcdt_go ... ok
+test send_dcdt_to_nonexisting_account_go ... ok
+test send_rewa_go ... ok
+
+test result: ok. 108 passed; 0 failed; 27 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 51 tests
+test legacy_forwarder_call_sync_accept_rewa_rs ... ok
+test legacy_forwarder_builtin_nft_local_burn_rs ... ok
+test legacy_forwarder_builtin_nft_add_quantity_rs ... ok
+test legacy_forwarder_builtin_nft_create_rs ... ok
+test legacy_forwarder_call_async_retrieve_dcdt_rs ... ok
+test legacy_forwarder_call_async_retrieve_rewa_rs ... ok
+test legacy_forwarder_call_sync_accept_dcdt_rs ... ok
+test legacy_forwarder_call_transf_exec_accept_return_values_rs ... ignored, TODO: fix logs
+test legacy_forwarder_call_sync_accept_nft_rs ... ok
+test legacy_forwarder_call_async_multi_transfer_rs ... ok
+test legacy_forwarder_call_transf_exec_multi_transfer_rewa_accept_rs ... ignored, TODO: fix logs
+test legacy_forwarder_call_async_accept_nft_rs ... ok
+test legacy_forwarder_call_transf_exec_rewa_accept_rs ... ignored, TODO: fix logs
+test legacy_forwarder_call_transf_exec_rewa_accept_twice_rs ... ignored, TODO: fix logs
+test legacy_forwarder_call_async_accept_dcdt_rs ... ok
+test legacy_forwarder_call_async_accept_rewa_rs ... ok
+test legacy_forwarder_builtin_nft_burn_rs ... ok
+test legacy_forwarder_call_sync_accept_multi_transfer_rs ... ok
+test legacy_forwarder_builtin_nft_local_mint_rs ... ok
+test legacy_forwarder_call_async_retrieve_nft_rs ... ok
+test legacy_forwarder_call_sync_accept_then_read_dcdt_rs ... ok
+test legacy_forwarder_call_sync_accept_then_read_rewa_rs ... ok
+test legacy_forwarder_call_transf_exec_multi_transfer_dcdt_accept_rs ... ok
+test legacy_forwarder_call_transf_exec_single_nft_reject_rs ... ok
+test legacy_forwarder_call_sync_accept_then_read_nft_rs ... ok
+test legacy_forwarder_call_sync_retrieve_dcdt_rs ... ok
+test legacy_forwarder_call_transf_exec_multi_transfer_dcdt_reject_rs ... ok
+test legacy_forwarder_call_transf_exec_single_dcdt_accept_twice_rs ... ok
+test legacy_forwarder_call_sync_retrieve_nft_rs ... ok
+test legacy_forwarder_contract_deploy_rs ... ok
+test legacy_forwarder_call_transf_exec_single_nft_accept_rs ... ok
+test legacy_forwarder_call_sync_retrieve_rewa_rs ... ok
+test legacy_forwarder_call_transf_exec_single_dcdt_accept_rs ... ok
+test legacy_forwarder_call_transf_exec_multi_transfer_rewa_reject_rs ... ok
+test legacy_forwarder_call_transf_exec_single_sft_twice_accept_rs ... ok
+test legacy_forwarder_contract_change_owner_rs ... ok
+test legacy_forwarder_nft_add_uri_rs ... ok
+test legacy_forwarder_nft_create_and_send_rs ... ok
+test legacy_forwarder_nft_decode_complex_attributes_rs ... ok
+test legacy_forwarder_contract_upgrade_rs ... ok
+test legacy_forwarder_no_endpoint_rs ... ok
+test legacy_forwarder_nft_transfer_exec_rs ... ok
+test legacy_forwarder_nft_transfer_async_rs ... ok
+test legacy_forwarder_retrieve_funds_with_accept_func_rs ... ok
+test legacy_send_dcdt_rs ... ok
+test legacy_forwarder_sync_echo_rs ... ok
+test legacy_forwarder_send_dcdt_multi_transfer_rs ... ok
+test legacy_forwarder_nft_create_rs ... ok
+test legacy_send_rewa_rs ... ok
+test legacy_forwarder_nft_update_attributes_rs ... ok
+test legacy_forwarder_transfer_dcdt_with_fees_rs ... ok
+
+test result: ok. 47 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 4.11s
+
+
+running 135 tests
+test forw_raw_contract_upgrade_self_rs ... ok
+test forw_raw_init_async_rs ... ignored, not yet supported
+test forw_raw_init_sync_accept_rewa_rs ... ignored, not yet supported
+test forw_raw_init_sync_echo_rs ... ignored, not yet supported
+test builtin_func_set_user_name_rs ... ok
+test forw_raw_direct_dcdt_rs ... ok
+test forw_raw_sync_fallible_rs ... ignored, requires Barnard, unavailable: managed_execute_on_dest_context_with_error_return
+test forw_raw_async_accept_dcdt_rs ... ok
+test forw_raw_sync_reject_rs ... ignored, different error code/message in Rust VM
+test forw_queue_async_rs ... ok
+test forw_raw_async_echo_rs ... ok
+test forw_raw_sync_same_context_rewa_rs ... ignored
+test forw_raw_sync_same_context_rs ... ignored
+test forw_raw_builtin_nft_local_mint_via_sync_call_rs ... ok
+test forw_raw_contract_upgrade_rs ... ok
+test forw_raw_transf_exec_fallible_dcdt_accept_rs ... ignored, not yet supported
+test forw_raw_transf_exec_fallible_dcdt_reject_rs ... ignored, not yet supported
+test forw_raw_transf_exec_fallible_multi_dcdt_accept_rs ... ignored, not yet supported
+test forw_raw_transf_exec_fallible_multi_dcdt_reject_rs ... ignored, not yet supported
+test forw_raw_transf_exec_fallible_multi_rewa_accept_rs ... ignored, not yet supported
+test forw_raw_transf_exec_fallible_multi_rewa_reject_rs ... ignored, not yet supported
+test forw_raw_transf_exec_fallible_rewa_accept_rs ... ignored, not yet supported
+test forw_raw_transf_exec_fallible_rewa_reject_rs ... ignored, not yet supported
+test forw_raw_async_accept_rewa_rs ... ok
+test forw_raw_transfer_fallible_multi_err_rs ... ignored, not yet supported
+test forw_raw_transfer_fallible_multi_ok_rs ... ignored, not yet supported
+test forw_raw_transfer_fallible_rewa_rs ... ignored, not yet supported
+test forw_raw_builtin_nft_local_mint_via_async_call_rs ... ok
+test forw_raw_async_send_and_retrieve_multi_transfer_funds_rs ... ok
+test builtin_func_delete_user_name_rs ... ok
+test forw_raw_direct_rewa_rs ... ok
+test forw_raw_contract_deploy_rs ... ok
+test forw_raw_direct_multi_dcdt_rs ... ok
+test forw_raw_call_async_retrieve_multi_transfer_rs ... ok
+test forw_raw_sync_echo_caller_rs ... ok
+test forw_raw_transf_exec_fallible_0_reject_rs ... ok
+test forwarder_call_async_multi_transfer_rewa_reject_rs ... ignored, not yet supported
+test forw_raw_sync_echo_rs ... ok
+test forw_raw_sync_readonly_rs ... ok
+test forw_raw_sync_rewa_rs ... ok
+test forw_raw_transf_exec_accept_rewa_rs ... ok
+test forw_raw_transf_exec_reject_rewa_rs ... ok
+test forw_raw_transf_exec_fallible_0_accept_rs ... ok
+test forwarder_builtin_nft_add_quantity_rs ... ok
+test forwarder_builtin_nft_local_burn_rs ... ok
+test forwarder_call_async_accept_dcdt_rs ... ok
+test forwarder_builtin_nft_create_rs ... ok
+test forwarder_call_async_accept_nft_rs ... ok
+test forwarder_call_sync_fallible_multi_transfer_rewa_accept_rs ... ignored, not yet supported
+test forwarder_call_sync_fallible_multi_transfer_rewa_reject_rs ... ignored, not yet supported
+test forwarder_builtin_nft_burn_rs ... ok
+test forwarder_builtin_nft_local_mint_rs ... ok
+test forwarder_call_async_accept_rewa_rs ... ok
+test forwarder_call_async_multi_transfer_rewa_accept_rs ... ok
+test forwarder_call_async_multi_transfer_rs ... ok
+test forwarder_call_sync_retrieve_bt_multi_rewa_rs ... ignored, TODO: fix logs
+test forwarder_call_sync_accept_dcdt_rs ... ok
+test forwarder_call_async_retrieve_nft_rs ... ok
+test forwarder_call_sync_retrieve_bt_multi_twice_rs ... ignored, back transfers behavior without reset if not reproduced in the Rust VM
+test forwarder_call_sync_accept_rewa_rs ... ok
+test forwarder_call_sync_accept_multi_transfer_rs ... ok
+test forwarder_call_async_retrieve_rewa_rs ... ok
+test forwarder_call_transf_exec_accept_return_values_rs ... ignored, TODO: fix logs
+test forwarder_call_async_retrieve_dcdt_rs ... ok
+test forwarder_call_sync_accept_then_read_dcdt_rs ... ok
+test forwarder_call_transf_exec_multi_transfer_rewa_accept_rs ... ignored, TODO: fix logs
+test forwarder_call_sync_accept_then_read_nft_rs ... ok
+test forwarder_call_transf_exec_rewa_accept_rs ... ignored, TODO: fix logs
+test forwarder_call_transf_exec_rewa_accept_twice_rs ... ignored, TODO: fix logs
+test forwarder_call_sync_accept_nft_rs ... ok
+test forwarder_call_sync_accept_then_read_rewa_rs ... ok
+test forwarder_call_sync_multi_transfer_rewa_accept_rs ... ok
+test forwarder_call_sync_retrieve_bt_legacy_rewa_rs ... ok
+test forwarder_call_sync_retrieve_bt_legacy_dcdt_rs ... ok
+test forwarder_call_sync_retrieve_bt_legacy_nft_rs ... ok
+test forwarder_call_sync_retrieve_dcdt_rs ... ok
+test forwarder_call_sync_retrieve_bt_multi_dcdt_rs ... ok
+test forwarder_call_sync_retrieve_bt_multi_twice_reset_rs ... ok
+test forwarder_call_sync_retrieve_nft_rs ... ok
+test forwarder_call_transf_exec_multi_transfer_dcdt_reject_rs ... ok
+test forwarder_call_sync_retrieve_bt_multi_rs ... ok
+test forwarder_call_transf_exec_single_dcdt_accept_rs ... ok
+test forwarder_call_transf_exec_multi_transfer_rewa_reject_rs ... ok
+test forwarder_call_transf_exec_multi_transfer_dcdt_accept_rs ... ok
+test forwarder_call_transf_exec_single_nft_accept_rs ... ok
+test forwarder_call_transf_exec_single_nft_reject_rs ... ok
+test forwarder_call_sync_retrieve_rewa_rs ... ok
+test forwarder_call_transf_exec_single_dcdt_accept_twice_rs ... ok
+test forwarder_contract_change_owner_rs ... ok
+test forwarder_contract_deploy_rs ... ok
+test forwarder_call_transf_exec_single_sft_twice_accept_rs ... ok
+test forwarder_get_dcdt_token_data_rs ... ok
+test forwarder_nft_current_nonce_rs ... ok
+test forwarder_contract_upgrade_rs ... ok
+test forwarder_nft_create_and_send_rs ... ok
+test forwarder_nft_add_uri_rs ... ok
+test forwarder_nft_decode_complex_attributes_rs ... ok
+test forwarder_no_endpoint_rs ... ok
+test forwarder_nft_transfer_async_rs ... ok
+test forwarder_nft_transfer_exec_rs ... ok
+test promises_multi_transfer_err_rs ... ignored, TODO - some log is missing
+test forwarder_nft_update_attributes_rs ... ok
+test promises_single_transfer_gas_1_rs ... ignored, gas
+test promises_single_transfer_gas_2_rs ... ignored, gas
+test promises_single_transfer_rs ... ignored, gas
+test forwarder_nft_create_rs ... ok
+test forwarder_sync_echo_rs ... ok
+test forwarder_retrieve_funds_with_accept_func_rs ... ok
+test forwarder_send_dcdt_multi_transfer_rs ... ok
+test forwarder_get_dcdt_local_roles_rs ... ok
+test forwarder_transfer_dcdt_with_fees_rs ... ok
+test forwarder_validate_token_identifier_rs ... ok
+test promises_call_async_accept_dcdt_rs ... ok
+test promises_call_async_retrieve_dcdt_rs ... ok
+test promises_call_transfer_callback_dcdt_rs ... ok
+test promises_call_async_accept_rewa_rs ... ok
+test promises_call_async_retrieve_rewa_rs ... ok
+test promises_call_callback_directly_rs ... ok
+test send_dcdt_to_nonexisting_account_rs ... ignored, not yet supported
+test proxy_test_message_other_shard_rs ... ok
+test promises_multi_transfer_rs ... ok
+test proxy_test_message_same_shard_rs ... ok
+test proxy_test_message_other_shard_callback_rs ... ok
+test promises_call_transfer_callback_rewa_rs ... ok
+test proxy_test_init_rs ... ok
+test proxy_test_message_same_shard_callback_rs ... ok
+test proxy_test_payment_other_shard_callback_rs ... ok
+test proxy_test_payment_other_shard_rs ... ok
+test proxy_test_payment_same_shard_callback_rs ... ok
+test proxy_test_payment_same_shard_rs ... ok
+test proxy_test_upgrade_rs ... ok
+test recursive_caller_dcdt_1_rs ... ok
+test recursive_caller_rewa_1_rs ... ok
+test send_dcdt_rs ... ok
+test send_rewa_rs ... ok
+
+test result: ok. 103 passed; 0 failed; 32 ignored; 0 measured; 0 filtered out; finished in 9.21s
+
+
+running 1 test
+test test_nft_update_attributes_and_send ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+
+running 1 test
+test test_nft_update_attributes_and_send ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+
+running 1 test
+test test_nft_update_attributes_and_send ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+
+running 1 test
+test test_nft_update_attributes_and_send ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+
+running 6 tests
+test test_back_transfers_logs ... ok
+test test_back_transfers ... ok
+test test_multi_call_back_transfers ... ok
+test test_multi_call_back_transfers_logs ... ok
+test test_back_transfers_reset ... ok
+test test_back_transfers_handlers ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+
+running 2 tests
+test basic_setup_test ... ok
+test promises_transfer_test ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test test_fund ... ok
+test test_status ... ok
+test test_failed_cf ... ok
+test test_sc_error ... ok
+test test_successful_cf ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+
+running 16 tests
+test generated_fund_go ... ok
+test rewa_crowdfunding_claim_successful_go ... ok
+test rewa_crowdfunding_init_go ... ok
+test generated_init_go ... ok
+test generated_sc_err_go ... ok
+test generated_query_status_go ... ok
+test rewa_crowdfunding_claim_failed_go ... ok
+test crowdfunding_claim_successful_go ... ok
+test rewa_crowdfunding_claim_too_early_go ... ok
+test crowdfunding_claim_failed_go ... ok
+test rewa_crowdfunding_fund_go ... ok
+test crowdfunding_fund_too_late_go ... ok
+test crowdfunding_claim_too_early_go ... ok
+test rewa_crowdfunding_fund_too_late_go ... ok
+test crowdfunding_init_go ... ok
+test crowdfunding_fund_go ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 16 tests
+test generated_init_rs ... ok
+test generated_query_status_rs ... ok
+test rewa_crowdfunding_init_rs ... ok
+test crowdfunding_init_rs ... ok
+test crowdfunding_fund_rs ... ok
+test rewa_crowdfunding_fund_rs ... ok
+test generated_fund_rs ... ok
+test crowdfunding_claim_failed_rs ... ok
+test rewa_crowdfunding_claim_failed_rs ... ok
+test generated_sc_err_rs ... ok
+test rewa_crowdfunding_claim_too_early_rs ... ok
+test rewa_crowdfunding_fund_too_late_rs ... ok
+test crowdfunding_fund_too_late_rs ... ok
+test crowdfunding_claim_too_early_rs ... ok
+test crowdfunding_claim_successful_rs ... ok
+test rewa_crowdfunding_claim_successful_rs ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test deploy_erc_20_and_crowdfunding_go ... ok
+test fund_without_allowance_go ... ok
+test fund_with_insufficient_allowance_go ... ok
+test fund_with_sufficient_allowance_go ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 4 tests
+test deploy_erc_20_and_crowdfunding_rs ... ok
+test fund_with_sufficient_allowance_rs ... ok
+test fund_without_allowance_rs ... ok
+test fund_with_insufficient_allowance_rs ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 11 tests
+test create_go ... ok
+test join_game_go ... ok
+test withdraw_ok_go ... ok
+test balance_of_go ... ok
+test exceptions_go ... ok
+test reward_winner_go ... ok
+test reward_winner_last_go ... ok
+test top_up_withdraw_go ... ok
+test withdraw_too_much_go ... ok
+test reward_and_send_to_wallet_go ... ok
+test top_up_ok_go ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 11 tests
+test balance_of_rs ... ok
+test withdraw_ok_rs ... ok
+test reward_and_send_to_wallet_rs ... ok
+test withdraw_too_much_rs ... ok
+test exceptions_rs ... ok
+test reward_winner_last_rs ... ok
+test top_up_withdraw_rs ... ok
+test create_rs ... ok
+test top_up_ok_rs ... ok
+test join_game_rs ... ok
+test reward_winner_rs ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test reject_transfer_go ... ignored
+test init_go ... ok
+test simple_transfer_full_wrong_token_go ... ok
+test simple_transfer_full_go ... ok
+test simple_transfer_half_go ... ok
+
+test result: ok. 4 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test reject_transfer_rs ... ignored
+test init_rs ... ok
+test simple_transfer_full_wrong_token_rs ... ok
+test simple_transfer_half_rs ... ok
+test simple_transfer_full_rs ... ok
+
+test result: ok. 4 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test dcdt_system_sc_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test dcdt_system_sc_rs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test setup_fees_and_transfer_go ... ok
+test claim_go ... ok
+test deploy_go ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test deploy_rs ... ok
+test setup_fees_and_transfer_rs ... ok
+test claim_rs ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test cs_builtin_run_tests ... ignored, configurable chain-simulator is not available in CI
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 34 tests
+test types::address::address_tests::test_address ... ok
+test types::address::address_tests::test_is_zero ... ok
+test types::address::address_tests::test_opt_address ... ok
+test types::address::address_tests::test_ser_address_ref ... ok
+test types::boxed_bytes::tests::test_concat_1 ... ok
+test types::boxed_bytes::tests::test_concat_2 ... ok
+test types::boxed_bytes::tests::test_concat_empty_1 ... ok
+test types::boxed_bytes::tests::test_concat_empty_2 ... ok
+test types::boxed_bytes::tests::test_is_empty ... ok
+test types::boxed_bytes::tests::test_size_of ... ok
+test types::boxed_bytes::tests::test_split_1 ... ok
+test types::boxed_bytes::tests::test_split_2 ... ok
+test types::boxed_bytes::tests::test_split_over ... ok
+test types::flags::code_metadata::tests::test_all ... ok
+test types::flags::code_metadata::tests::test_default ... ok
+test types::flags::code_metadata::tests::test_each ... ok
+test types::flags::code_metadata::tests::test_from_array ... ok
+test types::flags::dcdt_local_role_flags::tests::test_flags_has_role ... ok
+test types::flags::dcdt_local_role_flags::tests::test_flags_iter_role ... ok
+test types::h256::h256_tests::test_h256_from_array ... ok
+test types::h256::h256_tests::test_is_zero ... ok
+test types::h256::h256_tests::test_opt_h256 ... ok
+test types::h256::h256_tests::test_ser_h256_ref ... ok
+test types::heap_address::address_tests::test_address ... ok
+test types::heap_address::address_tests::test_is_zero ... ok
+test types::heap_address::address_tests::test_opt_address ... ok
+test types::heap_address::address_tests::test_ser_address_ref ... ok
+test types::heap_address::address_tests::test_size_of ... ok
+test types::heap_h256::h256_tests::test_h256_from_array ... ok
+test types::heap_h256::h256_tests::test_into_boxed_bytes ... ok
+test types::heap_h256::h256_tests::test_is_zero ... ok
+test types::heap_h256::h256_tests::test_opt_h256 ... ok
+test types::heap_h256::h256_tests::test_ser_h256_ref ... ok
+test types::heap_h256::h256_tests::test_size_of ... ok
+
+test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 18 tests
+test test_bool ... ok
+test test_string ... ok
+test test_drtsc_no_pack ... ok
+test test_address ... ok
+test test_sc_address_with_shard_id ... ok
+test test_address_with_shard_id ... ok
+test test_bech32 ... ok
+test test_biguint_nested_neg - should panic ... ok
+test test_drtsc_pack ... ok
+test test_signed_fixed_width_panic_2 - should panic ... ok
+test test_signed_fixed_width_panic_3 - should panic ... ok
+test test_sc_address ... ok
+test test_signed_fixed_width_panic_1 - should panic ... ok
+test test_biguint_nested ... ok
+test test_signed_fixed_width ... ok
+test test_signed_number ... ok
+test test_unsigned_number ... ok
+test test_unsigned_fixed_width ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test test_scaddress ... ok
+test test_string ... ok
+test test_scaddress_with_shard_id ... ok
+test test_address ... ok
+test test_address_with_shard_id ... ok
+test test_unsigned_number ... ok
+test test_signed_number ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 10 tests
+test with_shared::with_shared_mut_ref::test::test_with_shared_mut_ref_2 ... ok
+test with_shared::shareable::test::test_shareable_mut_1 ... ok
+test system_sc::system_sc_issue::tests::test_first_token_identifier_with_ticker_is_none ... ok
+test system_sc::system_sc_issue::tests::test_first_token_identifier_with_ticker_ok ... ok
+test with_shared::with_shared_mut_ref::test::test_with_shared_mut_ref_1 ... ok
+test with_shared::shareable::test::test_shareable_mut_2 ... ok
+test host::context::managed_type_container::tx_managed_buffer::tests::test_vec_of_bytes ... ok
+test with_shared::with_shared_mut_ref::test::test_with_shared_mut_ref_fail - should panic ... ok
+test with_shared::shareable::test::test_shareable_mut_fail - should panic ... ok
+test host::context::managed_type_container::tx_managed_buffer::tests::test_vec_of_dcdt_payments ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test zeroed_schedule_test ... ok
+test deserialize_test ... ok
+test serialize_deserialize_test ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 3 tests
+test test_verify_ed25519_invalid_args ... ok
+test test_verify_ed25519_basic ... ok
+test test_verify_ed25519_bad_sig ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 31 tests
+test api::managed_types::static_var_api_flags::tests::test_check_and_set ... ok
+test api::managed_types::const_handles::tests::rewa_payment_payload_test ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_all_empty ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_1 ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_all_empty_but_last ... ok
+test hex_call_data::cd_de::tests::test_next_argument_large ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_empty ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_ends_empty ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_many_empty ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_some_empty ... ok
+test hex_call_data::cd_de::tests::test_next_raw_bytes_only_func ... ok
+test hex_call_data::cd_de::tests::test_next_vec_odd ... ok
+test hex_call_data::cd_ser::tests::test_push_bytes_1 ... ok
+test hex_call_data::cd_ser::tests::test_push_bytes_2 ... ok
+test hex_call_data::cd_ser::tests::test_push_empty_1 ... ok
+test hex_call_data::cd_ser::tests::test_push_empty_2 ... ok
+test hex_call_data::cd_ser::tests::test_push_empty_3 ... ok
+test hex_call_data::cd_ser::tests::test_push_some_empty_1 ... ok
+test hex_call_data::cd_ser::tests::test_push_some_empty_2 ... ok
+test non_zero_util::tests::test_const ... ok
+test non_zero_util::tests::test_iter_0 ... ok
+test non_zero_util::tests::test_iter_1 ... ok
+test non_zero_util::tests::test_iter_3 ... ok
+test tuple_util::nested_tuples::test::test_flatten ... ok
+test types::interaction::expr::test_address::tests::test_address_value ... ok
+test types::interaction::expr::test_sc_address::tests::test_address_value ... ok
+test types::io::operation_completion_status::tests::test_codec_decode_operation_completion ... ok
+test types::io::operation_completion_status::tests::test_operation_completion_status_is ... ok
+test types::io::sc_result::tests::test_result_to_sc_result ... ok
+test types::managed::wrapped::managed_vec_item_nested_tuple::tests::managed_vec_item_nested_tuple_enum_test ... ok
+test types::managed::wrapped::managed_vec_item_nested_tuple::tests::managed_vec_item_nested_tuple_struct_test ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test test_binary_code_metadata ... ok
+test test_display_code_metadata ... ok
+test test_format_signed ... ok
+test test_display_unsigned ... ok
+test test_lower_hex_code_metadata ... ok
+test test_lower_hex_unsigned ... ok
+test test_lower_hex_signed ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 50 tests
+test impl_for_types::impl_array_vec::tests::test_nested_arrayvec_capacity_exceeded ... ok
+test impl_for_types::impl_array_vec::tests::test_top_arrayvec_i32 ... ok
+test impl_for_types::impl_array_vec::tests::test_top_arrayvec_capacity_exceeded ... ok
+test codec_convert::test::test_convert_add ... ok
+test impl_for_types::impl_array_vec::tests::test_nested_arrayvec_i32 ... ok
+test codec_convert::test::test_codec_convert_or_panic ... ok
+test impl_for_types::impl_bool::tests::test_dep ... ok
+test impl_for_types::impl_array_vec::tests::test_nested_arrayvec_capacity_exceeded_panic - should panic ... ok
+test impl_for_types::impl_bytes::tests::test_dep_encode ... ok
+test impl_for_types::impl_array_vec::tests::test_top_arrayvec_capacity_exceeded_panic - should panic ... ok
+test impl_for_types::impl_bytes::tests::test_dep_encode_empty ... ok
+test impl_for_types::impl_bool::tests::test_top ... ok
+test impl_for_types::impl_bytes::tests::test_top_encode_empty ... ok
+test impl_for_types::impl_empty::tests::test_dep_empty ... ok
+test impl_for_types::impl_empty::tests::test_dep_unit ... ok
+test impl_for_types::impl_empty::tests::test_empty_vec_compacted ... ok
+test impl_for_types::impl_empty::tests::test_top_empty ... ok
+test impl_for_types::impl_non_zero_usize::tests::test_dep ... ok
+test impl_for_types::impl_non_zero_usize::tests::test_top ... ok
+test impl_for_types::impl_num_signed::tests::test_dep ... ok
+test impl_for_types::impl_num_signed::tests::test_top ... ok
+test impl_for_types::impl_num_unsigned::tests::test_dep ... ok
+test impl_for_types::impl_num_unsigned::tests::test_top ... ok
+test impl_for_types::impl_option::tests::test_top ... ok
+test impl_for_types::impl_option::tests::test_top_none ... ok
+test impl_for_types::impl_phantom::tests::test_dep_struct ... ok
+test impl_for_types::impl_phantom::tests::test_dep_unit ... ok
+test impl_for_types::impl_phantom::tests::test_top_struct ... ok
+test impl_for_types::impl_phantom::tests::test_top_unit ... ok
+test impl_for_types::impl_rust_big_int::tests::test_dep ... ok
+test impl_for_types::impl_rust_big_int::tests::test_top ... ok
+test impl_for_types::impl_rust_big_uint::tests::test_dep ... ok
+test impl_for_types::impl_rust_big_uint::tests::test_top ... ok
+test impl_for_types::impl_string::tests::test_dep ... ok
+test impl_for_types::impl_string::tests::test_top ... ok
+test impl_for_types::impl_tuple::tests::test_dep ... ok
+test impl_for_types::impl_tuple::tests::test_top ... ok
+test impl_for_types::impl_vec::tests::test_top_vec_i32_compacted ... ok
+test impl_for_types::impl_vec::tests::test_top_vec_u8_compacted ... ok
+test num_conv::test::test_populate_buffer ... ok
+test num_conv::test::test_set_to_zero_unless ... ok
+test num_conv::test::test_skippable_byte ... ok
+test num_conv::test::test_top_encode_number ... ok
+test transmute::tests::test_boxed_slice_into_vec_0 ... ok
+test transmute::tests::test_boxed_slice_into_vec_1 ... ok
+test transmute::tests::test_vec_into_boxed_slice_0 ... ok
+test transmute::tests::test_vec_into_boxed_slice_1 ... ok
+test try_static_cast::test::test_try_static_cast_simple ... ok
+test try_static_cast::test::test_try_static_cast_with_generics ... ok
+test impl_for_types::impl_array::tests::test_array_16384 ... ok
+
+test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test bitflags_struct_derive_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test empty_struct_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test enum_defaults ... ok
+test enum_not_defaults ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test fieldless_enum ... ok
+test field_enum_variant_with_tuple ... ok
+test field_enum_struct_variant ... ok
+test field_enum_variant_with_value ... ok
+test enum_256_variants ... ok
+test field_enum_zero_value ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test fieldless_tricky_defaults ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test tricky_enum_defaults ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test struct_default ... ok
+test struct_or_default_not_default ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test struct_default ... ok
+test struct_or_default_not_default ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test struct_named_fields_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test struct_with_generic_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test tuple_struct_derive_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test test_top ... ok
+test test_dep ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test test_top ... ok
+test test_dep ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test test_struct_opt_field_1 ... ok
+test test_struct_opt_field_2 ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_top ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test format::format_parts::test_format_parts_multiple_chars_between_displays ... ok
+test format::format_parts::test_format_parts_single_char_delimiter ... ok
+test format::format_parts::test_format_parts_no_delimiter ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test cmd::scen_test_gen::stg_parse::tests::test_find_scenario_name ... ok
+test cmd::scen_test_gen::stg_section::tests::test_section_whitespace_1 ... ok
+test cmd::scen_test_gen::stg_section::tests::test_section_whitespace_2 ... ok
+test cmd::scen_test_gen::stg_section::tests::test_split_sections ... ok
+test cmd::template::copy_util::test::test_is_whitelisted ... ok
+test cmd::template::template_metadata::tests::test_template_metadata_parse ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+Uninstalling vadimcn.vscode-lldb...
+Extension 'vadimcn.vscode-lldb' was successfully uninstalled!
+Installing extensions...
+Installing extension 'vadimcn.vscode-lldb'...
+Extension 'vadimcn.vscode-lldb' v1.12.1 was successfully installed.
+test test_install_debugger ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.15s
+
+
+running 3 tests
+test process_new_code_go ... ok
+test process_code_go_1 ... ok
+test process_code_go_2 ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 9 tests
+test template_current_adder ... ignored
+test template_current_crypto_zombies ... ignored
+test template_current_empty ... ignored
+test template_current_ping_pong_rewa ... ignored
+test template_released_adder ... ignored
+test template_released_crypto_zombies ... ignored
+test template_released_empty ... ignored
+test test_correct_naming ... ignored
+test test_template_list ... ok
+
+test result: ok. 1 passed; 0 failed; 8 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+
+running 23 tests
+test contract::sc_config::contract_variant_settings::stack_size::tests::test_parse_stack_size_expr ... ok
+test abi_json::contract_abi_json::tests::decode_minimal_contract_abi ... ok
+test version_history::tests::compare_versions_test ... ok
+test contract::sc_config::contract_variant_validate::tests::validate_endpoint_var_args_order_test ... ok
+test contract::sc_config::contract_variant_validate::tests::validate_endpoint_var_args_number_test ... ok
+test version_history::tests::framework_version_test ... ok
+test version_history::tests::template_versions_test ... ok
+test version_history::tests::template_versions_with_autogenerated_json_test ... ok
+test version_history::tests::template_versions_with_autogenerated_wasm_test ... ok
+test version_history::tests::find_version_by_str_test ... ok
+test version_history::tests::framework_version_display_test ... ok
+test cargo_toml::cargo_toml_contents::tests::test_change_from_base_to_adapter_path ... ok
+test contract::meta_config::tests::test_generate_cargo ... ok
+test cargo_toml::cargo_toml_contents::tests::test_dependency_value ... ok
+test tools::wasm_extractor::extractor_tests::tests::test_data_drop ... ok
+test tools::wasm_extractor::extractor_tests::tests::test_memory_copy ... ok
+test tools::wasm_extractor::extractor_tests::tests::test_memory_fill ... ok
+test contract::generate_proxy::proxy_generator::tests::clean_paths_sanitized_test ... ok
+test contract::generate_proxy::proxy_generator::tests::clean_paths_unsanitized_test ... ok
+test tools::wasm_extractor::extractor_tests::tests::test_empty ... ok
+test tools::wasm_extractor::extractor_tests::tests::test_empty_with_fail_allocator ... ok
+test tools::wasm_extractor::extractor_tests::tests::test_adder_with_write_op_in_view ... ok
+test tools::wasm_extractor::extractor_tests::tests::test_empty_with_mem_grow ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 5 tests
+test test_added_names_ei_1_3 ... ok
+test test_added_names_ei_1_2 ... ok
+test test_added_names_ei_1_1 ... ok
+test test_added_names_ei_1_4 ... ok
+test test_added_names_ei_1_5 ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test test_serialize_multi_contract ... ok
+test test_sc_config ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_price_aggregator_discarded_round ... ok
+test test_price_aggregator_slashing ... ok
+test test_price_aggregator_submit_round_ok ... ok
+test test_price_aggregator_submit ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test price_aggregator_stress_submit_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_price_aggregator_submit ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+
+running 4 tests
+test test_price_aggregator_discarded_round ... ok
+test test_price_aggregator_submit_round_ok ... ok
+test test_price_aggregator_slashing ... ok
+test test_price_aggregator_submit ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test executor::debug::contract_debug_instance_state::test::test_mem_ptr_conversion ... ok
+test facade::expr::drtsc_path::tests::test_address_value ... ok
+test scenario::model::value::value_checkable::tests::check_u64 ... ok
+test scenario::model::value::value_checkable::tests::check_bytes ... ok
+test scenario::run_vm::executor_config::tests::executor_config_flatten_test ... ok
+test scenario::run_vm::executor_config::tests::executor_config_full_suite ... ok
+test scenario::run_vm::executor_config::tests::executor_config_then_test ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test test_address_eq ... ok
+test test_sc_address_eq ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test big_float_overflow_test_rs ... ok
+test big_float_ln_test_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_big_int_add ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_big_uint_ln ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test contract_without_macros_basic ... ok
+test contract_without_macros_scenario ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 2 tests
+test dcdt_token_payment_backwards_compatibility_decode_real_data ... ok
+test dcdt_token_payment_backwards_compatibility_decode ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test struct_with_numbers_static ... ok
+test managed_struct_to_bytes_writer ... ok
+test managed_struct_from_bytes_reader ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test struct_with_numbers_static ... ok
+test struct_to_bytes_writer ... ok
+test struct_from_bytes_reader ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test struct_with_decimal_static ... ok
+test struct_with_decimal_read_write ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test enum_from_bytes_reader_variant_1 ... ok
+test enum_from_bytes_reader_variant_2 ... ok
+test enum_static ... ok
+test enum_from_bytes_reader_variant_3 ... ok
+test enum_to_bytes_writer_variant_1 ... ok
+test enum_to_bytes_writer_variant_2 ... ok
+test enum_to_bytes_writer_variant_3 ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test enum_static ... ok
+test enum_to_bytes_writer_variant_2 ... ok
+test enum_from_bytes_reader_variant_2 ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test enum_from_bytes_reader ... ok
+test enum_static ... ok
+test enum_to_bytes_writer ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test struct_1_static ... ok
+test struct_1_encode_decode_skips_reserialization ... ok
+test struct_1_from_bytes_reader ... ok
+test struct_1_to_bytes_writer ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test struct_2_static ... ok
+test struct_2_from_bytes_reader ... ok
+test struct_to_bytes_writer ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test struct_3_static ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 10 tests
+test test_opt_multi_arg_2 ... ok
+test test_multi_arg_2 ... ok
+test test_async_call_result_ok2 ... ok
+test test_simple_args ... ok
+test test_async_call_result_ok ... ok
+test test_var_args ... ok
+test test_async_call_result_err ... ok
+test test_var_multi_arg_2 ... ok
+test test_simple_vec_arg ... ok
+test test_simple_managed_arg ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test read_to_end_codec_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 8 tests
+test test_man_buf_serialization ... ok
+test test_man_address_serialization ... ok
+test test_vec_of_man_buf_serialization ... ok
+test test_managed_vec_of_man_address_serialization ... ok
+test test_big_uint_serialization ... ok
+test test_big_int_serialization ... ok
+test test_vec_of_big_uint_serialization ... ok
+test test_vec_of_big_int_serialization ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 27 tests
+test test_managed_decimal_mul_mix_decimals_type_reverse ... ok
+test test_managed_decimal_rescale_down_2 ... ok
+test test_division_managed_decimal_signed ... ok
+test test_managed_decimal_conversion ... ok
+test test_managed_decimal_mul_mix_decimals_type ... ok
+test test_managed_decimal_macros ... ok
+test test_managed_decimal_div_mix_decimals_type ... ok
+test test_managed_decimal_mixed ... ok
+test test_managed_decimal_rescale_down_1 ... ok
+test test_managed_decimal_from_big_float ... ok
+test test_managed_decimal ... ok
+test test_addition_managed_decimal_signed ... ok
+test test_encode_decode ... ok
+test test_managed_decimal_div_mix_decimals_type_reverse ... ok
+test test_managed_decimal_rescale_unchanged ... ok
+test test_managed_decimal_log2 ... ok
+test test_managed_decimal_ln ... ok
+test test_managed_decimal_signed_rescale_down_1 ... ok
+test test_managed_decimal_rescale_down_3 ... ok
+test test_managed_decimal_signed_rescale_down_2 ... ok
+test test_managed_decimal_rescale_up ... ok
+test test_managed_decimal_signed_rescale_unchanged ... ok
+test test_managed_decimal_signed_rescale_down_3 ... ok
+test test_multiplication_managed_decimal_signed ... ok
+test test_managed_decimal_signed_rescale_up ... ok
+test test_rescale_managed_decimal_signed ... ok
+test test_subtraction_managed_decimal_signed ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test managed_map_encoded_big_test ... ok
+test managed_map_encoded_int_test ... ok
+test managed_map_encoded_opt_struct_test ... ok
+test managed_map_encoded_struct_or_default_test ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_none ... ok
+test test_unwrap ... ok
+test test_map ... ok
+test test_some ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test test_managed_ref_clone ... ok
+test test_managed_ref_eq ... ok
+test test_managed_ref ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+test test_managed_address_pretty ... ok
+test test_managed_address ... ok
+test test_managed_buffer ... ok
+test test_managed_byte_array ... ok
+test test_managed_vec_format_rewa_or_dcdt ... ok
+test test_big_uint_format ... ok
+test test_big_int_format_1 ... ok
+test test_big_int_format_2 ... ok
+test test_managed_vec_format_biguint ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 32 tests
+test test_managed_vec_extend_trait ... ok
+test test_managed_vec_from_iterator_trait ... ok
+test test_managed_from ... ok
+test test_dedup_u64 ... ok
+test test_is_single_item ... ok
+test test_managed_vec_get_mut ... ok
+test test_dedup_biguint ... ok
+test test_managed_vec_iter_exact_size_trait ... ok
+test test_into_vec ... ok
+test test_append_vec ... ok
+test test_managed_vec_iter_rev ... ok
+test test_overwrite_with_single_item ... ok
+test test_sort_by_key_u64 ... ok
+test test_sort_by_key_biguint ... ok
+test test_sort_by_cached_key_biguint ... ok
+test test_sort_by_cached_key_u64 ... ok
+test test_sort_by_u64 ... ok
+test test_sort_biguint ... ok
+test test_sort_u64 ... ok
+test test_sort_unstable_u64 ... ok
+test test_sort_by_biguint ... ok
+test test_take_u64 ... ok
+test test_sort_unstable_by_key_biguint ... ok
+test test_sort_unstable_biguint ... ok
+test test_to_array_of_refs ... ok
+test test_sorted_dedup_u64 ... ok
+test test_sort_unstable_by_key_u64 ... ok
+test test_with_self_as_vec ... ok
+test test_sorted_dedup_biguint ... ok
+test test_sort_unstable_by_u64 ... ok
+test test_take_biguint ... ok
+test test_sort_unstable_by_biguint ... ok
+
+test result: ok. 32 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test multi_transfer_with_rewa_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test test_multi_value5_ne_test ... ok
+test test_multi_value5_eq_test ... ok
+test test_multi_value_encoded_5 ... ok
+test test_multi_value_encoded_1 ... ok
+test test_multi_value5_from_iterator_trait ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test local_path_test ... ok
+test nested_path_test ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 3 tests
+test test_scenario_low_to_low_ser_de ... ok
+test test_scenario_low_to_high_ser_de ... ok
+test test_scenario_high_to_high_ser_de ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 32 tests
+test multi_transfer_rewa_rs ... ignored, TODO: not yet implemented in Rust VM
+test set_account_addr_len_err2_rs - should panic ... ok
+test set_account_addr_len_err1_rs - should panic ... ok
+test set_account_sc_addr_err3_rs - should panic ... ok
+test set_account_sc_addr_err2_rs - should panic ... ok
+test set_account_sc_addr_err1_rs - should panic ... ok
+test set_check_code ... ok
+test external_steps_rs ... ok
+test set_check_codemetadata_err_rs - should panic ... ok
+test set_check_nonce_err_rs - should panic ... ok
+test set_check_balance_err_rs - should panic ... ok
+test set_check_balance_rs ... ok
+test dcdt_zero_balance_check_err_rs - should panic ... ok
+test set_check_codemetadata ... ok
+test dcdt_non_zero_balance_check_err_rs - should panic ... ok
+test set_check_dcdt_rs ... ok
+test set_check_storage_err1_rs - should panic ... ok
+test set_check_storage_err2_rs - should panic ... ok
+test set_check_nonce_rs ... ok
+test set_check_storage_err3_rs - should panic ... ok
+test set_check_storage_err4_rs - should panic ... ok
+test set_check_storage_err5_rs - should panic ... ok
+test set_check_storage_rs ... ok
+test set_check_username_err_rs - should panic ... ok
+test set_check_username_rs ... ok
+test multi_transfer_dcdt_rs ... ok
+test builtin_func_dcdt_transfer ... ok
+test transfer_rewa_rs ... ok
+test validator_reward_rs ... ok
+test set_check_dcdt_err_rs - should panic ... ok
+test transfer_dcdt_rs ... ok
+test set_check_code_err_rs - should panic ... ok
+
+test result: ok. 31 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 1 test
+test single_tx_api_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_lock_2 ... ok
+test test_lock_unlock ... ok
+test test_extend_past_buffer_limits ... ok
+test test_try_extend_from_slice ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test test_hash_set_simple_1 ... ok
+test test_set_removal_by_value ... ok
+test test_set_removal_by_id ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test test_map_remove ... ok
+test test_map_simple ... ok
+test test_map_clear ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test test_map_storage_simple ... ok
+test test_map_storage_clear ... ok
+test test_map_storage_remove ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test test_set_at_address ... ok
+test test_set_clear ... ok
+test test_hash_set_simple ... ok
+test test_set_removal ... ok
+test test_set_removal_from_middle ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test test_hash_set_simple ... ok
+test test_set_removal ... ok
+test test_set_clear ... ok
+test test_swap_indexes ... ok
+test test_swap_indexes_equal ... ok
+test test_set_removal_from_middle ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_list_clear ... ok
+test test_list_iter_processing ... ok
+test test_list_simple ... ok
+test test_list_pop ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_print_api ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_queue_clear ... ok
+test test_queue_simple ... ok
+test test_queue_iter_processing ... ok
+test test_queue_pop ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test test_vec_clear ... ok
+test test_vec_clear_entries ... ok
+test test_vec_iter_processing ... ok
+test test_vec_simple ... ok
+test test_vec_swap_remove ... ok
+test test_vec_update ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 8 tests
+test test_rewa ... ok
+test test_is_valid_rewa_or_dcdt ... ok
+test test_managed_token_id_macro ... ok
+test test_is_valid_dcdt_identifier ... ok
+test test_ticker ... ok
+test test_token_identifier_eq ... ok
+test test_codec ... ok
+test test_payment_eq ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test multi_decode_from_api_response ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 7 tests
+test test_tx_call_normalize_single_dcdt_token_fungible ... ok
+test test_tx_call_normalize_single_dcdt_token ... ok
+test test_tx_call_normalize_single_dcdt_token_non_fungible ... ok
+test test_tx_call_normalize_single_rewa_000000 ... ok
+test test_tx_call_normalize_multi_dcdt_2 ... ok
+test test_tx_call_normalize_multi_dcdt_1 ... ok
+test test_contract_call_multi_dcdt_deprecated ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test interactor::interactor_dns::test_dns_for_name ... ok
+test interactor::interactor_dns::test_compute_dns_address ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test test_deployed_address_should_be_none_if_not_a_sc_deployment_tx ... ok
+test test_deployed_address ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test test_process_issued_token_identifier_fungible ... ok
+test test_process_issued_token_identifier_meta_dcdt ... ok
+test test_set_special_roles_should_not_process_issued_token_identifier ... ok
+test test_multisig_issue_nft_and_set_all_roles ... ok
+test test_process_issued_token_identifier_semi_fungible ... ok
+test test_process_issued_token_identifier_non_fungible ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_tx_multiple_logs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_with_multi_contract_same_shard_tx_that_has_no_sc_result ... ok
+test test_with_multi_contract_cross_shard_tx_that_has_non_returning_callback ... ok
+test test_with_multi_contract_cross_shard_tx_that_has_returning_callback ... ok
+test test_with_multi_contract_cross_shard_tx_that_has_no_callback ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_transaction_multiple_sc_results ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test test_with_tx_that_has_no_sc_result ... ok
+test test_tx_sc_results_with_no_data ... ok
+test test_with_tx_that_has_sc_result ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test wrap_rewa_go ... ok
+test unwrap_rewa_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test wrap_rewa_rs ... ok
+test unwrap_rewa_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test data::transaction::test::parse_event_log_1 ... ok
+test data::transaction::test::parse_event_log_2 ... ok
+test data::transaction::test::parse_event_log_0 ... ok
+test data::transaction::test::parse_transaction_info_no_signature ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test parse_reason_empty_test ... ok
+test parse_reason_only_message_test ... ok
+test parse_reason_invalid_contract_test ... ok
+test parse_reason_sc_panic_test ... ok
+test parse_reason_test ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test test_load_from_pem ... ok
+test test_get_shard ... ok
+test test_private_key_from_mnemonic ... ok
+test test_wallet_convert_keystore_to_pem ... ok
+test test_wallet_convert_pem_to_keystore ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.75s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test get_network_config_test ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 14 tests
+test claim_dcdt_go ... ok
+test pay_fee_and_fund_dcdt_single_go ... ok
+test forward_go ... ok
+test claim_fees_go ... ok
+test fund_rewa_and_dcdt_go ... ok
+test set_accounts_go ... ok
+test claim_multi_dcdt_go ... ok
+test whitelist_blacklist_fee_token_go ... ok
+test claim_rewa_go ... ok
+test withdraw_dcdt_go ... ok
+test pay_fee_and_fund_dcdt_multiple_go ... ok
+test withdraw_rewa_go ... ok
+test pay_fee_and_fund_rewa_go ... ok
+test withdraw_multi_dcdt_go ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 14 tests
+test set_accounts_rs ... ok
+test pay_fee_and_fund_dcdt_multiple_rs ... ok
+test whitelist_blacklist_fee_token_rs ... ok
+test withdraw_dcdt_rs ... ok
+test pay_fee_and_fund_rewa_rs ... ok
+test pay_fee_and_fund_dcdt_single_rs ... ok
+test fund_rewa_and_dcdt_rs ... ok
+test withdraw_rewa_rs ... ok
+test withdraw_multi_dcdt_rs ... ok
+test claim_dcdt_rs ... ok
+test claim_multi_dcdt_rs ... ok
+test claim_fees_rs ... ok
+test claim_rewa_rs ... ok
+test forward_rs ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test empty_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test empty_rs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 23 tests
+test create_two_tokens_both_fungible_different_creator_go ... ok
+test create_one_fungible_one_non_fungible_go ... ok
+test create_two_tokens_both_non_fungible_same_creator_go ... ok
+test batch_transfer_both_types_go ... ok
+test burn_non_fungible_go ... ok
+test burn_fungible_go ... ok
+test create_two_tokens_both_fungible_same_creator_go ... ok
+test create_token_non_fungible_go ... ok
+test batch_transfer_non_fungible_go ... ok
+test batch_transfer_both_types_to_sc_go ... ok
+test deploy_go ... ok
+test batch_transfer_fungible_to_sc_go ... ok
+test create_token_fungible_go ... ok
+test batch_transfer_fungible_go ... ok
+test batch_transfer_non_fungible_to_sc_go ... ok
+test mint_fungible_go ... ok
+test mint_non_fungible_go ... ok
+test mint_not_creator_go ... ok
+test transfer_fungible_not_enough_balance_go ... ok
+test transfer_fungible_ok_go ... ok
+test transfer_fungible_ok_to_sc_go ... ok
+test transfer_non_fungible_ok_go ... ok
+test transfer_non_fungible_ok_to_sc_go ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 23 tests
+test deploy_rs ... ok
+test create_token_non_fungible_rs ... ok
+test create_two_tokens_both_fungible_different_creator_rs ... ok
+test mint_fungible_rs ... ok
+test burn_fungible_rs ... ok
+test create_two_tokens_both_fungible_same_creator_rs ... ok
+test create_one_fungible_one_non_fungible_rs ... ok
+test create_two_tokens_both_non_fungible_same_creator_rs ... ok
+test burn_non_fungible_rs ... ok
+test batch_transfer_fungible_rs ... ok
+test batch_transfer_both_types_rs ... ok
+test batch_transfer_fungible_to_sc_rs ... ok
+test batch_transfer_non_fungible_rs ... ok
+test batch_transfer_both_types_to_sc_rs ... ok
+test create_token_fungible_rs ... ok
+test batch_transfer_non_fungible_to_sc_rs ... ok
+test transfer_fungible_ok_rs ... ok
+test transfer_non_fungible_ok_rs ... ok
+test transfer_non_fungible_ok_to_sc_rs ... ok
+test mint_not_creator_rs ... ok
+test transfer_fungible_ok_to_sc_rs ... ok
+test mint_non_fungible_rs ... ok
+test transfer_fungible_not_enough_balance_rs ... ok
+
+test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test auction_single_token_rewa_go ... ok
+test end_auction_go ... ok
+test bid_third_rewa_go ... ok
+test auction_batch_go ... ok
+test bid_second_rewa_go ... ok
+test bid_first_rewa_go ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test auction_single_token_rewa_rs ... ok
+test auction_batch_rs ... ok
+test bid_first_rewa_rs ... ok
+test bid_second_rewa_rs ... ok
+test bid_third_rewa_rs ... ok
+test end_auction_rs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 57 tests
+test allowance_caller_other_go ... ok
+test approve_other_zero_go ... ok
+test approve_switch_caller_go ... ok
+test approve_caller_positive_go ... ok
+test allowance_caller_caller_go ... ok
+test total_supply_positive_go ... ok
+test approve_caller_zero_go ... ok
+test balance_of_non_caller_go ... ok
+test not_payable_dcdt_go ... ok
+test allowance_other_n_eq_other_go ... ok
+test transfer_caller_allowance_irrelevant_go ... ok
+test balance_of_caller_go ... ok
+test total_supply_zero_go ... ok
+test not_payable_go ... ok
+test approve_other_positive_go ... ok
+test allowance_other_eq_other_go ... ok
+test allowance_other_caller_go ... ok
+test transfer_caller_entire_balance_go ... ok
+test transfer_caller_more_than_balance_go ... ok
+test transfer_caller_no_overflow_go ... ok
+test transfer_caller_positive_go ... ok
+test transfer_caller_still_no_overflow_go ... ok
+test transfer_caller_zero_go ... ok
+test transfer_from_all_distinct_balance_eq_allowance_go ... ok
+test transfer_from_all_distinct_balance_n_eq_allowance_go ... ok
+test transfer_from_all_distinct_entire_allowance_more_than_balance_go ... ok
+test transfer_from_all_distinct_entire_balance_eq_allowance_go ... ok
+test transfer_from_all_distinct_entire_balance_more_than_allowance_go ... ok
+test transfer_from_all_distinct_more_than_allowance_less_than_balance_go ... ok
+test transfer_from_all_distinct_more_than_balance_less_than_allowance_go ... ok
+test transfer_from_all_distinct_no_overflow_go ... ok
+test transfer_from_all_distinct_still_no_overflow_go ... ok
+test transfer_from_all_equal_allowance_relevant_go ... ok
+test transfer_from_all_equal_entire_balance_go ... ok
+test transfer_from_caller_eq_from_allowance_relevant_go ... ok
+test transfer_from_caller_eq_from_entire_balance_go ... ok
+test transfer_from_caller_eq_from_more_than_balance_go ... ok
+test transfer_from_caller_eq_to_balance_n_eq_allowance_go ... ok
+test transfer_from_caller_eq_to_more_than_allowance_less_than_balance_go ... ok
+test transfer_from_caller_eq_to_more_than_balance_less_than_allowance_go ... ok
+test transfer_from_exploratory_multiple_transfers_succeed_go ... ok
+test transfer_from_exploratory_multiple_transfers_throw_go ... ok
+test transfer_from_from_eq_to_balance_eq_allowance_go ... ok
+test transfer_from_from_eq_to_balance_n_eq_allowance_go ... ok
+test transfer_from_from_eq_to_entire_allowance_more_than_balance_go ... ok
+test transfer_from_from_eq_to_entire_balance_eq_allowance_go ... ok
+test transfer_from_from_eq_to_entire_balance_more_than_allowance_go ... ok
+test transfer_from_from_eq_to_more_than_allowance_less_than_balance_go ... ok
+test transfer_from_from_eq_to_more_than_balance_less_than_allowance_go ... ok
+test transfer_from_from_eq_to_no_overflow_go ... ok
+test transfer_other_allowance_irrelevant_go ... ok
+test transfer_other_entire_balance_go ... ok
+test transfer_other_more_than_balance_go ... ok
+test transfer_other_no_overflow_go ... ok
+test transfer_other_positive_go ... ok
+test transfer_other_still_no_overflow_go ... ok
+test transfer_other_zero_go ... ok
+
+test result: ok. 57 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 57 tests
+test allowance_caller_other_rs ... ok
+test total_supply_zero_rs ... ok
+test balance_of_caller_rs ... ok
+test total_supply_positive_rs ... ok
+test approve_other_zero_rs ... ok
+test balance_of_non_caller_rs ... ok
+test allowance_other_eq_other_rs ... ok
+test approve_other_positive_rs ... ok
+test approve_switch_caller_rs ... ok
+test not_payable_rs ... ok
+test approve_caller_zero_rs ... ok
+test allowance_caller_caller_rs ... ok
+test allowance_other_n_eq_other_rs ... ok
+test allowance_other_caller_rs ... ok
+test not_payable_dcdt_rs ... ok
+test approve_caller_positive_rs ... ok
+test transfer_caller_zero_rs ... ok
+test transfer_from_all_distinct_balance_n_eq_allowance_rs ... ok
+test transfer_caller_entire_balance_rs ... ok
+test transfer_from_all_distinct_balance_eq_allowance_rs ... ok
+test transfer_caller_no_overflow_rs ... ok
+test transfer_caller_still_no_overflow_rs ... ok
+test transfer_caller_allowance_irrelevant_rs ... ok
+test transfer_from_all_distinct_entire_balance_eq_allowance_rs ... ok
+test transfer_from_all_distinct_entire_allowance_more_than_balance_rs ... ok
+test transfer_caller_more_than_balance_rs ... ok
+test transfer_from_all_distinct_more_than_allowance_less_than_balance_rs ... ok
+test transfer_from_all_distinct_no_overflow_rs ... ok
+test transfer_from_all_distinct_more_than_balance_less_than_allowance_rs ... ok
+test transfer_caller_positive_rs ... ok
+test transfer_from_all_distinct_entire_balance_more_than_allowance_rs ... ok
+test transfer_from_all_distinct_still_no_overflow_rs ... ok
+test transfer_from_caller_eq_from_more_than_balance_rs ... ok
+test transfer_from_caller_eq_to_more_than_allowance_less_than_balance_rs ... ok
+test transfer_from_caller_eq_to_more_than_balance_less_than_allowance_rs ... ok
+test transfer_from_all_equal_allowance_relevant_rs ... ok
+test transfer_from_caller_eq_to_balance_n_eq_allowance_rs ... ok
+test transfer_from_caller_eq_from_entire_balance_rs ... ok
+test transfer_from_all_equal_entire_balance_rs ... ok
+test transfer_from_exploratory_multiple_transfers_succeed_rs ... ok
+test transfer_from_from_eq_to_entire_allowance_more_than_balance_rs ... ok
+test transfer_from_from_eq_to_balance_n_eq_allowance_rs ... ok
+test transfer_from_caller_eq_from_allowance_relevant_rs ... ok
+test transfer_from_from_eq_to_balance_eq_allowance_rs ... ok
+test transfer_from_exploratory_multiple_transfers_throw_rs ... ok
+test transfer_from_from_eq_to_entire_balance_eq_allowance_rs ... ok
+test transfer_from_from_eq_to_entire_balance_more_than_allowance_rs ... ok
+test transfer_from_from_eq_to_more_than_allowance_less_than_balance_rs ... ok
+test transfer_other_positive_rs ... ok
+test transfer_other_allowance_irrelevant_rs ... ok
+test transfer_other_no_overflow_rs ... ok
+test transfer_other_zero_rs ... ok
+test transfer_other_still_no_overflow_rs ... ok
+test transfer_other_more_than_balance_rs ... ok
+test transfer_from_from_eq_to_more_than_balance_less_than_allowance_rs ... ok
+test transfer_other_entire_balance_rs ... ok
+test transfer_from_from_eq_to_no_overflow_rs ... ok
+
+test result: ok. 57 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.41s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 17 tests
+test nft_approve_ok_go ... ok
+test nft_revoke_non_approved_go ... ok
+test nft_mint_more_tokens_caller_not_owner_go ... ok
+test nft_transfer_non_existent_token_go ... ok
+test nft_transfer_ok_go ... ok
+test nft_transfer_token_not_owner_no_approval_to_other_go ... ok
+test nft_approve_non_owned_token_go ... ok
+test nft_transfer_token_not_owner_no_approval_to_caller_go ... ok
+test nft_transfer_not_owned_not_approved_token_go ... ok
+test nft_mint_more_tokens_receiver_acc_1_go ... ok
+test nft_mint_more_tokens_receiver_owner_go ... ok
+test nft_approve_non_existent_token_go ... ok
+test nft_revoke_ok_go ... ok
+test nft_transfer_approved_token_go ... ok
+test nft_transfer_token_after_revoked_go ... ok
+test nft_init_go ... ok
+test nft_transfer_token_ok_go ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 17 tests
+test nft_init_rs ... ok
+test nft_revoke_non_approved_rs ... ok
+test nft_transfer_approved_token_rs ... ok
+test nft_transfer_ok_rs ... ok
+test nft_transfer_non_existent_token_rs ... ok
+test nft_transfer_not_owned_not_approved_token_rs ... ok
+test nft_transfer_token_not_owner_no_approval_to_caller_rs ... ok
+test nft_approve_non_owned_token_rs ... ok
+test nft_transfer_token_not_owner_no_approval_to_other_rs ... ok
+test nft_approve_non_existent_token_rs ... ok
+test nft_mint_more_tokens_caller_not_owner_rs ... ok
+test nft_transfer_token_after_revoked_rs ... ok
+test nft_mint_more_tokens_receiver_acc_1_rs ... ok
+test nft_approve_ok_rs ... ok
+test nft_revoke_ok_rs ... ok
+test nft_mint_more_tokens_receiver_owner_rs ... ok
+test nft_transfer_token_ok_rs ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test exchange_features_blackbox_raw ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test factorial_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test factorial_rs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 1 test
+test test_factorial ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test sc_format_go ... ok
+test managed_error_message_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test sc_format_rs ... ok
+test managed_error_message_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 4 tests
+test test_print_hex ... ok
+test test_print_binary ... ok
+test test_print_ascii ... ok
+test test_print_codecs ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test deploy_test_forwarder_cs ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test builtin_func_tokens_test ... ignored, run on demand
+test change_to_dynamic_test ... ignored, run on demand
+test deploy_test_forwarder ... ignored, run on demand, relies on real blockchain state
+test modify_creator ... ignored, run on demand
+test update_token_test ... ignored, run on demand
+
+test result: ok. 0 passed; 0 failed; 5 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test builtin_func_go ... ignored, missing 'newTokenIdentifiers' syntax
+test change_to_dynamic_go ... ignored, missing 'newTokenIdentifiers' syntax
+test modify_creator_go ... ignored, missing 'newTokenIdentifiers' syntax
+test update_token_go ... ignored, missing 'newTokenIdentifiers' syntax
+test deploy_go ... ok
+
+test result: ok. 1 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test generation_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 16 tests
+test create_sale_auction_not_owner_go ... ok
+test create_and_auction_gen_zero_kitty_go ... ok
+test bid_second_too_low_go ... ok
+test end_auction_no_bids_go ... ok
+test create_siring_auction_not_owner_go ... ok
+test create_sale_auction_ok_go ... ok
+test end_auction_second_bid_ok_late_go ... ok
+test create_siring_auction_ok_go ... ok
+test end_siring_auction_go ... ok
+test end_auction_second_bid_ok_early_go ... ok
+test init_go ... ok
+test bid_first_go ... ok
+test end_auction_second_bid_max_early_go ... ok
+test bid_siring_auction_go ... ok
+test bid_second_max_go ... ok
+test bid_second_ok_go ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 16 tests
+test init_rs ... ok
+test create_and_auction_gen_zero_kitty_rs ... ok
+test bid_first_rs ... ok
+test end_auction_no_bids_rs ... ok
+test bid_second_max_rs ... ok
+test bid_second_ok_rs ... ok
+test end_auction_second_bid_max_early_rs ... ok
+test create_siring_auction_not_owner_rs ... ok
+test end_auction_second_bid_ok_early_rs ... ok
+test create_siring_auction_ok_rs ... ok
+test create_sale_auction_ok_rs ... ok
+test end_auction_second_bid_ok_late_rs ... ok
+test bid_second_too_low_rs ... ok
+test bid_siring_auction_rs ... ok
+test create_sale_auction_not_owner_rs ... ok
+test end_siring_auction_rs ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test generate_kitty_genes_go ... ok
+test init_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test init_rs ... ok
+test generate_kitty_genes_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test setup_accounts_go ... ok
+test init_go ... ok
+test give_birth_go ... ok
+test query_go ... ok
+test approve_siring_go ... ok
+test breed_ok_go ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test init_rs ... ok
+test setup_accounts_rs ... ok
+test query_rs ... ok
+test approve_siring_rs ... ok
+test breed_ok_rs ... ok
+test give_birth_rs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test large_storage_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test large_storage_rs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test linked_list_repeat_struct_blackbox_raw ... ok
+test linked_list_repeat_blackbox_raw ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 2 tests
+test linked_list_repeat_struct_go ... ok
+test linked_list_repeat_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test linked_list_repeat_rs ... ok
+test linked_list_repeat_struct_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 30 tests
+test buy_ticket_after_deadline_go ... ok
+test buy_more_tickets_than_allowed_go ... ok
+test buy_all_tickets_different_accounts_go ... ok
+test buy_ticket_after_determined_winner_go ... ok
+test buy_ticket_all_options_go ... ok
+test buy_ticket_after_sold_out_go ... ok
+test buy_ticket_another_account_go ... ok
+test buy_ticket_go ... ok
+test buy_ticket_not_on_whitelist_go ... ok
+test buy_ticket_same_account_go ... ok
+test buy_ticket_second_lottery_go ... ok
+test buy_ticket_wrong_fee_go ... ok
+test complex_prize_distribution_go ... ok
+test determine_winner_different_ticket_holders_winner_acc_1_go ... ok
+test determine_winner_early_go ... ok
+test determine_winner_same_ticket_holder_go ... ok
+test determine_winner_split_prize_pool_go ... ok
+test lottery_init_go ... ok
+test lottery_with_burn_percentage_go ... ok
+test start_after_announced_winner_go ... ok
+test start_all_options_bigger_whitelist_go ... ok
+test start_alternative_function_name_go ... ok
+test start_fixed_deadline_go ... ok
+test start_limited_tickets_and_fixed_deadline_go ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_deadline_go ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_ticket_price_arg_go ... ok
+test start_limited_tickets_go ... ok
+test start_second_lottery_go ... ok
+test start_with_all_options_go ... ok
+test start_with_no_options_go ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 30 tests
+test complex_prize_distribution_rs ... ignored
+test determine_winner_split_prize_pool_rs ... ignored, NOT SUPPORTED YET
+test lottery_init_rs ... ok
+test determine_winner_same_ticket_holder_rs ... ok
+test buy_ticket_rs ... ok
+test buy_ticket_not_on_whitelist_rs ... ok
+test buy_ticket_after_deadline_rs ... ok
+test buy_ticket_all_options_rs ... ok
+test buy_ticket_second_lottery_rs ... ok
+test buy_all_tickets_different_accounts_rs ... ok
+test buy_ticket_another_account_rs ... ok
+test buy_more_tickets_than_allowed_rs ... ok
+test buy_ticket_after_sold_out_rs ... ok
+test determine_winner_early_rs ... ok
+test determine_winner_different_ticket_holders_winner_acc_1_rs ... ok
+test buy_ticket_after_determined_winner_rs ... ok
+test buy_ticket_wrong_fee_rs ... ok
+test buy_ticket_same_account_rs ... ok
+test start_all_options_bigger_whitelist_rs ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_deadline_rs ... ok
+test start_with_all_options_rs ... ok
+test start_limited_tickets_rs ... ok
+test start_fixed_deadline_rs ... ok
+test start_alternative_function_name_rs ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_ticket_price_arg_rs ... ok
+test lottery_with_burn_percentage_rs ... ok
+test start_limited_tickets_and_fixed_deadline_rs ... ok
+test start_second_lottery_rs ... ok
+test start_after_announced_winner_rs ... ok
+test start_with_no_options_rs ... ok
+
+test result: ok. 28 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 28 tests
+test determine_winner_split_prize_pool_go ... ignored
+test buy_more_tickets_than_allowed_go ... ok
+test buy_ticket_go ... ok
+test buy_ticket_another_account_go ... ok
+test buy_ticket_same_account_go ... ok
+test buy_ticket_after_determined_winner_go ... ok
+test buy_ticket_second_lottery_go ... ok
+test determine_winner_different_ticket_holders_winner_acc_1_go ... ok
+test buy_ticket_after_sold_out_go ... ok
+test buy_ticket_after_deadline_go ... ok
+test determine_winner_early_go ... ok
+test determine_winner_same_ticket_holder_go ... ok
+test buy_ticket_not_on_whitelist_go ... ok
+test buy_ticket_all_options_go ... ok
+test lottery_init_go ... ok
+test buy_ticket_wrong_fee_go ... ok
+test start_after_announced_winner_go ... ok
+test start_alternative_function_name_go ... ok
+test buy_all_tickets_different_accounts_go ... ok
+test start_all_options_bigger_whitelist_go ... ok
+test start_fixed_deadline_go ... ok
+test start_limited_tickets_and_fixed_deadline_go ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_deadline_go ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_ticket_price_arg_go ... ok
+test start_limited_tickets_go ... ok
+test start_second_lottery_go ... ok
+test start_with_all_options_go ... ok
+test start_with_no_options_go ... ok
+
+test result: ok. 27 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 28 tests
+test determine_winner_split_prize_pool_rs ... ignored
+test lottery_init_rs ... ok
+test buy_ticket_wrong_fee_rs ... ok
+test buy_ticket_all_options_rs ... ok
+test buy_ticket_not_on_whitelist_rs ... ok
+test buy_ticket_second_lottery_rs ... ok
+test buy_ticket_rs ... ok
+test buy_more_tickets_than_allowed_rs ... ok
+test determine_winner_early_rs ... ok
+test buy_all_tickets_different_accounts_rs ... ok
+test buy_ticket_another_account_rs ... ok
+test buy_ticket_same_account_rs ... ok
+test determine_winner_different_ticket_holders_winner_acc_1_rs ... ok
+test buy_ticket_after_sold_out_rs ... ok
+test determine_winner_same_ticket_holder_rs ... ok
+test buy_ticket_after_determined_winner_rs ... ok
+test buy_ticket_after_deadline_rs ... ok
+test start_alternative_function_name_rs ... ok
+test start_all_options_bigger_whitelist_rs ... ok
+test start_after_announced_winner_rs ... ok
+test start_with_no_options_rs ... ok
+test start_with_all_options_rs ... ok
+test start_limited_tickets_rs ... ok
+test start_fixed_deadline_rs ... ok
+test start_limited_tickets_and_fixed_deadline_rs ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_ticket_price_arg_rs ... ok
+test start_second_lottery_rs ... ok
+test start_limited_tickets_and_fixed_deadline_invalid_deadline_rs ... ok
+
+test result: ok. 27 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test mmap_get_go ... ok
+test mmap_remove_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test mmap_remove_rs ... ok
+test mmap_get_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test map_repeat_struct_go ... ok
+test map_repeat_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test map_repeat_rs ... ok
+test map_repeat_struct_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.54s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test mcf_external_get_go ... ok
+test mcf_external_pure_go ... ok
+test mcf_example_feature_go ... ok
+test mcf_alt_init_go ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+
+running 4 tests
+test mcf_alt_init_rs ... ignored, not yet supported
+test mcf_example_feature_rs ... ignored, not supported in principle
+test mcf_external_pure_rs ... ok
+test mcf_external_get_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.87s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test action::test::test_is_pending ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+test test_add_board_member ... ok
+test test_remove_proposer ... ok
+test test_add_proposer ... ok
+test test_try_remove_all_board_members ... ok
+test test_transfer_execute_to_user ... ok
+test test_change_quorum ... ok
+test test_transfer_execute_sc_all ... ok
+test test_async_call_to_sc ... ok
+test test_deploy_and_upgrade_from_source ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+
+running 17 tests
+test interactor_nft_all_roles_go ... ignored, missing 'newTokenIdentifiers' syntax
+test interactor_nft_go ... ignored, missing 'newTokenIdentifiers' syntax
+test send_dcdt_go ... ignored
+test upgrade_go ... ok
+test change_board_go ... ok
+test deploy_factorial_go ... ok
+test call_other_shard_1_go ... ok
+test upgrade_from_source_go ... ok
+test deploy_adder_then_call_go ... ok
+test deploy_other_multisig_go ... ok
+test remove_everyone_go ... ok
+test call_other_shard_2_go ... ok
+test change_quorum_go ... ok
+test deploy_duplicate_bm_go ... ok
+test change_quorum_too_big_go ... ok
+test deploy_adder_err_go ... ok
+test interactor_wrewa_go ... ok
+
+test result: ok. 14 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 17 tests
+test call_other_shard_1_rs ... ignored
+test call_other_shard_2_rs ... ignored
+test deploy_duplicate_bm_rs ... ok
+test change_quorum_rs ... ok
+test deploy_other_multisig_rs ... ok
+test send_dcdt_rs ... ok
+test change_board_rs ... ok
+test interactor_nft_rs ... ok
+test change_quorum_too_big_rs ... ok
+test remove_everyone_rs ... ok
+test interactor_nft_all_roles_rs ... ok
+test deploy_adder_err_rs ... ok
+test deploy_factorial_rs ... ok
+test upgrade_rs ... ok
+test upgrade_from_source_rs ... ok
+test deploy_adder_then_call_rs ... ok
+test interactor_wrewa_rs ... ok
+
+test result: ok. 15 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 1.89s
+
+
+running 10 tests
+test test_init ... ok
+test test_remove_proposer ... ok
+test test_add_proposer ... ok
+test test_add_board_member ... ok
+test test_transfer_execute_to_user ... ok
+test test_try_remove_all_board_members ... ok
+test test_change_quorum ... ok
+test test_async_call_to_sc ... ok
+test test_transfer_execute_sc_all ... ok
+test test_deploy_and_upgrade_from_source ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test init_go ... ok
+test create_nft_go ... ok
+test buy_nft_go ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test init_rs ... ok
+test create_nft_rs ... ok
+test buy_nft_rs ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test mint_nft_go ... ok
+test init_go ... ok
+test test_subscription_go ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test init_rs ... ok
+test mint_nft_rs ... ok
+test test_subscription_rs ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test cancel_orders_go ... ok
+test create_sell_order_check_go ... ok
+test cancel_all_orders_go ... ok
+test match_orders_go ... ok
+test free_orders_go ... ok
+test create_buy_order_check_go ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test create_sell_order_check_rs ... ok
+test create_buy_order_check_rs ... ok
+test cancel_orders_rs ... ok
+test cancel_all_orders_rs ... ok
+test free_orders_rs ... ok
+test match_orders_rs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test tx_returns_error_test ... ok
+test tx_expect_error_test ... ok
+test query_expect_error_test ... ok
+test query_returns_error_test ... ok
+test fail_query_test - should panic ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test should_panic_call_go ... ignored, not testing panic in drt-go-scenario here
+test should_panic_deploy_go ... ignored, not testing panic in drt-go-scenario here
+test should_panic_query_go ... ignored, not testing panic in drt-go-scenario here
+test panic_message_go ... ok
+test panic_after_log_go ... ok
+
+test result: ok. 2 passed; 0 failed; 3 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test panic_after_log_rs ... ignored, `internalVMErrors` logs not implemented
+test panic_message_rs ... ignored, PanicInfo currently not available, TODO: use std::panic::set_hook
+test should_panic_deploy_rs - should panic ... ok
+test should_panic_query_rs - should panic ... ok
+test should_panic_call_rs - should panic ... ok
+
+test result: ok. 3 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test payable_multi_legacy ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 21 tests
+test call_value_check_go ... ok
+test payable_all_transfers_1_go ... ok
+test call_value_check_multi_rewa_go ... ok
+test payable_any_1_go ... ok
+test payable_any_2_go ... ok
+test payable_all_transfers_2_go ... ok
+test payable_any_3_go ... ok
+test payable_any_4_go ... ok
+test payable_multi_array_go ... ok
+test payable_multiple_go ... ok
+test payable_multi_array_rewa_go ... ok
+test payable_multiple_rewa_go ... ok
+test payable_rewa_1_go ... ok
+test payable_rewa_2_go ... ok
+test payable_rewa_3_go ... ok
+test payable_rewa_4_go ... ok
+test payable_token_1_go ... ok
+test payable_token_2_go ... ok
+test payable_token_3_go ... ok
+test payable_token_4_go ... ok
+test payable_token_5_go ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 21 tests
+test call_value_check_multi_rewa_rs ... ok
+test payable_any_4_rs ... ok
+test payable_any_2_rs ... ok
+test payable_any_3_rs ... ok
+test payable_all_transfers_1_rs ... ok
+test call_value_check_rs ... ok
+test payable_multiple_rewa_rs ... ok
+test payable_all_transfers_2_rs ... ok
+test payable_any_1_rs ... ok
+test payable_multiple_rs ... ok
+test payable_rewa_1_rs ... ok
+test payable_rewa_4_rs ... ok
+test payable_rewa_2_rs ... ok
+test payable_multi_array_rewa_rs ... ok
+test payable_multi_array_rs ... ok
+test payable_rewa_3_rs ... ok
+test payable_token_2_rs ... ok
+test payable_token_5_rs ... ok
+test payable_token_4_rs ... ok
+test payable_token_1_rs ... ok
+test payable_token_3_rs ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test payable_interactor_test ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 17 tests
+test ping_pong_call_pong_all_go ... ok
+test ping_pong_call_ping_second_user_go ... ok
+test ping_pong_call_pong_go ... ok
+test ping_pong_call_get_user_addresses_go ... ok
+test ping_pong_call_ping_before_beginning_go ... ok
+test ping_pong_call_ping_go ... ok
+test ping_pong_call_ping_wrong_amount_go ... ok
+test ping_pong_call_ping_after_deadline_go ... ok
+test ping_pong_call_ping_twice_go ... ok
+test ping_pong_call_pong_all_interrupted_2_go ... ok
+test ping_pong_call_pong_all_interrupted_1_go ... ok
+test ping_pong_call_pong_all_after_pong_go ... ok
+test ping_pong_call_pong_twice_go ... ok
+test ping_pong_call_ping_before_activation_go ... ok
+test ping_pong_call_pong_before_deadline_go ... ok
+test ping_pong_call_pong_without_ping_go ... ok
+test ping_pong_init_go ... ok
+
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 17 tests
+test ping_pong_call_pong_all_interrupted_1_rs ... ignored, unsupported, relies on gas
+test ping_pong_call_pong_all_interrupted_2_rs ... ignored, unsupported, relies on gas
+test ping_pong_call_pong_without_ping_rs ... ok
+test ping_pong_call_ping_after_deadline_rs ... ok
+test ping_pong_init_rs ... ok
+test ping_pong_call_ping_before_beginning_rs ... ok
+test ping_pong_call_ping_second_user_rs ... ok
+test ping_pong_call_ping_before_activation_rs ... ok
+test ping_pong_call_get_user_addresses_rs ... ok
+test ping_pong_call_ping_rs ... ok
+test ping_pong_call_ping_twice_rs ... ok
+test ping_pong_call_pong_before_deadline_rs ... ok
+test ping_pong_call_pong_all_rs ... ok
+test ping_pong_call_pong_twice_rs ... ok
+test ping_pong_call_pong_all_after_pong_rs ... ok
+test ping_pong_call_ping_wrong_amount_rs ... ok
+test ping_pong_call_pong_rs ... ok
+
+test result: ok. 15 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_ping_pong_rewa ... ignored
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test pause_and_unpause_go ... ok
+test init_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test init_rs ... ok
+test pause_and_unpause_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test queue_repeat_struct_go ... ok
+test queue_repeat_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test queue_repeat_rs ... ok
+test queue_repeat_struct_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test test_compute_brackets ... ok
+test test_raffle_and_claim ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 39.61s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_dcdt_generation_go ... ignored
+test test_go ... ignored
+test test_multiple_sc_go ... ignored
+test trace_deploy_go ... ignored, not supported
+
+test result: ok. 0 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 4 tests
+test test_dcdt_generation_rs ... ignored
+test test_multiple_sc_rs ... ignored
+test test_rs ... ignored
+test trace_deploy_rs ... ignored, not supported
+
+test result: ok. 0 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test tester_deploy_test ... ok
+test tester_deploy_test_spawned_thread ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 47 tests
+test fixed_address_account_creation_test ... ok
+test managed_environment_test ... ok
+test dump_state_raw_attributes_test ... ok
+test dump_state_single_test ... ok
+test blockchain_state_test ... ok
+test test_add ... ok
+test dump_state_all_test ... ok
+test test_dcdt_multi_transfer ... ok
+test test_add_spawned_thread ... ok
+test storage_set_test ... ok
+test check_nft_zero_balance - should panic ... ok
+test test_assert_err_with_ok - should panic ... ok
+test test_add_wrong_expect - should panic ... ok
+test test_managed_types_without_environment - should panic ... ok
+test storage_check_test ... ok
+test managed_environment_consistency_test ... ok
+test execute_on_dest_context_change_state_test ... ok
+test test_dcdt_payment_ok ... ok
+test test_dcdt_payment_reverted ... ok
+test execute_on_dest_context_query_test ... ok
+test fixed_address_invalid_sc_test - should panic ... ok
+test test_modules ... ok
+test test_managed_values_argument_and_return_value_consistency ... ok
+test storage_revert_test ... ok
+test test_managed_values_insert_handle_panics ... ok
+test test_managed_values_standalone_consistency ... ok
+test test_query ... ok
+test test_multiple_contracts ... ok
+test test_dcdt_balance ... ok
+test test_random_buffer ... ok
+test test_async_call ... ok
+test test_random_buffer_twice ... ok
+test test_nft_balance ... ok
+test test_back_and_forth_transfers ... ok
+test test_denali_generation ... ok
+test test_sc_payment_ok ... ok
+test test_sc_result_err ... ok
+test test_sc_result_err_unwrap - should panic ... ok
+test test_sc_payment_reverted ... ok
+test test_sc_result_ok ... ok
+test test_sc_result_ok_unwrap ... ok
+test test_sc_dcdt_mint_burn ... ok
+test test_over_set_nft ... ok
+test test_sc_nft ... ok
+test test_sc_half_payment ... ok
+test test_sc_send_nft_to_user ... ok
+test test_wrapper_getters ... ok
+
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test st_blackbox_chained ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 1 test
+test st_blackbox_legacy_proxy ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 1 test
+test scenario_tester_blackbox_raw ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 5 tests
+test set_state_test ... ok
+test st_blackbox_tx_hash ... ok
+test st_blackbox_storage_check_test ... ok
+test st_blackbox ... ok
+test st_blackbox_returns_result_or_error ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 1 test
+test st_blackbox_upgrade ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 4 tests
+test st_adder_go ... ok
+test interactor_trace_go ... ok
+test st_forbidden_opcodes_go ... ok
+test st_partial_key_check_go ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test st_partial_key_check_rs ... ok
+test interactor_trace_rs ... ok
+test st_adder_rs ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 1 test
+test st_unit_test ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test st_whitebox_tx_hash ... ok
+test st_whitebox ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test send_tx_repeat_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test send_tx_repeat_rs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test set_repeat_go ... ok
+test set_repeat_struct_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test set_repeat_rs ... ok
+test set_repeat_struct_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.35s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test single_value_repeat_go ... ok
+test single_value_repeat_struct_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test single_value_repeat_rs ... ok
+test single_value_repeat_struct_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test std_deploy_go ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test std_deploy_rs ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test mb_builder_basic_go ... ignored, gas benchmark, too brittle to include permanently
+test mb_builder_cached_go ... ignored, gas benchmark, too brittle to include permanently
+test str_repeat_go ... ok
+
+test result: ok. 1 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 3 tests
+test str_repeat_rs ... ok
+test mb_builder_cached_rs ... ok
+test mb_builder_basic_rs ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test cs_builtin_run_tests ... ignored
+test get_token_properties ... ignored, run on demand
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test test_claim_go ... ok
+test test_add_user_go ... ok
+test test_init_go ... ok
+test test_change_user_go ... ok
+test test_add_group_go ... ok
+test test_end_setup_go ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 6 tests
+test test_init_rs ... ok
+test test_add_group_rs ... ok
+test test_add_user_rs ... ok
+test test_end_setup_rs ... ok
+test test_claim_rs ... ok
+test test_change_user_rs ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test test_transfer_role ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 1 test
+test test_transfer_role ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test test_init ... ok
+test test_abstain_vote_gov_config ... ok
+test test_down_veto_gov_config ... ok
+test test_gov_cancel_defeated_proposal ... ok
+test test_change_gov_config ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 1 test
+test test_staking_module ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+
+
+running 3 tests
+test test_custom_attributes ... ok
+test test_partial_split ... ok
+test test_token_merge ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+
+running 1 test
+test use_module_abi_generated_ok ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.30s
+
+
+running 9 tests
+test use_module_dns_register_go ... ignored, uses multi-level async
+test use_module_features_go ... ok
+test use_module_internal_go ... ok
+test use_module_pause_go ... ok
+test use_module_ongoing_operation_example_go ... ok
+test use_module_only_owner_go ... ok
+test use_module_only_admin_go ... ok
+test use_module_no_endpoint_go ... ok
+test use_module_claim_developer_rewards_go ... ok
+
+test result: ok. 8 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 9 tests
+test use_module_ongoing_operation_example_rs ... ignored
+test use_module_no_endpoint_rs ... ok
+test use_module_internal_rs ... ok
+test use_module_pause_rs ... ok
+test use_module_features_rs ... ok
+test use_module_only_admin_rs ... ok
+test use_module_only_owner_rs ... ok
+test use_module_dns_register_rs ... ok
+test use_module_claim_developer_rewards_rs ... ok
+
+test result: ok. 8 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+
+running 1 test
+test test_function_selector ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test vec_repeat_go ... ok
+test vec_repeat_struct_go ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 2 tests
+test vec_repeat_rs ... ok
+test vec_repeat_struct_rs ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 5 tests
+test framework/base/src/types/managed/wrapped/managed_map_encoded.rs - types::managed::wrapped::managed_map_encoded::ManagedMapEncoded (line 21) - compile ... ok
+test framework/base/src/types/managed/wrapped/rewa_or_dcdt_token_identifier.rs - types::managed::wrapped::rewa_or_dcdt_token_identifier::RewaOrDcdtTokenIdentifier (line 20) ... ok
+test framework/base/src/macros.rs - macros::require (line 83) ... ok
+test framework/base/src/macros.rs - macros::require_old (line 38) ... ok
+test framework/base/src/macros.rs - macros::only_owner (line 156) ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 1 test
+test contracts/modules/src/ongoing_operation.rs - ongoing_operation::OngoingOperationModule::run_while_it_has_gas (line 16) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Process finished with: exit status: 0
