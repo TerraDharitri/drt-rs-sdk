@@ -7,7 +7,7 @@
                     "nonce": "0",
                     "balance": "0"
                 },
-                "sc:forwarder": {
+                 "sc:forwarder": {
                     "nonce": "0",
                     "balance": "4000",
                     "dcdt": {

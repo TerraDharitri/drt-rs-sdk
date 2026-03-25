@@ -44,4 +44,4 @@ jobs:
       - name: Run gas tests (prod)
         run: |
           cd contracts/feature-tests/gas-tests
-          cargo test --features wasmer-prod
+          cargo test --features wasmer-experimental 

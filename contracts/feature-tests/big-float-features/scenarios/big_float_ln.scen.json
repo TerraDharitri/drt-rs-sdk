@@ -16,7 +16,7 @@
         },
         {
             "step": "scCall",
-            "id": "ln_big_float_precision_9(23)",
+            "id": "ln_big_float_precision_9(23)", 
             "comment": "ln(23) = 3.135514648 (9 decimals)",
             "tx": {
                 "from": "address:an_account",
@@ -36,7 +36,7 @@
         },
         {
             "step": "scCall",
-            "id": "ln_big_float_any_precision(23, 9)",
+            "id": "ln_big_float_any_precision(23, 9)", 
             "comment": "ln(23) = 3.135514648 (9 decimals)",
             "tx": {
                 "from": "address:an_account",

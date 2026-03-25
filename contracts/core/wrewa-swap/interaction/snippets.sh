@@ -49,8 +49,8 @@ issueWrappedRewa() {
 }
 
 setLocalRoles() {
-    local LOCAL_MINT_ROLE=0x52657761526f6c654c6f63616c4d696e74 # "DCDTRoleLocalMint"
-    local LOCAL_BURN_ROLE=0x52657761526f6c654c6f63616c4275726e # "DCDTRoleLocalBurn"
+    local LOCAL_MINT_ROLE=0x44434454526f6c654c6f63616c4d696e74 # "DCDTRoleLocalMint"
+    local LOCAL_BURN_ROLE=0x44434454526f6c654c6f63616c4275726e # "DCDTRoleLocalBurn"
     local ADDRESS_HEX = $(drtpy wallet bech32 --decode ${ADDRESS})
 
     drtpy --verbose contract call ${DCDT_SYSTEM_SC_ADDRESS} --recall-nonce --pem=${ALICE} \

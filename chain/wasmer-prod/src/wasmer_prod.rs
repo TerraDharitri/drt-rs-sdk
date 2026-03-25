@@ -51,7 +51,10 @@ impl InstanceState for WasmerProdInstanceStateAdapter {
         self.0.get_points_used()
     }
 
-    fn set_points_used(&mut self, points: u64) -> Result<(), dharitri_vm_executor::ExecutorError> {
+    fn set_points_used(
+        &mut self,
+        points: u64,
+    ) -> Result<(), dharitri_vm_executor::ExecutorError> {
         self.0.set_points_used(points)
     }
 

@@ -2,7 +2,7 @@
     "steps": [
         {
             "step": "setState",
-            "comment": "\u00abdns#87\u00bb is not arbitrary, it is the address that \u00abcoolname0001.numbat\u00bb maps to",
+            "comment": "«dns#87» is not arbitrary, it is the address that «coolname0001.numbat» maps to",
             "accounts": {
                 "address:a_user": {
                     "nonce": "0",

@@ -33,7 +33,7 @@ They are:
 	- `dharitri-sdk-dapp`
 
 
-## [sc 1.20.0, codec 1.20.0, chain 1.20.0, sdk 1.20.0] - 2025-07-03
+## [sc 0.59.0, codec 0.23.0, chain 0.16.0, sdk 0.11.0] - 2025-07-03
 - Support for Barnard features
 	- `barnard` feature for smart contracts, can be enabled in the contract's `Cargo.toml` or `sc-config.toml`;
 	- Blockchain API new features:
@@ -111,7 +111,7 @@ They are:
   - Fixed `ReturnsTxHash` result handler.
 - Enhanced `checkState` to allow partial key verification.
 
-## [sc 0.57.0, codec 0.22.0, chain 0.14.0, sdk 0.9.0, scenario-format 1.20.0] - 2025-03-11
+## [sc 0.57.0, codec 0.22.0, chain 0.14.0, sdk 0.9.0, scenario-format 0.23.1] - 2025-03-11
 - Newer compiler support:
 	- Dropped support for Rust compiler versions older than 1.83.
 	- Support and optimizations for using Rust 1.85.
@@ -207,7 +207,7 @@ They are:
 - Interactor - `use_chain_simulator` builder method, for improved backwards compatibility.
 - `MultiValueEncodedCounted` - a lazy multi-value encoding, but with known number of elements.
 
-## [sc 0.54.0, sdk 0.7.0, chain 1.20.0] - 2024-11-06
+## [sc 0.54.0, sdk 0.7.0, chain 0.11.0] - 2024-11-06
 - New crate, `dharitri-chain-core`, to be used in both framework and Rust VM. It contains common types, flags, and constants that refer to the protocol.
 - Major SDK/interactor refactor:
 	- Added support for Chain Simulator in interactors:
@@ -254,7 +254,7 @@ They are:
   - Allow signature to be empty in TransactionOnNetwork;
   - Allow return data to be empty in VMOutputApi.
 
-## [sc 0.53.0 codec 0.21.0, vm 0.10.0, sdk 0.6.0, scenario-format 1.20.0] - 2024-09-04
+## [sc 0.53.0 codec 0.21.0, vm 0.10.0, sdk 0.6.0, scenario-format 0.23.0] - 2024-09-04
 - Unified syntax:
   -  Whitebox testing;
   -  Proxy fix for ManagedOption;
@@ -513,7 +513,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- Various bugfixes.
 - VM implementation for `get_shard_of_address` VM hook.
 
-## [sc 0.43.0, codec 0.18.1, vm 1.0.8] - 2023-08-16
+## [sc 0.43.0, codec 0.18.1, vm 0.5.0] - 2023-08-16
 - Fixed a rustc compatibility issue when building contracts. The meta crate looks at the rustc version when generating the wasm crate code:
 	- pre-rustc-1.71;
 	- between rustc-1.71 and rustc-1.73;
@@ -648,7 +648,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - `ManagedVec` supports sorting and deduplication.
 - `migrateUserName` builtin function mock.
 
-## [numbat-wasm 0.38.0, numbat-codec 1.20.0, denali 0.18.0] - 2022-12-15
+## [numbat-wasm 0.38.0, numbat-codec 0.16.0, denali 0.18.0] - 2022-12-15
 - `ContractCall` refactor. Building a contract call comes with harder compile-time constraints. This also reduces compiled code size.
 - `ContractBase` supertrait can be now stated explicitly for contract and module traits.
 - Debugger:
@@ -704,7 +704,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Safer BigUint/BigInt conversions
 - Added and published `price-aggregator` and `wrewa-swap` core contracts.
 
-## [numbat-wasm 0.34.0, numbat-codec 0.12.0, denali 1.20.0, numbat-interact-snippets 0.1.0] - 2022-07-08
+## [numbat-wasm 0.34.0, numbat-codec 0.12.0, denali 0.16.0, numbat-interact-snippets 0.1.0] - 2022-07-08
 - Major refactor of the denali-rs infrastructure.
 	- High-level Denali objects moved to numbat-wasm-debug;
 	- The `denali` crate no longer depends on `numbat-wasm-debug` (as originally intended and implemented);
@@ -752,7 +752,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.31.1, denali 0.13.1] - 2022-05-04
 - Bugfix - formatter single char issue.
 
-## [numbat-wasm 0.31.0, numbat-codec 1.20.0, denali 0.13.0] - 2022-05-02
+## [numbat-wasm 0.31.0, numbat-codec 0.11.0, denali 0.13.0] - 2022-05-02
 - Improved formatter. Strings can be formatted similarly to the standard Rust ones, but without allocator, using managed buffers. Macros `require!`, `sc_panic!`, `sc_format!`, `sc_print!` use it.
 - Removed build flag `ei-1-1`, following mainnet updated and new VM endpoints being available. Among others, managed `sha256` and `keccak256` APIs can be used freely.
 - `CodecFrom` and `CodecInto` traits to define equivalent encodings and conversions via codec.
@@ -852,11 +852,11 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - New hook for DCDT local roles
 - Only-owner module annotation
 
-## [numbat-wasm 1.20.0, numbat-codec 0.8.3] - 2021-11-25
+## [numbat-wasm 0.23.1, numbat-codec 0.8.3] - 2021-11-25
 - `ArrayVec` serialization
 - `ManagedAddress` additional conversions
 
-## [numbat-wasm 1.20.0] - 2021-11-23
+## [numbat-wasm 0.23.0] - 2021-11-23
 - Static access to API. Static thread-local context stack in the debugger.
 
 ## [numbat-wasm 0.22.11] - 2021-11-17
@@ -918,7 +918,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 - Debugger builtin function mocks check for DCDT roles
 - ABI provides definitions for DcdtTokenPayment, DcdtTokenData, DcdtTokenType
 
-## [numbat-wasm 0.21.0, numbat-codec 0.8.0, denali 1.20.0] - 2021-10-22
+## [numbat-wasm 0.21.0, numbat-codec 0.8.0, denali 0.11.0] - 2021-10-22
 - Denali support for NFT syntax. Many more small improvements and some major refactoring.
 - Major refactoring of the `numbat-wasm-debug` crate, which enables the debugger and the coverage tool. Many features added:
 	- support for synchronous calls, also nested synchronous calls
@@ -1021,7 +1021,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 ## [numbat-wasm 0.16.1, denali 0.7.1] - 2021-05-18
 - Improvements in denali-rs: username, contract owner, nested async calls
 
-## [numbat-wasm 1.20.0, denali 0.7.0, numbat-codec 0.5.3] - 2021-05-14
+## [numbat-wasm 0.16.0, denali 0.7.0, numbat-codec 0.5.3] - 2021-05-14
 ### Major redesign of important framework components:
 - The arguments to contract/module/proxy annotations are gone. All items are generated in the same Rust module. Both submodule inclusion and contract calls are now Rust-module-aware.
 - Submodule imports are now expressed as supertraits instead of the module getter annotated methods. Note: explicitly specifying the Rust module is required, in order for the framework to fetch generated types and functions from that module.
@@ -1094,7 +1094,7 @@ First pre-release of the unified syntax. Syntax not yet stabilized, should only 
 	- callbacks now specified programmatically
 	- got rid of the `#[callback_arg]` annotation
 
-## [numbat-wasm 1.20.0, numbat-codec 0.5.0, denali 0.5.0] - 2021-02-05
+## [numbat-wasm 0.11.0, numbat-codec 0.5.0, denali 0.5.0] - 2021-02-05
 ### Refactor
 - Major refactoring of the contract API: split into smaller traits
 ### Added
