@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev-shannu
+      - dev-S
   pull_request:
 
 permissions:

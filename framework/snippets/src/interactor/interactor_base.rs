@@ -42,7 +42,12 @@ where
     /// Not yet changed for backwards compatibility.
     pub async fn new(gateway_uri: &str) -> Self {
         let proxy = GatewayProxy::from_uri(gateway_uri);
-        let network_config = proxy.request(NetworkConfigRequest).await.unwrap();
+        let network_config = proxy.request(NetworkConfigRequest).await
+            .unwrap_or_else(|err| panic!(
+                "Failed to get network config from gateway '{}'. Error: {}. \
+                Please ensure the gateway is accessible and running.", 
+                gateway_uri, err
+            ));
         Self {
             proxy,
             use_chain_simulator: false,
